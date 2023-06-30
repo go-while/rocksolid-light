@@ -63,6 +63,7 @@
         echo "Expiring: ".$break[4]." IN: ".$group." #".$break[0]."\r\n";
         file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Expiring: ".$break[4]." IN: ".$group." #".$break[0], FILE_APPEND);
         unlink($spooldir.'/articles/'.$grouppath.'/'.$break[0]);
+		thread_cache_removearticle($group,$break[4]);
         continue;
       } else {
         fputs($out_overviewfp, $line);
