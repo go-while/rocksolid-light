@@ -209,7 +209,12 @@ function get_articles($ns, $group) {
 // Get overview from server
   $server_overview = array();
   $re = false;
-  fputs($ns, "xover ".$article."-".$detail[3]."\r\n");
+  if(($detail[3] - $article) > $maxarticles_per_run) {
+  	$getlast = $article + $maxarticles_per_run; 
+  } else {
+	$getlast = $detail[3];
+  }
+  fputs($ns, "xover ".$article."-".$getlast."\r\n");
   $response=line_read($ns);  // and once more
   if ((substr($response,0,3) != "224")) {
       file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Cannot get overview from ".$CONFIG['remote_server']." for ".$group, FILE_APPEND);
