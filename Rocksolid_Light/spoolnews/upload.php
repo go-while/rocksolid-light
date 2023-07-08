@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include "config.inc.php";
 include "newsportal.php";
 
@@ -40,26 +38,11 @@ include "head.inc";
     echo '<td width=100%></td></tr></table>';
     echo '<hr>';
 
+if(isset($_FILES['photo'])) {
+   $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
 // Check auth here
-
-  # this include checks if the user has already logged in
-  $keyfile = $spooldir.'/keys.dat';
-  $keys = unserialize(file_get_contents($keyfile));
-
-  $auth_expire = 14400;
-  $logged_in = false;
-  if(!isset($_POST['username'])) {
-    $_POST['username'] = $_COOKIE['mail_name'];
-  }
-  $name = $_POST['username'];
-  if(!isset($_POST['password'])) {
-      $_POST['password'] = null;
-  }
-  if(!isset($_COOKIE['mail_auth'])) {
-      $_COOKIE['mail_auth'] = null;
-  }
-  if(isset($_FILES['photo'])) {
-     $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
+    if(isset($_POST['key']) && password_verify($CONFIG['thissitekey'].$_POST['username'], $_POST['key'])) {
+      if(check_bbs_auth($_POST['username'], $_POST['password'])) {
 	$userdir = $spooldir.'/upload/'.strtolower($_POST['username']);
 	$upload_to = $userdir.'/'.$_FILES['photo']['name'];
 	if(is_file($upload_to)) {
@@ -83,14 +66,13 @@ include "head.inc";
          document.cookie = "files_name="+savename+"; path=/";
       </script>
 <?php
+      } else {
+	echo 'Authentication Failed';
+      }
+    echo '<br /><br />';
+    }
 }
 
-  if ((password_verify($_POST['username'].$keys[0].get_user_config($_POST['username'],'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'].$keys[1].get_user_config($_POST['username'],'encryptionkey'), $_COOKIE['mail_auth']))) {
-    $logged_in = true;
-    } else {
-	echo 'Authentication Failed';
-    echo '<br /><br />';
-}
   echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
   echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
 
@@ -100,9 +82,7 @@ include "head.inc";
   if(!isset($_POST['password'])) {
       $_POST['password'] = '';
   }
-
-#if (!check_bbs_auth($_POST['username'], $_POST['password'])) {
-if (!$logged_in) {
+if(!check_bbs_auth($_POST['username'], $_POST['password'])) {  
   echo '<tr><td><strong>Please Login to Upload<br /></strong></td></tr>';
   echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="'.$name.'"></td></tr>';
   echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
@@ -114,7 +94,8 @@ if (!$logged_in) {
   echo '<input type="hidden" name="key" value="'.password_hash($CONFIG['thissitekey'].$name, PASSWORD_DEFAULT).'">';
   echo '<input type="hidden" name="username" value="'.$_POST['username'].'">';
   echo '<input type="hidden" name="password" value="'.$_POST['password'].'">';
-  echo '<tr><td><input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/*"></td>';
+  echo '<tr><td><input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/*"></td>
+';
   echo '<td>&nbsp;<input type="submit" name="Submit" value="Upload"></td>';
 }
 echo '</tr>';
