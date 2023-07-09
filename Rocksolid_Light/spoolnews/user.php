@@ -89,6 +89,14 @@ echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
       echo '<button class="np_button_link" type="submit">Mail</button>';
       echo '</form>';
       echo '</td>';
+// Files button
+          echo '<td>';
+          echo '<form target="'.$frame['content'].'" method="post" action="files.php">';
+          echo '<input name="command" type="hidden" id="command" value="Files" readonly="readonly">';
+          echo "<input type='hidden' name='username' value='".$_POST['username']."' />";
+          echo '<button class="np_button_link" type="submit">Files</button>';
+          echo '</form>';
+          echo '</td>';
 // Logout button
       echo '<td>';
       echo '<form target="'.$frame['content'].'" method="post" action="user.php">';

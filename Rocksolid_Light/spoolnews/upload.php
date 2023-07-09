@@ -4,18 +4,24 @@ include "newsportal.php";
 
 $logfile=$logdir.'/files.log';
 
-unset($name);
-if(isset($_POST['username']) && $_POST['username'] !== '') {
-  $name = $_POST['username'];
-} else {
-  if ($setcookies) {
-    if (isset($_COOKIE['files_name'])) {
-      $name=$_COOKIE['files_name'];
-    }
-  }
+$keyfile = $spooldir.'/keys.dat';
+$keys = unserialize(file_get_contents($keyfile));
+
+$name = '';
+
+$logged_in = false;
+if(!isset($_POST['username'])) {
+    $_POST['username'] = $_COOKIE['mail_name'];
 }
-if(!isset($name)) {
-  $name = '';
+$name = $_POST['username'];
+if(!isset($_POST['password'])) {
+    $_POST['password'] = null;
+}
+if(!isset($_COOKIE['mail_auth'])) {
+    $_COOKIE['mail_auth'] = null;
+}
+if((password_verify($_POST['username'].$keys[0].get_user_config($_POST['username'],'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'].$keys[1].get_user_config($_POST['username'],'encryptionkey'), $_COOKIE['mail_auth']))) {
+    $logged_in = true;
 }
 
   $title.=' - Upload file';
@@ -37,7 +43,6 @@ include "head.inc";
     echo '</td>';
     echo '<td width=100%></td></tr></table>';
     echo '<hr>';
-
 if(isset($_FILES['photo'])) {
    $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
 // Check auth here
@@ -63,7 +68,7 @@ if(isset($_FILES['photo'])) {
       <script type="text/javascript">
        if (navigator.cookieEnabled)
          var savename = "<?php echo stripslashes($name); ?>";
-         document.cookie = "files_name="+savename+"; path=/";
+         document.cookie = "mail_name="+savename+"; path=/";
       </script>
 <?php
       } else {
@@ -74,7 +79,8 @@ if(isset($_FILES['photo'])) {
 }
 
   echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
-  echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
+  echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
+//echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
 
   if(!isset($_POST['username'])) {
       $_POST['username'] = '';
@@ -82,7 +88,7 @@ if(isset($_FILES['photo'])) {
   if(!isset($_POST['password'])) {
       $_POST['password'] = '';
   }
-if(!check_bbs_auth($_POST['username'], $_POST['password'])) {  
+if(!$logged_in && !check_bbs_auth($_POST['username'], $_POST['password'])) {  
   echo '<tr><td><strong>Please Login to Upload<br /></strong></td></tr>';
   echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="'.$name.'"></td></tr>';
   echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';

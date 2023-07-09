@@ -99,7 +99,8 @@ if(isset($_POST['username'])) {
 }
         if($logged_in !== true) {
 echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
-echo '<form name="form1" method="post" action="mail.php" enctype="multipart/form-data">';
+echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
+//echo '<form name="form1" method="post" action="mail.php" enctype="multipart/form-data">';
 echo '<tr><td><strong>Please Login<br /></strong></td></tr>';
 echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="'.$name.'"></td></tr>';
 echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
