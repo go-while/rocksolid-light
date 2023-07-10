@@ -41,10 +41,14 @@ include "head.inc";
   } else {
     echo '<td>Search Poster:&nbsp';
   }
-  echo '<input name="terms" type="text" id="terms" value="'.$_GET['terms'].'"></td>';
+  if(isset($_GET['terms'])) {
+    echo '<input name="terms" type="text" id="terms" value="'.$_GET['terms'].'"></td>';
+  } else {
+    echo '<input name="terms" type="text" id="terms"></td>';
+  }
   echo '</tr><tr></tr><tr><td>';
 
-if ($_GET['searchpoint'] == 'Poster') {
+if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
   if($CONFIG['article_database'] == '1') {
     echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
   }
@@ -142,6 +146,9 @@ $results=0;
     $offset=$CONFIG['timezone'];
   }
   $overview = array();
+  if(!isset($group)) {
+    $group = null;
+  }
   if($_POST['searchpoint'] == 'body') {
     $overview = get_body_search($group, $_POST['terms']);
   } else { 
