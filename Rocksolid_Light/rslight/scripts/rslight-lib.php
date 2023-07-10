@@ -1210,21 +1210,24 @@ function get_article_list($thisgroup) {
 }
 
 function create_node_ssl_cert($pemfile) {
-    global $CONFIG, $ssldir, $webtmp, $config_dir;
+    global $CONFIG, $ssldir, $webtmp, $logdir, $config_dir;
     include $config_dir.'/letsencrypt.inc.php';
+    $logfile=$logdir.'/nntp.log';
     $uinfo=posix_getpwnam($CONFIG['webserver_user']);
     $pubkeyfile = $ssldir.'/pubkey.pem';
     $pubkeytxtfile = $webtmp.'/pubkey.txt';
     $ssltime = filectime($letsencrypt['path'].'fullchain.pem');
     if(isset($letsencrypt['path'])) {
+        file_put_contents($logfile, "\n".format_log_date()." Checking ".$letsencrypt['path']."fullchain.pem time", FILE_APPEND);
         if($ssltime > filectime($pemfile)) {
+            file_put_contents($logfile, "\n".format_log_date()." ".$letsencrypt['path']."fullchain.pem newer. Reloading cert.", FILE_APPEND);
             touch($config_dir.'/ssl.reload');
         }
         
     }
     if(!file_exists($config_dir.'/ssl.reload')) {
         if((is_file($pemfile)) && (is_file($pubkeyfile)) && (is_file($pubkeytxtfile))) {
-            if(md5_file($pubkeyfile) == md5_file($pubkeytxtfile)) {
+           if(md5_file($pubkeyfile) == md5_file($pubkeytxtfile)) {
                 return;
             }
         }
@@ -1236,6 +1239,7 @@ function create_node_ssl_cert($pemfile) {
     /* Use letsencrypt */
     if((isset($letsencrypt['server.pem'])) && (isset($letsencrypt['pubkey.pem']))) {
         echo "Using existing LetsEncrypt certificate.\n";
+        file_put_contents($logfile, "\n".format_log_date()." Using existing LetsEncrypt certificate.", FILE_APPEND);
         file_put_contents($pemfile, $letsencrypt['server.pem'].$letsencrypt['privkey']);
         file_put_contents($pubkeyfile, $letsencrypt['pubkey.pem']);
         file_put_contents($pubkeytxtfile, $letsencrypt['pubkey.pem']);
@@ -1244,6 +1248,7 @@ function create_node_ssl_cert($pemfile) {
         touch($pubkeytxtfile, $ssltime);
     } else {
         /* Create self signed cert */
+        file_put_contents($logfile, "\n".format_log_date()." Creating self-signed certificate.", FILE_APPEND);
         $certificateData = array(
             "countryName" => "US",
             "stateOrProvinceName" => "New York",
@@ -1278,5 +1283,9 @@ function create_node_ssl_cert($pemfile) {
     chmod($pemfile,0660);
     chmod($pubkeyfile,0660);
     chmod($pubkeytxtfile,0660);
+}
+
+function format_log_date() {
+    return date('M d H:i:s');
 }
 ?>

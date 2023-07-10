@@ -58,7 +58,7 @@
         GLOBAL $__server_listening;
         GLOBAL 
 $CONFIG,$logdir,$lockdir,$webserver_uid,$webserver_gid,$installed_path,
-$config_path,$groupconfig,$workpath,$path,$spooldir,$nntp_group,$auth_ok;
+$config_path,$groupconfig,$workpath,$path,$spooldir,$ssldir,$nntp_group,$auth_ok;
 	$logfile=$logdir.'/nntp.log';
 	$lockfile = $lockdir . '/rslight-nntp-ssl.lock';
 	$pid = file_get_contents($lockfile);
@@ -75,7 +75,7 @@ $config_path,$groupconfig,$workpath,$path,$spooldir,$nntp_group,$auth_ok;
 	$pass = "";
 	$pemfile = $ssldir.'/server.pem';
 	if(!is_file($pemfile)) {
-	  create_certificate($pemfile);
+	    create_node_ssl_cert($pemfile);
 	}	
 	$context = stream_context_create();
 	stream_context_set_option($context, 'ssl', 'local_cert', $pemfile);
