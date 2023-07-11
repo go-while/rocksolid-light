@@ -2,7 +2,6 @@
     function interact($msgsock, $use_crypto=false)
     {
 	global $CONFIG,$logdir,$lockdir,$logfile,$installed_path,$config_path,$config_dir,$groupconfig,$workpath,$path, $spooldir,$nntp_group,$nntp_article,$auth_ok,$user,$pass;
-
 	$workpath=$spooldir."/";
 	$path=$workpath."articles/";
 	$groupconfig=$spooldir."/spoolnews/groups.txt";
@@ -1283,9 +1282,5 @@ function create_node_ssl_cert($pemfile) {
     chmod($pemfile,0660);
     chmod($pubkeyfile,0660);
     chmod($pubkeytxtfile,0660);
-}
-
-function format_log_date() {
-    return date('M d H:i:s');
 }
 ?>
