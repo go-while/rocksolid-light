@@ -1,6 +1,7 @@
 <?php
 // This file runs maintenance scripts and should be executed by cron regularly
   include "config.inc.php";
+  include "newsportal.php";
   include $config_dir."/scripts/rslight-lib.php";
 
   $menulist = file($config_dir."menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

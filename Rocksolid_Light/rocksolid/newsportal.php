@@ -121,7 +121,9 @@ function nntp2_open($nserver=0,$nport=0) {
   $weg=line_read($ns);  // kill the first line
   if (substr($weg,0,2) != "20") {
     echo "<p>".$text_error["error:"].$weg."</p>";
-    fclose($ns);
+    if($ns) {
+      fclose($ns);
+    }
     $ns=false;
   } else {
     if ($ns != false) {
