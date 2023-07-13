@@ -26,6 +26,10 @@ if((password_verify($_POST['username'].$keys[0].get_user_config($_POST['username
 
   $title.=' - Upload file';
 include "head.inc";
+  echo '<h1 class="np_thread_headline">';
+  echo '<a href="../spoolnews/files.php" target='.$frame['menu'].'>files</a> / ';
+  echo htmlspecialchars($_COOKIE['mail_name']).'</h1>';
+  echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
   echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Browse button
     echo '<td>';

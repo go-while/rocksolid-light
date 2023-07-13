@@ -27,7 +27,11 @@ if($_POST['command'] == 'Logout') {
   unset($_SESSION['theme']);
   unset($_POST['username']);
   include "head.inc";
-  echo 'You have been logged out';
+  echo "<center>";
+  echo "<hr><p>You have been logged out</p>";
+  echo '</center>';
+  echo '<br />';
+  include "tail.inc";
   exit(0);
 }
 $title.=' - User Configuration';
@@ -74,11 +78,15 @@ include "head.inc";
 		echo 'Login failed.';
 	}
   }
-  echo '<h1 class="np_thread_headline">';
-    
-  echo '<a href="user.php" target='.$frame['menu'].'>Configuration</a> / ';
-  echo htmlspecialchars($_POST['username']).'</h1>';
-
+  if(isset($_POST['command']) && $_POST['command'] == 'Configuration') {
+    echo '<h1 class="np_thread_headline">';
+    echo '<a href="user.php" target='.$frame['menu'].'>Configuration</a> / ';
+    echo htmlspecialchars($_POST['username']).'</h1>';
+  } else {
+    echo '<h1 class="np_thread_headline">';
+    echo '<a href="user.php" target='.$frame['menu'].'>user login</a> / ';
+    echo htmlspecialchars($_POST['username']).'</h1>';
+  }
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Mail button
     if($logged_in == true) {
@@ -95,6 +103,14 @@ echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
           echo '<input name="command" type="hidden" id="command" value="Files" readonly="readonly">';
           echo "<input type='hidden' name='username' value='".$_POST['username']."' />";
           echo '<button class="np_button_link" type="submit">Files</button>';
+          echo '</form>';
+          echo '</td>';
+// Configuration button
+          echo '<td>';
+          echo '<form target="'.$frame['content'].'" method="post" action="user.php">';
+          echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+          echo "<input type='hidden' name='username' value='".$_POST['username']."' />";
+          echo '<button class="np_button_link" type="submit">Configuration</button>';
           echo '</form>';
           echo '</td>';
 // Logout button
@@ -145,7 +161,12 @@ echo '</table>';
   $userfile=$spooldir.'/'.$user.'-articleviews.dat';
   if(is_file($userfile)) {
      $userdata = unserialize(file_get_contents($userfile));
-//     ksort($userdata);
+  }
+// Show Logged-In Message
+  if($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
+    echo "<center>";
+    echo "<hr><p>You are logged in as ".$_POST['username']."</p>";
+    echo '</center>';
   }
 // Apply Config
     if(isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
@@ -168,8 +189,10 @@ echo '</table>';
 	}
 	file_put_contents($spooldir.'/'.$user.'-articleviews.dat', serialize($newsubs));
 	$userdata = unserialize(file_get_contents($userfile));
-	ksort($userdata);
-	echo 'Configuration Saved for '.$_POST['username'];
+	if($userdata) {
+	  ksort($userdata);
+    }
+    echo 'Configuration Saved for '.$_POST['username'];
     } else {
 	$user_config = unserialize(file_get_contents($config_dir.'/userconfig/'.$user.'.config'));
     }
@@ -187,7 +210,7 @@ echo '</table>';
     }
   }
   sort($themes);
-
+  if(isset($_POST['command']) && $_POST['command'] == 'Configuration') {
 // Show Config 
     echo '<hr><h1 class="np_thread_headline">Configuration:</h1>';
     echo '<table cellspacing="0" width="100%" class="np_results_table">';
@@ -239,5 +262,8 @@ echo '</table>';
       echo '<input name="command" type="hidden" id="command" value="SaveConfig" readonly="readonly">';
     echo '</form>';
     echo '</tbody></table><br />';
+  } else {
+    echo '<br />';
+  }
     include "tail.inc";
 ?>

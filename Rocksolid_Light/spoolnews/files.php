@@ -25,6 +25,9 @@ include "newsportal.php";
   }
   $title.=' - Browse files';
 include "head.inc";
+  echo '<h1 class="np_thread_headline">';
+  echo '<a href="../spoolnews/files.php" target='.$frame['menu'].'>files</a> / ';
+  echo htmlspecialchars($_COOKIE['mail_name']).'</h1>';
   echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Browse button
     echo '<td>';
