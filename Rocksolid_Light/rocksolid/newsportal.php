@@ -1426,7 +1426,7 @@ function get_search_snippet($body, $content_type='') {
 function mail_db_open($database, $table='messages') {
   try {
     $dbh = new PDO('sqlite:'.$database);
-  } catch (PDOExeption $e) {
+  } catch (PDOException $e) {
     echo 'Connection failed: '.$e->getMessage();
     exit;
   }
@@ -1449,7 +1449,7 @@ function mail_db_open($database, $table='messages') {
 function rslight_db_open($database, $table='overview') {
   try {
     $dbh = new PDO('sqlite:'.$database);
-  } catch (PDOExeption $e) {
+  } catch (PDOException $e) {
     echo 'Connection failed: '.$e->getMessage();
     exit;
   }
@@ -1478,7 +1478,7 @@ function rslight_db_open($database, $table='overview') {
 function article_db_open($database) {
   try {
     $dbh = new PDO('sqlite:'.$database);
-  } catch (PDOExeption $e) {
+  } catch (PDOException $e) {
     echo 'Connection failed: '.$e->getMessage();
     exit;
   }
