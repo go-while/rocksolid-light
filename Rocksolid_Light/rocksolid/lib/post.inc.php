@@ -194,7 +194,7 @@ function check_rate_limit($name,$set=0,$gettime=0) {
  * $ref: The references of the article
  * $body: The article itself
  */
-function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$encryptto=null,$authname=null,$followupto=null) {
+function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$encryptto=null,$authname=null,$followupto=null,$do_attach=null) {
   global $server,$port,$send_poster_host,$text_error,$CONFIG;
   global $www_charset,$config_dir,$spooldir;
   global $msgid_generate,$msgid_fqdn,$rslight_version;
@@ -226,6 +226,9 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
 	  $spamlevel = $spam_result_array['spamlevel'];
 	  $spam_fail = $spam_result_array['spam_fail'];
   } 
+  if($do_attach) {
+      move_uploaded_file($_FILES["photo"]["tmp_name"], $spooldir."/upload/" . $_FILES["photo"]["name"]);
+  }
   $ns=nntp_open($server,$port);
   if ($ns != false) {
     fputs($ns,"POST\r\n");
@@ -270,9 +273,11 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
       $CONFIG['postfooter']="";
     }
     fputs($ns,"Mime-Version: 1.0\r\n");
-    fputs($ns,"Content-Type: text/plain; charset=".$www_charset."; format=flowed\r\n");
-    fputs($ns,"Content-Transfer-Encoding: 8bit\r\n");
-    fputs($ns,"User-Agent: Rocksolid Light ".$rslight_version."\r\n");
+    if($do_attach == null) {
+      fputs($ns,"Content-Type: text/plain; charset=".$www_charset."; format=flowed\r\n");
+      fputs($ns,"Content-Transfer-Encoding: 8bit\r\n");
+      fputs($ns,"User-Agent: Rocksolid Light ".$rslight_version."\r\n");
+    }
     if ($send_poster_host)
       @fputs($ns,'X-HTTP-Posting-Host: '.gethostbyaddr(getenv("REMOTE_ADDR"))."\r\n");
     if (($ref!=false) && (count($ref)>0)) {
@@ -297,13 +302,39 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
         $body.="\n\n-- \n".$postfooter; 
       }
     }
+    if($do_attach) {
+        $boundary=uniqid('', true);
+        $body.="\r\n--------------".$boundary."\r\n";
+    }
     fputs($ns,'Message-ID: '.$msgid."\r\n");
     if ($userconfig['xface'] !== '' && $myconfig) {
       fputs($ns,'X-Face: '.$userconfig['xface']."\r\n");
     }
+    if($do_attach) {
+        fputs($ns,'Content-Type: multipart/mixed;boundary="------------'.$boundary.'"');
+        fputs($ns,"\r\n");
+        $contenttype = shell_exec('file -b --mime-type '.$spooldir.'/upload/'.$_FILES['photo']['name']);
+        $contenttype = rtrim($contenttype);
+        $b64file = shell_exec('uuencode -m '.$spooldir.'/upload/'.$_FILES['photo']['name'].' '.$_FILES['photo']['name'].' | grep -v \'begin-base64\|====\'');
+        $body.='Content-Type: '.$contenttype.';';
+        $body.="\r\n name=".$_FILES['photo']['name'];
+        $body.="\r\nContent-Transfer-Encoding: base64";
+        $body.="\r\nContent-Disposition: attachment;";
+        $body.="\r\n filename=".$_FILES['photo']['name'];
+        $body.="\r\n";
+        $body.="\r\n".$b64file;
+        $body.="\r\n--------------".$boundary."--\r\n";      
+    }
+// Headers end here
     $body=str_replace("\n.\r","\n..\r",$body);
     $body=str_replace("\r",'',$body);
     $body=stripSlashes($body);
+    if($do_attach) {
+        fputs($ns,"\r\nThis is a multi-part message in MIME format.\r\n");
+        fputs($ns,"--------------".$boundary."\r\n");
+        fputs($ns,"Content-Type: text/plain; charset=utf-8\r\n");
+        fputs($ns,"Content-Transfer-Encoding: 7bit\r\n");
+    }
 // Encrypt?
       if(isset($encryptthis)) {
         $encryptkey=get_user_config($encryptto, "encryptionkey");
@@ -313,143 +344,14 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
       }
     $body=rtrim($body);
     fputs($ns,"\r\n".$body."\r\n.\r\n");
+    // DEBUG
+    file_put_contents('/var/spool/rslight/upload/body.txt', $body);
     $message=line_read($ns);
     nntp_close($ns);
-  } else {
-    $message=$text_error["post_failed"];
-  }
-  // let thread.php ignore the cache for this group, so this new
-  // article will be visible instantly
-  $groupsarr=explode(",",$newsgroups);
-  foreach($groupsarr as $newsgroup) {
-    $cachefile=$spooldir.'/'.$newsgroup.'-cache.txt';
-    @unlink($cachefile);
-  }
-  return $message;
-}
-function message_post_with_attachment($subject,$from,$newsgroups,$ref,$body,$encryptthis,$encryptto,$authname) {
-  global $server,$port,$send_poster_host,$CONFIG,$text_error;
-  global $config_dir,$www_charset,$spooldir;
-  global $msgid_generate,$msgid_fqdn;
-  global $CONFIG;
-  flush();
-  $myconfig = false;
-  if(file_exists($config_dir.'/userconfig/'.$authname.'.config')) {
-    $userconfig = unserialize(file_get_contents($config_dir.'/userconfig/'.$authname.'.config')); 
-    $myconfig = true;
-  }
-  $msgid=generate_msgid($subject.",".$from.",".$newsgroups.",".$ref.",".$body);
-/*
- * SPAM CHECK
- */
-  if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
-	  $spam_result_array = check_spam($subject,$from,$newsgroups,$ref,$body,$msgid);
-	  $res = $spam_result_array['res'];
-	  $spamresult = $spam_result_array['spamresult'];
-	  $spamcheckerversion = $spam_result_array['spamcheckerversion'];
-	  $spamlevel = $spam_result_array['spamlevel'];
-  }
-  move_uploaded_file($_FILES["photo"]["tmp_name"], $spooldir."/upload/" . $_FILES["photo"]["name"]);
-  $ns=nntp_open($server,$port);
-  if ($ns != false) {
-    fputs($ns,"POST\r\n");
-    $weg=line_read($ns);
-    fputs($ns,'Subject: '.encode_subject($subject)."\r\n"); 
-// X-Rslight headers
-    if(isset($res)) {
-        fputs($ns,$spamcheckerversion."\r\n");
-		if(strpos($spamlevel, '*') !== false)
-			fputs($ns,$spamlevel."\r\n");
-		if($res === 1) {
-			fputs($ns,"X-Rslight-Original-Group: ".$newsgroups."\r\n");
-			$newsgroups=$CONFIG['spamgroup'];
-        }
-    }
-    $sitekey=password_hash($CONFIG['thissitekey'].$msgid, PASSWORD_DEFAULT);
-    fputs($ns,'X-Rslight-Site: '.$sitekey."\r\n");
-    fputs($ns,'X-Rslight-Posting-User: '.hash('sha1', $from.$_SERVER['HTTP_HOST'].$CONFIG['thissitekey'])."\r\n");
-    if(isset($encryptthis))
-      fputs($ns,'X-Rslight-To: '.$encryptto."\r\n");    
-    fputs($ns,'From: '.$from."\r\n");
-    fputs($ns,'Newsgroups: '.$newsgroups."\r\n");
-    fputs($ns,"Mime-Version: 1.0\r\n");
-/*
-	fputs($ns,"Content-Type: text/plain; charset=".$www_charset."; format=flowed\r\n");
-*/
-	if ($send_poster_host)
-      @fputs($ns,'X-HTTP-Posting-Host: '.gethostbyaddr(getenv("REMOTE_ADDR"))."\r\n");
-    if (($ref!=false) && (count($ref)>0)) {
-      // strip references
-      if(strlen(implode(" ",$ref))>900) {
-        $ref_first=array_shift($ref);
-        do {
-          $ref=array_slice($ref,1);
-        } while(strlen(implode(" ",$ref))>800);
-        array_unshift($ref,$ref_first);
-      }
-      fputs($ns,'References: '.implode(" ",$ref)."\r\n");
-    }
-    if (isset($CONFIG['organization']))
-      fputs($ns,'Organization: '.quoted_printable_encode($CONFIG['organization'])."\r\n");
-    if ($userconfig['signature'] !== '' && $myconfig) {
-      $body.="\n-- \n".$userconfig['signature'];
-    } else {
-      if ((isset($CONFIG['postfooter'])) && ($CONFIG['postfooter']!="")) {
-        $postfooter = preg_replace('/\{DOMAIN\}/', "\n".$_SERVER['HTTP_HOST'], $CONFIG['postfooter']);
-        $body.="\n-- \n".$postfooter;
-      }
-    }
-/*
-    if ((isset($file_footer)) && ($file_footer!="")) {
-      $footerfile=fopen($file_footer,"r");
-      $body.="\n".fread($footerfile,filesize($file_footer));
-      fclose($footerfile);
-        }
-*/
-	$boundary=uniqid('', true);
-	$body.="\r\n--------------".$boundary."\r\n";
-    fputs($ns,'Message-ID: '.$msgid."\r\n");
-    if ($userconfig['xface'] !== '' && $myconfig) {
-      fputs($ns,'X-Face: '.$userconfig['xface']."\r\n");
-    }
-    fputs($ns,'Content-Type: multipart/mixed;boundary="------------'.$boundary.'"');
-    fputs($ns,"\r\n");
-    $contenttype = shell_exec('file -b --mime-type '.$spooldir.'/upload/'.$_FILES['photo']['name']);
-    $contenttype = rtrim($contenttype);
-    $b64file = shell_exec('uuencode -m '.$spooldir.'/upload/'.$_FILES['photo']['name'].' '.$_FILES['photo']['name'].' | grep -v \'begin-base64\|====\'');
-    $body.='Content-Type: '.$contenttype.';';
-    $body.="\r\n name=".$_FILES['photo']['name'];
-    $body.="\r\nContent-Transfer-Encoding: base64";
-    $body.="\r\nContent-Disposition: attachment;";
-    $body.="\r\n filename=".$_FILES['photo']['name'];
-    $body.="\r\n";
-    $body.="\r\n".$b64file;
-    $body.="\r\n--------------".$boundary."--\r\n";
-
-// Headers end here
-
-    $body=str_replace("\n.\r","\n..\r",$body);
-    $body=str_replace("\r",'',$body);
-    $body=stripSlashes($body);
-
-    fputs($ns,"\r\nThis is a multi-part message in MIME format.\r\n");
-    fputs($ns,"--------------".$boundary."\r\n");
-    fputs($ns,"Content-Type: text/plain; charset=utf-8\r\n");
-    fputs($ns,"Content-Transfer-Encoding: 7bit\r\n");
-// Encrypt?
-      if(isset($encryptthis)) {
-        $encryptkey=get_user_config($encryptto, "encryptionkey");
-
-        $body=chunk_split(rslight_encrypt($body, $encryptkey));
-        $body="-- RSLIGHT DAT START\n".$body."-- RSLIGHT DAT END\n";
-      }
-// Body sent here
-	fputs($ns,"\r\n".$body."\r\n.\r\n");
-
-	$message=line_read($ns);
-    nntp_close($ns);
+    if($do_attach) {
 // clean up attachment file
-  unlink($spooldir.'/upload/'.$_FILES["photo"]["name"]);
+        unlink($spooldir.'/upload/'.$_FILES["photo"]["name"]);
+    }
   } else {
     $message=$text_error["post_failed"];
   }
