@@ -140,9 +140,11 @@ function message_parse($rawmessage) {
 //    if ($message->header->content_type[0]=="text/plain") {
 
 	$body=decode_body($body,$message->header->content_transfer_encoding);
-    $body=recode_charset($body,
-                         $message->header->content_type_charset[0],
-                         $www_charset);
+	if(isset($message->header->content_type_charset)) {
+        $body=recode_charset($body,
+            $message->header->content_type_charset[0],
+            $www_charset);
+	}
     if ($body=="") $body=" ";
 //    }
     $message->body[0]=$body;
