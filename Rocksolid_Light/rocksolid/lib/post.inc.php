@@ -199,6 +199,10 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
   global $www_charset,$config_dir,$spooldir;
   global $msgid_generate,$msgid_fqdn,$rslight_version;
   flush();
+  $attachment_temp_dir = $spooldir."/tmp/";
+  if(!is_dir($attachment_temp_dir)) {
+    mkdir($attachment_temp_dir);
+  }
   $myconfig = false;
   if(file_exists($config_dir.'/userconfig/'.$authname.'.config')) {
     $userconfig = unserialize(file_get_contents($config_dir.'/userconfig/'.$authname.'.config'));  
@@ -227,7 +231,7 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
 	  $spam_fail = $spam_result_array['spam_fail'];
   } 
   if($do_attach) {
-      move_uploaded_file($_FILES["photo"]["tmp_name"], $spooldir."/upload/" . $_FILES["photo"]["name"]);
+      move_uploaded_file($_FILES["photo"]["tmp_name"], $attachment_temp_dir . $_FILES["photo"]["name"]);
   }
   $ns=nntp_open($server,$port);
   if ($ns != false) {
@@ -313,9 +317,9 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
     if($do_attach) {
         fputs($ns,'Content-Type: multipart/mixed;boundary="------------'.$boundary.'"');
         fputs($ns,"\r\n");
-        $contenttype = shell_exec('file -b --mime-type '.$spooldir.'/upload/'.$_FILES['photo']['name']);
+        $contenttype = shell_exec('file -b --mime-type '.$attachment_temp_dir.$_FILES['photo']['name']);
         $contenttype = rtrim($contenttype);
-        $b64file = shell_exec('uuencode -m '.$spooldir.'/upload/'.$_FILES['photo']['name'].' '.$_FILES['photo']['name'].' | grep -v \'begin-base64\|====\'');
+        $b64file = shell_exec('uuencode -m '.$attachment_temp_dir.$_FILES['photo']['name'].' '.$_FILES['photo']['name'].' | grep -v \'begin-base64\|====\'');
         $body.='Content-Type: '.$contenttype.';';
         $body.="\r\n name=".$_FILES['photo']['name'];
         $body.="\r\nContent-Transfer-Encoding: base64";
@@ -348,7 +352,7 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
     nntp_close($ns);
     if($do_attach) {
 // clean up attachment file
-        unlink($spooldir.'/upload/'.$_FILES["photo"]["name"]);
+        unlink($attachment_temp_dir.$_FILES["photo"]["name"]);
     }
   } else {
     $message=$text_error["post_failed"];
