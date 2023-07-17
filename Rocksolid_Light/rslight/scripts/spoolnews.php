@@ -131,7 +131,7 @@ unlink($lockfile);
 echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group) {
-  global $enable_rslight, $spooldir, $CONFIG, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
+  global $enable_rslight, $spooldir, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
 
   if($ns == false) {
     file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Lost connection to ".$CONFIG['remote_server'].":".$CONFIG['remote_port'], FILE_APPEND);
@@ -139,7 +139,7 @@ function get_articles($ns, $group) {
   }
 
   $grouppath = $path.preg_replace('/\./', '/', $group);
-  $banned_names = file("/etc/rslight/banned_names.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
  
   $nocem_check="@@NCM";
 

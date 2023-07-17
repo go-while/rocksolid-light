@@ -29,6 +29,7 @@ $CONFIG = include($config_file);
 $logdir=$spooldir.'/log';
 $lockdir=$spooldir.'/lock';
 $ssldir=$spooldir.'/ssl/';
+$user_ban_file=$config_dir.'/banned_names.conf';
 
 /* Permanent configuration changes */
 @mkdir($logdir,0755,'recursive');
