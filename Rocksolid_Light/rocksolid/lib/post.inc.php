@@ -276,8 +276,8 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
     if($do_attach == null) {
       fputs($ns,"Content-Type: text/plain; charset=".$www_charset."; format=flowed\r\n");
       fputs($ns,"Content-Transfer-Encoding: 8bit\r\n");
-      fputs($ns,"User-Agent: Rocksolid Light ".$rslight_version."\r\n");
     }
+    fputs($ns,"User-Agent: Rocksolid Light ".$rslight_version."\r\n");
     if ($send_poster_host)
       @fputs($ns,'X-HTTP-Posting-Host: '.gethostbyaddr(getenv("REMOTE_ADDR"))."\r\n");
     if (($ref!=false) && (count($ref)>0)) {
@@ -344,8 +344,6 @@ function message_post($subject,$from,$newsgroups,$ref,$body,$encryptthis=null,$e
       }
     $body=rtrim($body);
     fputs($ns,"\r\n".$body."\r\n.\r\n");
-    // DEBUG
-    file_put_contents('/var/spool/rslight/upload/body.txt', $body);
     $message=line_read($ns);
     nntp_close($ns);
     if($do_attach) {
