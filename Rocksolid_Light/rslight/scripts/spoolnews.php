@@ -140,6 +140,7 @@ function get_articles($ns, $group) {
 
   $grouppath = $path.preg_replace('/\./', '/', $group);
   $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
  
   $nocem_check="@@NCM";
 
@@ -156,11 +157,14 @@ function get_articles($ns, $group) {
   foreach($grouplist as $findgroup) {
     $name = explode(':', $findgroup);
     if (strcmp($name[0], $group) == 0) {
-      if (isset($name[1]))
+      if (is_numeric(trim($name[1]))) {
         $article = $name[1] + 1;
-      break;
-    }
-  }
+  	  } else {
+		    $article = 1;
+      }
+      break; 
+     }
+   }
  if(isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
 
 // Try to find last article number in local_groupfile
