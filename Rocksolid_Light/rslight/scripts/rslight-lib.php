@@ -431,9 +431,6 @@ function process_post($message, $group) {
       $response="441 Posting failed (group not found)\r\n";
     } else {
       if($response == "") {
-//        $post_group=explode(' ', str_replace(',', ' ', $newsgroups));
-        
-//        foreach($post_group as $onegroup) {
 // Check for duplicate msgid
            $duplicate=0;
        if(file_exists($spooldir."/".$group."-overview")) {   
@@ -449,12 +446,10 @@ function process_post($message, $group) {
 	   }
 	   fclose($group_overviewfp);
     }
-//      }
       if($duplicate == 0) {
-	insert_article($section,$group,$postfilename,$subject[1],$from[1],$article_date,$date_rep,$msgid,$references,$bytes,$lines,$xref,$body);	
-        $response="240 Article received OK\r\n";
+          $response = insert_article($section,$group,$postfilename,$subject[1],$from[1],$article_date,$date_rep,$msgid,$references,$bytes,$lines,$xref,$body);
       } else {
-	$response="441 Posting failed\r\n";
+          $response="441 Posting failed (duplicate)\r\n";
       }
      }
     }
@@ -1058,6 +1053,7 @@ function insert_article($section,$nntp_group,$filename,$subject_i,$from_i,$artic
 $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   global $enable_rslight,$spooldir,$CONFIG,$logdir,$lockdir,$logfile;
 
+ $return_val = "441 Posting failed\r\n";
  if($CONFIG['remote_server'] !== '') {
   $sn_lockfile = $lockdir . '/'.$section.'-spoolnews.lock';
   $sn_pid = file_get_contents($sn_lockfile);
@@ -1065,58 +1061,55 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
     file_put_contents($sn_lockfile, getmypid()); // create lockfile
   } else {
     file_put_contents($logfile, "\n".format_log_date()." ".$section." Queuing local post: ".$nntp_group, FILE_APPEND); 
-    return(1);
+    $return_val = "240 Article received OK (queued)\r\n";
+    return($return_val);
   }
  }
   $local_groupfile=$spooldir."/".$section."/local_groups.txt";
-  $path=$spooldir."/articles/";
-  $grouppath = $path.preg_replace('/\./', '/', $nntp_group);
-  if(!is_dir($grouppath)) {
-    mkdir($grouppath, 0755, true);
-  }
-  $nocem_check="@@NCM";
   $article_date=strtotime($date_i); 
-  $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  foreach($grouplist as $findgroup) {
-    $name = explode(':', $findgroup);
-    if (strcmp($name[0], $nntp_group) == 0) {
-      if (is_numeric($name[1]))
-        $local = $name[1];
-      else {
-	$ok_article = get_article_list($nntp_group);
-        sort($ok_article);
-        $local = $ok_article[key(array_slice($ok_article, -1, 1, true))];
-	if(!is_numeric($local))
-          $local = 0;
-	$local = $local + 1;
-      }
-      break;
-    }
+
+// Get list of article numbers to find what number is next
+  $ok_article = get_article_list($nntp_group);
+  sort($ok_article);
+  $local = $ok_article[key(array_slice($ok_article, -1, 1, true))];
+  if(!is_numeric($local)) {
+      $local = 0;
   }
-  if($local < 1)
-    $local = 1;
+  $local = $local + 1;
+  if($local < 1) {
+      $local = 1;
+  }
       if($article_date > time())
         $article_date = time();
       $in_file=fopen($filename, 'r');
-      while(is_file($grouppath."/".$local)) {
-        $local++;
+      $tmp_file=tempnam(sys_get_temp_dir(), 'rslmsg-');
+      
+      // Prepare some tradspool paths
+      if($CONFIG['article_database'] !== '1') {
+          $path=$spooldir."/articles/";
+          $grouppath = $path.preg_replace('/\./', '/', $nntp_group);
+          $tradspool_out_file=fopen($grouppath."/".$local, 'w+');
+          if(!is_dir($grouppath)) {
+              mkdir($grouppath, 0755, true);
+          }
       }
-      $out_file=fopen($grouppath."/".$local, 'w+');
+
       $header=1;
+      $tmp_file_handle = fopen($tmp_file, 'w');
       while($buf=fgets($in_file)) {
 	if((trim($buf) == "") && ($header == 1)) {
 	  $buf="Xref: ".$CONFIG['pathhost']." ".$nntp_group.":".$local;
-	  fputs($out_file, rtrim($buf, "\n\r").PHP_EOL);
+	  fputs($tmp_file_handle, rtrim($buf, "\n\r").PHP_EOL);
 	  $xref_i=$buf;
 	  $buf="";
 	  $header=0;
 	}
-	fputs($out_file, rtrim($buf, "\n\r").PHP_EOL);
+	fputs($tmp_file_handle, rtrim($buf, "\n\r").PHP_EOL);
       }
-      fputs($out_file, "\n.\n");
-      fclose($out_file);
+      fputs($tmp_file_handle, "\n.\n");
+      fclose($tmp_file_handle);
       fclose($in_file);
-      touch($grouppath."/".$local, $article_date);
+      touch($tmp_file, $article_date);
       file_put_contents($logfile, "\n".format_log_date()." ".$section." Inserting local post: ".$nntp_group.":".$local, FILE_APPEND);
 // Overview
       $overviewHandle = fopen($spooldir."/".$nntp_group."-overview", 'a');
@@ -1126,6 +1119,7 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   $dbh = rslight_db_open($database, $table);
   if(!$dbh) {
     file_put_contents($logfile, "\n".format_log_date()." ".$section." Failed to connect to database: ".$database, FILE_APPEND);
+    $return_val = "441 Posting failed (overview db error)\r\n";
   } else {
     file_put_contents($logfile, "\n".format_log_date()." ".$section." Connected to database: ".$database, FILE_APPEND);
     $sql = 'INSERT INTO '.$table.'(newsgroup, number, msgid, date, name, subject) VALUES(?,?,?,?,?,?)';
@@ -1133,6 +1127,7 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
     $stmt->execute([$nntp_group, $local, $mid_i, $article_date, $from_i, $subject_i]);
     $dbh = null;
   }
+  
   if($CONFIG['article_database'] == '1') {
     foreach($body as $line) {
       if(trim($line) == "") {
@@ -1149,18 +1144,24 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
         $this_snippet = get_search_snippet($body);
     }
     $article_dbh = article_db_open($spooldir.'/'.$nntp_group.'-articles.db3');
-    $article_sql = 'INSERT INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
-    $article_stmt = $article_dbh->prepare($article_sql);
-    $this_article = file_get_contents($grouppath."/".$local);
-    $article_stmt->execute([$nntp_group, $local, $mid_i, $article_date, $from_i, $subject_i, trim($this_article), $this_snippet]);
-    unlink($grouppath."/".$local);
-    $article_dbh = null;
+    if(!$article_dbh) {
+        $return_val = "441 Posting failed (articles db error)\r\n";
+    } else {
+        $article_sql = 'INSERT INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
+        $article_stmt = $article_dbh->prepare($article_sql);
+        $this_article = file_get_contents($tmp_file);
+        $article_stmt->execute([$nntp_group, $local, $mid_i, $article_date, $from_i, $subject_i, trim($this_article), $this_snippet]);
+        unlink($tmp_file);
+        $article_dbh = null;
+    }
+  } else {
+      rename($tmp_file, $tradspool_out_file);
   }
       fputs($overviewHandle, $local."\t".$subject_i."\t".$from_i."\t".$date_i."\t".$mid_i."\t".$references_i."\t".$bytes_i."\t".$lines_i."\t".$xref_i."\n");
       fclose($overviewHandle);
       $references="";
 // End Overview
-  reset($grouplist);
+  $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
   $saveconfig = fopen($local_groupfile, 'w+');
   $local++;
   foreach($grouplist as $savegroup) {
@@ -1173,6 +1174,9 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   }
   fclose($saveconfig);
   unlink($sn_lockfile);
+  $return_val = "240 Article received OK (posted)\r\n";
+  file_put_contents($logfile, "\n".format_log_date()." ".$nntp_group.":".--$local." ".$return_val, FILE_APPEND);
+  return($return_val);
 }
 
 function find_article_by_msgid($msgid) {
