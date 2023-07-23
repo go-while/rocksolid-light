@@ -23,7 +23,9 @@
 include "config.inc.php";
 include ("$file_newsportal");
 
-$remote_groupfile=$spooldir."/".$config_name."/".$CONFIG['remote_server'].":".$CONFIG['remote_port'].".txt";
+if ($CONFIG['remote_server'] != '') {
+    $remote_groupfile=$spooldir."/".$config_name."/".$CONFIG['remote_server'].":".$CONFIG['remote_port'].".txt";
+}
 $file_groups=$config_path."groups.txt";
 $local_groupfile=$spooldir."/".$config_name."/local_groups.txt";
 $logfile=$logdir.'/spoolnews.log';
@@ -69,7 +71,10 @@ if(filemtime($spooldir.'/'.$config_name.'-thread-timer')+600 < time()) {
   $timer=false;
 }
 # Check for groups file, create if necessary
-create_spool_groups($file_groups, $remote_groupfile);
+// only do remote server groups if necessary
+if ($CONFIG['remote_server'] != '') {
+    create_spool_groups($file_groups, $remote_groupfile);
+}
 create_spool_groups($file_groups, $local_groupfile);
 
 # Iterate through groups 
