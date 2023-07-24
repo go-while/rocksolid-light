@@ -2,7 +2,8 @@
 
   include "config.inc.php";
   include ("$file_newsportal");
-
+  include $config_dir."/gpg.conf";
+  
   if(!isset($CONFIG['enable_nocem']) || $CONFIG['enable_nocem'] != true) {
     exit;
   }
@@ -17,7 +18,7 @@
     exit;
   }
 
-  putenv("GNUPGHOME=".$config_dir.".gnupg");
+  putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
   $webserver_group=$CONFIG['webserver_user'];
   $logfile=$logdir.'/nocem.log';
   @mkdir($spooldir."/nocem/processed",0755,'recursive');
