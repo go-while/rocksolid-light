@@ -1,9 +1,9 @@
 <?php
 echo '<center>';
-$pubkeyfile = getcwd().'/../tmp/pubkey.txt';
-if(is_file($pubkeyfile) && (isset($CONFIG['site_shortname']) && $CONFIG['site_shortname'] != '')) {
+$pubkeyfile = '../tmp/server_pubkey.key';
+if(is_file($pubkeyfile)) {
     echo '<font size="1.5em">';
-    echo '<a href="/tmp/pubkey.txt" target=_blank>'.$CONFIG['site_shortname'].'</a>';
+    echo '<a href="../tmp/server_pubkey.key" target=_blank>server_pubkey.key</a>';
     echo '<br />';
     echo '</font>';
 }

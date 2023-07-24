@@ -3,6 +3,7 @@
   include "config.inc.php";
   include "newsportal.php";
   include $config_dir."/scripts/rslight-lib.php";
+  include $config_dir."/gpg.conf";
 
   $menulist = file($config_dir."menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
@@ -55,7 +56,15 @@
   touch($overview);
   @chown($overview, $uinfo["uid"]);
   @chgrp($overview, $uinfo["gid"]);
-
+  
+  if($rslight_gpg['enable'] == '1') {
+    $gnupg = $rslight_gpg['gnupghome'];
+    if(!is_dir($gnupg)) {
+      mkdir($gnupg, 0700);
+      chown($gnupg, $uinfo["uid"]);
+      chgrp($gnupg, $uinfo["gid"]);
+    }
+  }
 /* Change to non root user */
   change_identity($uinfo["uid"],$uinfo["gid"]);
 /* Everything below runs as $CONFIG['webserver_user'] */
@@ -66,6 +75,14 @@
 if(isset($CONFIG['enable_nocem']) && $CONFIG['enable_nocem'] == true) {
   @mkdir($spooldir."nocem",0755,'recursive');
   exec($CONFIG['php_exec']." ".$config_dir."/scripts/nocem.php");
+}
+// Set up server gpg keys
+if($rslight_gpg['enable'] == '1') {
+  if(!is_file($webtmp.'/server_pubkey.key')) {
+    $domain = 'rslight@'.$rslight_gpg['domain_name'];
+    $interBBS_mail = $config_dir.'/scripts/create_gpg_keys.sh "'.$gnupg.'" "'.$webtmp.'/server_pubkey.key" '.$domain;
+    exec($interBBS_mail);
+  }
 }
 
 reset($menulist);
