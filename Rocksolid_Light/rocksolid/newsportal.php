@@ -1668,6 +1668,15 @@ function write_access_log() {
   file_put_contents($accessfile, "\n".format_log_date()." ".$currentPageUrl, FILE_APPEND);
 }
 
+function verify_gpg_signature($res, $signed_text) {
+    $result = gnupg_verify($res,$signed_text,false);
+    if ((($result[0]['summary'] > 3)) || $result[0]['validity'] == 2){
+        return false;  // Bad signature
+    } else {
+        return true;  // Good signature
+    }
+}
+
 function get_db_data_from_msgid($msgid, $group) {
       global $spooldir;
       $database = $spooldir.'/'.$group.'-articles.db3';

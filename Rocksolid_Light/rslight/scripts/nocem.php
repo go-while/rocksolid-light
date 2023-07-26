@@ -19,6 +19,8 @@
   }
 
   putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
+  $res = gnupg_init();
+  
   $webserver_group=$CONFIG['webserver_user'];
   $logfile=$logdir.'/nocem.log';
   @mkdir($spooldir."/nocem/processed",0755,'recursive');
@@ -35,14 +37,14 @@
       continue;
     }
     $signed_text=file_get_contents($nocem_file);
-    if(verify_signature($signed_text) == 1) {
-      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Bad signature  in: ".$message, FILE_APPEND);
-      echo "Bad signature in: ".$message."\r\n";
-      rename($nocem_file, $nocem_path."failed/".$message);
-      continue; 
+    if(verify_gpg_signature($res, $signed_text) == 1) {
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Good signature in: ".$message, FILE_APPEND);
+        echo "Good signature in: ".$message."\r\n";
     } else {
-      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Good signature in: ".$message, FILE_APPEND);
-      echo "Good signature in: ".$message."\r\n";
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Bad signature in: ".$message, FILE_APPEND);
+        echo "Bad signature in: ".$message."\r\n";
+        rename($nocem_file, $nocem_path."failed/".$message);
+        continue;
     }
     $nocem_list=file($nocem_file, FILE_IGNORE_NEW_LINES);
     $start=0;
@@ -66,18 +68,6 @@
   }
   unlink($lockfile);
   exit;
-
-function verify_signature($signed_text) {
-  $plaintext = "";
-  $res = gnupg_init();
-  $info = gnupg_verify($res,$signed_text,false,$plaintext);
-
-  if($info[0]['status'] == 0 && $info[0]['summary'] == 0) {
-    return 0;
-  } else {
-    return 1;
-  }
-}
 
 function delete_message($messageid, $group) {
   global $logfile,$config_dir,$spooldir, $CONFIG, $webserver_group;
