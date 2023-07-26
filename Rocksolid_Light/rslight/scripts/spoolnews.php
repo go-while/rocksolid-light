@@ -22,6 +22,7 @@
 
 include "config.inc.php";
 include ("$file_newsportal");
+include $config_dir.'/gpg.conf';
 
 if ($CONFIG['remote_server'] != '') {
     $remote_groupfile=$spooldir."/".$config_name."/".$CONFIG['remote_server'].":".$CONFIG['remote_port'].".txt";
@@ -136,7 +137,7 @@ unlink($lockfile);
 echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group) {
-  global $enable_rslight, $spooldir, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
+  global $enable_rslight, $rslight_gpg, $spooldir, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
 
   if($ns == false) {
     file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Lost connection to ".$CONFIG['remote_server'].":".$CONFIG['remote_port'], FILE_APPEND);
@@ -148,6 +149,7 @@ function get_articles($ns, $group) {
 
  
   $nocem_check="@@NCM";
+  $bbbsmail_check="@@RSL";
 
   # Check if group exists. Open it if it does
   fputs($ns, "group ".$group."\r\n");
@@ -172,20 +174,18 @@ function get_articles($ns, $group) {
    }
  if(isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
 
-// Try to find last article number in local_groupfile
-  $local = get_high_watermark($group);
-  if(!is_numeric($local)) {
-    $ok_article = get_article_list($group);
-    sort($ok_article);
-    $local = $ok_article[key(array_slice($ok_article, -1, 1, true))];
-    if(!is_numeric($local)) {
-      $local = 0;
-    }
-    $local = $local + 1;
-  }
-  if($local < 1)
-    $local = 1;
- } 
+     // Get list of article numbers to find what number is next
+     $ok_article = get_article_list($group);
+     sort($ok_article);
+     $local = $ok_article[key(array_slice($ok_article, -1, 1, true))];
+     if(!is_numeric($local)) {
+         $local = 0;
+     }
+     $local = $local + 1;
+     if($local < 1) {
+         $local = 1;
+     }
+ }
   # Split group response line to get last article number
   $detail = explode(" ", $response);
   if (!isset($article)) {
@@ -262,11 +262,6 @@ function get_articles($ns, $group) {
         file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Unexpected response to ARTICLE command: ".$response, FILE_APPEND);
 	$article++;
 	continue;
-      }
-      if(isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true){
-        while(is_file($grouppath."/".$local)) {
-          $local++;
-        }
       }
       $articleHandle = $grouppath."/".$local;
       $response = line_read($ns);
@@ -363,6 +358,12 @@ function get_articles($ns, $group) {
 	  $nocem_file = tempnam($spooldir."/nocem", "nocem-".$group."-");
 	  copy($grouppath."/".$local, $nocem_file);
         }
+      }
+      if((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
+          if(strpos($subject[1], $bbsmail_check) !== false) {
+              $bbsmail_file = tempnam($spooldir."/bbsmail", "bbsmail-".$group."-");
+              copy($grouppath."/".$local, $bbsmail_file);
+          }
       }
 // Overview
       $overviewHandle = fopen($workpath.$group."-overview", 'a');
@@ -462,40 +463,19 @@ function create_spool_groups($in_groups, $out_groups) {
   return;
 }
 
-function get_high_watermark($group) {
-  global $local_groupfile;
-   
-  if ($configFileHandle = @fopen($local_groupfile, 'r'))
-  {
-    while (!feof($configFileHandle))
-    {
-      $buffer = fgets($configFileHandle);
-      if(strpos($buffer, $group.':') !== FALSE) {
-        $dataline=$buffer;
-        fclose($configFileHandle);
-        $datafound = explode(':',$dataline);
-        return trim($datafound[1]);
-      }
-    }
-    fclose($configFileHandle);
-    return FALSE;
-  } else {
-    return FALSE;
-  }
-}
-
 function get_article_list($thisgroup) {
-        global $spooldir;
-        $group_overview_file = $spooldir."/".$thisgroup."-overview";
-        $ok_article=array();
-        $getline = file($group_overview_file);
-        foreach($getline as $line) {
-          $art=explode("\t", $line);
-          if(is_numeric($art[0])) {
-            $ok_article[] = $art[0];
-          }
-        }
-        return($ok_article);
+    global $spooldir;
+    $database = $spooldir."/articles-overview.db3";
+    $table = 'overview';
+    $dbh = rslight_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
+    $stmt->execute(['thisgroup' => $thisgroup]);
+    $ok_article=array();
+    while($found = $stmt->fetch()) {
+        $ok_article[] = $found['number'];
+    }
+    $dbh = null;
+    return(array_unique($ok_article));
 }
 
 ?>
