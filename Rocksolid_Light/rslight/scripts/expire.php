@@ -23,45 +23,56 @@
   foreach($grouplist as $groupline) {
     $expireme = 0;
     if($CONFIG['expire_days'] > 0) {
-	$expireme=time() - ($CONFIG['expire_days'] * 86400);
+    	$expireme=time() - ($CONFIG['expire_days'] * 86400);
     }
     $groupname=explode(' ', $groupline);
     $group=$groupname[0];
     if(($days = get_config_value('expire.conf', $group)) !== false) {
-      if($days > 0) {
-	$expireme = time() - ($days * 86400);
+      if(is_numeric($days)) {
+          if($days == 0) {
+              continue;
+          } else {
+	          $expireme = time() - ($days * 86400);
+          }
       }
     }
     if($expireme < 1) {
-	continue;
+	   continue;
     }
-  $database = $spooldir.'/articles-overview.db3';
-  $dbh = rslight_db_open($database);
-  $query = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
-  $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
-  $dbh = null;
-  if($CONFIG['article_database'] == '1') {
-    $database = $spooldir.'/'.$group.'-articles.db3';
-    if(is_file($database)) {
-      $articles_dbh = article_db_open($database);
-      $articles_query = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND date<:expireme');
-      $articles_query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
-      $articles_dbh = null;
-    }
-  }
-    $grouppath = preg_replace('/\./', '/', $group); 
+    $showme = date('d M, Y', $expireme);
 
+echo "Expire $group articles before $showme\n";
+
+echo "Expiring overview database...\n";
+     $database = $spooldir.'/articles-overview.db3';
+     $dbh = rslight_db_open($database);
+     $query = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+     $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
+     $dbh = null;
+
+    if($CONFIG['article_database'] == '1') {
+echo "Expiring article database...\n";
+      $database = $spooldir.'/'.$group.'-articles.db3';
+      if(is_file($database)) {
+         $articles_dbh = article_db_open($database);
+         $articles_query = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND date<:expireme');
+         $articles_query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
+         $articles_dbh = null;
+      }
+    }
+    
+echo "Expiring group overview file...\n";
+    $grouppath = preg_replace('/\./', '/', $group);
     $this_overview=$spooldir.'/'.$group.'-overview';
     $out_overview=$this_overview.'.new';
-
     $overviewfp=fopen($this_overview, 'r');
     $out_overviewfp=fopen($out_overview, 'w');
-
     while($line=fgets($overviewfp)) {
       $break=explode("\t", $line);
       if(strtotime($break[3]) < $expireme) {
         echo "Expiring: ".$break[4]." IN: ".$group." #".$break[0]."\r\n";
         file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Expiring: ".$break[4]." IN: ".$group." #".$break[0], FILE_APPEND);
+      // Remove article from tradspool:  
         unlink($spooldir.'/articles/'.$grouppath.'/'.$break[0]);
 		thread_cache_removearticle($group,$break[4]);
         continue;
