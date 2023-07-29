@@ -199,9 +199,9 @@ function send_keys_to_group($res, $rslight_gpg) {
     global $spooldir, $config_name, $mail_update_time, $CONFIG, $rslight_version;
     
     $cwd = getcwd();
-    $webtmp = preg_replace('/spoolnews/','tmp/',$cwd);
-    $key_location = "/tmp/server_pubkey.txt";
-    $signing_key = trim(file_get_contents($webtmp.'/server_fingerprint.txt'));
+    $keydir = preg_replace('/spoolnews/','pubkey/',$cwd);
+    $key_location = "/pubkey/server_pubkey.txt";
+    $signing_key = trim(file_get_contents($keydir.'/server_fingerprint.txt'));
     $fingerprint_clean = preg_replace('/\ /', '', $signing_key);
     gnupg_addsignkey($res,$fingerprint_clean)."\n";
     

@@ -41,10 +41,14 @@
   $uinfo=posix_getpwnam($CONFIG['webserver_user']);
   $cwd = getcwd();
   $webtmp = preg_replace('/spoolnews/','tmp/',$cwd);
-
+  $keydir = preg_replace('/spoolnews/','pubkey/',$cwd);
+  
   @mkdir($webtmp,0755,'recursive');
   @chown($webtmp, $uinfo["uid"]);
   @chgrp($webtmp, $uinfo["gid"]);
+  @mkdir($keydir,0755,'recursive');
+  @chown($keydir, $uinfo["uid"]);
+  @chgrp($keydir, $uinfo["gid"]);
   @mkdir($ssldir,0755);
   @chown($ssldir, $uinfo["uid"]);
   @chgrp($ssldir, $uinfo["gid"]);
@@ -78,10 +82,10 @@ if(isset($CONFIG['enable_nocem']) && $CONFIG['enable_nocem'] == true) {
 }
 // Set up server gpg keys
 if($rslight_gpg['enable'] == '1') {
-  if(!is_file($webtmp.'/server_pubkey.txt')) {
+  if(!is_file($keydir.'/server_pubkey.txt')) {
     $domain = 'rslight@'.$rslight_gpg['domain_name'];
-    $pubkey = $webtmp.'/server_pubkey.txt';
-    $fingerprint = $webtmp.'/server_fingerprint.txt';
+    $pubkey = $keydir.'/server_pubkey.txt';
+    $fingerprint = $keydir.'/server_fingerprint.txt';
     $create_gpg_keys = $config_dir.'/scripts/create_gpg_keys.sh "'.$gnupg.'" "'.$pubkey.'" "'.$fingerprint.'" "'.$domain.'"';
     exec($create_gpg_keys);
   }
