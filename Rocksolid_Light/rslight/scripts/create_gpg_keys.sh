@@ -7,6 +7,6 @@ domain="$4"
 
 export GNUPGHOME=$gnupghome
 
-gpg --batch --passphrase '' --quick-gen-key $domain rsa4096 default 0
+gpg --batch --passphrase '' --quick-gen-key $domain default default 0
 gpg --export -a $domain > $server_pub_key
 gpg --fingerprint $domain | sed '2!d' > $fingerprint

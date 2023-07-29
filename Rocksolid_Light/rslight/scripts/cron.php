@@ -78,11 +78,14 @@ if(isset($CONFIG['enable_nocem']) && $CONFIG['enable_nocem'] == true) {
 }
 // Set up server gpg keys
 if($rslight_gpg['enable'] == '1') {
-  if(!is_file($webtmp.'/server_pubkey.key')) {
+  if(!is_file($webtmp.'/server_pubkey.txt')) {
     $domain = 'rslight@'.$rslight_gpg['domain_name'];
-    $interBBS_mail = $config_dir.'/scripts/create_gpg_keys.sh "'.$gnupg.'" "'.$webtmp.'/server_pubkey.key" '.$domain;
-    exec($interBBS_mail);
+    $pubkey = $webtmp.'/server_pubkey.txt';
+    $fingerprint = $webtmp.'/server_fingerprint.txt';
+    $create_gpg_keys = $config_dir.'/scripts/create_gpg_keys.sh "'.$gnupg.'" "'.$pubkey.'" "'.$fingerprint.'" "'.$domain.'"';
+    exec($create_gpg_keys);
   }
+  exec($CONFIG['php_exec']." ".$config_dir."/scripts/interBBS_mail.php");
 }
 
 reset($menulist);

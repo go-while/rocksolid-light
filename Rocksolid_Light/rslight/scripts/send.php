@@ -24,7 +24,10 @@ set_time_limit(900);
 
 include "config.inc.php";
 include ("$file_newsportal");
- 
+
+if ($CONFIG['remote_server'] == '') {
+    exit();
+}
 $logfile=$logdir.'/spoolnews.log';
 
 @mkdir($spooldir."/".$config_name,0755,'recursive');

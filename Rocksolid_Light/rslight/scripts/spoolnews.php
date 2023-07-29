@@ -106,6 +106,7 @@ $enable_rslight=0;
   }
 if ($CONFIG['remote_server'] != '')
 {
+  file_put_contents($logfile, "\n".format_log_date()." ".$config_name." remote_server: ".$CONFIG['remote_server'], FILE_APPEND);
   $ns=nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
   $ns2=nntp_open();
   if(!$ns) {
@@ -198,10 +199,12 @@ function get_articles($ns, $group) {
     $article = $detail[2];
   }
 // Broken message on last run? Let's try again. 
+/*
   if($article > ($detail[3])) {
     $article = $detail[3];
   }
-  # Prepare databases
+*/
+# Prepare databases
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';
   $dbh = rslight_db_open($database, $table);
@@ -361,8 +364,9 @@ function get_articles($ns, $group) {
       }
       if((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
           if(strpos($subject[1], $bbsmail_check) !== false) {
-              $bbsmail_file = tempnam($spooldir."/bbsmail", "bbsmail-".$group."-");
-              copy($grouppath."/".$local, $bbsmail_file);
+              $bbsmail_file = preg_replace('/@@RSL /', '', $subject[1]);
+              $bbsmail_filename = $spooldir."/bbsmail/in/bbsmail-".$bbsmail_file;
+              copy($grouppath."/".$local, $bbsmail_filename);
           }
       }
 // Overview
