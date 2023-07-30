@@ -42,8 +42,10 @@
     $showme = date('d M, Y', $expireme);
 
 echo "Expire $group articles before $showme\n";
+file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring: articles before ".$showme, FILE_APPEND);
 
 echo "Expiring overview database...\n";
+file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring overview database...", FILE_APPEND);
      $database = $spooldir.'/articles-overview.db3';
      $dbh = rslight_db_open($database);
      $query = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
@@ -52,6 +54,7 @@ echo "Expiring overview database...\n";
 
     if($CONFIG['article_database'] == '1') {
 echo "Expiring article database...\n";
+file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring article database...", FILE_APPEND);
       $database = $spooldir.'/'.$group.'-articles.db3';
       if(is_file($database)) {
          $articles_dbh = article_db_open($database);
@@ -62,6 +65,7 @@ echo "Expiring article database...\n";
     }
     
 echo "Expiring group overview file...\n";
+file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring group overview file...", FILE_APPEND);
     $grouppath = preg_replace('/\./', '/', $group);
     $this_overview=$spooldir.'/'.$group.'-overview';
     $out_overview=$this_overview.'.new';
@@ -71,7 +75,7 @@ echo "Expiring group overview file...\n";
       $break=explode("\t", $line);
       if(strtotime($break[3]) < $expireme) {
         echo "Expiring: ".$break[4]." IN: ".$group." #".$break[0]."\r\n";
-        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Expiring: ".$break[4]." IN: ".$group." #".$break[0], FILE_APPEND);
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring: ".$break[4], FILE_APPEND);
       // Remove article from tradspool:  
         unlink($spooldir.'/articles/'.$grouppath.'/'.$break[0]);
 		thread_cache_removearticle($group,$break[4]);

@@ -28,6 +28,29 @@ if(!is_dir($bbsmail_path.'out')) {
 putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
 $res = gnupg_init();
 
+$gnupg_summary = array(
+    "1" => "The signature is fully valid",
+    "2" => "The signature is good",
+    "4" => "The signature is bad",
+    "16" => "One key has been revoked",
+    "32" => "One key has expired",
+    "64" => "The signature has expired",
+    "128" => "Can't verify: key missing",
+    "256" => "CRL not available",
+    "512" => "Available CRL is too old",
+    "1024" => "A policy was not met",
+    "2048" => "A system error occured"
+);
+
+$gnupg_validity = array(
+    "0" => "Validity: UNKNOWN",
+    "1" => "Validity: UNDEFINED",
+    "2" => "Validity: NEVER",
+    "3" => "Validity: MARGINAL",
+    "4" => "Validity: FULL",
+    "5" => "Validity: ULTIMATE"
+);
+
 /***** Send mail *****/
 // $messages=scandir($bbsmail_path.'/out/');
 
@@ -53,22 +76,30 @@ $res = gnupg_init();
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' Key not found in keyring for: '.$inspect['mailkey_domain'], FILE_APPEND);
              }
          } else {
-             echo 'BAD signature in: "'.$filename.'"'."\n";
-             file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'"', FILE_APPEND);
+             echo 'BAD or UNKNOWN signature in: "'.$filename.'"'."\n";
+             file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD or UNKNOWN signature in: "'.$filename.'"', FILE_APPEND);
          }
      }
      if($inspect['type'] == 'bbsmail') {
          $info = gnupg_decryptverify($res,$inspect['body'],$plaintext);
          echo "\n".$plaintext."\n";
          if($info !== false) {
-             echo 'GOOD signature in: "'.$filename.'"'."\n";
-             file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' GOOD signature in: "'.$filename.'"', FILE_APPEND);
+             if($info[0]['summary'] > 3) {
+                 echo $gnupg_summary[$info[0]['summary']]." in: ".$filename."\n";
+                 file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$gnupg_summary[$info[0]['summary']]." in: ".$filename, FILE_APPEND);
+             } else {
+                 echo 'GOOD signature in: "'.$filename.'"'."\n";
+                 file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' GOOD signature in: "'.$filename.'"', FILE_APPEND);
+             }
          } else {
              $error = gnupg_geterror($res);
              echo 'BAD signature in: "'.$filename.'"'."\n";
              echo $error."\n";
              file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'" '.$error, FILE_APPEND);
          }
+
+           //  echo "SUMMARY: ".$gnupg_summary[$info[0]['summary']]."\n";
+
      }
  }
  

@@ -1670,6 +1670,9 @@ function write_access_log() {
 
 function verify_gpg_signature($res, $signed_text) {
     $result = gnupg_verify($res,$signed_text,false);
+    if ($result == false) {
+        return false;
+    }
     if ((($result[0]['summary'] > 3)) || $result[0]['validity'] == 2){
         return false;  // Bad signature
     } else {
