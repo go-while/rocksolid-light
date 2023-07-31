@@ -61,10 +61,10 @@ $gnupg_validity = array(
  foreach($messages as $message) {
      $filename = explode($bbsmail_path.'/in/', $message);
      $filename = $filename[0];
+   // Put message data into array $inspect[]
      if(($inspect = inspect_message($bbsmail_path.'/in/'.$message, $filename)) == false) {
          continue;
      }
-     echo $message."\n";
      if($inspect['type'] == 'mailkey') {
          if(($info = verify_gpg_signature($res, $inspect['body'])) == true) {
              echo 'GOOD signature in: "'.$filename.'"'."\n";
@@ -78,15 +78,19 @@ $gnupg_validity = array(
          } else {
              echo 'BAD or UNKNOWN signature in: "'.$filename.'"'."\n";
              file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD or UNKNOWN signature in: "'.$filename.'"', FILE_APPEND);
+             get_key_from_message($res, $inspect);
          }
      }
      if($inspect['type'] == 'bbsmail') {
          $info = gnupg_decryptverify($res,$inspect['body'],$plaintext);
-         echo "\n".$plaintext."\n";
          if($info !== false) {
              if($info[0]['summary'] > 3) {
                  echo $gnupg_summary[$info[0]['summary']]." in: ".$filename."\n";
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$gnupg_summary[$info[0]['summary']]." in: ".$filename, FILE_APPEND);
+                 $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
+                 $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
+                 get_key_from_message($res, $inspect);
+                 
              } else {
                  echo 'GOOD signature in: "'.$filename.'"'."\n";
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' GOOD signature in: "'.$filename.'"', FILE_APPEND);
@@ -96,10 +100,10 @@ $gnupg_validity = array(
              echo 'BAD signature in: "'.$filename.'"'."\n";
              echo $error."\n";
              file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'" '.$error, FILE_APPEND);
+             $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
+             $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
+             get_key_from_message($res, $inspect);
          }
-
-           //  echo "SUMMARY: ".$gnupg_summary[$info[0]['summary']]."\n";
-
      }
  }
  
@@ -121,6 +125,77 @@ if($do_mail_update == true) {
     echo "Sending keys to ".$rslight_gpg['nntp_group']."\n";
     send_keys_to_group($res, $rslight_gpg);
     touch($spooldir.'/bbs-mail-update-timer');
+}
+
+function send_admin_message($admin, $from, $subject, $message) {
+    global $config_dir, $spooldir;
+    if(($to = get_config_value('aliases.conf', strtolower($admin))) == false) {
+        $to = strtolower($admin);
+    }
+    $to = trim($to);
+    $from = $to;
+    $database = $spooldir.'/mail.db3';
+    $dbh = mail_db_open($database);
+    if(!$dbh) {
+        echo "Database error\n";
+        return false;
+    }
+    $date = time();
+    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
+    $sql = 'INSERT INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $stmt = $dbh->prepare($sql);
+    $target = "local";
+    $mail_viewed = "true";
+    $rcpt_viewed = null;
+    $q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, $mail_viewed, $rcpt_viewed]);
+                
+    $dbh = null;
+    return true;
+}
+
+function get_key_from_message($res, $inspect) {
+    global $logfile, $config_name;
+    // Let's try to get the key
+    echo "Let's try to get the key\n";
+    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Let's try to get the key", FILE_APPEND);
+    // Display stuff for testing
+    echo "Domain: ".$inspect['mailkey_domain']."\n";
+    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain: ".$inspect['mailkey_domain'], FILE_APPEND);
+    echo "Location: ".$inspect['mailkey_location']."\n";
+    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Location: ".$inspect['mailkey_location'], FILE_APPEND);
+    $location = "http://".$inspect['mailkey_location'];
+    $import = gnupg_import($res, file_get_contents($location));
+    if($import) {
+        echo "IMPORTED: ".$import['fingerprint']."\n";
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." IMPORTED: ".$import['fingerprint'], FILE_APPEND);
+        
+        // Verify that domain in IMPORTED KEY matches exactly: "Location" and "Domain" in MAILKEY message
+        // If it DOES NOT, then DELETE the new key immediately
+        $keyinfo = gnupg_keyinfo($res, $import['fingerprint']);
+        $imported_domain = preg_replace('/rslight@/', '', $keyinfo[0]['uids'][0]['uid']);
+        $mailkey_location = explode('/', $inspect['mailkey_location']);
+        if(($imported_domain == $inspect['mailkey_domain']) && ($imported_domain == $mailkey_location[0])) {
+            echo "Domain Match: ".$imported_domain."\n";
+            file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain Match: ".$imported_domain, FILE_APPEND);
+            send_admin_message('admin', 'admin', 'New PGP Key added for: '.$imported_domain, 'Domain: '.$imported_domain."\nFingerprint: ".$import['fingerprint']."\n");
+            return true;
+        } else {
+            echo "Domain MIS-MATCH: ".$imported_domain." DELETING...\n";
+            file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain MIS-MATCH: ".$imported_domain." DELETING...", FILE_APPEND);
+            if(gnupg_deletekey($res, $import['fingerprint'])) {
+                echo "SUCCESS Deleting ".$import['fingerprint']."\n";
+                file_put_contents($logfile, "\n".format_log_date()." ".$config_name." SUCCESS Deleting ".$import['fingerprint'], FILE_APPEND);
+            } else {
+                echo "WARNING!: FAILED to Delete ".$import['fingerprint']."\n";
+                file_put_contents($logfile, "\n".format_log_date()." ".$config_name." WARNING!: FAILED to Delete ".$import['fingerprint'], FILE_APPEND);
+            }
+            return false;
+        }
+    } else {
+        echo "Failed to import key from ".$location."\n";
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Failed to import key from ".$location, FILE_APPEND);
+        return false;
+    }
 }
 
 function inspect_message($message, $filename) {
@@ -148,11 +223,12 @@ function inspect_message($message, $filename) {
     $mailkey_body = 0;
     
     foreach($raw_message as $line) {
-        if(trim($line) == '') {
+        if(trim($line) == '' && $is_header == 1) {
             $is_header = 0;
             continue;
         }
         if($is_header == 1) {
+            $return_data['header'].=$line;
             if(strpos($line, 'From: ') !== false) {
                 $from_line = explode("From: ", $line);
                 $from = trim($from_line[1]);
@@ -173,6 +249,7 @@ function inspect_message($message, $filename) {
             }
             $header[] = $line;
         } else {
+            $return_data['body'].=$line;
           if($return_data['type'] == 'mailkey') {
             if(strpos($line, '@@BEGIN MAILKEY HEADERS') !== false) {
                 $mailkey_header = 1;
@@ -216,13 +293,9 @@ function inspect_message($message, $filename) {
             if(trim($line) == '.') {
                 $line = ' ';
             }
-            $body[] = rtrim($line);
-          } else {
-              $body[] = rtrim($line);
           }
         }
     }
-    $return_data['body'] = implode("\n", $body);
     return($return_data);
 }
 
