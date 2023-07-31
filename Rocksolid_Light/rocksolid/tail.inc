@@ -1,9 +1,9 @@
 <?php
 echo '<center>';
-$pubkeyfile = '../tmp/server_pubkey.txt';
+$pubkeyfile = '../pubkey/server_pubkey.txt';
 if(is_file($pubkeyfile)) {
     echo '<font size="1.5em">';
-    echo '<a href="../tmp/server_pubkey.txt" target=_blank>server_pubkey.txt</a>';
+    echo '<a href="../pubkey/server_pubkey.txt" target=_blank>server_pubkey.txt</a>';
     echo '<br />';
     echo '</font>';
 }
