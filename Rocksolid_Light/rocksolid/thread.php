@@ -1,6 +1,8 @@
 <?php 
-//header("Expires: ".gmdate("D, d M Y H:i:s",time()+7200)." GMT");
 session_start();
+header("Expires: ".gmdate("D, d M Y H:i:s",time()+(600))." GMT");
+header("Cache-Control: max-age=100");
+header("Pragma: cache");
 
 $_SESSION['group'] = $_SERVER['REQUEST_URI'];
 $_SESSION['rsactive'] = true;
