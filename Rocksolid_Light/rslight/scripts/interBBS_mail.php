@@ -104,9 +104,11 @@ $gnupg_validity = array(
                      echo "THE DOMAINS MATCH. OK TO IMPORT MESSAGE\n";
                      echo $plaintext;
                      print_r($inspect);
-                     
+                                        
                      $mail_from = $inspect['bbsmail_sender'].'@'.$inspect['bbsmail_domain'];
-                     $rcpt_to = $inspect['bbsmail_recipient'];
+                     $info = preg_split('/@/', $inspect['bbsmail_recipient'], 2);
+                     $rcpt_to = $info[0];
+                     
                      $date = strtotime($inspect['bbsmail_date']);
                      
                      if(!isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_recipient']) || !isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_body'])) {
@@ -152,6 +154,7 @@ if($do_mail_update == true) {
 
 function import_user_message($from, $rcpt, $date, $subject, $message) {
     global $config_dir, $spooldir;
+    
     if(($to = get_config_value('aliases.conf', strtolower($rcpt))) == false) {
         $to = strtolower($rcpt);
     }
@@ -252,6 +255,7 @@ function get_key_from_message($res, $inspect) {
 function inspect_bbsmail($res, $plaintext) {
     $bbsmail_header = 0;
     $bbsmail_body = 0;
+    $message_body = 0;
     $plaintext = explode("\n", $plaintext);
     foreach($plaintext as $line) {
                 if(strpos($line, '@@BEGIN BBSMAIL HEADERS') !== false) {
@@ -293,6 +297,15 @@ function inspect_bbsmail($res, $plaintext) {
                     continue;
                 }
                 if($bbsmail_body == 1) {
+                    if(strpos($line, '@@END BBSMAIL BODY') !== false) {
+                        break;
+                    }
+
+                     if($message_body == 1) {
+                        $return_data['bbsmail_body'].=$line."\n";
+                        continue;
+                    }
+
                     if(strpos($line, 'Sender: ') !== false) {
                         $bbsmail = explode("Sender: ", $line);
                         $return_data['bbsmail_sender'] = trim($bbsmail[1]);
@@ -311,15 +324,13 @@ function inspect_bbsmail($res, $plaintext) {
                                 } else {
                                     if(strpos($line, 'Body: ') !== false) {
                                         $bbsmail = explode("Body: ", $line);
-                                        $return_data['bbsmail_body'] = trim($bbsmail[1]);
+                                        $return_data['bbsmail_body'] = $bbsmail[1]."\n";
+                                        $message_body = 1;
                                     }
                                 }
                             } 
                         }
                     }
-                }
-                if(strpos($line, '@@END BBSMAIL BODY') !== false) {
-                    continue;
                 }
                 if(trim($line) == '.') {
                     $line = ' ';
@@ -328,7 +339,6 @@ function inspect_bbsmail($res, $plaintext) {
                     if(!isset($return_data['body'])) {
                         $line = ltrim($line);
                     }
-               //     $return_data['body'].= $line;
                 }
             }
     return($return_data);

@@ -3,6 +3,7 @@ session_start();
 
 include "config.inc.php";
 include "newsportal.php";
+include $config_dir."/gpg.conf";
 
   if(isset($_COOKIE['tzo'])) {
     $offset=$_COOKIE['tzo'];
@@ -194,10 +195,13 @@ echo '</table>';
 	    $found = 0;
 	    foreach($userlist as $user) {
 	      if(trim($to) == trim($user)) {
-		$found = 1;
-		break;
+	       	$found = 1;
 	      }
 	    }
+// Handle unknown domains here also (no pgp key for domain)	    
+     if(strpos($to, '@') !== false) {
+	     $found = 1;
+	 }
 	 if($found == 0) {
 	    echo 'User not found: '.$to;
 	 } else { 
@@ -209,13 +213,16 @@ echo '</table>';
             $date = time();
 	    $message = $_POST['message'];
 	    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
-	    $sql = 'INSERT INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+	    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
 	    $stmt = $dbh->prepare($sql);
 // For possible future use
 	    $target = "local";
 	    $mail_viewed = "true";
 	    $rcpt_viewed = null;
 	    $q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, $mail_viewed, $rcpt_viewed]);
+	    
+	    send_external_mail($from, $to, $date, $subject, $message);
+	    
             if ($q) {
               echo 'Message sent.';
             }else
@@ -310,4 +317,88 @@ echo '</table>';
     }
     echo '</tbody></table><br />';
     include "tail.inc";
+    
+    function send_external_mail($sender, $recipient, $date, $subject, $message) {
+        global $rslight_gpg, $config_name, $spooldir, $rslight_version; 
+        putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
+        $res = gnupg_init();
+        
+        $cwd = getcwd();
+        $keydir = preg_replace('/spoolnews/','pubkey/',$cwd);
+        $key_location = "/pubkey/server_pubkey.txt";
+        $signing_key = trim(file_get_contents($keydir.'/server_fingerprint.txt'));
+        $fingerprint_clean = preg_replace('/\ /', '', $signing_key);
+        gnupg_addsignkey($res,$fingerprint_clean);
+        gnupg_adddecryptkey($res,$fingerprint_clean, '');
+        
+        // Get target domain
+        $info = preg_split('/@/', $recipient, 2);
+        $target['domain'] = $info[1];
+        $keyinfo = gnupg_keyinfo($res, $target['domain']);
+        $target['fingerprint'] = $keyinfo[0]['subkeys'][0]['fingerprint'];
+        $encrypt_to_key = $target['fingerprint'];
+        gnupg_addencryptkey($res,$encrypt_to_key);
+        
+        $mydate = gmdate("D, d M Y H:i:s \U\T\C",$date);
+        
+        $outgoing_dir = $spooldir.'/'.$config_name.'/outgoing';
+        if(!is_dir($outgoing_dir)) {
+            mkdir($outgoing_dir, 0700, true);
+        }
+        $domain = $rslight_gpg['domain_name'];
+        $organization = $CONFIG['organization'];
+        $from = $rslight_gpg['from_email'];
+        $contact = $rslight_gpg['contact'];
+        
+        $outgoing_file = tempnam($outgoing_dir, 'bbsmail-');
+        
+        $start="@@BEGIN BBSMAIL HEADERS";
+        $begin="@@BEGIN BBSMAIL BODY";
+        $end="@@END BBSMAIL BODY";
+        
+        $body='';
+        $body.="You may use this to import MAIL for $domain.\n\n";
+        
+        $body.="This message was signed using the following key:\n";
+        $body.="$signing_key\n\n";
+        
+        $body.="The GPG key needed to verify the signature of messages\n";
+        $body.="issued by $from is available at:\n";
+        $body.="$domain$key_location\n\n";
+        
+        $body.="For information contact $contact.\n\n";
+        
+        $body.=$start."\n";
+        $body.='    Version: '.$rslight_version."\n";
+        $body.='    From: '.$from."\n";
+        $hashtail = hash('crc32', $domain.$organization.$sender.$rslight_gpg['nntp_group']);
+        $thishash = hash('crc32', $message.$hashtail).hash('crc32', $signing_key);
+        $body.="    Notice-ID: ".$thishash."\n";
+        $body.="    Key: ".$signing_key."\n";
+        $body.="    Location: ".$domain.$key_location."\n";
+        $body.="    Domain: ".$domain."\n";
+        
+        $body.=$begin."\n";
+        $body.="    Sender: ".$sender."\n";
+        $body.="    Recipient: ".$recipient."\n";
+        $body.="    Date: ".$mydate."\n";
+        $body.="    Subject: ".$subject."\n";
+        $body.="    Body: ".$message."\n";
+        $body.=$end."\n";
+        
+        $header='';
+        $header.="From: $from\n";
+        $header.="Newsgroups: ".$rslight_gpg['nntp_group']."\n";
+        $header.="Subject: @@RSL BBSMAIL notice ".$thishash."\n";
+        $header.="Date: ".$mydate."\n";
+        $header.="Message-ID: <$thishash@$domain>\n";
+        $header.="Content-Type: text/plain; charset=utf-8; format=flowed\n";
+        $header.="Content-Transfer-Encoding: 8bit\n";
+        $header.="Organization: $organization\n\n";
+        
+        $encrypted_text = gnupg_encryptsign($res, $body);
+        
+        file_put_contents($outgoing_file, $header.$encrypted_text);
+        echo "Posted <".$thishash."@".$domain.">\n\n";
+    }
 ?>
