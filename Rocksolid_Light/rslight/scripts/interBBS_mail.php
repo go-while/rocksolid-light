@@ -94,6 +94,29 @@ $gnupg_validity = array(
              } else {
                  echo 'GOOD signature in: "'.$filename.'"'."\n";
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' GOOD signature in: "'.$filename.'"', FILE_APPEND);
+             // Now let's get and import the mail message
+             // Does the @from match the signature domain?
+                 $inspect = inspect_bbsmail($res, $plaintext);
+                 $keyinfo = gnupg_keyinfo($res, $info[0]['fingerprint']);
+                 $signature_domain = preg_replace('/rslight@/', '', $keyinfo[0]['uids'][0]['uid']);
+                 $bbsmail_domain = preg_replace('/rslight@/', '', $inspect['bbsmail_from']);
+                 if(($signature_domain == $bbsmail_domain) && ($signature_domain == $inspect['bbsmail_domain'])) { // Yes, the domains match
+                     echo "THE DOMAINS MATCH. OK TO IMPORT MESSAGE\n";
+                     echo $plaintext;
+                     print_r($inspect);
+                     
+                     $mail_from = $inspect['bbsmail_sender'].'@'.$inspect['bbsmail_domain'];
+                     $rcpt_to = $inspect['bbsmail_recipient'];
+                     $date = strtotime($inspect['bbsmail_date']);
+                     
+                     if(!isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_recipient']) || !isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_body'])) {
+                         echo "Incomplete Headers... Aborting Message Import\n";
+                     } else {                     
+                         import_user_message($mail_from, $rcpt_to, $date, $inspect['bbsmail_subject'], $inspect['bbsmail_body']);
+                     }
+                 } else {                                   // No, the domains DO NOT MATCH
+                     echo "DOMAIN MISMATCH\n"; 
+                 }
              }
          } else {
              $error = gnupg_geterror($res);
@@ -127,6 +150,33 @@ if($do_mail_update == true) {
     touch($spooldir.'/bbs-mail-update-timer');
 }
 
+function import_user_message($from, $rcpt, $date, $subject, $message) {
+    global $config_dir, $spooldir;
+    if(($to = get_config_value('aliases.conf', strtolower($rcpt))) == false) {
+        $to = strtolower($rcpt);
+    }
+    $to = trim($to);
+    if(strlen($subject) < 1) {
+        $subject = "(no subject)";
+    }
+    $database = $spooldir.'/mail.db3';
+    $dbh = mail_db_open($database);
+    if(!$dbh) {
+        echo "Database error\n";
+        return false;
+    }
+    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
+    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $stmt = $dbh->prepare($sql);
+    $target = "local";
+    $mail_viewed = null;
+    $rcpt_viewed = null;
+    $q = $stmt->execute([$msgid, $from, $to, $target, intval($date), $subject, $message, null, null, $mail_viewed, $rcpt_viewed]);
+    
+    $dbh = null;
+    return true;
+}
+
 function send_admin_message($admin, $from, $subject, $message) {
     global $config_dir, $spooldir;
     if(($to = get_config_value('aliases.conf', strtolower($admin))) == false) {
@@ -142,7 +192,7 @@ function send_admin_message($admin, $from, $subject, $message) {
     }
     $date = time();
     $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
-    $sql = 'INSERT INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $stmt = $dbh->prepare($sql);
     $target = "local";
     $mail_viewed = "true";
@@ -177,6 +227,7 @@ function get_key_from_message($res, $inspect) {
         if(($imported_domain == $inspect['mailkey_domain']) && ($imported_domain == $mailkey_location[0])) {
             echo "Domain Match: ".$imported_domain."\n";
             file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain Match: ".$imported_domain, FILE_APPEND);
+            file_put_contents($logfile, "\n".format_log_date()." ".$config_name." New PGP Key added for: ".$imported_domain." Domain: ".$imported_domain."\nFingerprint: ".$import['fingerprint'], FILE_APPEND);
             send_admin_message('admin', 'admin', 'New PGP Key added for: '.$imported_domain, 'Domain: '.$imported_domain."\nFingerprint: ".$import['fingerprint']."\n");
             return true;
         } else {
@@ -196,6 +247,91 @@ function get_key_from_message($res, $inspect) {
         file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Failed to import key from ".$location, FILE_APPEND);
         return false;
     }
+}
+
+function inspect_bbsmail($res, $plaintext) {
+    $bbsmail_header = 0;
+    $bbsmail_body = 0;
+    $plaintext = explode("\n", $plaintext);
+    foreach($plaintext as $line) {
+                if(strpos($line, '@@BEGIN BBSMAIL HEADERS') !== false) {
+                    $bbsmail_header = 1;
+                }
+                if($bbsmail_header == 1) {
+                    if(strpos($line, 'From: ') !== false) {
+                        $bbsmail = explode("From: ", $line);
+                        $return_data['bbsmail_from'] = trim($bbsmail[1]);
+                    } else {
+                        if(strpos($line, 'Version: ') !== false) {
+                            $bbsmail = explode("Version: ", $line);
+                            $return_data['bbsmail_version'] = trim($bbsmail[1]);
+                        } else {
+                            if(strpos($line, 'Notice-ID: ') !== false) {
+                                $bbsmail = explode("Notice-ID: ", $line);
+                                $return_data['bbsmail_notice-id'] = trim($bbsmail[1]);
+                            }
+                        }
+                    }
+                    if(strpos($line, 'Key: ') !== false) {
+                        $bbsmail = explode("Key: ", $line);
+                        $return_data['bbsmail_key'] = trim($bbsmail[1]);
+                    } else {
+                        if(strpos($line, 'Location: ') !== false) {
+                            $bbsmail = explode("Location: ", $line);
+                            $return_data['bbsmail_location'] = trim($bbsmail[1]);
+                        } else {
+                            if(strpos($line, 'Domain: ') !== false) {
+                                $bbsmail = explode("Domain: ", $line);
+                                $return_data['bbsmail_domain'] = trim($bbsmail[1]);
+                            }
+                        }
+                    }
+                }
+                if(strpos($line, '@@BEGIN BBSMAIL BODY') !== false) {
+                    $bbsmail_header = 0;
+                    $bbsmail_body = 1;
+                    continue;
+                }
+                if($bbsmail_body == 1) {
+                    if(strpos($line, 'Sender: ') !== false) {
+                        $bbsmail = explode("Sender: ", $line);
+                        $return_data['bbsmail_sender'] = trim($bbsmail[1]);
+                    } else {
+                        if(strpos($line, 'Recipient: ') !== false) {
+                            $bbsmail = explode("Recipient: ", $line);
+                            $return_data['bbsmail_recipient'] = trim($bbsmail[1]);
+                        } else {
+                            if(strpos($line, 'Date: ') !== false) {
+                                $bbsmail = explode("Date: ", $line);
+                                $return_data['bbsmail_date'] = trim($bbsmail[1]);
+                            } else {
+                                if(strpos($line, 'Subject: ') !== false) {
+                                    $bbsmail = explode("Subject: ", $line);
+                                    $return_data['bbsmail_subject'] = trim($bbsmail[1]);
+                                } else {
+                                    if(strpos($line, 'Body: ') !== false) {
+                                        $bbsmail = explode("Body: ", $line);
+                                        $return_data['bbsmail_body'] = trim($bbsmail[1]);
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                }
+                if(strpos($line, '@@END BBSMAIL BODY') !== false) {
+                    continue;
+                }
+                if(trim($line) == '.') {
+                    $line = ' ';
+                }
+                if($bbsmail_body == 1) {
+                    if(!isset($return_data['body'])) {
+                        $line = ltrim($line);
+                    }
+               //     $return_data['body'].= $line;
+                }
+            }
+    return($return_data);
 }
 
 function inspect_message($message, $filename) {
@@ -250,50 +386,50 @@ function inspect_message($message, $filename) {
             $header[] = $line;
         } else {
             $return_data['body'].=$line;
-          if($return_data['type'] == 'mailkey') {
-            if(strpos($line, '@@BEGIN MAILKEY HEADERS') !== false) {
-                $mailkey_header = 1;
-            }
-            if($mailkey_header == 1) {
-                if(strpos($line, 'From: ') !== false) {
-                    $mailkey = explode("From: ", $line);
-                    $return_data['mailkey_from'] = trim($mailkey[1]);
-                } else {
-                    if(strpos($line, 'Version: ') !== false) {
-                        $mailkey = explode("Version: ", $line);
-                        $return_data['mailkey_version'] = trim($mailkey[1]);
+            if($return_data['type'] == 'mailkey') {
+                if(strpos($line, '@@BEGIN MAILKEY HEADERS') !== false) {
+                    $mailkey_header = 1;
+                }
+                if($mailkey_header == 1) {
+                    if(strpos($line, 'From: ') !== false) {
+                        $mailkey = explode("From: ", $line);
+                        $return_data['mailkey_from'] = trim($mailkey[1]);
                     } else {
-                        if(strpos($line, 'Notice-ID: ') !== false) {
-                            $mailkey = explode("Notice-ID: ", $line);
-                            $return_data['mailkey_notice-id'] = trim($mailkey[1]);
+                        if(strpos($line, 'Version: ') !== false) {
+                            $mailkey = explode("Version: ", $line);
+                            $return_data['mailkey_version'] = trim($mailkey[1]);
+                        } else {
+                            if(strpos($line, 'Notice-ID: ') !== false) {
+                                $mailkey = explode("Notice-ID: ", $line);
+                                $return_data['mailkey_notice-id'] = trim($mailkey[1]);
+                            }
                         }
                     }
                 }
-            }
-            if(strpos($line, '@@BEGIN MAILKEY BODY') !== false) {
-                $mailkey_body = 1;
-                $mailkey_header = 0;
-            }
-            if($mailkey_body == 1) {
-                if(strpos($line, 'Key: ') !== false) {
-                    $mailkey = explode("Key: ", $line);
-                    $return_data['mailkey_key'] = trim($mailkey[1]);
-                } else {
-                    if(strpos($line, 'Location: ') !== false) {
-                        $mailkey = explode("Location: ", $line);
-                        $return_data['mailkey_location'] = trim($mailkey[1]);
+                if(strpos($line, '@@BEGIN MAILKEY BODY') !== false) {
+                    $mailkey_body = 1;
+                    $mailkey_header = 0;
+                }
+                if($mailkey_body == 1) {
+                    if(strpos($line, 'Key: ') !== false) {
+                        $mailkey = explode("Key: ", $line);
+                        $return_data['mailkey_key'] = trim($mailkey[1]);
                     } else {
-                        if(strpos($line, 'Domain: ') !== false) {
-                            $mailkey = explode("Domain: ", $line);
-                            $return_data['mailkey_domain'] = trim($mailkey[1]);
+                        if(strpos($line, 'Location: ') !== false) {
+                            $mailkey = explode("Location: ", $line);
+                            $return_data['mailkey_location'] = trim($mailkey[1]);
+                        } else {
+                            if(strpos($line, 'Domain: ') !== false) {
+                                $mailkey = explode("Domain: ", $line);
+                                $return_data['mailkey_domain'] = trim($mailkey[1]);
+                            }
                         }
                     }
                 }
+                if(trim($line) == '.') {
+                    $line = ' ';
+                }
             }
-            if(trim($line) == '.') {
-                $line = ' ';
-            }
-          }
         }
     }
     return($return_data);
