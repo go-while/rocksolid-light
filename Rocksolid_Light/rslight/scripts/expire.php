@@ -21,26 +21,25 @@
 
   $grouplist = file($config_dir.'/'.$config_name.'/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
   foreach($grouplist as $groupline) {
-    $expireme = 0;
-    if($CONFIG['expire_days'] > 0) {
-    	$expireme=time() - ($CONFIG['expire_days'] * 86400);
-    }
-    $groupname=explode(' ', $groupline);
-    $group=$groupname[0];
-    if(($days = get_config_value('expire.conf', $group)) !== false) {
-      if(is_numeric($days)) {
-          if($days == 0) {
-              continue;
-          } else {
-	          $expireme = time() - ($days * 86400);
-          }
+      $groupname=explode(' ', $groupline);
+      $group=$groupname[0];
+      if($group[0] == ':') {
+          continue;
       }
-    }
-    if($expireme < 1) {
-	   continue;
-    }
-    $showme = date('d M, Y', $expireme);
-
+      $expire_conf = $CONFIG['expire_days'];
+      $expire_user = get_config_value('expire.conf', $group);
+      
+      if($expire_user !== false) {
+          $expire = $expire_user;
+      } else {
+          $expire = $expire_conf;
+      }
+      if($expire < 1) {
+          continue;
+      }
+      $expireme = time() - ($expire * 86400);
+      $showme = date('d M, Y', $expireme);
+      
 echo "Expire $group articles before $showme\n";
 file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring: articles before ".$showme, FILE_APPEND);
 
