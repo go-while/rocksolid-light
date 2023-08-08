@@ -150,7 +150,7 @@ function get_articles($ns, $group) {
 
  
   $nocem_check="@@NCM";
-  $bbbsmail_check="@@RSL";
+  $bbsmail_check="@@RSL";
 
   # Check if group exists. Open it if it does
   fputs($ns, "group ".$group."\r\n");
