@@ -147,7 +147,9 @@ function thread_cache_removearticle($group,$id) {
       // now lets rebuild the tree...
       if(isset($value->answers))
         foreach ($value->answers as $key => $answer) {
-          $thread[$answer]->isAnswer=false;
+            if(isset($thread[$answer])) {
+              $thread[$answer]->isAnswer=false;
+            }
         }
       if(isset($value->references))
         foreach ($value->references as $reference) {
