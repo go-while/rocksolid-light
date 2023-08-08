@@ -20,9 +20,14 @@ $bbsmail_path=$spooldir."/bbsmail/";
 if(!is_dir($bbsmail_path.'in')) {
     mkdir($bbsmail_path.'in', 0700, true);
 }
-if(!is_dir($bbsmail_path.'out')) {
-    mkdir($bbsmail_path.'out', 0700, true);
+if(!is_dir($bbsmail_path.'failed')) {
+    mkdir($bbsmail_path.'failed', 0700, true);
 }
+if(!is_dir($bbsmail_path.'processed')) {
+    mkdir($bbsmail_path.'processed', 0700, true);
+}
+prune_dir_by_days($bbsmail_path.'failed', 30);
+prune_dir_by_days($bbsmail_path.'processed', 30);
 
 // Set up gnupg
 putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
@@ -51,10 +56,6 @@ $gnupg_validity = array(
     "5" => "Validity: ULTIMATE"
 );
 
-/***** Send mail *****/
-// $messages=scandir($bbsmail_path.'/out/');
-
-
 /***** Receive mail *****/
  unset($messages);
  $messages = array_diff(scandir($bbsmail_path.'/in/'), array('..', '.'));
@@ -72,6 +73,7 @@ $gnupg_validity = array(
          // Do we already have this key?
              if(gnupg_keyinfo($res, $inspect['mailkey_domain']) !== false) { // Yes, we do
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' Key already in keyring for: '.$inspect['mailkey_domain'], FILE_APPEND);
+                 rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'processed/'.$message);
              } else { // No, we don't
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' Key not found in keyring for: '.$inspect['mailkey_domain'], FILE_APPEND);
              }
@@ -90,7 +92,11 @@ $gnupg_validity = array(
                  $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
                  $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
                  get_key_from_message($res, $inspect);
-                 
+                 if(strpos($filename, '-retry') !== false) {
+                     rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
+                 } else {
+                     rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'/in/'.$message.'-retry');
+                 }
              } else {
                  echo 'GOOD signature in: "'.$filename.'"'."\n";
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' GOOD signature in: "'.$filename.'"', FILE_APPEND);
@@ -114,25 +120,34 @@ $gnupg_validity = array(
                      if(!isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_recipient']) || !isset($inspect['bbsmail_sender']) || !isset($inspect['bbsmail_body'])) {
                          echo "Incomplete Headers... Aborting Message Import\n";
                      } else {                     
-                         import_user_message($mail_from, $rcpt_to, $date, $inspect['bbsmail_subject'], $inspect['bbsmail_body']);
+                         if(import_user_message($mail_from, $rcpt_to, $date, $inspect['bbsmail_subject'], $inspect['bbsmail_body'])) {
+                             rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'processed/'.$message);
+                         }
                      }
                  } else {                                   // No, the domains DO NOT MATCH
                      echo "DOMAIN MISMATCH\n"; 
+                     file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' DOMAIN MISMATCH in: "'.$filename.'" '.$error, FILE_APPEND);
+                     rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
                  }
              }
          } else {
-             $error = gnupg_geterror($res);
+             $error = gnupg_geterrorinfo($res);
+             print_r($error);
              echo 'BAD signature in: "'.$filename.'"'."\n";
-             echo $error."\n";
-             file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'" '.$error, FILE_APPEND);
+             echo $error['generic_message'].': '.$error['gpgme_message']."\n";
+             file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'" '.$error['generic_message'].': '.$error['gpgme_message'], FILE_APPEND);
              $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
              $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
              get_key_from_message($res, $inspect);
+             if(strpos($filename, '-retry') !== false) {
+                 rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
+             } else {
+                 rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'/in/'.$message.'-retry');
+             }
          }
      }
  }
  
-
 /***** Send key to group *****/
 // How often to send key to group
 // in seconds (default 1 month)
@@ -446,13 +461,18 @@ function inspect_message($message, $filename) {
 }
 
 function send_keys_to_group($res, $rslight_gpg) {
-    global $spooldir, $config_name, $mail_update_time, $CONFIG, $rslight_version;
+    global $spooldir, $config_name, $logfile, $mail_update_time, $CONFIG, $rslight_version;
     
     $cwd = getcwd();
     $keydir = preg_replace('/spoolnews/','pubkey/',$cwd);
     $key_location = "/pubkey/server_pubkey.txt";
     $signing_key = trim(file_get_contents($keydir.'/server_fingerprint.txt'));
     $fingerprint_clean = preg_replace('/\ /', '', $signing_key);
+    if(gnupg_keyinfo($res, $fingerprint_clean) == false) { // We have no private key, abort.
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Private Key not Found", FILE_APPEND);
+        return false;
+    }
+
     gnupg_addsignkey($res,$fingerprint_clean)."\n";
     
     $start="@@BEGIN MAILKEY HEADERS";
@@ -478,9 +498,6 @@ function send_keys_to_group($res, $rslight_gpg) {
     $outgoing_file = tempnam($outgoing_dir, 'bbsmail-');
         
     $body='';
-    $body.="******************************************************\n";
-    $body.="THIS IS A TEST POST! DO NOT USE THIS FOR A REAL SITE!\n";
-    $body.="******************************************************\n\n";
     $body.="You may use this to import the public key for $domain.\n";
     $body.="This message is automatically generated by $from.\n\n";
     
@@ -517,6 +534,8 @@ function send_keys_to_group($res, $rslight_gpg) {
     
     $signed_body = gnupg_sign($res, $body);
     file_put_contents($outgoing_file, $header.$signed_body);
-    echo "Posted <".$thishash."@".$domain.">\n\n";   
+    echo "Posted <".$thishash."@".$domain.">\n\n"; 
+    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Mail Sent: <".$thishash."@".$domain.">", FILE_APPEND);
+    return true;
 }
 

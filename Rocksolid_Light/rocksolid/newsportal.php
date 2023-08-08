@@ -1720,4 +1720,20 @@ function get_data_from_msgid($msgid) {
         return false;
       }
 }
-?>
+
+function prune_dir_by_days($path, $days) {
+    if($filenames = array_diff(scandir($path), array('..', '.'))) {
+        foreach($filenames as $file) {
+            $filelastmodified = filemtime($path . $file);
+            if((time() - $filelastmodified) > $days*86400)
+            {
+                if(is_file($path . $file)) {
+                    unlink($path . $file);
+                }
+            }
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
