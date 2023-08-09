@@ -106,6 +106,9 @@ function nntp2_open($nserver=0,$nport=0) {
   if ($nserver==0) $nserver=$CONFIG['remote_server'];
   if ($nport==0) $nport=$CONFIG['remote_port'];
   if($CONFIG['remote_ssl']) {
+      if($nport == $CONFIG['remote_port']) {
+          $nport = $CONFIG['remote_ssl'];
+      }
       var_dump($ns = fsockopen("ssl://".$nserver, $nport,  $error, $errorString, 30));
       var_dump($errorString);
       var_dump($error);
@@ -1735,5 +1738,31 @@ function prune_dir_by_days($path, $days) {
     } else {
         return false;
     }
+    return true;
+}
+
+function send_admin_message($admin, $from, $subject, $message) {
+    global $config_dir, $spooldir;
+    if(($to = get_config_value('aliases.conf', strtolower($admin))) == false) {
+        $to = strtolower($admin);
+    }
+    $to = trim($to);
+    $from = $to;
+    $database = $spooldir.'/mail.db3';
+    $dbh = mail_db_open($database);
+    if(!$dbh) {
+        echo "Database error\n";
+        return false;
+    }
+    $date = time();
+    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
+    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $stmt = $dbh->prepare($sql);
+    $target = "local";
+    $mail_viewed = "true";
+    $rcpt_viewed = null;
+    $q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, false, false]);
+    
+    $dbh = null;
     return true;
 }

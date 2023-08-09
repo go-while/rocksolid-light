@@ -14,9 +14,10 @@ include $config_dir."/gpg.conf";
   if(!isset($_POST['command'])) {
       $_POST['command'] = null;
   }
-$keyfile = $spooldir.'/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
-
+  
+  $logfile = $logdir.'/mail.log';
+  $keyfile = $spooldir.'/keys.dat';
+  $keys = unserialize(file_get_contents($keyfile));
 
 // How long should cookie allow user to stay logged in?
 // 14400 = 4 hours
@@ -187,10 +188,10 @@ echo '</table>';
  
   }
         if (isset($_POST['sendMessage'])) {
-                if (isset($_POST['to']) && $_POST['to'] != '' && isset($_POST['from']) && $_POST['from'] != '' && isset($_POST['message']) && $_POST['message'] != '') {
-            if(($to = get_config_value('aliases.conf', strtolower($_POST['to']))) == false) {
-              $to = strtolower($_POST['to']);
-            }
+            if (isset($_POST['to']) && $_POST['to'] != '' && isset($_POST['from']) && $_POST['from'] != '' && isset($_POST['message']) && $_POST['message'] != '') {
+                if(($to = get_config_value('aliases.conf', strtolower($_POST['to']))) == false) {
+                    $to = strtolower($_POST['to']);
+                }
 	    $userlist = scandir($config_dir.'/users/');
 	    $found = 0;
 	    foreach($userlist as $user) {
@@ -198,16 +199,18 @@ echo '</table>';
 	       	$found = 1;
 	      }
 	    }
-// Handle unknown domains here also (no pgp key for domain)	    
+// Handle unknown domains here also (no pgp key for domain)	 
+	 $remote_target = 0;
      if(strpos($to, '@') !== false) {
 	     $found = 1;
+	     $remote_target = 1;
 	 }
 	 if($found == 0) {
 	    echo 'User not found: '.$to;
 	 } else { 
-            $database = $spooldir.'/mail.db3';
-            $dbh = mail_db_open($database);
-            $from = $_POST['from'];
+        $database = $spooldir.'/mail.db3';
+        $dbh = mail_db_open($database);
+        $from = $_POST['from'];
 	    $subject = $_POST['subject'];
 	    $message = $_POST['message'];
             $date = time();
@@ -215,20 +218,27 @@ echo '</table>';
 	    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
 	    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
 	    $stmt = $dbh->prepare($sql);
-// For possible future use
+// For possible future use ($target is currently unused)
 	    $target = "local";
 	    $mail_viewed = "true";
 	    $rcpt_viewed = null;
-	    $q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, $mail_viewed, $rcpt_viewed]);
-	    
-	    send_external_mail($from, $to, $date, $subject, $message);
-	    
-            if ($q) {
-              echo 'Message sent.';
-            }else
-              echo 'Failed to send message.';
-            }
+// $remote_target is handled here
+	    if($q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, $mail_viewed, $rcpt_viewed])) {
+	        if($remote_target == 1) {
+	            $remote_result = send_external_mail($from, $to, $date, $subject, $message);
+	            if($remote_result == true) {
+	                $return_val = "Message sent.";
+	            } else {
+	                $return_val = "Failed to Send. No Key for Destination";
+	            }
+	        }
+	    } else {
+	        $return_val = "Failed to Send. Database Error";
+	    }
+// Act on return values for response to user	    
+        echo $return_val;
 	    $dbh = null;
+	 }
 	  }
         }
   if(isset($_POST['command']) && $_POST['command'] == 'Send') {
@@ -323,6 +333,15 @@ echo '</table>';
         putenv("GNUPGHOME=".$rslight_gpg['gnupghome']);
         $res = gnupg_init();
         
+        // Get target domain (then get key if necessary)
+        $info = preg_split('/@/', $recipient, 2);
+        $target['domain'] = $info[1];
+        if(gnupg_keyinfo($res, $target['domain']) == false) { // We don't have the key
+            $retrieve = retrieve_key($res, $target['domain']);
+            if($retrieve == false) { // We can't get the key
+                return false;
+            }
+        }
         $cwd = getcwd();
         $keydir = preg_replace('/spoolnews/','pubkey/',$cwd);
         $key_location = "/pubkey/server_pubkey.txt";
@@ -331,9 +350,6 @@ echo '</table>';
         gnupg_addsignkey($res,$fingerprint_clean);
         gnupg_adddecryptkey($res,$fingerprint_clean, '');
         
-        // Get target domain
-        $info = preg_split('/@/', $recipient, 2);
-        $target['domain'] = $info[1];
         $keyinfo = gnupg_keyinfo($res, $target['domain']);
         $target['fingerprint'] = $keyinfo[0]['subkeys'][0]['fingerprint'];
         $encrypt_to_key = $target['fingerprint'];
@@ -399,6 +415,40 @@ echo '</table>';
         $encrypted_text = gnupg_encryptsign($res, $body);
         
         file_put_contents($outgoing_file, $header.$encrypted_text);
-        echo "Posted <".$thishash."@".$domain.">\n\n";
+        return true;
     }
-?>
+    
+    function retrieve_key($res, $domain) {
+        global $config_name, $logfile;
+        // Let's try to get the key
+        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." No KEY for posting. Trying to retrieve for ".$domain, FILE_APPEND);
+
+        $location = "http://".$domain.'/pubkey/server_pubkey.txt';
+        $import = gnupg_import($res, file_get_contents($location));
+        if(isset($import['fingerprint'])) {
+            file_put_contents($logfile, "\n".format_log_date()." ".$config_name." IMPORTED: ".$import['fingerprint'], FILE_APPEND);
+            
+            // Verify that domain in IMPORTED KEY matches exactly: "Location" and "Domain" in MAILKEY message
+            // If it DOES NOT, then DELETE the new key immediately
+            $keyinfo = gnupg_keyinfo($res, $import['fingerprint']);
+            $imported_domain = preg_replace('/rslight@/', '', $keyinfo[0]['uids'][0]['uid']);
+            if(($imported_domain == $domain)) {
+                file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain Match: ".$imported_domain, FILE_APPEND);
+                file_put_contents($logfile, "\n".format_log_date()." ".$config_name." New PGP Key added for: ".$imported_domain." Domain: ".$imported_domain." Fingerprint: ".$import['fingerprint'], FILE_APPEND);
+                send_admin_message('admin', 'admin', 'New PGP Key added for: '.$imported_domain, 'Domain: '.$imported_domain."\nFingerprint: ".$import['fingerprint']."\n");
+                return true;
+            } else {
+                file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Domain MIS-MATCH: ".$imported_domain." DELETING...", FILE_APPEND);
+                if(gnupg_deletekey($res, $import['fingerprint'])) {
+                    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." SUCCESS Deleting ".$import['fingerprint'], FILE_APPEND);
+                } else {
+                    file_put_contents($logfile, "\n".format_log_date()." ".$config_name." WARNING!: FAILED to Delete ".$import['fingerprint'], FILE_APPEND);
+                }
+                return false;
+            }
+        } else {
+            file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Failed to import key from ".$location, FILE_APPEND);
+            return false;
+        }
+        return false;
+    }

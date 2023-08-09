@@ -195,32 +195,6 @@ function import_user_message($from, $rcpt, $date, $subject, $message) {
     return true;
 }
 
-function send_admin_message($admin, $from, $subject, $message) {
-    global $config_dir, $spooldir;
-    if(($to = get_config_value('aliases.conf', strtolower($admin))) == false) {
-        $to = strtolower($admin);
-    }
-    $to = trim($to);
-    $from = $to;
-    $database = $spooldir.'/mail.db3';
-    $dbh = mail_db_open($database);
-    if(!$dbh) {
-        echo "Database error\n";
-        return false;
-    }
-    $date = time();
-    $msgid = '<'.md5(strtolower($to).strtolower($from).strtolower($subject).strtolower($message)).'>';
-    $sql = 'INSERT OR IGNORE INTO messages(msgid, mail_from, rcpt_to, rcpt_target, date, subject, message, from_hide, to_hide, mail_viewed, rcpt_viewed) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-    $stmt = $dbh->prepare($sql);
-    $target = "local";
-    $mail_viewed = "true";
-    $rcpt_viewed = null;
-    $q = $stmt->execute([$msgid, $from, $to, $target, $date, $subject, $message, null, null, $mail_viewed, $rcpt_viewed]);
-                
-    $dbh = null;
-    return true;
-}
-
 function get_key_from_message($res, $inspect) {
     global $logfile, $config_name;
     // Let's try to get the key
