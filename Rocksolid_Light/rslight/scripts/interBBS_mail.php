@@ -89,7 +89,10 @@ $gnupg_validity = array(
              if($info[0]['summary'] > 3) {
                  echo $gnupg_summary[$info[0]['summary']]." in: ".$filename."\n";
                  file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$gnupg_summary[$info[0]['summary']]." in: ".$filename, FILE_APPEND);
-                 $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
+              
+                 $inspect['mailkey_domain'] = preg_split('/@/', $inspect['from'], 2);
+                 $inspect['mailkey_domain'] = $inspect['mailkey_domain'][1];
+
                  $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
                  get_key_from_message($res, $inspect);
                  if(strpos($filename, '-retry') !== false) {
@@ -105,7 +108,9 @@ $gnupg_validity = array(
                  $inspect = inspect_bbsmail($res, $plaintext);
                  $keyinfo = gnupg_keyinfo($res, $info[0]['fingerprint']);
                  $signature_domain = preg_replace('/rslight@/', '', $keyinfo[0]['uids'][0]['uid']);
-                 $bbsmail_domain = preg_replace('/rslight@/', '', $inspect['bbsmail_from']);
+                 $info = preg_split('/\@/', $inspect['bbsmail_from'], 2);
+                 $bbsmail_domain = $info[1];
+                 
                  if(($signature_domain == $bbsmail_domain) && ($signature_domain == $inspect['bbsmail_domain'])) { // Yes, the domains match
                      echo "THE DOMAINS MATCH. OK TO IMPORT MESSAGE\n";
                      echo $plaintext;
@@ -126,6 +131,7 @@ $gnupg_validity = array(
                      }
                  } else {                                   // No, the domains DO NOT MATCH
                      echo "DOMAIN MISMATCH\n"; 
+                     file_put_contents($logfile, "\nComparing sig_dom: ".$signature_domain." bbsmail_domain: ".$bbsmail_domain." ins[bbs_dom]: ".$inspect['bbsmail_domain'], FILE_APPEND);
                      file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' DOMAIN MISMATCH in: "'.$filename.'" '.$error, FILE_APPEND);
                      rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
                  }
@@ -334,7 +340,7 @@ function inspect_bbsmail($res, $plaintext) {
 }
 
 function inspect_message($message, $filename) {
-    global $logfile, $config_name;
+    global $logfile, $config_name, $bbsmail_path;
     
     $header = array();
     $body = array();
@@ -348,6 +354,7 @@ function inspect_message($message, $filename) {
             file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Found BBSMAIL message ".$filename, FILE_APPEND);
         } else {
             file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Found UNKNOWN message ".$filename, FILE_APPEND);
+            rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
             return false;
         }
     }
