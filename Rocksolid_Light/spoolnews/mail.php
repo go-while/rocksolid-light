@@ -336,7 +336,7 @@ echo '</table>';
         // Get target domain (then get key if necessary)
         $info = preg_split('/@/', $recipient, 2);
         $target['domain'] = $info[1];
-        if(gnupg_keyinfo($res, $target['domain']) == false) { // We don't have the key
+        if(gnupg_keyinfo($res, "rslight@".$target['domain']) == false) { // We don't have the key
             $retrieve = retrieve_key($res, $target['domain']);
             if($retrieve == false) { // We can't get the key
                 return false;
@@ -350,7 +350,7 @@ echo '</table>';
         gnupg_addsignkey($res,$fingerprint_clean);
         gnupg_adddecryptkey($res,$fingerprint_clean, '');
         
-        $keyinfo = gnupg_keyinfo($res, $target['domain']);
+        $keyinfo = gnupg_keyinfo($res, "rslight@".$target['domain']);
         $target['fingerprint'] = $keyinfo[0]['subkeys'][0]['fingerprint'];
         $encrypt_to_key = $target['fingerprint'];
         gnupg_addencryptkey($res,$encrypt_to_key);
