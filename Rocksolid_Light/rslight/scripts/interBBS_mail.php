@@ -80,7 +80,7 @@ $gnupg_validity = array(
          } else {
              echo 'BAD or UNKNOWN signature in: "'.$filename.'"'."\n";
              file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD or UNKNOWN signature in: "'.$filename.'"', FILE_APPEND);
-             get_key_from_message($res, $inspect);
+             get_key_from_message($res, $inspect, $message);
          }
      }
      if($inspect['type'] == 'bbsmail') {
@@ -94,7 +94,7 @@ $gnupg_validity = array(
                  $inspect['mailkey_domain'] = $inspect['mailkey_domain'][1];
 
                  $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
-                 get_key_from_message($res, $inspect);
+                 get_key_from_message($res, $inspect, $message);
                  if(strpos($filename, '-retry') !== false) {
                      rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
                  } else {
@@ -144,7 +144,7 @@ $gnupg_validity = array(
              file_put_contents($logfile, "\n".format_log_date()." ".$config_name.' BAD signature in: "'.$filename.'" '.$error['generic_message'].': '.$error['gpgme_message'], FILE_APPEND);
              $inspect['mailkey_domain'] = preg_replace('/rslight@/', '', $inspect['from']);
              $inspect['mailkey_location'] = $inspect['mailkey_domain'].'/pubkey/server_pubkey.txt';
-             get_key_from_message($res, $inspect);
+             get_key_from_message($res, $inspect, $message);
              if(strpos($filename, '-retry') !== false) {
                  rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
              } else {
@@ -201,8 +201,10 @@ function import_user_message($from, $rcpt, $date, $subject, $message) {
     return true;
 }
 
-function get_key_from_message($res, $inspect) {
-    global $logfile, $config_name;
+function get_key_from_message($res, $inspect, $message) {
+    global $logfile, $config_name, $bbsmail_path;
+    $filename = explode($bbsmail_path.'/in/', $message);
+    $filename = $filename[0];
     // Let's try to get the key
     echo "Let's try to get the key\n";
     file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Let's try to get the key", FILE_APPEND);
@@ -243,6 +245,11 @@ function get_key_from_message($res, $inspect) {
     } else {
         echo "Failed to import key from ".$location."\n";
         file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Failed to import key from ".$location, FILE_APPEND);
+        if(strpos($filename, '-retry') !== false) {
+            rename($bbsmail_path.'/in/'.$filename, $bbsmail_path.'failed/'.$filename);
+        } else {
+            rename($bbsmail_path.'/in/'.$filename, $bbsmail_path.'/in/'.$filename.'-retry');
+        }
         return false;
     }
 }
@@ -354,7 +361,7 @@ function inspect_message($message, $filename) {
             file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Found BBSMAIL message ".$filename, FILE_APPEND);
         } else {
             file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Found UNKNOWN message ".$filename, FILE_APPEND);
-            rename($bbsmail_path.'/in/'.$message, $bbsmail_path.'failed/'.$message);
+            rename($bbsmail_path.'/in/'.$filename, $bbsmail_path.'failed/'.$filename);
             return false;
         }
     }
