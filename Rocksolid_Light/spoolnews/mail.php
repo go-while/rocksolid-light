@@ -199,12 +199,25 @@ echo '</table>';
 	       	$found = 1;
 	      }
 	    }
-// Handle unknown domains here also (no pgp key for domain)	 
+// Check if target is remote. If user enters @ our own domain, strip it (it's local)	 
 	 $remote_target = 0;
      if(strpos($to, '@') !== false) {
-	     $found = 1;
-	     $remote_target = 1;
-	 }
+         $info = preg_split('/@/', $to, 2);
+         if($info[1] == $rslight_gpg['domain_name']) { // domain is our domain
+             $to = $info[0];
+             foreach($userlist as $user) {
+                 if(($to = get_config_value('aliases.conf', strtolower($info[0]))) == false) {
+                     $to = strtolower($info[0]);
+                 }
+                 if(trim($to) == trim($user)) {
+                     $found = 1;
+                 }
+             }
+         } else { // domain is remote
+	         $found = 1;
+	         $remote_target = 1;
+         }
+     }
 	 if($found == 0) {
 	    echo 'User not found: '.$to;
 	 } else { 
