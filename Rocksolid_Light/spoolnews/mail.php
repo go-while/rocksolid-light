@@ -232,12 +232,14 @@ echo '</table>';
 	                $return_val = "Failed to Send. No Key for Destination";
 	            }
 	        }
+	        $return_val = "Message sent.";
 	    } else {
 	        $return_val = "Failed to Send. Database Error";
 	    }
 // Act on return values for response to user	    
         echo $return_val;
 	    $dbh = null;
+	    $user = $from;
 	 }
 	  }
         }
@@ -280,8 +282,8 @@ echo '</table>';
 		echo '</tr></tbody></table></form>';
   }
 // Show My Messages
-            $database = $spooldir.'/mail.db3';
-            $dbh = mail_db_open($database);
+    $database = $spooldir.'/mail.db3';
+    $dbh = mail_db_open($database);
     echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
     echo '<table cellspacing="0" width="100%" class="np_results_table">';
     $query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
