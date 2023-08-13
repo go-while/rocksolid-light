@@ -38,7 +38,7 @@ if(!isset($maxarticles_per_run)) {
   $maxarticles_per_run = 100;
 }
 if(!isset($maxfirstrequest)) {
-  $maxfirstrequest = 1000;
+  $maxfirstrequest = 100;
 }
 
 if(!isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) {
@@ -198,30 +198,34 @@ function get_articles($ns, $group) {
   if($article < $detail[2]) {
     $article = $detail[2];
   }
-// Broken message on last run? Let's try again. 
-/*
-  if($article > ($detail[3])) {
-    $article = $detail[3];
-  }
-*/
-# Prepare databases
-  $database = $spooldir.'/articles-overview.db3';
-  $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
-  $sql = 'INSERT OR IGNORE INTO '.$table.'(newsgroup, number, msgid, date, name, subject) VALUES(?,?,?,?,?,?)';
-  $stmt = $dbh->prepare($sql);
+
+// Articles Database
   if($CONFIG['article_database'] == '1') {
     $article_dbh = article_db_open($spooldir.'/'.$group.'-articles.db3');
     $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
     $article_stmt = $article_dbh->prepare($article_sql);
   }
+
 // Create list of message-ids
-  $group_overviewfile = $spooldir."/".$group."-overview";
-  $gover = file($group_overviewfile);
-  foreach($gover as $group_overview) {
-      $overview_msgid = explode("\t", $group_overview);
-      $msgids[trim($overview_msgid[4])] = true;
+  $database = $spooldir.'/articles-overview.db3';
+  $table = 'overview';
+  $dbh = rslight_db_open($database, $table);
+  $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup");
+  $stmt->bindParam(':newsgroup', $nntp_group);
+  $stmt->execute();
+  while($row = $stmt->fetch()) {
+      $msgids[$row['msgid']] = true;
+      break;
   }
+  $dbh = null;
+  
+// Overview database
+  $database = $spooldir.'/articles-overview.db3';
+  $table = 'overview';
+  $dbh = rslight_db_open($database, $table);
+  $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+  $stmt = $dbh->prepare($sql);
+  
 // Get overview from server
   $server_overview = array();
   $re = false;
@@ -370,12 +374,8 @@ function get_articles($ns, $group) {
           }
       }
 // Overview
-      $overviewHandle = fopen($workpath.$group."-overview", 'a');
-      fputs($overviewHandle, $local."\t".$subject[1]."\t".$from[1]."\t".$finddate[1]."\t".$mid[1]."\t".$references."\t".$bytes."\t".$lines."\t".$xref."\n");
-      fclose($overviewHandle);
+      $stmt->execute([$group, $local, $mid[1], $article_date, $finddate[1], $from[1], $subject[1], $references, $bytes, $lines, $xref]);
       $references="";
-// add to database
-	$stmt->execute([$group, $local, $mid[1], $article_date, $from[1], $subject[1]]);
 	if($CONFIG['article_database'] == '1') {
 	  $this_article = file_get_contents($grouppath."/".$local);
 // CREATE SEARCH SNIPPET

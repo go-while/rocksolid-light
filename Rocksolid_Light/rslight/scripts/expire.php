@@ -61,35 +61,17 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
          $articles_query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
          $articles_dbh = null;
       }
-    }
-    
-echo "Expiring group overview file...\n";
-file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring group overview file...", FILE_APPEND);
-    $grouppath = preg_replace('/\./', '/', $group);
-    $this_overview=$spooldir.'/'.$group.'-overview';
-    $out_overview=$this_overview.'.new';
-    $overviewfp=fopen($this_overview, 'r');
-    $out_overviewfp=fopen($out_overview, 'w');
-    while($line=fgets($overviewfp)) {
-      $break=explode("\t", $line);
-      if(strtotime($break[3]) < $expireme) {
-        echo "Expiring: ".$break[4]." IN: ".$group." #".$break[0]."\r\n";
-        file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring: ".$break[4], FILE_APPEND);
-      // Remove article from tradspool:  
-        if(is_file($spooldir.'/articles/'.$grouppath.'/'.$break[0])) {
-            unlink($spooldir.'/articles/'.$grouppath.'/'.$break[0]);
+    } else { // Expire tradspool
+        $database = $spooldir.'/articles-overview.db3';
+        $dbh = rslight_db_open($database);
+        $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+        $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
+        $grouppath = preg_replace('/\./', '/', $group);
+        while($row = $query->fetch()) {
+            unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
         }
-		thread_cache_removearticle($group,$break[4]);
-        continue;
-      } else {
-        fputs($out_overviewfp, $line);
-      }
+        $dbh = null;
     }
-    fclose($overviewfp);
-    fclose($out_overviewfp);
-    rename($out_overview, $this_overview);
-    chown($this_overview, $CONFIG['webserver_user']);
-    chgrp($this_overview, $webserver_group);
   }
   unlink($lockfile);
   touch($spooldir.'/'.$config_name.'-expire-timer');

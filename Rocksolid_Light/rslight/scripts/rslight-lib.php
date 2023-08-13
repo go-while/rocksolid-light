@@ -252,11 +252,14 @@ set_time_limit(0);
     }
 
 function prepare_post($filename) {
-    global $logdir;
+    global $logdir, $spooldir;
     $logfile = $logdir.'/nntp.log';
     $message = file($filename, FILE_IGNORE_NEW_LINES);
     $lines = 0;
     $is_header = 1;
+    $nocem_check="@@NCM";
+    $bbsmail_check="@@RSL";
+    
     foreach($message as $line) {
       if(trim($line) == "" || $lines > 0) {
         $is_header=0;
@@ -269,7 +272,13 @@ function prepare_post($filename) {
         $ngroups=explode(': ', $line);
         $newsgroups=$ngroups[1];
         $lines++;
-        break;
+        continue;
+      }
+      if(stripos($line, "Subject: ") === 0) {
+          $sub=explode(': ', $line);
+          $subject=$sub[1];
+          $lines++;
+          continue;
       }
     }
     $ngroups = preg_split("/(\ |\,)/", trim($newsgroups));
@@ -283,6 +292,17 @@ function prepare_post($filename) {
       }
     }
     if($ok == 1) {
+        if((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
+            if(strpos($subject, $bbsmail_check) !== false) {
+                $bbsmail_file = preg_replace('/@@RSL /', '', $subject);
+                $bbsmail_filename = $spooldir."/bbsmail/in/bbsmail-".$bbsmail_file;
+                copy($filename, $bbsmail_filename);
+            }
+        }
+        if(strpos($subject, $nocem_check) !== false) {
+            $nocem_file = tempnam($spooldir."/nocem", "nocem-".$group."-");
+            copy($filename, $nocem_file);
+        }
       $response="240 Article received OK\r\n";
     } else {
       $response="441 Posting failed\r\n";
@@ -433,25 +453,25 @@ function process_post($message, $group) {
       if($response == "") {
 // Check for duplicate msgid
            $duplicate=0;
-       if(file_exists($spooldir."/".$group."-overview")) {   
-           $group_overviewfp=fopen($spooldir."/".$group."-overview", 'r');
-           while($group_overview=fgets($group_overviewfp, 2048)) {
-             $overview_msgid = explode("\t", $group_overview);
-             if(strpos($overview_msgid[4], $msgid) !== false) {
-	       unlink($postfilename);
+           $database = $spooldir.'/articles-overview.db3';
+           $table = 'overview';
+           $dbh = rslight_db_open($database, $table);
+           $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND msgid=:msgid ORDER BY number");
+           $stmt->execute(['thisgroup' => $group, ':msgid' => $msgid]);
+           while($found = $stmt->fetch()) {
+               unlink($postfilename);
                file_put_contents($logfile, "\n".format_log_date()." ".$section." Duplicate Message-ID for: ".$msgid, FILE_APPEND);
-	       $duplicate=1;
-	       break;
-             } 
-	   }
-	   fclose($group_overviewfp);
-    }
-      if($duplicate == 0) {
-          $response = insert_article($section,$group,$postfilename,$subject[1],$from[1],$article_date,$date_rep,$msgid,$references,$bytes,$lines,$xref,$body);
-      } else {
-          $response="441 Posting failed (duplicate)\r\n";
+               $duplicate=1;
+               break;
+           }
+           $dbh = null;
+
+           if($duplicate == 0) {
+               $response = insert_article($section,$group,$postfilename,$subject[1],$from[1],$article_date,$date_rep,$msgid,$references,$bytes,$lines,$xref,$body);
+           } else {
+               $response="441 Posting failed (duplicate)\r\n";
+           }
       }
-     }
     }
     return $response;
 }
@@ -610,7 +630,7 @@ function get_title($mode) {
 }
 
 function get_xover($articles, $msgsock) {
-    global $nntp_group,$nntp_article,$workpath,$path;
+    global $nntp_group,$nntp_article,$workpath,$path,$spooldir;
 // Use article pointer
     if(!isset($articles) && is_numeric($nntp_article)) {
       $articles = $nntp_article;
@@ -637,7 +657,6 @@ function get_xover($articles, $msgsock) {
 	$msg="420 no article(s) selected\r\n";
 	return $msg;
     }
-    $overviewfile=$workpath.$nntp_group."-overview";
   if(!isset($this_id)) {
     $article_num = explode('-', $articles);
     $first = $article_num[0];
@@ -660,19 +679,17 @@ function get_xover($articles, $msgsock) {
    }
   }
     fwrite($msgsock, $output, strlen($output));
-    if(file_exists($overviewfile)) {
-      $overviewfp=fopen($overviewfile, 'r');
-      while($overviewline=fgets($overviewfp)) {
-        $article=preg_split("/[\s,]+/", $overviewline);
-        for($i=$first; $i<=$last; $i++) {
-          if($article[0] === strval($i)) {
-	    $overviewline = trim($overviewline)."\r\n";
-            fwrite($msgsock, $overviewline, strlen($overviewline));
-          }
-        }
-      }
-      fclose($overviewfp);
+
+    $database = $spooldir.'/articles-overview.db3';
+    $table = 'overview';
+    $dbh = rslight_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number BETWEEN :first AND :last ORDER BY number");
+    $stmt->execute(['thisgroup' => $nntp_group, ':first' => $first, ':last' => $last]);
+    $msg = '';
+    while($row = $stmt->fetch()) {
+        $msg.= $row['number']."\t".$row['subject']."\t".$row['name']."\t".$row['datestring']."\t".$row['msgid']."\t".$row['refs']."\t".$row['bytes']."\t".$row['lines']."\t".$row['xref']."\r\n";
     }
+    $dbh = null;
     $msg.=".\r\n";
     return $msg;
 }
@@ -691,18 +708,25 @@ function get_stat($article) {
 	$msg="423 No article number selected\r\n";
 	return $msg;
     }
-    $overviewfile=$workpath.$nntp_group."-overview";
-    $overviewfp=fopen($overviewfile, 'r');
-    while($overviewline=fgets($overviewfp)) {
-      $over=explode("\t", $overviewline);
-      if(trim($over[0]) == trim($article)) { 
-	$msg="223 ".$article." ".$over[4]." status\r\n";
-	fclose($overviewfp);
-	return $msg;
-      }
+
+    $database = $spooldir.'/articles-overview.db3';
+    if(!is_file($database)) {
+        return false;
     }
-    fclose($overviewfp);
-    $msg="423 No such article number ".$article."\r\n";
+    $dbh = rslight_db_open($database);
+    $query = $articles_dbh->prepare('SELECT * FROM overview WHERE number=:number AND newsgroup=:newsgroup');
+    $query->execute(['number' => $article, 'newsgroup' => $nntp_group]);
+    $found = 0;
+    while ($row = $query->fetch()) {
+        $found = 1;
+        break;
+    }
+    $dbh = null;
+    if($found == 1) {
+        $msg="223 ".$article." ".$row['msgid']." status\r\n";
+    } else {
+        $msg="423 No such article number ".$article."\r\n";
+    }
     return $msg;
 }
 
@@ -1112,7 +1136,6 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
       touch($tmp_file, $article_date);
       file_put_contents($logfile, "\n".format_log_date()." ".$section." Inserting local post: ".$nntp_group.":".$local, FILE_APPEND);
 // Overview
-      $overviewHandle = fopen($spooldir."/".$nntp_group."-overview", 'a');
   # Prepare overview database
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';

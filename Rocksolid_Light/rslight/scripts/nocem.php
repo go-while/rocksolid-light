@@ -107,30 +107,19 @@ function delete_message($messageid, $group) {
       $articles_dbh = null;
     }
   }
-  $this_overview=$spooldir.'/'.$group.'-overview';
-  if(false === (is_file($this_overview))) {
-    return;
-  }
-  $out_overview=$this_overview.'.new'; 
-  $overviewfp=fopen($this_overview, 'r');
-  $out_overviewfp=fopen($out_overview, 'w'); 
-  while($line=fgets($overviewfp)) {
-    $break=explode("\t", $line);
-    if($break[4] == $messageid) {
-      echo "DELETING: ".$messageid." IN: ".$group." #".$break[0]."\r\n";
-      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." DELETING: ".$messageid." IN: ".$group." #".$break[0], FILE_APPEND);
-      $grouppath = preg_replace('/\./', '/', $group);
-      unlink($spooldir.'/articles/'.$grouppath.'/'.$break[0]);
-      continue; 
-    } else {
-      fputs($out_overviewfp, $line);
-    }
-  }
-  fclose($overviewfp);
-  fclose($out_overviewfp); 
-  rename($out_overview, $this_overview);
-  chown($this_overview, $CONFIG['webserver_user']);
-  chgrp($this_overview, $webserver_group);
+  
+// Tradspool
+      if($CONFIG['article_database'] != '1') {
+          $database = $spooldir.'/articles-overview.db3';
+          $dbh = rslight_db_open($database);
+          $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND msgid<:msgid');
+          $query->execute([':newsgroup' => $group, ':msgid' => $messageid]);
+          $grouppath = preg_replace('/\./', '/', $group);
+          while($row = $query->fetch()) {
+              unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
+          }
+          $dbh = null;
+      }
   delete_message_from_overboard($config_name, $group, $messageid);
   return;
 }

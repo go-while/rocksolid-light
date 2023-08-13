@@ -1462,8 +1462,13 @@ function rslight_db_open($database, $table='overview') {
      number TEXT,
      msgid TEXT,
      date TEXT,
+     datestring TEXT,
      name TEXT,
      subject TEXT,
+     refs TEXT,
+     bytes TEXT,
+     lines TEXT,
+     xref TEXT,
      unique (newsgroup, msgid))");
   $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_date on overview(date)');
   $stmt->execute();
