@@ -46,7 +46,7 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
 echo "Expiring overview database...\n";
 file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group." Expiring overview database...", FILE_APPEND);
      $database = $spooldir.'/articles-overview.db3';
-     $dbh = rslight_db_open($database);
+     $dbh = overview_db_open($database);
      $query = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
      $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
      $dbh = null;
@@ -63,7 +63,7 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
       }
     } else { // Expire tradspool
         $database = $spooldir.'/articles-overview.db3';
-        $dbh = rslight_db_open($database);
+        $dbh = overview_db_open($database);
         $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
         $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
         $grouppath = preg_replace('/\./', '/', $group);

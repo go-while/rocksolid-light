@@ -141,7 +141,7 @@ if($this_overboard['version'] !== $version) {
 
 $database = $spooldir.'/articles-overview.db3';
 $table = 'overview';
-$dbh = rslight_db_open($database, $table);
+$dbh = overview_db_open($database, $table);
 $query = $dbh->prepare('SELECT * FROM '.$table.' WHERE newsgroup=:findgroup AND date >= '.$cachedate.' ORDER BY date DESC LIMIT '.$maxdisplay);
 $articles = array();
 $db_articles = array();

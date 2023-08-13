@@ -672,7 +672,7 @@ function groups_show($gruppen) {
 // Look up last article info for group
       $database = $spooldir.'/articles-overview.db3';
       $table = 'overview';
-      $articles_dbh = rslight_db_open($database);
+      $articles_dbh = overview_db_open($database);
       $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
       $articles_query->execute(['group' => $g->name]);
       $found = 0;
@@ -1449,7 +1449,7 @@ function mail_db_open($database, $table='messages') {
   return($dbh);
 }
 
-function rslight_db_open($database, $table='overview') {
+function overview_db_open($database, $table='overview') {
   try {
     $dbh = new PDO('sqlite:'.$database);
   } catch (PDOException $e) {
@@ -1694,7 +1694,7 @@ function get_db_data_from_msgid($msgid, $group) {
       if(!is_file($database)) {
         return false;
       }
-      $articles_dbh = rslight_db_open($database);
+      $articles_dbh = article_db_open($database);
       $articles_query = $articles_dbh->prepare('SELECT * FROM articles WHERE msgid=:messageid');
       $articles_query->execute(['messageid' => $msgid]);
       $found = 0;
@@ -1713,7 +1713,7 @@ function get_db_data_from_msgid($msgid, $group) {
 function get_data_from_msgid($msgid) {
       global $spooldir;
       $database = $spooldir.'/articles-overview.db3';
-      $articles_dbh = rslight_db_open($database);
+      $articles_dbh = overview_db_open($database);
       $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
       $articles_query->execute(['messageid' => $msgid]);
       $found = 0;

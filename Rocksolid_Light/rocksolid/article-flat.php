@@ -36,7 +36,7 @@
   if(strpos($id, '@') !== false) {
     if($CONFIG['article_database'] == '1') {
       $database = $spooldir.'/articles-overview.db3';
-      $articles_dbh = rslight_db_open($database);
+      $articles_dbh = overview_db_open($database);
       $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
       $articles_query->execute(['messageid' => $id]);
       $found = 0;

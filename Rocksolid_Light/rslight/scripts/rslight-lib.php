@@ -455,7 +455,7 @@ function process_post($message, $group) {
            $duplicate=0;
            $database = $spooldir.'/articles-overview.db3';
            $table = 'overview';
-           $dbh = rslight_db_open($database, $table);
+           $dbh = overview_db_open($database, $table);
            $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND msgid=:msgid ORDER BY number");
            $stmt->execute(['thisgroup' => $group, ':msgid' => $msgid]);
            while($found = $stmt->fetch()) {
@@ -491,7 +491,7 @@ function get_next($nntp_group) {
     $nntp_article++;
       $database = $spooldir.'/articles-overview.db3';
       $table = 'overview';
-      $dbh = rslight_db_open($database, $table);
+      $dbh = overview_db_open($database, $table);
       $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
       $stmt->bindParam(':newsgroup', $nntp_group);
       $stmt->bindParam(':number', $nntp_article);
@@ -521,7 +521,7 @@ function get_last($nntp_group) {
     $nntp_article--;
       $database = $spooldir.'/articles-overview.db3';
       $table = 'overview';
-      $dbh = rslight_db_open($database, $table);
+      $dbh = overview_db_open($database, $table);
       $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
       $stmt->bindParam(':newsgroup', $nntp_group);
       $stmt->bindParam(':number', $nntp_article);
@@ -682,12 +682,14 @@ function get_xover($articles, $msgsock) {
 
     $database = $spooldir.'/articles-overview.db3';
     $table = 'overview';
-    $dbh = rslight_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number BETWEEN :first AND :last ORDER BY number");
-    $stmt->execute(['thisgroup' => $nntp_group, ':first' => $first, ':last' => $last]);
-    $msg = '';
-    while($row = $stmt->fetch()) {
-        $msg.= $row['number']."\t".$row['subject']."\t".$row['name']."\t".$row['datestring']."\t".$row['msgid']."\t".$row['refs']."\t".$row['bytes']."\t".$row['lines']."\t".$row['xref']."\r\n";
+    $dbh = overview_db_open($database, $table);
+    
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number=:number"); // Why doesn't BETWEEN work properly here?
+    for($i=$first; $i<=$last; $i++) {
+        $stmt->execute(['thisgroup' => $nntp_group, ':number' => $i]);
+        while($row = $stmt->fetch()) {
+            $msg.= $row['number']."\t".$row['subject']."\t".$row['name']."\t".$row['datestring']."\t".$row['msgid']."\t".$row['refs']."\t".$row['bytes']."\t".$row['lines']."\t".$row['xref']."\r\n";
+        }
     }
     $dbh = null;
     $msg.=".\r\n";
@@ -713,7 +715,7 @@ function get_stat($article) {
     if(!is_file($database)) {
         return false;
     }
-    $dbh = rslight_db_open($database);
+    $dbh = overview_db_open($database);
     $query = $articles_dbh->prepare('SELECT * FROM overview WHERE number=:number AND newsgroup=:newsgroup');
     $query->execute(['number' => $article, 'newsgroup' => $nntp_group]);
     $found = 0;
@@ -1139,7 +1141,7 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   # Prepare overview database
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
+  $dbh = overview_db_open($database, $table);
   if(!$dbh) {
     file_put_contents($logfile, "\n".format_log_date()." ".$section." Failed to connect to database: ".$database, FILE_APPEND);
     $return_val = "441 Posting failed (overview db error)\r\n";
@@ -1206,7 +1208,7 @@ function find_article_by_msgid($msgid) {
   global $spooldir;
       $database = $spooldir.'/articles-overview.db3';
       $table = 'overview';
-      $dbh = rslight_db_open($database, $table);
+      $dbh = overview_db_open($database, $table);
       $stmt = $dbh->prepare("SELECT * FROM $table WHERE msgid like :terms");
       $stmt->bindParam(':terms', $msgid);
       $stmt->execute();
@@ -1224,7 +1226,7 @@ function get_article_list($thisgroup) {
   global $spooldir;
   $database = $spooldir."/articles-overview.db3";
   $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
+  $dbh = overview_db_open($database, $table);
   $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
   $stmt->execute(['thisgroup' => $thisgroup]);
   $ok_article=array();

@@ -836,7 +836,7 @@ function thread_format_lastmessage($c,$group='') {
 // Tradspool
         $database = $spooldir.'/articles-overview.db3';
         $table = 'overview';
-        $dbh = rslight_db_open($database, $table);
+        $dbh = overview_db_open($database, $table);
         $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND date=:date ORDER BY date DESC");
         $stmt->bindParam(':newsgroup', $group);
         $stmt->bindParam(':date', $c->date_thread);

@@ -12,7 +12,7 @@ count_users();
 function count_articles() {
   GLOBAL $CONFIG, $spooldir;
   $database = $spooldir.'/articles-overview.db3';
-  $dbh = rslight_db_open($database);
+  $dbh = overview_db_open($database);
   $count = $dbh->query('SELECT COUNT(DISTINCT msgid) FROM overview')->fetchColumn();
   $dbh = null;
   return $count;

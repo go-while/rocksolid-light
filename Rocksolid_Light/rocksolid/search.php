@@ -324,7 +324,7 @@ function get_header_search($group, $terms) {
     # Prepare search database
     $database = $spooldir.'/articles-overview.db3';
     $table = 'overview';
-    $dbh = rslight_db_open($database, $table);
+    $dbh = overview_db_open($database, $table);
     $overview = array();
 
     foreach($grouplist as $thisgroup) {

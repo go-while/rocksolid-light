@@ -189,7 +189,7 @@ function remove_articles($group) {
     global $spooldir, $CONFIG, $workpath, $path, $config_name, $logfile;
     $group = trim($group);
     # Prepare databases
-    $dbh = rslight_db_open($spooldir.'/articles-overview.db3');
+    $dbh = overview_db_open($spooldir.'/articles-overview.db3');
     $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
     $clear_stmt->bindParam(':group', $group);
     $clear_stmt->execute();
@@ -210,7 +210,7 @@ function import_articles($group) {
   $new_article_stmt = $new_article_dbh->prepare($new_article_sql);
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
+  $dbh = overview_db_open($database, $table);
   $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
   $clear_stmt->bindParam(':group', $group);
   $clear_stmt->execute();

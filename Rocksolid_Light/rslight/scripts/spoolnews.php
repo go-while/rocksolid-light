@@ -209,7 +209,7 @@ function get_articles($ns, $group) {
 // Create list of message-ids
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
+  $dbh = overview_db_open($database, $table);
   $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup");
   $stmt->bindParam(':newsgroup', $nntp_group);
   $stmt->execute();
@@ -222,7 +222,7 @@ function get_articles($ns, $group) {
 // Overview database
   $database = $spooldir.'/articles-overview.db3';
   $table = 'overview';
-  $dbh = rslight_db_open($database, $table);
+  $dbh = overview_db_open($database, $table);
   $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
   $stmt = $dbh->prepare($sql);
   
@@ -471,7 +471,7 @@ function get_article_list($thisgroup) {
     global $spooldir;
     $database = $spooldir."/articles-overview.db3";
     $table = 'overview';
-    $dbh = rslight_db_open($database, $table);
+    $dbh = overview_db_open($database, $table);
     $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
     $stmt->execute(['thisgroup' => $thisgroup]);
     $ok_article=array();

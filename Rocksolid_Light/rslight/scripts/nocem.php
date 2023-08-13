@@ -92,7 +92,7 @@ function delete_message($messageid, $group) {
     }
  if($config_name) {
   $database = $spooldir.'/articles-overview.db3';
-  $dbh = rslight_db_open($database);
+  $dbh = overview_db_open($database);
   $query = $dbh->prepare('DELETE FROM overview WHERE msgid=:messageid');
   $query->execute(['messageid' => $messageid]);
   $dbh = null; 
@@ -111,7 +111,7 @@ function delete_message($messageid, $group) {
 // Tradspool
       if($CONFIG['article_database'] != '1') {
           $database = $spooldir.'/articles-overview.db3';
-          $dbh = rslight_db_open($database);
+          $dbh = overview_db_open($database);
           $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND msgid<:msgid');
           $query->execute([':newsgroup' => $group, ':msgid' => $messageid]);
           $grouppath = preg_replace('/\./', '/', $group);
