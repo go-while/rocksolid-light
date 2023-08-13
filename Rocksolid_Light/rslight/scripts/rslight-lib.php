@@ -566,7 +566,7 @@ function get_xhdr($header, $articles) {
     } else {
       if(strpos($articles, "-")) {
 	$ok_article = get_article_list($nntp_group);
-        fclose($group_overviewfp);
+//        fclose($group_overviewfp);
         sort($ok_article);
         $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
         if(!is_numeric($last))
@@ -906,7 +906,7 @@ function get_listgroup($nntp_group, $msgsock) {
         }
     }
     $ok_article = get_article_list($nntp_group);
-    fclose($group_overviewfp);
+//    fclose($group_overviewfp);
     $count = count($ok_article);
     sort($ok_article);
     $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
@@ -1147,9 +1147,9 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
     $return_val = "441 Posting failed (overview db error)\r\n";
   } else {
     file_put_contents($logfile, "\n".format_log_date()." ".$section." Connected to database: ".$database, FILE_APPEND);
-    $sql = 'INSERT INTO '.$table.'(newsgroup, number, msgid, date, name, subject) VALUES(?,?,?,?,?,?)';
+    $sql = 'INSERT INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $stmt = $dbh->prepare($sql);
-    $stmt->execute([$nntp_group, $local, $mid_i, $article_date, $from_i, $subject_i]);
+    $stmt->execute([$nntp_group, $local, $mid_i, $article_date, $date_i, $from_i, $subject_i, $references_i, $bytes_i, $lines_i, $xref_i]);
     $dbh = null;
   }
   
@@ -1182,8 +1182,6 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   } else {
       rename($tmp_file, $tradspool_out_file);
   }
-      fputs($overviewHandle, $local."\t".$subject_i."\t".$from_i."\t".$date_i."\t".$mid_i."\t".$references_i."\t".$bytes_i."\t".$lines_i."\t".$xref_i."\n");
-      fclose($overviewHandle);
       $references="";
 // End Overview
   $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
