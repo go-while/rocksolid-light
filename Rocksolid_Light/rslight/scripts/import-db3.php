@@ -188,25 +188,21 @@ function reset_group($group, $remove=0) {
 function remove_articles($group) {
     global $spooldir, $CONFIG, $workpath, $path, $config_name, $logfile;
     $group = trim($group);
-    $overview_file = $workpath.'/'.$group."-overview";
     # Prepare databases
     $dbh = rslight_db_open($spooldir.'/articles-overview.db3');
     $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
     $clear_stmt->bindParam(':group', $group);
     $clear_stmt->execute();
-    unlink($overview_file);
     rename($spooldir.'/'.$group.'-articles.db3',$spooldir.'/'.$group.'-articles.db3-removed');
     unlink($spooldir.'/'.$group.'-data.dat');
     unlink($spooldir.'/'.$group.'-info.txt');
     unlink($spooldir.'/'.$group.'-cache.txt');
     unlink($spooldir.'/'.$group.'-lastarticleinfo.dat');
     unlink($spooldir.'/'.$group.'-overboard.dat');
-    unlink($spooldir.'/'.$group.'-overview');
 }
 
 function import_articles($group) {
   global $spooldir, $CONFIG, $workpath, $path, $config_name, $logfile;
-  $overview_file = $workpath.'/'.$group."-overview";
   # Prepare databases
 // Overview db
   $new_article_dbh = article_db_open($spooldir.'/'.$group.'-articles.db3-new');
@@ -218,10 +214,9 @@ function import_articles($group) {
   $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
   $clear_stmt->bindParam(':group', $group);
   $clear_stmt->execute();
-  unlink($overview_file);
-
-  $sql = 'INSERT OR IGNORE INTO '.$table.'(newsgroup, number, msgid, date, name, subject) VALUES(?,?,?,?,?,?)';
+  $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
   $stmt = $dbh->prepare($sql);
+
 // Incoming db
   $article_dbh = article_db_open($spooldir.'/'.$group.'-articles.db3');
   $article_stmt = $article_dbh->query('SELECT DISTINCT * FROM articles');
@@ -286,9 +281,7 @@ function import_articles($group) {
 // CREATE SEARCH SNIPPET
       $this_snippet = get_search_snippet($body, $content_type[1]);
       $new_article_stmt->execute([$group, $local, $mid[1], $article_date, $from[1], $subject[1], $row['article'], $this_snippet]);
-
-      $stmt->execute([$group, $local, $mid[1], $article_date, $from[1], $subject[1]]);
-      file_put_contents($overview_file, $local."\t".$subject[1]."\t".$from[1]."\t".$finddate[1]."\t".$mid[1]."\t".$references."\t".$bytes."\t".$lines."\t".$xref."\n", FILE_APPEND);
+      $stmt->execute([$group, $local, $mid[1], $article_date, $finddate[1], $from[1], $subject[1], $references, $bytes, $lines, $xref]);
       echo "\nImported: ".$group." ".$local;
       file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Imported: ".$group.":".$local, FILE_APPEND);
       $i++;
