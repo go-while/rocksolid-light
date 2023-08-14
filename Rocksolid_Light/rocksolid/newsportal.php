@@ -589,9 +589,10 @@ function groups_read($server,$port,$load=0,$force_reload=false) {
 }
 
 function groups_show($gruppen) {
-  global $gl_age,$frame,$spooldir,$CONFIG,$spoolnews;
+  global $gl_age,$frame,$spooldir,$logdir,$CONFIG,$spoolnews;
   if ($gruppen == false) return;
   global $file_thread,$text_groups;
+  $logfile=$logdir.'/debug.log';
   write_access_log();
   $c = count($gruppen);
   $acttype="keins";
@@ -647,9 +648,31 @@ function groups_show($gruppen) {
     } else {
       $lastarticleinfo['date'] = 0;
     }
+    
+    // Look up last article info for group (np does not write this file sometimes for some reason)
+    $database = $spooldir.'/articles-overview.db3';
+    $table = 'overview';
+    $articles_dbh = overview_db_open($database);
+    $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
+    $articles_query->execute(['group' => $g->name]);
+    $found = 0;
+    while ($row = $articles_query->fetch()) {
+        $found = 1;
+        break;
+    }
+    $articles_dbh = null;
+    if($found == 1) {
+        $lastarticleinfo['date'] = $row['date'];
+    }
     if(isset($userdata[$g->name])) {
       $groupdisplay.='</span><p class="np_group_desc">';
       $groupdisplay.='<a class="np_group_desc" href="index.php?unsub='.$g->name.'">(unsubscribe)</a>';
+// TESTING HERE
+/*
+      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$g->name." is subscribed for ".$_COOKIE['mail_name'], FILE_APPEND);
+      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." userdata=".$userdata[$g->name]." <? lastarticleinfo=".$lastarticleinfo['date'], FILE_APPEND);
+      file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$g->name." ".($userdata[$g->name] - $lastarticleinfo['date']), FILE_APPEND);
+*/      
       if($userdata[$g->name] < $lastarticleinfo['date']) {
 	    $groupdisplay.='<a href="overboard.php?thisgroup='._rawurlencode($g->name).'&time='.$userdata[$g->name].'"><b>(new)</b></a> ';
       }
@@ -669,20 +692,8 @@ function groups_show($gruppen) {
 /* Display latest article info */
     $groupdisplay.='</td><td class="'.$lineclass.'"><div class="np_last_posted_date">';
 
-// Look up last article info for group
-      $database = $spooldir.'/articles-overview.db3';
-      $table = 'overview';
-      $articles_dbh = overview_db_open($database);
-      $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
-      $articles_query->execute(['group' => $g->name]);
-      $found = 0;
-      while ($row = $articles_query->fetch()) {
-        $found = 1;
-        break;
-      }
-      $articles_dbh = null;
       if($found == 1) {
-        $lastarticleinfo['date'] = $row['date'];
+//        $lastarticleinfo['date'] = $row['date'];
 // Put this in a function already!
         $fromoutput = explode("<", html_entity_decode($row['name']));
 // Just an email address?
@@ -1649,7 +1660,7 @@ $logfile=$logdir.'/newsportal.log';
 
 function get_user_mail_auth_data($user) {
   global $spooldir;
-  $userdata = array("$user");
+  $userdata = array();
   $user = strtolower($user);
   $pkey_config = get_user_config($user, "pkey");
   if(!isset($_COOKIE['pkey'])) {
