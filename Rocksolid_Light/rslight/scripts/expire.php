@@ -61,14 +61,17 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
          $articles_query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
          $articles_dbh = null;
       }
-    } else { // Expire tradspool
+    } else { // Expire tradspool and remove from newsportal
         $database = $spooldir.'/articles-overview.db3';
         $dbh = overview_db_open($database);
         $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
         $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
         $grouppath = preg_replace('/\./', '/', $group);
         while($row = $query->fetch()) {
-            unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
+            if(is_file($spooldir.'/articles/'.$grouppath.'/'.$row['number'])) {
+                unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
+            }
+            thread_cache_removearticle($group,$row['number']);
         }
         $dbh = null;
     }
