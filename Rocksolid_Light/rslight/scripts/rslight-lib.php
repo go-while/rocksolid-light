@@ -250,9 +250,9 @@ set_time_limit(0);
 
         }
     }
-
+ 
 function prepare_post($filename) {
-    global $logdir, $spooldir;
+    global $logdir, $spooldir, $config_dir, $rslight_gpg;
     $logfile = $logdir.'/nntp.log';
     $message = file($filename, FILE_IGNORE_NEW_LINES);
     $lines = 0;
@@ -1105,6 +1105,9 @@ $date_i,$mid_i,$references_i,$bytes_i,$lines_i,$xref_i,$body) {
   if($local < 1) {
       $local = 1;
   }
+  while(is_deleted_post($nntp_group, $local)) {
+      $local++;	
+  } 	
       if($article_date > time())
         $article_date = time();
       $in_file=fopen($filename, 'r');

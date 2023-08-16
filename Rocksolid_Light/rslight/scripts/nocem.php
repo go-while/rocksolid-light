@@ -90,14 +90,7 @@ function delete_message($messageid, $group) {
         }
       }
     }
- if($config_name) {
-  $database = $spooldir.'/articles-overview.db3';
-  $dbh = overview_db_open($database);
-  $query = $dbh->prepare('DELETE FROM overview WHERE msgid=:messageid');
-  $query->execute(['messageid' => $messageid]);
-  $dbh = null; 
-//  thread_cache_removearticle($group,$messageid);
- }
+
   if($CONFIG['article_database'] == '1') {
     $database = $spooldir.'/'.$group.'-articles.db3';
     if(is_file($database)) {
@@ -107,20 +100,28 @@ function delete_message($messageid, $group) {
       $articles_dbh = null;
     }
   }
-  
-// Tradspool
-      if($CONFIG['article_database'] != '1') {
-          $database = $spooldir.'/articles-overview.db3';
-          $dbh = overview_db_open($database);
-          $query = $dbh->prepare('SELECT FROM overview WHERE newsgroup=:newsgroup AND msgid<:msgid');
-          $query->execute([':newsgroup' => $group, ':msgid' => $messageid]);
-          $grouppath = preg_replace('/\./', '/', $group);
-          while($row = $query->fetch()) {
-              unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
-          }
-          $dbh = null;
+
+// Handle overview and history  
+  $database = $spooldir.'/articles-overview.db3';
+  $dbh = overview_db_open($database);
+  $stmt_del = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+  $query = $dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+  $query->execute([':newsgroup' => $group, ':msgid' => $messageid]);
+  $grouppath = preg_replace('/\./', '/', $group);
+  $status = "deleted";
+  $statusdate = time();
+  $statusreason = "nocem";
+  $statusnotes = null;
+  while($row = $query->fetch()) {
+      if(is_file($spooldir.'/articles/'.$grouppath.'/'.$row['number'])) {
+          unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
       }
-  delete_message_from_overboard($config_name, $group, $messageid);
+      delete_message_from_overboard($config_name, $group, $messageid);
+      add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
+      thread_cache_removearticle($group, $row['number']);
+  }
+  $stmt_del->execute([':newsgroup' => $group, ':msgid' => $messageid]);
+  $dbh = null;
   return;
 }
 

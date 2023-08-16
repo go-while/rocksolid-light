@@ -1460,6 +1460,37 @@ function mail_db_open($database, $table='messages') {
   return($dbh);
 }
 
+function history_db_open($database, $table='history') {
+	try {
+		$dbh = new PDO('sqlite:'.$database);
+	} catch (PDOException $e) {
+		echo 'Connection failed: '.$e->getMessage();
+		exit;
+	}
+	$dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+			id INTEGER PRIMARY KEY,
+			newsgroup TEXT,
+			number TEXT,
+			msgid TEXT,
+			status TEXT,
+			statusdate TEXT,
+			statusreason TEXT,
+			statusnotes TEXT,		
+			unique (newsgroup, msgid),
+			unique (newsgroup, number))");
+	$stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_status on '.$table.'(status)');
+	$stmt->execute();
+	$stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup on '.$table.'(newsgroup)');
+	$stmt->execute();
+	$stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_msgid on '.$table.'(msgid)');
+	$stmt->execute();
+	$stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup_number on '.$table.'(newsgroup,number)');
+	$stmt->execute();
+	$stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_statusdate on '.$table.'(statusdate)');
+	$stmt->execute();
+	return($dbh);
+}
+
 function overview_db_open($database, $table='overview') {
   try {
     $dbh = new PDO('sqlite:'.$database);
@@ -1467,7 +1498,7 @@ function overview_db_open($database, $table='overview') {
     echo 'Connection failed: '.$e->getMessage();
     exit;
   }
-  $dbh->exec("CREATE TABLE IF NOT EXISTS overview(
+  $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
      id INTEGER PRIMARY KEY,
      newsgroup TEXT,
      number TEXT,
@@ -1481,27 +1512,27 @@ function overview_db_open($database, $table='overview') {
      lines TEXT,
      xref TEXT,
      unique (newsgroup, msgid))");
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_date on overview(date)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_date on '.$table.'(date)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup on overview(newsgroup)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup on '.$table.'(newsgroup)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_msgid on overview(msgid)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_msgid on '.$table.'(msgid)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup_number on overview(newsgroup,number)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup_number on '.$table.'(newsgroup,number)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_name on overview(name)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_name on '.$table.'(name)');
   $stmt->execute();
   return($dbh);
 }
 
-function article_db_open($database) {
+function article_db_open($database, $table='articles') {
   try {
     $dbh = new PDO('sqlite:'.$database);
   } catch (PDOException $e) {
     echo 'Connection failed: '.$e->getMessage();
     exit;
   }
-  $dbh->exec("CREATE TABLE IF NOT EXISTS articles(
+  $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
      id INTEGER PRIMARY KEY,
      newsgroup TEXT,
      number TEXT UNIQUE,
@@ -1512,13 +1543,13 @@ function article_db_open($database) {
      search_snippet TEXT,
      article TEXT)");
 
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_number on articles(number)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_number on '.$table.'(number)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_date on articles(date)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_date on '.$table.'(date)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_msgid on articles(msgid)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_msgid on '.$table.'(msgid)');
   $stmt->execute();
-  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_name on articles(name)');
+  $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS db_name on '.$table.'(name)');
   $stmt->execute();
 
   $dbh->exec("CREATE VIRTUAL TABLE IF NOT EXISTS search_fts USING fts5(
@@ -1529,10 +1560,10 @@ function article_db_open($database) {
      name,
      subject,
      search_snippet)");
-  $dbh->exec("CREATE TRIGGER IF NOT EXISTS after_articles_insert AFTER INSERT ON articles BEGIN
+  $dbh->exec("CREATE TRIGGER IF NOT EXISTS after_articles_insert AFTER INSERT ON $table BEGIN
 	INSERT INTO search_fts(newsgroup, number, msgid, date, name, subject, search_snippet) VALUES(new.newsgroup, new.number, new.msgid, new.date, new.name, new.subject, new.search_snippet);
 	END;");
-  $dbh->exec("CREATE TRIGGER IF NOT EXISTS after_articles_delete AFTER DELETE ON articles BEGIN
+  $dbh->exec("CREATE TRIGGER IF NOT EXISTS after_articles_delete AFTER DELETE ON $table BEGIN
 	DELETE FROM search_fts WHERE msgid = old.msgid;
 	END;");	
 return($dbh);
@@ -1697,6 +1728,36 @@ function verify_gpg_signature($res, $signed_text) {
     } else {
         return true;  // Good signature
     }
+}
+
+function is_deleted_post($group, $number) {
+    global $spooldir;
+    $database = $spooldir.'/history.db3';
+    $table = 'history';
+    $dbh = history_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:nicole");
+    $stmt->bindParam(':newsgroup', $group);
+    $stmt->bindParam(':nicole', $number);
+    $stmt->execute();
+    $status = false;
+    while($row = $stmt->fetch()) {
+        if($row['status'] == "deleted") {
+            $status = "430 Article Deleted";
+            break;
+        }
+    }
+    $dbh = null;
+    return $status;
+}
+
+function add_to_history($group, $number, $msgid, $status, $statusdate, $statusreason=null, $statusnotes=null) {
+    global $spooldir;
+    $history = $spooldir.'/history.db3';
+    $history_dbh = history_db_open($history);
+    $history_sql = 'INSERT OR IGNORE INTO history(newsgroup, number, msgid, status, statusdate, statusreason, statusnotes) VALUES(?,?,?,?,?,?,?)';
+    $history_stmt = $history_dbh->prepare($history_sql);
+    $history_stmt->execute([$group, $number, $msgid, $status, $statusdate, $statusreason, $statusnotes]);
+    $history_dbh = null;
 }
 
 function get_db_data_from_msgid($msgid, $group) {

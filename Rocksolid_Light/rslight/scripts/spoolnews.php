@@ -186,6 +186,9 @@ function get_articles($ns, $group) {
      if($local < 1) {
          $local = 1;
      }
+     while(is_deleted_post($group, $local)) {
+     	$local++;
+     }
  }
   # Split group response line to get last article number
   $detail = explode(" ", $response);
