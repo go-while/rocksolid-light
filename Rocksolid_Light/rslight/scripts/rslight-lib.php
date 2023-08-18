@@ -57,7 +57,7 @@ set_time_limit(0);
         }
 	if ($command[0] == 'list') {
 	    if(isset($command[1])) {
-	        $msg = get_list($command[1], $msgsock);
+	        $msg = get_list(strtolower($command[1]), $msgsock);
             } else {
 		$msg = get_list("active", $msgsock);
             } 
@@ -66,7 +66,7 @@ set_time_limit(0);
 	}
 	if ($command[0] == 'post') {
 	    if($auth_ok == 0) {
-	        $msg = "480 Posting not permitted\r\n";	
+	        $msg = "480 Posting not permitted (Auth required)\r\n";	
 		fwrite($msgsock, $msg, strlen($msg));
                 continue;
 	    }
@@ -148,7 +148,7 @@ set_time_limit(0);
           fwrite($msgsock, $msg, strlen($msg));
           continue;
         }
-	if ($command[0] == 'mode') {
+	if ($command[0] == 'mode') { // Here to handle MODE READER. This is our only mode right now.
 	    $msg = "200 Rocksolid Light NNRP Server ready (no posting)\r\n";
 	    fwrite($msgsock, $msg, strlen($msg));
 	    continue;
@@ -1044,7 +1044,7 @@ function get_list($mode, $msgsock) {
       if(trim($name[1]) !== "") {
         $msg.=$findgroup."\r\n";
       } elseif(file_exists($spooldir."/".$name[0]."-title")) {
-        $msg.=file_get_contents($spooldir."/".$name[0]."-title", IGNORE_NEW_LINES);
+        $msg.=file_get_contents($spooldir."/".$name[0]."-title")."\r\n";
       } else {
         $msg.=$findgroup."\r\n";
       }
