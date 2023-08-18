@@ -97,9 +97,8 @@ if (isset($_GET['time'])) {
   }
 }
 
-$_GET['thisgroup'] = _rawurldecode($_GET['thisgroup']);
-
 if (isset($_GET['thisgroup'])) {
+  $_GET['thisgroup'] = _rawurldecode($_GET['thisgroup']);
   if(get_section_by_group($_GET['thisgroup']) == false) {
       echo "Group not found";
       exit(1);
