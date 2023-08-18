@@ -502,50 +502,36 @@ function groups_read($server,$port,$load=0,$force_reload=false) {
     if ($ns == false) return false;
 //    $gf=fopen($file_groups,"r");
     $gfdata = file($file_groups);
-    // if we want to mark groups with new articles with colors, wie will later
+    // if we want to mark groups with new articles with colors, we will later
     // need the format of the overview
     $overviewformat=thread_overview_read($ns);
     foreach($gfdata as $gf) {
       $gruppe=new newsgroupType;
-      $tmp=trim($gf);
-      $tmp=preg_replace('/\t/', ' ', $tmp);
+      $tmp=preg_replace('/\t/', ' ', trim($gf));
       if(substr($tmp,0,1)==":") {
         $gruppe->text=substr($tmp,1);
-        $newsgroups[]=$gruppe;  
-      } elseif(strlen(trim($tmp))>0) {
+        $newsgroups[]=$gruppe;
+      } elseif(strlen($tmp)>0) {
         // is there a description in groups.txt?
-	$pos=strpos($tmp," ");
-        if ($pos != false) {
-          // yes.
-          $gruppe->name=substr($tmp,0,$pos);
-          $desc=substr($tmp,$pos);
-        } else {
+          $gr = explode(" ", $tmp, 2);
+          if(isset($gr[1])) { // Yes
+              $gruppe->name=$gr[0];
+              $desc=$gr[1];
+          } else { // No
           // no, get it from the newsserver.
           $gruppe->name=$tmp;
-          fputs($ns,"XGTITLE $gruppe->name\r\n");
-          $response=line_read($ns);
-          if (strcmp(substr($response,0,3),"282") == 0) {
-            $neu=line_read($ns);
-            do {
-              $response=$neu;
-              echo $response;
-              if ($neu != ".") $neu=line_read($ns);
-            } while ($neu != ".");
-            $desc=strrchr($response,"\t");
-            if (strcmp($response,".") == 0) {
-              $desc="-";
-            }
+          if(is_file($spooldir.'/'.$tmp.'-title')) {
+              $response = file_get_contents($spooldir.'/'.$tmp.'-title');
+              $desc=strrchr($response,"\t");
           } else {
-            $desc="";
-          }
-          if (strcmp(substr($response,0,3),"500") == 0)
-            $desc="-";
+              $desc = "-";
+          }    
         }
         if (strcmp($desc,"") == 0) $desc="-";
         $gruppe->description=$desc;
         fputs($ns,"GROUP ".$gruppe->name."\r\n"); 
         $t=explode(" ",line_read($ns));
-//RETRO
+
 	if($t[0]=="211")
 		$gruppe->count=$t[1];
 	else {
