@@ -1,5 +1,8 @@
 Installing Rocksolid Light (rslight) - a web based Usenet news client
 
+IMPORTANT 0.9.0 UPGRADE INFORMATION:
+The articles-overview.db3 database has changed in this version. It is required to update it before running the site. SEE INFORMATION BELOW.
+
 Requirements:
 
 You will need a web server: rslight has been tested with apache2, lighttpd, nginx
@@ -33,6 +36,21 @@ Optional: phpmailer, gnupg
 
 Installation: 
 
+IMPORTANT 0.9.0 UPGRADE INFORMATION:
+The articles-overview.db3 database has changed in this version. It is required to update it before running the site:
+
+1. Disable the cron job (cron.php). and kill all instances of nntp.
+2. Fully back up your site.
+3. Perform upgrade using provided script (or do it manually if you wish)
+4. cd to your $webdir/spoolnews directory.
+5. Run 'php $config_dir/scripts/0.9.0-upgrade.php' and wait..........
+   This will create a new overview database, and it will take a while
+   based on how many articles on your site.
+6. When that is complete, rename or delete 'articles-overview.db3'.
+7. Rename '0.9.0-articles-overview.db3' to 'articles-overview.db3'.
+8. Restart cron job and wait for things to start running.
+
+NORMAL UPGRADE:
 1. Set up your webserver to handle php files
 
 2. Extract rslight into a temporary location
