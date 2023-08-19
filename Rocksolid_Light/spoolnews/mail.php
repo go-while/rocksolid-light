@@ -158,7 +158,7 @@ echo '</table>';
       if(($row['mail_from'] != $user) && ($row['rcpt_to'] != $user)) {
 	continue;
       } 
-      $body = rtrim(nl2br($row['message'])).'<br />'; 
+      $body = rtrim($row['message']).'<br /><br />';
       echo '<div class="np_article_header">';
       echo '<b>Subject:</b> '.$row['subject'].'<br />';  
       echo '<b>From:</b> '.$row['mail_from'].'<br />';
