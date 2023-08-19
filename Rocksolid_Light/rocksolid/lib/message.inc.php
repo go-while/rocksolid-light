@@ -594,6 +594,22 @@ function text2html($text) {
     return $text;
 }
 
+function nl2p($string, $line_breaks = true, $xml = true) {
+    
+    $string = str_replace(array('<p>', '</p>', '<br>', '<br />'), '', $string);
+    
+    // It is conceivable that people might still want single line-breaks
+    // without breaking into a new paragraph.
+    if ($line_breaks == true)
+        return '<p>'.preg_replace(array("/([\n]{2,})/i", "/([^>])\n([^<])/i"), array("</p>\n<p>", '$1<br'.($xml == true ? ' /' : '').'>$2'), trim($string)).'</p>';
+        else
+            return '<p>'.preg_replace(
+                array("/([\n]{2,})/i", "/([\r\n]{3,})/i","/([^>])\n([^<])/i"),
+                array("</p>\n<p>", "</p>\n<p>", '$1<br'.($xml == true ? ' /' : '').'>$2'),
+                
+                trim($string)).'</p>';
+}
+
 /*
  * print an article to the webpage
  *
@@ -628,7 +644,6 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
       show_header($head,$group,$local_poster);
 // X-Face
   if ($face = display_full_headers($head->number,$group,$head->name,$head->from,true)) {
-//      $pngfile = '../tmp/face-'.preg_replace("/[^A-Za-z0-9 ]/", '', $head->id); 
       $pngfile = '../tmp/face-'.hash('ripemd160', $face);
     if(file_exists($pngfile)) {
       echo '<img align="right" src="'.$pngfile.'">';
@@ -660,6 +675,7 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
 	  $encrypted=true;
       }
       if($encrypted === false) {
+          $body = nl2p(htmlspecialchars($body));
         $body=decode_textbody($body,
                $article_data->header->content_type_format[$attachment]);
       }
