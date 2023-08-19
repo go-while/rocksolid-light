@@ -61,17 +61,19 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
     $dbh = overview_db_open($database);
     $query = $dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
     $query->execute([':newsgroup' => $group, ':expireme' => $expireme]);
-    $stmt = $articles_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+    $stmt = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
     $grouppath = preg_replace('/\./', '/', $group);
     $status = "deleted";
     $statusdate = time();
     $statusreason = "expired";
+    $i=0;
     while($row = $query->fetch()) {
         if(is_file($spooldir.'/articles/'.$grouppath.'/'.$row['number'])) {
             unlink($spooldir.'/articles/'.$grouppath.'/'.$row['number']);
         }
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
         thread_cache_removearticle($group,$row['number']);
+        $i++;
     }
     $stmt->execute([':newsgroup' => $group, ':expireme' => $expireme]);
     $dbh = null;
@@ -79,4 +81,5 @@ file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$group."
     touch($spooldir.'/'.$config_name.'-expire-timer');
     echo "Expired ".$i." articles for ".$group."\n";
     file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Expired ".$i." articles for ".$group, FILE_APPEND);
+}
 ?>
