@@ -590,11 +590,14 @@ function decode_textbody($body,$format="fixed") {
  * to their entities
  */
 function text2html($text) {
+    /*
   return preg_replace("/^ /i","&nbsp;",
          str_replace("  ","&nbsp; ",
          str_replace("  ","&nbsp; ",
          str_replace("\n","<br>",
          htmlspecialchars($text)))));
+         */
+    return $text;
 }
 
 
@@ -689,7 +692,8 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
             echo '<blockquote class="np_article_quote">';
           for($j=@$body[$i]->depth; $j<$depth; $j++)
             echo '</blockquote>';
-          $t=html_parse(text2html(@$body[$i]->text)).'<br>';
+            $t = @$body[$i]->text;
+        //  $t=html_parse(text2html(@$body[$i]->text)).'<br>';
           echo $t;
           $currentlen+=strlen($t);
           echo "\n";
@@ -700,7 +704,7 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
             if(trim($body[$i]->text)=='')
               $t="<br>\n";
             else
-              $t=html_parse(text2html($body[$i]->text))."<br>\n";
+                $t = @$body[$i]->text;
           } else {
             $t='<i>'.str_repeat('&gt;',$body[$i]->depth).' '.
               html_parse(text2html(
@@ -749,6 +753,7 @@ if ((isset($attachment_show)) && ($attachment_show==true) &&
       echo $body;
     }
   }
+  echo '</div>';
 }
 
 function message_decrypt($key,$group,$id,$attachment=0,$article_data=false,$maxlen=false) {
