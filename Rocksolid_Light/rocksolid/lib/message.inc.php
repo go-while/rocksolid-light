@@ -590,16 +590,9 @@ function decode_textbody($body,$format="fixed") {
  * to their entities
  */
 function text2html($text) {
-    /*
-  return preg_replace("/^ /i","&nbsp;",
-         str_replace("  ","&nbsp; ",
-         str_replace("  ","&nbsp; ",
-         str_replace("\n","<br>",
-         htmlspecialchars($text)))));
-         */
+// These features have been replaced by css
     return $text;
 }
-
 
 /*
  * print an article to the webpage
@@ -693,7 +686,6 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
           for($j=@$body[$i]->depth; $j<$depth; $j++)
             echo '</blockquote>';
             $t = @$body[$i]->text;
-        //  $t=html_parse(text2html(@$body[$i]->text)).'<br>';
           echo $t;
           $currentlen+=strlen($t);
           echo "\n";
