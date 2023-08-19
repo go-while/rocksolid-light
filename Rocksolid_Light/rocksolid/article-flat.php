@@ -1,79 +1,82 @@
 <?php
-  session_start();
-  header("Expires: ".gmdate("D, d M Y H:i:s",time()+(600))." GMT");
-  header("Cache-Control: max-age=100");
-  header("Pragma: cache");
+session_start();
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (600)) . " GMT");
+header("Cache-Control: max-age=100");
+header("Pragma: cache");
 
-  include "config.inc.php";
-  include "auth.inc";
-  include "$file_newsportal";
+include "config.inc.php";
+include "auth.inc";
+include "$file_newsportal";
 
-  $logfile=$logdir.'/newsportal.log';
-  throttle_hits();
-  write_access_log();
-  if(isset($_COOKIE['mail_name'])) {
-    if($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-      $userfile=$spooldir.'/'.strtolower($_COOKIE['mail_name']).'-articleviews.dat';
+$logfile = $logdir . '/newsportal.log';
+throttle_hits();
+write_access_log();
+if (isset($_COOKIE['mail_name'])) {
+    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
     }
-  }
-  // register parameters
-  $id=$_REQUEST["id"];
-  $group=_rawurldecode($_REQUEST["group"]);
-  
-// Switch to correct section in case group has been moved and link is to old section  
-  $findsection = get_section_by_group($group);
-  if(trim($findsection) !== $config_name) {
+}
+// register parameters
+$id = $_REQUEST["id"];
+$group = _rawurldecode($_REQUEST["group"]);
+
+// Switch to correct section in case group has been moved and link is to old section
+$findsection = get_section_by_group($group);
+if (trim($findsection) !== $config_name) {
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-      $link = "https";
-      else $link = "http";
-      $link .= "://";
-      $link .= $_SERVER['HTTP_HOST'];
-      $link .= $_SERVER['REQUEST_URI'];
-      $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
-      header("Location:$newurl");
-      die();
-  } 
-  if(strpos($id, '@') !== false) {
-    if($CONFIG['article_database'] == '1') {
-      $database = $spooldir.'/articles-overview.db3';
-      $articles_dbh = overview_db_open($database);
-      $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
-      $articles_query->execute(['messageid' => $id]);
-      $found = 0;
-      while ($row = $articles_query->fetch()) {
-        $id = $row['number'];
-        $group = $row['newsgroup'];
-        $found = 1;
-        break;
-      }
-      $dbh = null;
-      if($found) {
-        $newurl = 'article-flat.php?id='.$id.'&group='.$group.'#'.$id;
-        header("Location: $newurl");
-        die();
-      }
+        $link = "https";
+    else
+        $link = "http";
+    $link .= "://";
+    $link .= $_SERVER['HTTP_HOST'];
+    $link .= $_SERVER['REQUEST_URI'];
+    $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
+    header("Location:$newurl");
+    die();
+}
+if (strpos($id, '@') !== false) {
+    if ($CONFIG['article_database'] == '1') {
+        $database = $spooldir . '/articles-overview.db3';
+        $articles_dbh = overview_db_open($database);
+        $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
+        $articles_query->execute([
+            'messageid' => $id
+        ]);
+        $found = 0;
+        while ($row = $articles_query->fetch()) {
+            $id = $row['number'];
+            $group = $row['newsgroup'];
+            $found = 1;
+            break;
+        }
+        $dbh = null;
+        if ($found) {
+            $newurl = 'article-flat.php?id=' . $id . '&group=' . $group . '#' . $id;
+            header("Location: $newurl");
+            die();
+        }
     }
-  }
+}
 
-  if(isset($_REQUEST["first"]))
-    $first=$_REQUEST["first"];
+if (isset($_REQUEST["first"]))
+    $first = $_REQUEST["first"];
 
-  $_SESSION['rsactive'] = true;
+$_SESSION['rsactive'] = true;
 
-  if(!isset($_SERVER['REQUEST_STRING'])) {
-      $_SERVER['REQUEST_STRING'] = '';
-  }
-  $location = $_SERVER['REQUEST_URI'].$_SERVER['REQUEST_STRING'];
-  $_SESSION['return_page'] = $location.'#'.$id;
+if (! isset($_SERVER['REQUEST_STRING'])) {
+    $_SERVER['REQUEST_STRING'] = '';
+}
+$location = $_SERVER['REQUEST_URI'] . $_SERVER['REQUEST_STRING'];
+$_SESSION['return_page'] = $location . '#' . $id;
 
-//  file_put_contents($accessfile, "\n".format_log_date()." ".$config_name." ".$group.":".$id, FILE_APPEND); 
-  if($userdata) {
+// file_put_contents($accessfile, "\n".format_log_date()." ".$config_name." ".$group.":".$id, FILE_APPEND);
+if ($userdata) {
     $userdata[$group] = time();
     file_put_contents($userfile, serialize($userdata));
-  }
-  
-if(isset($frames_on) && $frames_on === true) {
-?>
+}
+
+if (isset($frames_on) && $frames_on === true) {
+    ?>
 <script>
     var contentURL=window.location.pathname+window.location.search+window.location.hash; 
     if ( window.self !== window.top ) {
@@ -86,102 +89,94 @@ if(isset($frames_on) && $frames_on === true) {
 <?php
 }
 
-  $message=message_read($id,0,$group);
+$message = message_read($id, 0, $group);
 
-  if (!$message) {
-    header ("HTTP/1.0 404 Not Found");
-    $subject=$title;
-    $title.=' - Article not found';
-    if($ns!=false)
-    nntp_close($ns);
-  } else {
-    $subject=htmlspecialchars($message->header->subject);
-	header("Last-Modified: ".date("r", $message->header->date));
-    $title.= ' - '.$group.' - '.$subject;
-  }
-  include "head.inc";
-  echo '<h1 class="np_thread_headline">';
-  echo '<a href="'.$file_index.'" target='.$frame['menu'].'>'.basename(getcwd()).'</a> / ';
-  echo '<a href="'.$file_thread.'?group='.rawurlencode($group).'" target='.$frame["content"].'>'.htmlspecialchars(group_display_name($group)).'</a> / '.$subject.'</h1>';
-
-if(!$message) {
-  echo "Article not found";
-  include "tail.inc";
-  exit(0);
+if (! $message) {
+    header("HTTP/1.0 404 Not Found");
+    $subject = $title;
+    $title .= ' - Article not found';
+    if ($ns != false)
+        nntp_close($ns);
+} else {
+    $subject = htmlspecialchars($message->header->subject);
+    header("Last-Modified: " . date("r", $message->header->date));
+    $title .= ' - ' . $group . ' - ' . $subject;
 }
- 
-if($message) {
-  // load thread-data and get IDs of the actual subthread
-  $thread=thread_load($group);
-  $subthread=thread_getsubthreadids($message->header->id,$thread);
-  if($thread_articles == false) {
-    sort($subthread);
-  }
-  // If no page is set, lets look, if we can calculate the page by
-  // the message-number
-  if(!isset($first)) {
-    $first=intval(array_search($id,$subthread)/$articleflat_articles_per_page)*
-           $articleflat_articles_per_page+1;
-  }
+include "head.inc";
+echo '<h1 class="np_thread_headline">';
+echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
 
-  // which articles are exactly on this page?
-  $pageids=array();
-  for($i=$first-1; (($i<count($subthread)) && 
-                  ($i<$first+$articleflat_articles_per_page-1)); $i++) {  
-    $pageids[]=$subthread[$i];
-  }
+if (! $message) {
+    echo "Article not found";
+    include "tail.inc";
+    exit(0);
+}
 
-  // display the thread on top
-  // change some of the default threadstyle-values
-  $thread_show["replies"]=true;
-  $thread_show["threadsize"]=false;
-  $thread_show["lastdate"]=false;
-  $thread_show["latest"]=false;
-  $thread_show["author"]=true;
-  //message_thread($message->header->id,$group,$thread,$pageids);
-    message_thread($message->header->id,$group,$thread,false);
-  echo '<br>';
-  echo '<a name="start"></a>';
-  // navigation line
-  echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-// Article List button
-    echo '<td>';
-    echo '<form action="'.$file_thread.'">';
-    echo '<input type="hidden" name="group" value="'.rawurlencode($group).'"/>';
-    echo '<button class="np_button_link" type="submit">'.htmlspecialchars(group_display_name($group)).'</button>';
-    echo '</form>';
-    echo '</td>';
-// Pages
-    echo '<td class="np_pages" width="100%" align="right">';
-    echo articleflat_pageselect($group,$id,count($subthread),$first);
-    echo '</td></tr></table>';
-  foreach($pageids as $subid) {
-    flush();
-    $message=message_read($subid,0,$group);
-    echo '<a name="'.$subid.'"> </a>';
-    message_show($group,$subid,0,$message,$articleflat_chars_per_articles);
-    if ((!$CONFIG['readonly']) && ($message)) {
-      echo '<form action="'.$file_post.'">'.
-           '<input type="hidden" name="id" value="'.urlencode($subid).'">'.
-           '<input type="hidden" name="type" value="reply">'.
-           '<input type="hidden" name="group" value="'.urlencode($group).'">'.           
-           '<input type="submit" value="'.$text_article["button_answer"].
-           '">'.
-           '</form>';
+if ($message) {
+    // load thread-data and get IDs of the actual subthread
+    $thread = thread_load($group);
+    $subthread = thread_getsubthreadids($message->header->id, $thread);
+    if ($thread_articles == false) {
+        sort($subthread);
     }
-  }
-  // navigation line
-  echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-// Article List button
+    // If no page is set, lets look, if we can calculate the page by
+    // the message-number
+    if (! isset($first)) {
+        $first = intval(array_search($id, $subthread) / $articleflat_articles_per_page) * $articleflat_articles_per_page + 1;
+    }
+
+    // which articles are exactly on this page?
+    $pageids = array();
+    for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $articleflat_articles_per_page - 1)); $i ++) {
+        $pageids[] = $subthread[$i];
+    }
+
+    // display the thread on top
+    // change some of the default threadstyle-values
+    $thread_show["replies"] = true;
+    $thread_show["threadsize"] = false;
+    $thread_show["lastdate"] = false;
+    $thread_show["latest"] = false;
+    $thread_show["author"] = true;
+    // message_thread($message->header->id,$group,$thread,$pageids);
+    message_thread($message->header->id, $group, $thread, false);
+    echo '<br>';
+    echo '<a name="start"></a>';
+    // navigation line
+    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    // Article List button
     echo '<td>';
-    echo '<form action="'.$file_thread.'">';
-    echo '<input type="hidden" name="group" value="'.rawurlencode($group).'"/>';
-    echo '<button class="np_button_link" type="submit">'.htmlspecialchars(group_display_name($group)).'</button>';
+    echo '<form action="' . $file_thread . '">';
+    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '"/>';
+    echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
     echo '</form>';
     echo '</td>';
-// Pages
+    // Pages
     echo '<td class="np_pages" width="100%" align="right">';
-    echo articleflat_pageselect($group,$id,count($subthread),$first);
+    echo articleflat_pageselect($group, $id, count($subthread), $first);
+    echo '</td></tr></table>';
+    foreach ($pageids as $subid) {
+        flush();
+        $message = message_read($subid, 0, $group);
+        echo '<a name="' . $subid . '"> </a>';
+        message_show($group, $subid, 0, $message, $articleflat_chars_per_articles);
+        if ((! $CONFIG['readonly']) && ($message)) {
+            echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
+        }
+    }
+    // navigation line
+    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    // Article List button
+    echo '<td>';
+    echo '<form action="' . $file_thread . '">';
+    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '"/>';
+    echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
+    echo '</form>';
+    echo '</td>';
+    // Pages
+    echo '<td class="np_pages" width="100%" align="right">';
+    echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
 }
 include "tail.inc";

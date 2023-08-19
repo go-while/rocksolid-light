@@ -2,7 +2,7 @@
 session_cache_limiter('public');
 session_start();
 
-header("Expires: ".gmdate("D, d M Y H:i:s",time()+(600))." GMT");
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (600)) . " GMT");
 header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
@@ -13,78 +13,78 @@ throttle_hits();
 
 $snippet_size = 100;
 
-if(isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
-  unset($_REQUEST['data']);
+if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
+    unset($_REQUEST['data']);
 }
 
-if((!isset($_POST['key']) || !password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && !$_REQUEST['data'])) {
-include "head.inc"; 
+if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
+    include "head.inc";
 
-  echo '<h1 class="np_thread_headline">';
-  echo '<a href="'.$file_index.'" target='.$frame['menu'].'>'.basename(getcwd()).'</a> / ';
-  echo 'search</h1>';
-  echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-  if(isset($_GET['group'])) {
-    $searching = $_GET['group'];
-  } else {
-    $searching = $config_name;
-  }
-  echo '<body>';
-  echo '<table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
-  echo '<tr>';
-  echo '<form name="form1" method="post" action="search.php">';
-  echo '<td>';
-  echo '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="1">';
-  echo '<tr>';
-  echo '<td colspan="3">Searching <strong>'.$searching.'</strong></td>';
-  echo '</tr>';
-  echo '<tr></tr>';
-  echo '<tr>';
-  if(!isset($_REQUEST['data'])) {
-    echo '<td>Search Terms:&nbsp';
-  } else {
-    echo '<td>Search Poster:&nbsp';
-  }
-  if(isset($_GET['terms'])) {
-    echo '<input name="terms" type="text" id="terms" value="'.$_GET['terms'].'"></td>';
-  } else {
-    echo '<input name="terms" type="text" id="terms"></td>';
-  }
-  echo '</tr><tr></tr><tr><td>';
+    echo '<h1 class="np_thread_headline">';
+    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo 'search</h1>';
+    echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+    if (isset($_GET['group'])) {
+        $searching = $_GET['group'];
+    } else {
+        $searching = $config_name;
+    }
+    echo '<body>';
+    echo '<table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
+    echo '<tr>';
+    echo '<form name="form1" method="post" action="search.php">';
+    echo '<td>';
+    echo '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="1">';
+    echo '<tr>';
+    echo '<td colspan="3">Searching <strong>' . $searching . '</strong></td>';
+    echo '</tr>';
+    echo '<tr></tr>';
+    echo '<tr>';
+    if (! isset($_REQUEST['data'])) {
+        echo '<td>Search Terms:&nbsp';
+    } else {
+        echo '<td>Search Poster:&nbsp';
+    }
+    if (isset($_GET['terms'])) {
+        echo '<input name="terms" type="text" id="terms" value="' . $_GET['terms'] . '"></td>';
+    } else {
+        echo '<input name="terms" type="text" id="terms"></td>';
+    }
+    echo '</tr><tr></tr><tr><td>';
 
-if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
-  if($CONFIG['article_database'] == '1') {
-    echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
-  }
-  echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-  echo '<input type="radio" name="searchpoint" value="name" checked="checked"/>Poster&nbsp;';
-  echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
-} else {
-  if($CONFIG['article_database'] == '1') {
-    echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
-  }
-  echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-  echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-  echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+    if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
+        if ($CONFIG['article_database'] == '1') {
+            echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+        }
+        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="name" checked="checked"/>Poster&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+    } else {
+        if ($CONFIG['article_database'] == '1') {
+            echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
+        }
+        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+    }
+    echo '</td></tr>';
+    echo '<tr>';
+    echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
+    if (isset($_GET['group'])) {
+        echo '<input type="hidden" name="group" value="' . $_GET['group'] . '">';
+    }
+    echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
+    if (isset($_GET['data'])) {
+        echo '<input type="hidden" name="data" value="' . $_GET['data'] . '">';
+    }
+    echo '</tr><tr></tr><tr>';
+    echo '<td><input type="submit" name="Submit" value="Search"></td>';
+    echo '</tr><tr><td><td></td><td></td></table></td></form></tr></table></body></html>';
+    exit(0);
 }
-  echo '</td></tr>';
-  echo '<tr>';
-  echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
-  if(isset($_GET['group'])) {
-    echo '<input type="hidden" name="group" value="'.$_GET['group'].'">';
-  }
-  echo '<input type="hidden" name="key" value="'.password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT).'">';
-  if(isset($_GET['data'])) {
-    echo '<input type="hidden" name="data" value="'.$_GET['data'].'">';
-  }
-  echo '</tr><tr></tr><tr>';
-  echo '<td><input type="submit" name="Submit" value="Search"></td>';
-  echo '</tr><tr><td><td></td><td></td></table></td></form></tr></table></body></html>';
-  exit(0); 
-} 
 
-if(isset($frames_on) && $frames_on === true) {
-?>
+if (isset($frames_on) && $frames_on === true) {
+    ?>
 <script>
     var contentURL=window.location.pathname+window.location.search+window.location.hash;
     if ( window.self !== window.top ) {
@@ -103,38 +103,38 @@ $maxdisplay = 1000;
 
 $thissite = '.';
 
-$groupconfig=$config_path."/groups.txt";
+$groupconfig = $config_path . "/groups.txt";
 
-$title.=' - search results for: '.$_POST['terms'];
+$title .= ' - search results for: ' . $_POST['terms'];
 include "head.inc";
 
 ob_start();
 if (isset($_POST['thisgroup'])) {
-    echo '<h1 class="np_thread_headline">'.$grouplist[0].' (latest)</h1>';
+    echo '<h1 class="np_thread_headline">' . $grouplist[0] . ' (latest)</h1>';
     echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-// Article List button
+    // Article List button
     echo '<td>';
-    echo '<form action="'.$file_thread.'">';
-    echo '<input type="hidden" name="group" value="'.$grouplist[0].'"/>';
-    echo '<button class="np_button_link" type="submit">'.$text_article["back_to_group"].'</button>';
+    echo '<form action="' . $file_thread . '">';
+    echo '<input type="hidden" name="group" value="' . $grouplist[0] . '"/>';
+    echo '<button class="np_button_link" type="submit">' . $text_article["back_to_group"] . '</button>';
     echo '</form>';
     echo '</td>';
-// Newsgroups button (hidden)
+    // Newsgroups button (hidden)
     echo '<td>';
-    echo '<form action="'.$file_index.'">';
-    echo '<button class="np_button_hidden" type="submit">'.$text_thread["button_grouplist"].'</button>';
+    echo '<form action="' . $file_index . '">';
+    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
     echo '</form>';
     echo '</td>';
     echo '</tr></table>';
-} else { 
+} else {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="'.$file_index.'" target='.$frame['menu'].'>'.basename(getcwd()).'</a> / ';
-    echo 'search results for: '.$_POST['terms'].'</h1>';
+    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo 'search results for: ' . $_POST['terms'] . '</h1>';
     echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-// Newsgroups button (hidden)
+    // Newsgroups button (hidden)
     echo '<td>';
-    echo '<form action="'.$file_index.'">';
-    echo '<button class="np_button_hidden" type="submit">'.$text_thread["button_grouplist"].'</button>';
+    echo '<form action="' . $file_index . '">';
+    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
     echo '</form>';
     echo '</td>';
     echo '</tr></table>';
@@ -143,117 +143,119 @@ echo '<table cellspacing="0" width="100%" class="np_results_table">';
 
 # Iterate through groups
 
-$results=0;
-  if(isset($_COOKIE['tzo'])) {
-    $offset=$_COOKIE['tzo'];
-  } else {
-    $offset=$CONFIG['timezone'];
-  }
-  $overview = array();
-  if(!isset($group)) {
+$results = 0;
+if (isset($_COOKIE['tzo'])) {
+    $offset = $_COOKIE['tzo'];
+} else {
+    $offset = $CONFIG['timezone'];
+}
+$overview = array();
+if (! isset($group)) {
     $group = null;
-  }
-  if($_POST['searchpoint'] == 'body') {
+}
+if ($_POST['searchpoint'] == 'body') {
     $overview = get_body_search($group, $_POST['terms']);
-  } else { 
-    if(isset($_REQUEST['data'])) {
-      $overview = get_header_search($group, base64_decode(urldecode($_REQUEST['data'])));
+} else {
+    if (isset($_REQUEST['data'])) {
+        $overview = get_header_search($group, base64_decode(urldecode($_REQUEST['data'])));
     } else {
-      $overview = get_header_search($group, $_POST['terms']);
+        $overview = get_header_search($group, $_POST['terms']);
     }
-  }
-  foreach($overview as $overviewline) {
-/* Find section for links */
-    $menulist = file($config_dir."menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+}
+foreach ($overview as $overviewline) {
+    /* Find section for links */
+    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-    foreach($menulist as $menu) {
-      if($menu[0] == '#') {
-        continue;
-      }
-      $menuitem=explode(':', $menu);
-      $glfp=fopen($config_dir.$menuitem[0]."/groups.txt", 'r');
-      $section="";
-      while($gl=fgets($glfp)) {
-        $group_name = preg_split("/( |\t)/", $gl, 2);
-        if(stripos(trim($overviewline['newsgroup']), trim($group_name[0])) !== false) {
-          $section=$menuitem[0];
-          break 2;
+    foreach ($menulist as $menu) {
+        if ($menu[0] == '#') {
+            continue;
         }
-      }
+        $menuitem = explode(':', $menu);
+        $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
+        $section = "";
+        while ($gl = fgets($glfp)) {
+            $group_name = preg_split("/( |\t)/", $gl, 2);
+            if (stripos(trim($overviewline['newsgroup']), trim($group_name[0])) !== false) {
+                $section = $menuitem[0];
+                break 2;
+            }
+        }
     }
 
     fclose($glfp);
-		    # Generate link
-		    $url = "../".$section."/article-flat.php?id=".$overviewline['number']."&group="._rawurlencode($overviewline['newsgroup'])."#".$overviewline['number'];
-		    $groupurl = "../".$section."/thread.php?group="._rawurlencode($overviewline['newsgroup']);
-		    $fromoutput = explode("<", html_entity_decode($overviewline['name']));
+    # Generate link
+    $url = "../" . $section . "/article-flat.php?id=" . $overviewline['number'] . "&group=" . _rawurlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
+    $groupurl = "../" . $section . "/thread.php?group=" . _rawurlencode($overviewline['newsgroup']);
+    $fromoutput = explode("<", html_entity_decode($overviewline['name']));
 
-		// Use local timezone if possible
-		$ts = new DateTime(date($text_header["date_format"], $overviewline['date']), new DateTimeZone('UTC'));
-      		$ts->add(DateInterval::createFromDateString($offset.' minutes'));
+    // Use local timezone if possible
+    $ts = new DateTime(date($text_header["date_format"], $overviewline['date']), new DateTimeZone('UTC'));
+    $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
 
-      		if($offset != 0) {
-        		$newdate = $ts->format('D, j M Y H:i');
-      		} else {
-        		$newdate = $ts->format($text_header["date_format"]);
-      		}
+    if ($offset != 0) {
+        $newdate = $ts->format('D, j M Y H:i');
+    } else {
+        $newdate = $ts->format($text_header["date_format"]);
+    }
 
-       		unset($ts);
-		    
-		$fromline=address_decode(headerDecode($overviewline['name']),"nowhere");
+    unset($ts);
 
-      		if (!isset($fromline[0]["personal"])) {
-        		$lastname=$fromline[0]["mailbox"];;
-      		} else {
-        		$lastname=$fromline[0]["personal"];
-      		}
+    $fromline = address_decode(headerDecode($overviewline['name']), "nowhere");
 
-		if(($results % 2) != 0){
-			    echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
-		    } else {
-			    echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
-		    }
+    if (! isset($fromline[0]["personal"])) {
+        $lastname = $fromline[0]["mailbox"];
+        ;
+    } else {
+        $lastname = $fromline[0]["personal"];
+    }
 
-		    echo '<p class=np_ob_subject>';
-		    echo '<b><a href="'.$url.'">'.htmlspecialchars(mb_decode_mimeheader($overviewline['subject']))."</a></b>\r\n";
-		    echo '</p><p class=np_ob_group>';
-		    echo '<a href="'.$groupurl.'">'.$overviewline['newsgroup'].'</a>';
-		    echo '</p>';
-  
-      $fromline = address_decode($overviewline['name'],"nowhere");
-          if (!isset($fromline[0]["host"])) $fromline[0]["host"]="";
-          $name_from=$fromline[0]["mailbox"]."@".$fromline[0]["host"];
-          $name_username=$fromline[0]["mailbox"];
-          if (!isset($fromline[0]["personal"])) {
-            $poster_name=$fromline[0]["mailbox"];
-          } else {
-            $poster_name=$fromline[0]["personal"];
-          }
-       if(trim($poster_name) == '') {
-         $fromoutput = explode("<", html_entity_decode($c->name));
-         if(strlen($fromoutput[0]) < 1) {
-           $poster_name = $fromoutput[1];
-         } else {
-           $poster_name = $fromoutput[0];
-         }
-       }
-       $poster_name = trim(mb_decode_mimeheader($poster_name), " \n\r\t\v\0\"");
-	   	    echo '<p class=np_ob_posted_date>Posted: '.$newdate.' by: '.create_name_link($poster_name, $name_from).'</p>';
-		    if($_POST['searchpoint'] == 'body') {
-			$snip = strip_tags(quoted_printable_decode($overviewline['snippet']), '<strong><font><i>');
-		    } else {
-		        $snip = strip_tags(quoted_printable_decode($overviewline['search_snippet']), '<strong><font><i>');
-			$snip = substr($snip, 0, $snippet_size);
-		    }
-		    echo $snip;
-		    echo '</td></tr>';
-		    if($results++ > ($maxdisplay - 2))
-                        break;
+    if (($results % 2) != 0) {
+        echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+    } else {
+        echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+    }
+
+    echo '<p class=np_ob_subject>';
+    echo '<b><a href="' . $url . '">' . htmlspecialchars(mb_decode_mimeheader($overviewline['subject'])) . "</a></b>\r\n";
+    echo '</p><p class=np_ob_group>';
+    echo '<a href="' . $groupurl . '">' . $overviewline['newsgroup'] . '</a>';
+    echo '</p>';
+
+    $fromline = address_decode($overviewline['name'], "nowhere");
+    if (! isset($fromline[0]["host"]))
+        $fromline[0]["host"] = "";
+    $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+    $name_username = $fromline[0]["mailbox"];
+    if (! isset($fromline[0]["personal"])) {
+        $poster_name = $fromline[0]["mailbox"];
+    } else {
+        $poster_name = $fromline[0]["personal"];
+    }
+    if (trim($poster_name) == '') {
+        $fromoutput = explode("<", html_entity_decode($c->name));
+        if (strlen($fromoutput[0]) < 1) {
+            $poster_name = $fromoutput[1];
+        } else {
+            $poster_name = $fromoutput[0];
+        }
+    }
+    $poster_name = trim(mb_decode_mimeheader($poster_name), " \n\r\t\v\0\"");
+    echo '<p class=np_ob_posted_date>Posted: ' . $newdate . ' by: ' . create_name_link($poster_name, $name_from) . '</p>';
+    if ($_POST['searchpoint'] == 'body') {
+        $snip = strip_tags(quoted_printable_decode($overviewline['snippet']), '<strong><font><i>');
+    } else {
+        $snip = strip_tags(quoted_printable_decode($overviewline['search_snippet']), '<strong><font><i>');
+        $snip = substr($snip, 0, $snippet_size);
+    }
+    echo $snip;
+    echo '</td></tr>';
+    if ($results ++ > ($maxdisplay - 2))
+        break;
 }
 
 echo '</table>';
-echo "<p class=np_ob_tail><b>".$results."</b> matching articles found.</p>\r\n";
-#echo "<center><i>Rocksolid Overboard</i> version ".$version;
+echo "<p class=np_ob_tail><b>" . $results . "</b> matching articles found.</p>\r\n";
+# echo "<center><i>Rocksolid Overboard</i> version ".$version;
 include "tail.inc";
 
 $thispage = ob_get_contents();
@@ -262,129 +264,130 @@ ob_end_clean();
 
 echo $thispage;
 
-function get_body_search($group, $terms) {
-  GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
-  $terms = preg_replace("/'/", ' ', $terms);
-  $terms = trim($terms);
-  if($terms[0] !== '"' || substr($terms, -1) !== '"') {
-    $terms = preg_replace('/"/', '', $terms);
-    $terms = preg_replace("/\ /", '" "', $terms);
-    $terms = preg_replace('/"NEAR"/', 'NEAR', $terms);
-    $terms = preg_replace('/"AND"/', 'AND', $terms);
-    $terms = preg_replace('/"OR"/', 'OR', $terms);
-    $terms = preg_replace('/"NOT"/', 'NOT', $terms);
-    $terms = '"'.$terms.'"';
-  }
-    if(isset($_POST['group'])) {
-      $grouplist[0] = $_POST['group'];
-    } else {
-      $local_groupfile=$spooldir."/".$config_name."/local_groups.txt";
-      $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+function get_body_search($group, $terms)
+{
+    GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
+    $terms = preg_replace("/'/", ' ', $terms);
+    $terms = trim($terms);
+    if ($terms[0] !== '"' || substr($terms, - 1) !== '"') {
+        $terms = preg_replace('/"/', '', $terms);
+        $terms = preg_replace("/\ /", '" "', $terms);
+        $terms = preg_replace('/"NEAR"/', 'NEAR', $terms);
+        $terms = preg_replace('/"AND"/', 'AND', $terms);
+        $terms = preg_replace('/"OR"/', 'OR', $terms);
+        $terms = preg_replace('/"NOT"/', 'NOT', $terms);
+        $terms = '"' . $terms . '"';
     }
-    foreach($grouplist as $thisgroup) {
-      $name = explode(':', $thisgroup);
-      $group=$name[0];
-      $database = $spooldir.'/'.$group.'-articles.db3';
-      if(!is_file($database)) {
-	    continue;
-      }
-      $dbh = article_db_open($database);
-      $stmt = $dbh->prepare("SELECT snippet(search_fts, 6, '<strong><font class=search_result><i>', '</i></font></strong>', '...', $snippet_size) as snippet, newsgroup, number, name, date, subject, rank FROM search_fts WHERE search_fts MATCH 'search_snippet:$terms' ORDER BY rank");
-      $stmt->execute();
+    if (isset($_POST['group'])) {
+        $grouplist[0] = $_POST['group'];
+    } else {
+        $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
+        $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    }
+    foreach ($grouplist as $thisgroup) {
+        $name = explode(':', $thisgroup);
+        $group = $name[0];
+        $database = $spooldir . '/' . $group . '-articles.db3';
+        if (! is_file($database)) {
+            continue;
+        }
+        $dbh = article_db_open($database);
+        $stmt = $dbh->prepare("SELECT snippet(search_fts, 6, '<strong><font class=search_result><i>', '</i></font></strong>', '...', $snippet_size) as snippet, newsgroup, number, name, date, subject, rank FROM search_fts WHERE search_fts MATCH 'search_snippet:$terms' ORDER BY rank");
+        $stmt->execute();
 
-      while ($row = $stmt->fetch()) {
-        $overview[] = $row;
-      }
-      $dbh = null;
+        while ($row = $stmt->fetch()) {
+            $overview[] = $row;
+        }
+        $dbh = null;
     }
     // do not perform a usort of an empty search result
-    if ($overview != null)
-    {
-      usort($overview, 
-	function($a, $b) {
-      		return $a['rank'] <=> $b['rank'];
-  	});
+    if ($overview != null) {
+        usort($overview, function ($a, $b) {
+            return $a['rank'] <=> $b['rank'];
+        });
     }
-  return $overview;
+    return $overview;
 }
 
-function get_header_search($group, $terms) {
-  GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
-  $terms = preg_replace('/\%/', '\%', $terms);
-  $searchterms = "%".$terms."%";
-    if(isset($_POST['group']) && $_POST['searchpoint'] != 'msgid') {
-      $grouplist[0] = $_POST['group'];
-    } elseif($_POST['searchpoint'] != 'msgid') {
-        $local_groupfile=$spooldir."/".$config_name."/local_groups.txt";
+function get_header_search($group, $terms)
+{
+    GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
+    $terms = preg_replace('/\%/', '\%', $terms);
+    $searchterms = "%" . $terms . "%";
+    if (isset($_POST['group']) && $_POST['searchpoint'] != 'msgid') {
+        $grouplist[0] = $_POST['group'];
+    } elseif ($_POST['searchpoint'] != 'msgid') {
+        $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     } else {
-        $local_groupfile=$spooldir."/spoolnews/groups.txt";
+        $local_groupfile = $spooldir . "/spoolnews/groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     }
     # Prepare search database
-    $database = $spooldir.'/articles-overview.db3';
+    $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $dbh = overview_db_open($database, $table);
     $overview = array();
 
-    foreach($grouplist as $thisgroup) {
-      $name = explode(':', $thisgroup);
-      $group=$name[0];
-      $article_database = $spooldir.'/'.$group.'-articles.db3';
-      if(!is_file($article_database)) {
+    foreach ($grouplist as $thisgroup) {
+        $name = explode(':', $thisgroup);
+        $group = $name[0];
+        $article_database = $spooldir . '/' . $group . '-articles.db3';
+        if (! is_file($article_database)) {
             continue;
-      }
-      $article_dbh = article_db_open($article_database);
-      $article_stmt = $article_dbh->prepare("SELECT * FROM articles WHERE number=:number");
-          if(is_multibyte($_POST['terms'])) {
+        }
+        $article_dbh = article_db_open($article_database);
+        $article_stmt = $article_dbh->prepare("SELECT * FROM articles WHERE number=:number");
+        if (is_multibyte($_POST['terms'])) {
             $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:group");
             $stmt->bindParam(':group', $group);
             $stmt->execute();
-            while($found = $stmt->fetch()) {
-		    if(stripos(mb_decode_mimeheader($found[$_POST['searchpoint']]), $_POST['terms']) !== false) {
-          $article_stmt->bindParam(':number', $found['number']);
-          $article_stmt->execute();
-          $found_snip = $article_stmt->fetch();
-          $found['search_snippet'] = $found_snip['search_snippet'];
-          $found['sort_date'] = $found_snip['date'];
-                $overview[] = $found;
-              }
-            }
-          } else {
-            $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:group AND ".$_POST['searchpoint']." like :terms ESCAPE '\' ORDER BY date DESC");
-	    $stmt->bindParam(':group', $group);
-            $stmt->bindParam(':terms', $searchterms);
-            $check = "/([a-z]|[0-9]|\!|#|\$|\%|\&|\'|\*|\+|\-|\/|\=|\?|\^|\_|\"|\`|\{|\||\}|\~|\;)".trim($searchterms, '\%')."/i";
-            $stmt->execute();
-            while($found = $stmt->fetch()) {
-              if(isset($_REQUEST['data']) && ($_REQUEST['searchpoint'] == 'name')) {
-                if(preg_match($check, $found['name'])) {
-                  continue;
+            while ($found = $stmt->fetch()) {
+                if (stripos(mb_decode_mimeheader($found[$_POST['searchpoint']]), $_POST['terms']) !== false) {
+                    $article_stmt->bindParam(':number', $found['number']);
+                    $article_stmt->execute();
+                    $found_snip = $article_stmt->fetch();
+                    $found['search_snippet'] = $found_snip['search_snippet'];
+                    $found['sort_date'] = $found_snip['date'];
+                    $overview[] = $found;
                 }
-              }
-	      $article_stmt->bindParam(':number', $found['number']);
-	      $article_stmt->execute();
-	      $found_snip = $article_stmt->fetch();
-	      $found['search_snippet'] = $found_snip['search_snippet'];
-	      $found['sort_date'] = $found_snip['date'];
-              $overview[] = $found;
             }
-          }
-    $article_dbh = null;
+        } else {
+            $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:group AND " . $_POST['searchpoint'] . " like :terms ESCAPE '\' ORDER BY date DESC");
+            $stmt->bindParam(':group', $group);
+            $stmt->bindParam(':terms', $searchterms);
+            $check = "/([a-z]|[0-9]|\!|#|\$|\%|\&|\'|\*|\+|\-|\/|\=|\?|\^|\_|\"|\`|\{|\||\}|\~|\;)" . trim($searchterms, '\%') . "/i";
+            $stmt->execute();
+            while ($found = $stmt->fetch()) {
+                if (isset($_REQUEST['data']) && ($_REQUEST['searchpoint'] == 'name')) {
+                    if (preg_match($check, $found['name'])) {
+                        continue;
+                    }
+                }
+                $article_stmt->bindParam(':number', $found['number']);
+                $article_stmt->execute();
+                $found_snip = $article_stmt->fetch();
+                $found['search_snippet'] = $found_snip['search_snippet'];
+                $found['sort_date'] = $found_snip['date'];
+                $overview[] = $found;
+            }
+        }
+        $article_dbh = null;
     }
-  $dbh = null;
-  usort($overview, function($b, $a) {
-    return $a['sort_date'] <=> $b['sort_date'];
-  });
-	return $overview;
+    $dbh = null;
+    usort($overview, function ($b, $a) {
+        return $a['sort_date'] <=> $b['sort_date'];
+    });
+    return $overview;
 }
 
-function highlightStr($haystack, $needle) {
+function highlightStr($haystack, $needle)
+{
     preg_match_all("/$needle+/i", $haystack, $matches);
     if (is_array($matches[0]) && count($matches[0]) >= 1) {
-	foreach ($matches[0] as $match) {
-	    $haystack = str_replace($match, '<b>'.$match.'</b>', $haystack);
-	}
+        foreach ($matches[0] as $match) {
+            $haystack = str_replace($match, '<b>' . $match . '</b>', $haystack);
+        }
     }
     return $haystack;
 }
