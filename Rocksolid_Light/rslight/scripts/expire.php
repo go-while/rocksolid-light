@@ -40,7 +40,7 @@ foreach ($grouplist as $groupline) {
     $showme = date('d M, Y', $expireme);
 
     echo "Expire $group articles before $showme\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring: articles before " . $showme, FILE_APPEND);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles before " . $showme, FILE_APPEND);
     if ($CONFIG['article_database'] == '1') {
         echo "Expiring article database...\n";
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring article database...", FILE_APPEND);
