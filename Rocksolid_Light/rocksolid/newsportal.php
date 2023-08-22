@@ -1499,6 +1499,23 @@ function mail_db_open($database, $table = 'messages')
     return ($dbh);
 }
 
+function threads_db_open($database, $table="threads")
+{
+    try {
+        $dbh = new PDO('sqlite:' . $database);
+    } catch (PDOException $e) {
+        echo 'Connection failed: ' . $e->getMessage();
+        exit();
+    }
+    $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+			id INTEGER PRIMARY KEY,
+			headers TEXT,
+            unique (headers))");
+    $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_headers on ' . $table . '(headers)');
+    $stmt->execute();
+    return ($dbh);
+}
+
 function history_db_open($database, $table = 'history')
 {
     try {
