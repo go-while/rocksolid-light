@@ -65,6 +65,8 @@ foreach ($messages as $message) {
     }
     rename($nocem_file, $nocem_path . "processed/" . $message);
 }
+prune_dir_by_days($nocem_path . "processed/", 30);
+prune_dir_by_days($nocem_path . "failed/", 30);
 unlink($lockfile);
 exit();
 

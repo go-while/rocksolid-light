@@ -92,6 +92,7 @@ function post_articles($ns, $spooldir)
             continue;
         }
     }
+    prune_dir_by_days($outgoing_dir, 7);
     return "Messages sent\r\n";
 }
 ?>
