@@ -647,31 +647,34 @@ function groups_show($gruppen)
             if ($g->description != "-")
                 $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
             // Subscribed features
-            $filename = $spooldir . "/" . $g->name . "-lastarticleinfo.dat";
-            if (is_file($filename)) {
-                $lastarticleinfo = unserialize(file_get_contents($filename));
-            } else {
-                $lastarticleinfo['date'] = 0;
+            // lastarticleinfo.dat is NOT reliable
+            /*
+             * $filename = $spooldir . "/" . $g->name . "-lastarticleinfo.dat";
+             * if (is_file($filename)) {
+             * $lastarticleinfo = unserialize(file_get_contents($filename));
+             * } else {
+             * $lastarticleinfo['date'] = 0;
+             * }
+             */
+            // if ($lastarticleinfo['date'] < 1) {
+            // Look up last article info for group (np does not write lastarticleinfo.dat properly for some reason)
+            $database = $spooldir . '/articles-overview.db3';
+            $table = 'overview';
+            $articles_dbh = overview_db_open($database);
+            $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
+            $articles_query->execute([
+                'group' => $g->name
+            ]);
+            $found = 0;
+            while ($row = $articles_query->fetch()) {
+                $found = 1;
+                break;
             }
-            if ($lastarticleinfo['date'] < 1) {
-                // Look up last article info for group (np does not write this file sometimes for some reason)
-                $database = $spooldir . '/articles-overview.db3';
-                $table = 'overview';
-                $articles_dbh = overview_db_open($database);
-                $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
-                $articles_query->execute([
-                    'group' => $g->name
-                ]);
-                $found = 0;
-                while ($row = $articles_query->fetch()) {
-                    $found = 1;
-                    break;
-                }
-                $articles_dbh = null;
-                if ($found == 1) {
-                    $lastarticleinfo['date'] = $row['date'];
-                }
+            $articles_dbh = null;
+            if ($found == 1) {
+                $lastarticleinfo['date'] = $row['date'];
             }
+            // }
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_desc">';
                 $groupdisplay .= '<a class="np_group_desc" href="index.php?unsub=' . $g->name . '">(unsubscribe)</a>';
