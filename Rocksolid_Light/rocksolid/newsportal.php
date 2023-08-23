@@ -653,23 +653,24 @@ function groups_show($gruppen)
             } else {
                 $lastarticleinfo['date'] = 0;
             }
-
-            // Look up last article info for group (np does not write this file sometimes for some reason)
-            $database = $spooldir . '/articles-overview.db3';
-            $table = 'overview';
-            $articles_dbh = overview_db_open($database);
-            $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
-            $articles_query->execute([
-                'group' => $g->name
-            ]);
-            $found = 0;
-            while ($row = $articles_query->fetch()) {
-                $found = 1;
-                break;
-            }
-            $articles_dbh = null;
-            if ($found == 1) {
-                $lastarticleinfo['date'] = $row['date'];
+            if ($lastarticleinfo['date'] < 1) {
+                // Look up last article info for group (np does not write this file sometimes for some reason)
+                $database = $spooldir . '/articles-overview.db3';
+                $table = 'overview';
+                $articles_dbh = overview_db_open($database);
+                $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
+                $articles_query->execute([
+                    'group' => $g->name
+                ]);
+                $found = 0;
+                while ($row = $articles_query->fetch()) {
+                    $found = 1;
+                    break;
+                }
+                $articles_dbh = null;
+                if ($found == 1) {
+                    $lastarticleinfo['date'] = $row['date'];
+                }
             }
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_desc">';
@@ -1499,7 +1500,7 @@ function mail_db_open($database, $table = 'messages')
     return ($dbh);
 }
 
-function threads_db_open($database, $table="threads")
+function threads_db_open($database, $table = "threads")
 {
     try {
         $dbh = new PDO('sqlite:' . $database);
@@ -1569,7 +1570,8 @@ function overview_db_open($database, $table = 'overview')
      bytes TEXT,
      lines TEXT,
      xref TEXT,
-     unique (newsgroup, msgid))");
+     unique (newsgroup, msgid),
+     unique (newsgroup, number))");
     $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_date on ' . $table . '(date)');
     $stmt->execute();
     $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_newsgroup on ' . $table . '(newsgroup)');

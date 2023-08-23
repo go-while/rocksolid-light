@@ -221,6 +221,19 @@ function get_articles($ns, $group)
     }
     $dbh = null;
 
+    // Check history database for deleted message-ids
+    $database = $spooldir . '/history.db3';
+    $table = 'history';
+    $dbh = history_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+    $stmt->bindParam(':newsgroup', $nntp_group);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $msgids[$row['msgid']] = true;
+        break;
+    }
+    $dbh = null;
+
     // Overview database
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
@@ -269,7 +282,7 @@ function get_articles($ns, $group)
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "220") != 0) {
             echo "\n" . $response;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Unexpected response to ARTICLE command: " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $response, FILE_APPEND);
             $article ++;
             continue;
         }
@@ -476,7 +489,12 @@ function create_spool_groups($in_groups, $out_groups)
         fseek($groupout, 0);
         $found = 0;
         while (($buffer = fgets($groupout)) !== false) {
-            if (stripos($buffer, $thisgroup[0]) !== false) {
+            // $in_groups = $file_groups = $config_path . "groups.txt";
+            // $out_groups = $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
+            // $out_groups = $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
+            // $thisgroup[0] is from $in_groups
+            // $buffer is from $out_groups
+            if (trim($thisgroup[0]) == trim($buffer)) {
                 $found = 1;
                 break;
             }

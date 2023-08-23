@@ -15,6 +15,8 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     exit();
 }
 
+// pcntl_setpriority(0);
+
 $webserver_group = $CONFIG['webserver_user'];
 $logfile = $logdir . '/expire.log';
 
@@ -42,26 +44,19 @@ foreach ($grouplist as $groupline) {
     echo "Expire $group articles before $showme\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles before " . $showme, FILE_APPEND);
     if ($CONFIG['article_database'] == '1') {
-        echo "Expiring article database...\n";
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring article database...", FILE_APPEND);
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (is_file($database)) {
             $articles_dbh = article_db_open($database);
-            $articles_query = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND date<:expireme');
-            $articles_query->execute([
-                ':newsgroup' => $group,
-                ':expireme' => $expireme
-            ]);
-            $articles_dbh = null;
+            $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND number=:number');
         }
     }
     // Expire tradspool and remove from newsportal
-    echo "Expiring overview database and writing history...\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring overview database and writing history...", FILE_APPEND);
+    echo "Expiring articles database, overview database and writing history...\n";
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles database, overview database and writing history...", FILE_APPEND);
 
     $database = $spooldir . '/articles-overview.db3';
     $dbh = overview_db_open($database);
-    $query = $dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+    $query = $dbh->prepare('SELECT number FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
     $query->execute([
         ':newsgroup' => $group,
         ':expireme' => $expireme
@@ -76,8 +71,20 @@ foreach ($grouplist as $groupline) {
         if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
             unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
         }
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring:" . $row['number'], FILE_APPEND);
+        if ($CONFIG['article_database'] == '1') {
+            try {
+                $articles_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $articles_stmt->execute([
+                    ':newsgroup' => $group,
+                    ':number' => $row['number']
+                ]);
+            } catch (Exception $e) {
+                echo 'Caught exception: ' . $e->getMessage();
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Caught exception: " . $e->getMessage(), FILE_APPEND);
+            }
+        }
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
-        thread_cache_removearticle($group, $row['number']);
         $i ++;
     }
     $stmt->execute([
@@ -85,6 +92,9 @@ foreach ($grouplist as $groupline) {
         ':expireme' => $expireme
     ]);
     $dbh = null;
+    if ($articles_dbh) {
+        $articles_dbh = null;
+    }
     unlink($lockfile);
     touch($spooldir . '/' . $config_name . '-expire-timer');
     echo "Expired " . $i . " articles for " . $group . "\n";
