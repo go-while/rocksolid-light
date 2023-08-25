@@ -63,7 +63,7 @@ $sem = $spooldir . "/" . $config_name . ".reload";
 if (is_file($sem)) {
     unlink($remote_groupfile);
     unlink($sem);
-    $maxfirstrequest = 20;
+    $maxfirstrequest = 500;
 }
 if (filemtime($spooldir . '/' . $config_name . '-thread-timer') + 600 < time()) {
     $timer = true;
@@ -207,17 +207,15 @@ function get_articles($ns, $group)
         $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
         $article_stmt = $article_dbh->prepare($article_sql);
     }
-
     // Create list of message-ids
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $nntp_group);
+    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+    $stmt->bindParam(':newsgroup', $group);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
         $msgids[$row['msgid']] = true;
-        break;
     }
     $dbh = null;
 
@@ -226,14 +224,12 @@ function get_articles($ns, $group)
     $table = 'history';
     $dbh = history_db_open($database, $table);
     $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $nntp_group);
+    $stmt->bindParam(':newsgroup', $group);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
         $msgids[$row['msgid']] = true;
-        break;
     }
     $dbh = null;
-
     // Overview database
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
@@ -257,7 +253,7 @@ function get_articles($ns, $group)
     }
     while (trim($response = line_read($ns)) !== '.') {
         $ov = preg_split("/\t/", $response);
-        $server_msgids[$ov[0]] = $ov[4];
+        $overview_msgid[$ov[0]] = $ov[4];
     }
 
     # Pull articles and save them in our spool
@@ -267,12 +263,11 @@ function get_articles($ns, $group)
         if (! is_numeric($article)) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG This should show server group:article number: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
             break;
-            ;
         }
         if ($CONFIG['enable_nntp'] != true) {
             $local = $article;
         }
-        if ($msgids[$server_msgids[$article]] == true) {
+        if($msgids[$overview_msgid[$article]] == true) {
             echo "\nDuplicate Message-ID for: " . $group . ":" . $article;
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article, FILE_APPEND);
             $article ++;
@@ -479,32 +474,31 @@ function get_articles($ns, $group)
 
 function create_spool_groups($in_groups, $out_groups)
 {
+    global $spooldir;
     $grouplist = file($in_groups, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $temp_file = tempnam($spooldir . "/tmp/", 'groupfile-');
     $groupout = fopen($out_groups, "a+");
     foreach ($grouplist as $group) {
         if ($group[0] == ":") {
             continue;
         }
         $thisgroup = preg_split("/( |\t)/", $group, 2);
-        fseek($groupout, 0);
         $found = 0;
         while (($buffer = fgets($groupout)) !== false) {
-            // $in_groups = $file_groups = $config_path . "groups.txt";
-            // $out_groups = $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
-            // $out_groups = $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
-            // $thisgroup[0] is from $in_groups
-            // $buffer is from $out_groups
-            if (trim($thisgroup[0]) == trim($buffer)) {
+            $mod_buffer = explode(':', $buffer);
+            if (strcmp($thisgroup[0], $mod_buffer[0]) == 0) {
+                file_put_contents($temp_file, "$buffer", FILE_APPEND);
                 $found = 1;
                 break;
             }
         }
         if ($found == 0) {
-            fwrite($groupout, $thisgroup[0] . "\r\n");
+            file_put_contents($temp_file, "$thisgroup[0]\n", FILE_APPEND);
             continue;
         }
     }
     fclose($groupout);
+    rename($temp_file, $out_groups);
     return;
 }
 

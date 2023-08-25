@@ -61,13 +61,17 @@ foreach ($grouplist as $groupline) {
         ':newsgroup' => $group,
         ':expireme' => $expireme
     ]);
+    $get_row = array();
+    while ($query_row = $query->fetch()) {
+        $get_row[] = $query_row;
+    }
     $stmt = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
     $grouppath = preg_replace('/\./', '/', $group);
     $status = "deleted";
     $statusdate = time();
     $statusreason = "expired";
     $i = 0;
-    while ($row = $query->fetch()) {
+    foreach($get_row as $row) {
         if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
             unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
         }

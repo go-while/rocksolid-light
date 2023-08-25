@@ -456,7 +456,7 @@ function process_post($message, $group)
             $dbh = overview_db_open($database, $table);
             $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND msgid=:msgid ORDER BY number");
             $stmt->execute([
-                'thisgroup' => $group,
+                ':thisgroup' => $group,
                 ':msgid' => $msgid
             ]);
             while ($found = $stmt->fetch()) {
