@@ -1826,7 +1826,7 @@ function add_to_history($group, $number, $msgid, $status, $statusdate, $statusre
     global $spooldir;
     $history = $spooldir . '/history.db3';
     $history_dbh = history_db_open($history);
-    $history_sql = 'INSERT OR IGNORE INTO history(newsgroup, number, msgid, status, statusdate, statusreason, statusnotes) VALUES(?,?,?,?,?,?,?)';
+    $history_sql = 'INSERT OR REPLACE INTO history(newsgroup, number, msgid, status, statusdate, statusreason, statusnotes) VALUES(?,?,?,?,?,?,?)';
     $history_stmt = $history_dbh->prepare($history_sql);
     $history_stmt->execute([
         $group,

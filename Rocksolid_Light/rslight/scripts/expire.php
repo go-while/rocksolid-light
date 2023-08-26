@@ -97,6 +97,12 @@ foreach ($grouplist as $groupline) {
     ]);
     $dbh = null;
     if ($articles_dbh) {
+        // Delete any extraneous articles from group-articles database
+        $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND date<:expireme');
+        $articles_stmt->execute([
+            ':newsgroup' => $group,
+            ':expireme' => $expireme
+        ]);
         $articles_dbh = null;
     }
     unlink($lockfile);
