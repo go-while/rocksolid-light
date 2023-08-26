@@ -658,13 +658,17 @@ function groups_show($gruppen)
              */
             // if ($lastarticleinfo['date'] < 1) {
             // Look up last article info for group (np does not write lastarticleinfo.dat properly for some reason)
-            $database = $spooldir . '/articles-overview.db3';
-            $table = 'overview';
-            $articles_dbh = overview_db_open($database);
-            $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
+            $database = $spooldir . '/'.$g->name.'-articles.db3';
+            $table = 'articles';
+            $articles_dbh = article_db_open($database);
+            $articles_query = $articles_dbh->prepare('SELECT * FROM articles ORDER BY date DESC LIMIT 2');
+         //   $articles_query = $articles_dbh->prepare('SELECT * FROM articles WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
+            $articles_query->execute();
+            /*
             $articles_query->execute([
                 'group' => $g->name
             ]);
+            */
             $found = 0;
             while ($row = $articles_query->fetch()) {
                 $found = 1;
