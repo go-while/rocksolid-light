@@ -658,17 +658,11 @@ function groups_show($gruppen)
              */
             // if ($lastarticleinfo['date'] < 1) {
             // Look up last article info for group (np does not write lastarticleinfo.dat properly for some reason)
-            $database = $spooldir . '/'.$g->name.'-articles.db3';
+            $database = $spooldir . '/' . $g->name . '-articles.db3';
             $table = 'articles';
             $articles_dbh = article_db_open($database);
             $articles_query = $articles_dbh->prepare('SELECT * FROM articles ORDER BY date DESC LIMIT 2');
-         //   $articles_query = $articles_dbh->prepare('SELECT * FROM articles WHERE newsgroup=:group ORDER BY date DESC LIMIT 2');
             $articles_query->execute();
-            /*
-            $articles_query->execute([
-                'group' => $g->name
-            ]);
-            */
             $found = 0;
             while ($row = $articles_query->fetch()) {
                 $found = 1;
@@ -682,12 +676,6 @@ function groups_show($gruppen)
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_desc">';
                 $groupdisplay .= '<a class="np_group_desc" href="index.php?unsub=' . $g->name . '">(unsubscribe)</a>';
-                // TESTING HERE
-                /*
-                 * file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$g->name." is subscribed for ".$_COOKIE['mail_name'], FILE_APPEND);
-                 * file_put_contents($logfile, "\n".format_log_date()." ".$config_name." userdata=".$userdata[$g->name]." <? lastarticleinfo=".$lastarticleinfo['date'], FILE_APPEND);
-                 * file_put_contents($logfile, "\n".format_log_date()." ".$config_name." ".$g->name." ".($userdata[$g->name] - $lastarticleinfo['date']), FILE_APPEND);
-                 */
                 if ($userdata[$g->name] < $lastarticleinfo['date']) {
                     $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
                 }
@@ -708,23 +696,14 @@ function groups_show($gruppen)
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
 
             if ($found == 1) {
-                // $lastarticleinfo['date'] = $row['date'];
-                // Put this in a function already!
-                $fromoutput = explode("<", html_entity_decode($row['name']));
-                // Just an email address?
-                if (strlen($fromoutput[0]) < 2) {
-                    preg_match("/\<([^\)]*)\@/", html_entity_decode($row['name']), $fromaddress);
-                    $fromoutput[0] = $fromaddress[1];
-                }
-                if (strpos($fromoutput[0], "(")) {
-                    preg_match("/\(([^\)]*)\)/", html_entity_decode($row['name']), $fromaddress);
-                    $fromoutput[0] = $fromaddress[1];
-                }
-                if ((isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) && (strpos($fromoutput[0], '@') !== false)) {
-                    $lastarticleinfo['name'] = truncate_email($fromoutput[0]);
+                $poster = address_decode($row['name'], "nowhere");
+                $lastarticleinfo['from'] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
+                if ($poster[0]['personal']) {
+                    $lastarticleinfo['name'] = $poster[0]['personal'];
                 } else {
-                    $lastarticleinfo['name'] = $fromoutput[0];
+                    $lastarticleinfo['name'] = $poster[0]['mailbox'];
                 }
+                $fromoutput[0] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
             }
             $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
             $groupdisplay .= '<table><tr><td>';
@@ -741,7 +720,7 @@ function groups_show($gruppen)
                 $nonsubs[] = $groupdisplay;
             }
         }
-    } // END
+    }
     foreach ($subs as $sub) {
         echo $sub;
     }
