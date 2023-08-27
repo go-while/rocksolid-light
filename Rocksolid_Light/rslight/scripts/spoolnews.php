@@ -34,11 +34,16 @@ $logfile = $logdir . '/spoolnews.log';
 # END MAIN CONFIGURATION
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
 
-if (! isset($maxarticles_per_run)) {
-    $maxarticles_per_run = 100;
+// Defaults
+$maxarticles_per_run = 100;
+$maxfirstrequest = 100;
+
+// Overrides
+if ($OVERRIDES['maxarticles_per_run'] > 0) {
+    $maxarticles_per_run = $OVERRIDES['maxarticles_per_run'];
 }
-if (! isset($maxfirstrequest)) {
-    $maxfirstrequest = 100;
+if ($OVERRIDES['maxfirstrequest'] > 0) {
+    $maxfirstrequest = $OVERRIDES['maxfirstrequest'];
 }
 
 if (! isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) {
@@ -267,7 +272,7 @@ function get_articles($ns, $group)
         if ($CONFIG['enable_nntp'] != true) {
             $local = $article;
         }
-        if($msgids[$overview_msgid[$article]] == true) {
+        if ($msgids[$overview_msgid[$article]] == true) {
             echo "\nDuplicate Message-ID for: " . $group . ":" . $article;
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article, FILE_APPEND);
             $article ++;
@@ -420,6 +425,10 @@ function get_articles($ns, $group)
             }
             echo "\nRetrieved: " . $group . " " . $article;
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Wrote to spool: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
+            $status = "spooled";
+            $statusdate = time();
+            $statusreason = "imported";
+            add_to_history($group, $local, $mid[1], $status, $statusdate, $statusreason, $statusnotes);
             $i ++;
             $article ++;
             $local ++;

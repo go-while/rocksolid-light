@@ -15,8 +15,6 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     exit();
 }
 
-// pcntl_setpriority(0);
-
 $webserver_group = $CONFIG['webserver_user'];
 $logfile = $logdir . '/expire.log';
 
@@ -27,22 +25,32 @@ foreach ($grouplist as $groupline) {
     if ($group[0] == ':') {
         continue;
     }
+    // Delete over $max_articles_per_group if so configured in $OVERRIDES
     $expire_conf = $CONFIG['expire_days'];
+    $override_days = convert_max_articles_to_days($group);
     $expire_user = get_config_value('expire.conf', $group);
-
+    /*
+     * Order of preference is:
+     * 1. value in $config_dir/expire.conf
+     * 2. value in section config file OR $config_dir/overrides.inc.php
+     * whichever is lower
+     */
+    $expire = $expire_conf;
+    if ($override_days) {
+        $expire = $override_days;
+    }
     if ($expire_user !== false) {
         $expire = $expire_user;
-    } else {
-        $expire = $expire_conf;
     }
+    $expire = trim($expire);
     if ($expire < 1) {
         continue;
     }
     $expireme = time() - ($expire * 86400);
     $showme = date('d M, Y', $expireme);
 
-    echo "Expire $group articles before $showme\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles before " . $showme, FILE_APPEND);
+    echo "Expire $group articles before " . $showme . " (" . $expire . ") days\n";
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles before " . $showme . " (" . $expire . ") days", FILE_APPEND);
     if ($CONFIG['article_database'] == '1') {
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (is_file($database)) {
@@ -71,7 +79,7 @@ foreach ($grouplist as $groupline) {
     $statusdate = time();
     $statusreason = "expired";
     $i = 0;
-    foreach($get_row as $row) {
+    foreach ($get_row as $row) {
         if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
             unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
         }
@@ -110,4 +118,34 @@ foreach ($grouplist as $groupline) {
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
 }
-?>
+
+function convert_max_articles_to_days($group)
+{
+    global $spooldir, $OVERRIDES, $CONFIG;
+    if ($OVERRIDES['max_articles_per_group'] > 0) {
+        $count = $OVERRIDES['max_articles_per_group'];
+    } else {
+        return false;
+    }
+    $database = $spooldir . '/articles-overview.db3';
+    $overview_dbh = overview_db_open($database);
+    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY date DESC LIMIT :count');
+    $overview_query->execute([
+        ':newsgroup' => $group,
+        ':count' => $count
+    ]);
+    $i = 0;
+    while ($row = $overview_query->fetch()) {
+        $i ++;
+        if ($i == $count) {
+            $found = $row;
+        }
+    }
+    $overview_dbh = null;
+    if ($found) {
+        $days = ((time() - $found['date']) / 86400);
+        return (round($days));
+    } else {
+        return false;
+    }
+}

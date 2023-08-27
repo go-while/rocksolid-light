@@ -1823,6 +1823,16 @@ function add_to_history($group, $number, $msgid, $status, $statusdate, $statusre
     $history_dbh = null;
 }
 
+function clear_history_by_group($group) {
+    global $spooldir;
+    $history = $spooldir . '/history.db3';
+    $history_dbh = history_db_open($history);
+    $clear_stmt = $history_dbh->prepare("DELETE FROM history WHERE newsgroup=:group");
+    $clear_stmt->bindParam(':group', $group);
+    $clear_stmt->execute();
+    $history_dbh = null;
+}
+
 function get_db_data_from_msgid($msgid, $group)
 {
     global $spooldir;

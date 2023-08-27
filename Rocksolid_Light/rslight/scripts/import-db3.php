@@ -214,6 +214,7 @@ function import_articles($group) {
   $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
   $clear_stmt->bindParam(':group', $group);
   $clear_stmt->execute();
+  clear_history_by_group($group);
   $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
   $stmt = $dbh->prepare($sql);
 
@@ -282,6 +283,10 @@ function import_articles($group) {
       $this_snippet = get_search_snippet($body, $content_type[1]);
       $new_article_stmt->execute([$group, $local, $mid[1], $article_date, $from[1], $subject[1], $row['article'], $this_snippet]);
       $stmt->execute([$group, $local, $mid[1], $article_date, $finddate[1], $from[1], $subject[1], $references, $bytes, $lines, $xref]);
+      $status = "respooled";
+      $statusdate = time();
+      $statusreason = "repair";
+      add_to_history($group, $local, $mid[1], $status, $statusdate, $statusreason, $statusnotes);
       echo "\nImported: ".$group." ".$local;
       file_put_contents($logfile, "\n".format_log_date()." ".$config_name." Imported: ".$group.":".$local, FILE_APPEND);
       $i++;
