@@ -82,10 +82,11 @@ cp index.php $webroot
 cp -a common $webroot
 cp -a rocksolid $webroot
 cp -a spoolnews $webroot
-cp rslight/scripts/*.php $configpath/scripts
+cp rslight/scripts/* $configpath/scripts
 mkdir $configpath/upgrade
 cp rslight/*.php $configpath/upgrade
 cp rslight/*.conf $configpath/upgrade
+cp rslight/*.dist $configpath/upgrade
 echo "done"
 echo
 echo -n "Setting permissions..."
