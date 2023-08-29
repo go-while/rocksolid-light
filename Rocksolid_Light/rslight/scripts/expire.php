@@ -115,6 +115,17 @@ foreach ($grouplist as $groupline) {
     }
     unlink($lockfile);
     touch($spooldir . '/' . $config_name . '-expire-timer');
+    if ($i > 50) {
+        echo "Rebuilding threads for " . $group . "...\n";
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Rebuilding threads...", FILE_APPEND);
+        unlink($spooldir . '/' . $group . '/-info.txt');
+        $ns = nntp_open();
+        if (! $ns) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+            exit();
+        }
+        thread_load_newsserver($ns, $group, 0);
+    }
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
 }
