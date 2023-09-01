@@ -57,9 +57,13 @@ function interact($msgsock, $use_crypto = false)
         }
         if ($command[0] == 'list') {
             if (isset($command[1])) {
-                $msg = get_list(strtolower($command[1]), $msgsock);
+                if (isset($command[2])) {
+                    $msg = get_list(strtolower($command[1]), $command[2], $msgsock);
+                } else {
+                    $msg = get_list(strtolower($command[1]), false, $msgsock);
+                }
             } else {
-                $msg = get_list("active", $msgsock);
+                $msg = get_list("active", false, $msgsock);
             }
             fwrite($msgsock, $msg, strlen($msg));
             continue;
@@ -1024,10 +1028,14 @@ function get_newgroups($mode)
     }
 }
 
-function get_list($mode, $msgsock)
+function get_list($mode, $ngroup, $msgsock)
 {
     global $path, $spooldir, $groupconfig;
-    $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($ngroup) {
+        $grouplist[0] = $ngroup;
+    } else {
+        $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    }
     if ($mode == "headers") {
         $msg = "215 metadata items supported:\r\n";
         $msg .= ":\r\n";
@@ -1035,7 +1043,7 @@ function get_list($mode, $msgsock)
         $msg .= ":bytes\r\n";
     }
     if ($mode == "active") {
-        $msg = '215 list of newsgroups follows' . "\r\n";
+        $msg = '215 Newsgroups in form "group high low status"' . "\r\n";
         fwrite($msgsock, $msg, strlen($msg));
         foreach ($grouplist as $findgroup) {
             $name = preg_split("/( |\t)/", $findgroup, 2);
