@@ -95,16 +95,21 @@ function thread_cache_save($headers, $group)
     $database = $spooldir . '/' . $group . '-data.db3';
     $table = "threads";
     if ($dbh = threads_db_open($database, $table)) {
-        $drop = 'DROP TABLE IF EXISTS '. $table;
+        $drop = 'DROP TABLE IF EXISTS threads';
         $drop_stmt = $dbh->prepare($drop);
+        $insert_sql = 'INSERT INTO ' . $table . '(headers) VALUES(?)';
+        $insert_stmt = $dbh->prepare($insert_sql);
+
+        $dbh->beginTransaction();
         $drop_stmt->execute();
-        $dbh = null;
-        $dbh = threads_db_open($database, $table);
-        $sql = 'INSERT INTO ' . $table . '(headers) VALUES(?)';
-        $stmt = $dbh->prepare($sql);
-        $stmt->execute([
+        $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+			id INTEGER PRIMARY KEY,
+			headers TEXT,
+            unique (headers))");
+        $insert_stmt->execute([
             serialize($headers)
         ]);
+        $dbh->commit();
         $dbh = null;
     }
 }

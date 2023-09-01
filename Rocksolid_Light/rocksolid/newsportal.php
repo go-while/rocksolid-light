@@ -1498,8 +1498,6 @@ function threads_db_open($database, $table = "threads")
 			id INTEGER PRIMARY KEY,
 			headers TEXT,
             unique (headers))");
-    $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_headers on ' . $table . '(headers)');
-    $stmt->execute();
     return ($dbh);
 }
 
@@ -1823,7 +1821,8 @@ function add_to_history($group, $number, $msgid, $status, $statusdate, $statusre
     $history_dbh = null;
 }
 
-function clear_history_by_group($group) {
+function clear_history_by_group($group)
+{
     global $spooldir;
     $history = $spooldir . '/history.db3';
     $history_dbh = history_db_open($history);
