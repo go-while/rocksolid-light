@@ -995,30 +995,33 @@ function html_parse($text)
     $is_link = 0;
     for ($i = 0; $i < $n; $i ++) {
         $word = $words[$i];
-        if (preg_match('/(https?|ftp|news|gopher|telnet)\:\/\/[^\",]+/i', $word)) {
-            $is_link = 1;
-            $nlink = trim($word, '().,');
-            $nlink = preg_replace('/(\&lt|\&gt|\&nbsp);/', '', $nlink);
-            $nlink = preg_replace('/\[url=/', '', $nlink);
-            $bbnlink = explode(']', $nlink);
-            $nlink = $bbnlink[0];
-            $nword = '<a ' . $target . ' href="' . $nlink . '">' . $nlink . '</a>';
-            if (isset($bbnlink[1])) {
-                $nword .= ' ' . $bbnlink[1];
-            }
-            if ($nword != $word && substr($nlink, strlen($nlink) - 3) != "://") {
-                $word = $nword;
-            }
-        }
         // add the spaces between the words
         if ($i > 0)
             $ntext .= " ";
-        if ($is_link) {
-            $word = preg_replace('/\[\/url\]/', '', $word);
-        }
         $ntext .= $word;
     }
     return ($ntext);
+}
+
+function display_links_in_body($text)
+{
+    preg_match_all('/(https?|ftp|scp|news|gopher|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\~\@\!\#&_\/]+/', $text, $matches);
+    $found = array();
+    foreach ($matches[0] as $match) {
+        if (! $match) {
+            continue;
+        }
+        if (in_array($match, $found)) {
+            continue;
+        }
+        $found[] = $match;
+        $linkurl = preg_replace("/(<|>)/", ' ', htmlspecialchars_decode($match));
+        $url = preg_replace("/(<|>)/", ' ', $match);
+        $pattern = preg_quote($url);
+        $pattern = "!$pattern!";
+        $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
+    }
+    echo $text;
 }
 
 /*

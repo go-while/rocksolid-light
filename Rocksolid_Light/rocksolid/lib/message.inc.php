@@ -702,7 +702,7 @@ function message_show($group,$id,$attachment=0,$article_data=false,$maxlen=false
           for($j=@$body[$i]->depth; $j<$depth; $j++)
             echo '</blockquote>';
             $t = @$body[$i]->text;
-          echo $t;
+          echo display_links_in_body($t);
           $currentlen+=strlen($t);
           echo "\n";
           $depth=@$body[$i]->depth;
