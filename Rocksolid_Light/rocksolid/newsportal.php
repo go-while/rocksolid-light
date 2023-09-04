@@ -1734,7 +1734,10 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
 
 function throttle_hits()
 {
-    global $CONFIG, $logdir;
+    global $CONFIG, $logdir, $client_device;
+    if ($client_device == "bot") {
+        $_SESSION['bot'] = 'true';
+    }
     $logfile = $logdir . '/newsportal.log';
     if (! isset($_SESSION['starttime'])) {
         $_SESSION['starttime'] = time();

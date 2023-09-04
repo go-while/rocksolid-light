@@ -6,8 +6,6 @@ include "config.inc.php";
 include "auth.inc";
 include "$file_newsportal";
 
-throttle_hits();
-
 // register parameters
 $id = $_REQUEST["id"];
 $group = _rawurldecode($_REQUEST["group"]);
@@ -47,6 +45,7 @@ if (! $message) {
     $title .= ' - ' . $group . ' - ' . $subject;
 }
 include "head.inc";
+throttle_hits($client_device);
 
 // has the user read-rights on this article?
 if ((function_exists("npreg_group_has_read_access") && ! npreg_group_has_read_access($group)) || (function_exists("npreg_group_is_visible") && ! npreg_group_is_visible($group))) {

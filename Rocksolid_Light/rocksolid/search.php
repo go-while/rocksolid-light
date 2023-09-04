@@ -9,8 +9,6 @@ header("Pragma: cache");
 include "config.inc.php";
 include "newsportal.php";
 
-throttle_hits();
-
 $snippet_size = 100;
 
 if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
@@ -20,6 +18,7 @@ if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
     include "head.inc";
 
+    throttle_hits($client_device);
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
         echo "<center>Page Disabled</center>";
         include "tail.inc";

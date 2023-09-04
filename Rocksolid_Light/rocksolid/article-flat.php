@@ -9,8 +9,6 @@ include "auth.inc";
 include "$file_newsportal";
 
 $logfile = $logdir . '/newsportal.log';
-throttle_hits();
-write_access_log();
 if (isset($_COOKIE['mail_name'])) {
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
@@ -101,10 +99,11 @@ if (! $message) {
     $title .= ' - ' . $group . ' - ' . $subject;
 }
 include "head.inc";
-
+throttle_hits($client_device);
 if ($client_device != "bot") {
     $_SESSION['rsactive'] = true;
 }
+write_access_log();
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';

@@ -8,10 +8,6 @@ include "config.inc.php";
 include ("$file_newsportal");
 include "auth.inc";
 
-$logfile = $logdir . '/newsportal.log';
-throttle_hits();
-write_access_log();
-
 // register parameters
 $group = _rawurldecode($_REQUEST["group"]);
 if (isset($_REQUEST["first"]))
@@ -41,6 +37,9 @@ if (isset($_COOKIE['mail_name'])) {
 $thread_show["latest"] = true;
 $title .= ' - ' . $group;
 include "head.inc";
+$logfile = $logdir . '/newsportal.log';
+throttle_hits($client_device);
+write_access_log();
 
 $CONFIG = include ($config_file);
 

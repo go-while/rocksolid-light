@@ -31,8 +31,6 @@ include "config.inc.php";
 include "auth.inc";
 include "$file_newsportal";
 
-throttle_hits();
-write_access_log();
 if (isset($_COOKIE['mail_name'])) {
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
@@ -58,6 +56,14 @@ if (isset($_GET['thisgroup'])) {
     $title .= " - " . $config_name . " - overboard";
 }
 include "head.inc";
+throttle_hits($client_device);
+if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
+write_access_log();
+
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/overboard.log';
 
