@@ -55,6 +55,13 @@ if ((isset($post_port)) && ($post_port != ""))
 
 include $file_newsportal;
 include "head.inc";
+
+if (disable_page_by_user_agent($client_device, "bot", "Post")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
+
 global $synchro_user, $synchro_pass;
 // check to which groups the user is allowed to post to
 $thisgroup = _rawurldecode($_REQUEST['group']);

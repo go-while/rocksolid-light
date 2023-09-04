@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include "config.inc.php";
-include "newsportal.php";
+include("config.inc.php");
+include("newsportal.php");
 
 if (isset($_COOKIE['tzo'])) {
     $offset = $_COOKIE['tzo'];
@@ -36,6 +36,12 @@ if ($_POST['command'] == 'Logout') {
 }
 $title .= ' - User Configuration';
 include "head.inc";
+
+if (disable_page_by_user_agent($client_device, "bot", "User")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
 
 // How long should cookie allow user to stay logged in?
 // 14400 = 4 hours
@@ -76,6 +82,7 @@ if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST[
         echo 'Login failed.';
     }
 }
+
 if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="user.php" target=' . $frame['menu'] . '>Configuration</a> / ';

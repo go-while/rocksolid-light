@@ -24,6 +24,13 @@ if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_
 }
 $title .= ' - Browse files';
 include "head.inc";
+
+if (disable_page_by_user_agent($client_device, "bot", "Files")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
+
 echo '<h1 class="np_thread_headline">';
 echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
 echo htmlspecialchars($_COOKIE['mail_name']) . '</h1>';

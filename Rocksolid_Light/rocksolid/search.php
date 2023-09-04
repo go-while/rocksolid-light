@@ -20,6 +20,12 @@ if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
     include "head.inc";
 
+    if (disable_page_by_user_agent($client_device, "bot", "Search")) {
+        echo "<center>Page Disabled</center>";
+        include "tail.inc";
+        exit();
+    }
+
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo 'search</h1>';

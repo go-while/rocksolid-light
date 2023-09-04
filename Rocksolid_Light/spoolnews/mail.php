@@ -55,6 +55,12 @@ if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['use
 $title .= ' - Mail';
 include "head.inc";
 
+if (disable_page_by_user_agent($client_device, "bot", "Mail")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
+
 echo '<h1 class="np_thread_headline">';
 
 echo '<a href="mail.php" target=' . $frame['menu'] . '>mail</a> / ';
@@ -323,57 +329,64 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' /></td>";
     echo '</tr></tbody></table></form>';
 }
-// Show My Messages
-$database = $spooldir . '/mail.db3';
-$dbh = mail_db_open($database);
-echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
-echo '<table cellspacing="0" width="100%" class="np_results_table">';
-$query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
-$query->execute([
-    'mail_from' => $user
-]);
-echo '<tr class="np_thread_head"><td class="np_thread_head">Subject</td><td class="np_thread_head">From</td><td class="np_thread_head">To</td><td class="np_thread_head">Date</td></tr>';
-$i = 1;
-while (($row = $query->fetch()) !== false) {
-    if (($row['mail_from'] == $user) && ($row['from_hide'] == 'true')) {
-        continue;
-    }
-    if (($row['rcpt_to'] == $user) && ($row['to_hide'] == 'true')) {
-        continue;
-    }
-    if (($i % 2) != 0) {
-        echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
-    } else {
-        echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
-    }
-    $button_link = 'np_mail_button_link';
-    ;
-    if (($row['mail_from'] == $user) && ($row['mail_viewed'] == 'true')) {
-        $button_link = 'np_mail_button_read';
-    } elseif (($row['rcpt_to'] == $user) && ($row['rcpt_viewed'] == 'true')) {
-        $button_link = 'np_mail_button_read';
-    }
-    // Use local timezone if possible
-    $ts = new DateTime(date("D, j M Y H:i T", $row["date"]), new DateTimeZone('UTC'));
-    $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
 
-    if ($offset != 0) {
-        $newdate = $ts->format('D, j M Y H:i');
-    } else {
-        $newdate = $ts->format('D, j M Y H:i T');
+view_mailbox($user);
+
+// Show My Messages
+function view_mailbox($user)
+{
+    global $spooldir, $offset;
+    $database = $spooldir . '/mail.db3';
+    $dbh = mail_db_open($database);
+    echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
+    echo '<table cellspacing="0" width="100%" class="np_results_table">';
+    $query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
+    $query->execute([
+        'mail_from' => $user
+    ]);
+    echo '<tr class="np_thread_head"><td class="np_thread_head">Subject</td><td class="np_thread_head">From</td><td class="np_thread_head">To</td><td class="np_thread_head">Date</td></tr>';
+    $i = 1;
+    while (($row = $query->fetch()) !== false) {
+        if (($row['mail_from'] == $user) && ($row['from_hide'] == 'true')) {
+            continue;
+        }
+        if (($row['rcpt_to'] == $user) && ($row['to_hide'] == 'true')) {
+            continue;
+        }
+        if (($i % 2) != 0) {
+            echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+        } else {
+            echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+        }
+        $button_link = 'np_mail_button_link';
+        ;
+        if (($row['mail_from'] == $user) && ($row['mail_viewed'] == 'true')) {
+            $button_link = 'np_mail_button_read';
+        } elseif (($row['rcpt_to'] == $user) && ($row['rcpt_viewed'] == 'true')) {
+            $button_link = 'np_mail_button_read';
+        }
+        // Use local timezone if possible
+        $ts = new DateTime(date("D, j M Y H:i T", $row["date"]), new DateTimeZone('UTC'));
+        $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
+
+        if ($offset != 0) {
+            $newdate = $ts->format('D, j M Y H:i');
+        } else {
+            $newdate = $ts->format('D, j M Y H:i T');
+        }
+        unset($ts);
+        echo '<form action="mail.php" method="post">';
+        echo '<button class="' . $button_link . '" type="submit">' . $row["subject"] . '</button>';
+        echo "<input type='hidden' name='id' value='" . $row['id'] . "' />";
+        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+        echo '<input name="command" type="hidden" id="command" value="Message" readonly="readonly">';
+        echo '</form>';
+        echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
+        $i ++;
     }
-    unset($ts);
-    echo '<form action="mail.php" method="post">';
-    echo '<button class="' . $button_link . '" type="submit">' . $row["subject"] . '</button>';
-    echo "<input type='hidden' name='id' value='" . $row['id'] . "' />";
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-    echo '<input name="command" type="hidden" id="command" value="Message" readonly="readonly">';
-    echo '</form>';
-    echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
-    $i ++;
+    echo '</tbody></table><br />';
+    include "tail.inc";
 }
-echo '</tbody></table><br />';
-include "tail.inc";
 
 function send_external_mail($sender, $recipient, $date, $subject, $message)
 {

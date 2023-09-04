@@ -61,8 +61,6 @@ if (strpos($id, '@') !== false) {
 if (isset($_REQUEST["first"]))
     $first = $_REQUEST["first"];
 
-$_SESSION['rsactive'] = true;
-
 if (! isset($_SERVER['REQUEST_STRING'])) {
     $_SERVER['REQUEST_STRING'] = '';
 }
@@ -103,6 +101,11 @@ if (! $message) {
     $title .= ' - ' . $group . ' - ' . $subject;
 }
 include "head.inc";
+
+if ($client_device != "bot") {
+    $_SESSION['rsactive'] = true;
+}
+
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
 echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
@@ -117,6 +120,10 @@ if ($message) {
     // load thread-data and get IDs of the actual subthread
     $thread = thread_load($group);
     $subthread = thread_getsubthreadids($message->header->id, $thread);
+    if (! $subthread) {
+        echo '<center>Group is rebuilding... Please try again later</center>';
+        exit();
+    }
     if ($thread_articles == false) {
         sort($subthread);
     }

@@ -1715,6 +1715,23 @@ function get_config_value($configfile, $request)
     }
 }
 
+function disable_page_by_user_agent($client_device, $useragent, $script = "Page")
+{
+    global $logdir, $config_name, $count_bots;
+    if ($client_device == $useragent) {
+        $logfile = $logdir . '/device.log';
+        file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " " . $script . " disabled for '" . $useragent . "' Exiting...", FILE_APPEND);
+        if ($client_device == "bot") {
+            if (isset($_SESSION['rsactive'])) {
+                unset($_SESSION['rsactive']);
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function throttle_hits()
 {
     global $CONFIG, $logdir;
