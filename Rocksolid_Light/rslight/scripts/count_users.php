@@ -51,10 +51,10 @@ function count_users()
     }
     if ($bot_count == 1) {
         $bot_are = 'is';
-        $bot_users = 'spider';
+        $bot_users = 'bot';
     } else {
         $bot_are = 'are';
-        $bot_users = 'spiders';
+        $bot_users = 'bots';
     }
     $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online / plus ' . $bot_count . ' ' . $bot_users . '<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
     file_put_contents($session_save_file, $session_info);
