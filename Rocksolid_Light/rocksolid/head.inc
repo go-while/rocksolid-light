@@ -1,9 +1,12 @@
 <?php
-
+/*
+ * Add 'rsactive' to differentiate rslight sessions from
+ * sessions from other applications
+ */
+$_SESSION['rsactive'] = true;
 $client_device = get_client_user_agent_info();
-if ($client_device != "bot") {
-    $_SESSION['rsactive'] = true;
-}
+
+// throttle_hits MUST be called before any data is sent
 throttle_hits($client_device);
 write_access_log();
 

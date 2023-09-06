@@ -5,7 +5,6 @@ $_SESSION['group'] = $_SERVER['REQUEST_URI'];
 
 include "config.inc.php";
 include ("$file_newsportal");
-include "auth.inc";
 
 // register parameters
 $group = _rawurldecode($_REQUEST["group"]);

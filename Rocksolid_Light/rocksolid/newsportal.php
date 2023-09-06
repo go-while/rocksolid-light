@@ -1754,7 +1754,9 @@ function throttle_hits($client_device)
         }
         exit(0);
     }
-    unset($_SESSION['throttled']);
+    if (isset($_SESSION['throttled'])) {
+        unset($_SESSION['throttled']);
+    }
 }
 
 function get_client_user_agent_info()
