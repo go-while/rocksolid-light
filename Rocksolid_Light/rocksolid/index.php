@@ -4,7 +4,7 @@ session_start();
 $_SESSION['isframed'] = 1;
 
 include "config.inc.php";
-include "auth.inc";
+include ("$file_newsportal");
 if (isset($frames_on) && $frames_on === true) {
     ?>
 <script>
@@ -20,6 +20,7 @@ if (isset($frames_on) && $frames_on === true) {
 }
 $title .= ' - ' . basename(getcwd());
 include "head.inc";
+
 echo '<h1 class="np_thread_headline">' . basename(getcwd()) . '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // View Latest button
@@ -40,7 +41,6 @@ echo '</form>';
 echo '</td>';
 echo '<td width=100%></td></tr></table>';
 
-include ("$file_newsportal");
 flush();
 if (isset($_GET['unsub'])) {
     if (isset($_COOKIE['mail_name'])) {

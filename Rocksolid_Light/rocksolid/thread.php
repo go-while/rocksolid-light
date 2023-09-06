@@ -2,7 +2,6 @@
 session_start();
 
 $_SESSION['group'] = $_SERVER['REQUEST_URI'];
-$_SESSION['rsactive'] = true;
 
 include "config.inc.php";
 include ("$file_newsportal");
@@ -37,10 +36,8 @@ if (isset($_COOKIE['mail_name'])) {
 $thread_show["latest"] = true;
 $title .= ' - ' . $group;
 include "head.inc";
-$logfile = $logdir . '/newsportal.log';
-throttle_hits($client_device);
-write_access_log();
 
+$logfile = $logdir . '/newsportal.log';
 $CONFIG = include ($config_file);
 
 if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_access($group)) && (! function_exists("npreg_group_is_visible") || npreg_group_is_visible($group))) {

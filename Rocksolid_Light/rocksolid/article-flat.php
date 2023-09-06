@@ -5,7 +5,6 @@ header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
 include "config.inc.php";
-include "auth.inc";
 include "$file_newsportal";
 
 $logfile = $logdir . '/newsportal.log';
@@ -99,11 +98,6 @@ if (! $message) {
     $title .= ' - ' . $group . ' - ' . $subject;
 }
 include "head.inc";
-throttle_hits($client_device);
-if ($client_device != "bot") {
-    $_SESSION['rsactive'] = true;
-}
-write_access_log();
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';

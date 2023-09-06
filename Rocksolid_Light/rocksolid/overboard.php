@@ -56,13 +56,11 @@ if (isset($_GET['thisgroup'])) {
     $title .= " - " . $config_name . " - overboard";
 }
 include "head.inc";
-throttle_hits($client_device);
 if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
     echo "<center>Page Disabled</center>";
     include "tail.inc";
     exit();
 }
-write_access_log();
 
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/overboard.log';

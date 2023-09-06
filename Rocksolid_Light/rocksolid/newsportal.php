@@ -1,7 +1,7 @@
 <?php
 /*
- * rslight NNTP<->HTTP Gateway
- * Download: https://news.novabbs.com/getrslight
+ * NNTP<->HTTP Gateway
+ * Download: https://news.novabbs.com/get
  *
  * Based on Newsportal by Florian Amrhein
  *
@@ -598,7 +598,6 @@ function groups_show($gruppen)
         return;
     global $file_thread, $text_groups;
     $logfile = $logdir . '/debug.log';
-    write_access_log();
     $c = count($gruppen);
     $acttype = "keins";
     echo '<table class="np_groups_table" cellspacing="0"><tr class="np_thread_head"><td width="45px" class="np_thread_head">';
@@ -911,11 +910,11 @@ function parse_header($hdr, $number = "")
                 break;
             case "x-newsreader:":
             case "x-mailer:":
-            case "x-rslight-to:":
-                $header->rslight_to = trim($value);
+            case "x--to:":
+                $header->_to = trim($value);
                 break;
-            case "x-rslight-site:":
-                $header->rslight_site = trim($value);
+            case "x--site:":
+                $header->_site = trim($value);
                 break;
             case "user-agent:":
                 $header->user_agent = trim($value);
@@ -1099,7 +1098,7 @@ function message_cancel($subject, $from, $newsgroups, $ref, $body, $id)
     return $message;
 }
 
-function rslight_encrypt($data, $key)
+function _encrypt($data, $key)
 {
     $encryption_key = base64_decode($key);
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -1119,7 +1118,7 @@ function _rawurldecode($string)
     return $string;
 }
 
-function rslight_decrypt($data, $key)
+function _decrypt($data, $key)
 {
     $encryption_key = base64_decode($key);
     list ($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
@@ -1157,7 +1156,7 @@ function check_bbs_auth($username, $password)
 
     // Create accounts for $anonymous and $CONFIG['server_auth_user'] if not exist
     if ($username == strtolower($CONFIG['anonusername'])) {
-        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . ".inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['anonuserpass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
@@ -1165,7 +1164,7 @@ function check_bbs_auth($username, $password)
         }
     }
     if ($username == strtolower($CONFIG['server_auth_user'])) {
-        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . ".inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['server_auth_pass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
@@ -1717,14 +1716,12 @@ function get_config_value($configfile, $request)
 
 function disable_page_by_user_agent($client_device, $useragent, $script = "Page")
 {
-    global $logdir, $config_name, $count_bots;
+    global $logdir, $config_name;
     if ($client_device == $useragent) {
         $logfile = $logdir . '/device.log';
         file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " " . $script . " disabled for '" . $useragent . "' Exiting...", FILE_APPEND);
         if ($client_device == "bot") {
-            if (isset($_SESSION['rsactive'])) {
-                unset($_SESSION['rsactive']);
-            }
+            $_SESSION['bot'] = true;
         }
         return true;
     } else {
@@ -1732,9 +1729,11 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
     }
 }
 
-function throttle_hits()
+function throttle_hits($client_device)
 {
-    global $CONFIG, $logdir, $client_device;
+    global $CONFIG, $logdir;
+    $client_device = get_client_user_agent_info();
+    $_SESSION['rsactive'] = true;
     if ($client_device == "bot") {
         $_SESSION['bot'] = 'true';
     }
@@ -1752,12 +1751,44 @@ function throttle_hits()
         if (! isset($_SESSION['throttled'])) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Too many requests from " . $_SERVER['REMOTE_ADDR'] . " throttling", FILE_APPEND);
             $_SESSION['throttled'] = true;
-            if (isset($_SESSION['rsactive'])) {
-                unset($_SESSION['rsactive']);
-            }
         }
         exit(0);
     }
+    unset($_SESSION['throttled']);
+}
+
+function get_client_user_agent_info()
+{
+    // Try to get browser info to use for extra formatting of page
+    $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+    $devices = array(
+        "bot",
+        "spider",
+        "mobile",
+        "lynx",
+        "w3m",
+        "links",
+        "ipad",
+        "tablet"
+    );
+    $client_device = "desktop";
+    foreach ($devices as $device) {
+        if (strpos($ua, $device) !== false) {
+            $client_device = $device;
+            break;
+        }
+    }
+    if ($client_device == "spider") {
+        $client_device = "bot";
+    }
+    // Log client device if enabled by semaphore
+    if (file_exists($config_dir . '/devicelog.enable')) {
+        $client_ip = getenv("REMOTE_ADDR");
+        $logfile = $logdir . '/device.log';
+        file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " Client: " . $client_ip . " browser: " . $client_device, FILE_APPEND);
+        file_put_contents($logfile, "\nFull UA: " . $ua, FILE_APPEND);
+    }
+    return $client_device;
 }
 
 function get_user_mail_auth_data($user)

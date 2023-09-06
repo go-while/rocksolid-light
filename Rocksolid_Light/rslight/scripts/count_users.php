@@ -28,6 +28,7 @@ function count_users()
     $session_files = scandir($session_dir);
     $count = 0;
     $bot_count = 0;
+    $throttled_count = 0;
     foreach ($session_files as $session_file) {
         if (filemtime($session_dir . '/' . $session_file) < time() - $session_age) {
             continue;
@@ -36,9 +37,12 @@ function count_users()
             $contents = file_get_contents($session_dir . '/' . $session_file);
             if (strpos($contents, 'rsactive') !== false) {
                 $count ++;
-            }
-            if (strpos($contents, 'bot') !== false) {
-                $bot_count ++;
+                if (strpos($contents, 'bot') !== false) {
+                    $bot_count ++;
+                }
+                if (strpos($contents, 'throttled') !== false) {
+                    $throttled_count ++;
+                }
             }
         }
     }
@@ -50,13 +54,12 @@ function count_users()
         $users = 'users';
     }
     if ($bot_count == 1) {
-        $bot_are = 'is';
         $bot_users = 'bot';
     } else {
-        $bot_are = 'are';
         $bot_users = 'bots';
     }
-    $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online / plus ' . $bot_count . ' ' . $bot_users . '<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+    $throttled_users = 'throttled';
+    $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online (including ' . $bot_count . ' ' . $bot_users . ' and ' . $throttled_count . ' ' . $throttled_users . ')<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
     file_put_contents($session_save_file, $session_info);
 }
 ?>
