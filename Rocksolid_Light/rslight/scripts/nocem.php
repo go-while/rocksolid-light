@@ -47,6 +47,10 @@ foreach ($messages as $message) {
     }
     $nocem_list = file($nocem_file, FILE_IGNORE_NEW_LINES);
     $start = 0;
+
+    // Open overview database and process list
+    $database = $spooldir . '/articles-overview.db3';
+    $overview_dbh = overview_db_open($database);
     foreach ($nocem_list as $nocem_line) {
         if (strpos($nocem_line, $begin) !== false) {
             $start = 1;
@@ -55,25 +59,34 @@ foreach ($messages as $message) {
         if (strpos($nocem_line, $end) !== false) {
             break;
         }
-        if ((isset($nocem_line[0]) && $nocem_line[0] == '<') && $start == 1) {
+        if ($nocem_line[0] == '#') {
+            continue;
+        }
+        if (($nocem_line[0] == '<') && $start == 1) {
             $found = explode(' ', $nocem_line);
-            $msgid = $found[0];
-            foreach ($found as $found_group) {
-                delete_message($msgid, $found_group);
+            $i = 0;
+            foreach ($found as $group_item) {
+                if ($i == 0) {
+                    $i++;
+                    continue;
+                }
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TRYING: " . $found[0] . " IN: " . $group_item, FILE_APPEND);
+                delete_message($found[0], trim($group_item), $overview_dbh);
             }
         }
     }
+    $overview_dbh = null;
+
     rename($nocem_file, $nocem_path . "processed/" . $message);
+    prune_dir_by_days($nocem_path . "processed/", 30);
+    prune_dir_by_days($nocem_path . "failed/", 30);
 }
-prune_dir_by_days($nocem_path . "processed/", 30);
-prune_dir_by_days($nocem_path . "failed/", 30);
 unlink($lockfile);
 exit();
 
-function delete_message($messageid, $group)
+function delete_message($messageid, $group, $overview_dbh)
 {
     global $logfile, $config_dir, $spooldir, $CONFIG, $webserver_group;
-
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($menulist as $menu) {
@@ -82,12 +95,12 @@ function delete_message($messageid, $group)
         }
         $menuitem = explode(':', $menu);
         $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
-        $section = "";
         while ($gl = fgets($glfp)) {
             $group_name = preg_split("/( |\t)/", $gl, 2);
             if (strtolower(trim($group)) == strtolower(trim($group_name[0]))) {
                 $config_name = $menuitem[0];
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $messageid . " IN: " . $config_name . '/' . $group, FILE_APPEND);
+                echo "\nFOUND: " . $group . " IN: " . $config_name;
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $group . " IN: " . $config_name, FILE_APPEND);
                 break 2;
             }
         }
@@ -97,20 +110,17 @@ function delete_message($messageid, $group)
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (is_file($database)) {
             $articles_dbh = article_db_open($database);
-            $articles_query = $articles_dbh->prepare('DELETE FROM articles WHERE msgid=:messageid');
-            $articles_query->execute([
+            $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE msgid=:messageid');
+            $articles_stmt->execute([
                 'messageid' => $messageid
             ]);
             $articles_dbh = null;
         }
     }
-
     // Handle overview and history
-    $database = $spooldir . '/articles-overview.db3';
-    $dbh = overview_db_open($database);
-    $stmt_del = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
-    $query = $dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
-    $query->execute([
+    $overview_stmt_del = $overview_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+    $overview_query->execute([
         ':newsgroup' => $group,
         ':msgid' => $messageid
     ]);
@@ -119,19 +129,22 @@ function delete_message($messageid, $group)
     $statusdate = time();
     $statusreason = "nocem";
     $statusnotes = null;
-    while ($row = $query->fetch()) {
+    while ($row = $overview_query->fetch()) {
+        if (isset($row['number'])) {
+            echo "\nFOUND: " . $messageid . " IN: " . $group;
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
+        }
         if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
             unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
         }
         delete_message_from_overboard($config_name, $group, $messageid);
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
         thread_cache_removearticle($group, $row['number']);
+        $overview_stmt_del->execute([
+            ':newsgroup' => $group,
+            ':msgid' => $messageid
+        ]);
     }
-    $stmt_del->execute([
-        ':newsgroup' => $group,
-        ':msgid' => $messageid
-    ]);
-    $dbh = null;
     return;
 }
 
