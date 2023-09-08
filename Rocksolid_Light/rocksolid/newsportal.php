@@ -697,7 +697,7 @@ function groups_show($gruppen)
             if ($found == 1) {
                 $poster = address_decode($row['name'], "nowhere");
                 $lastarticleinfo['from'] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
-                if ($poster[0]['personal']) {
+                if (isset($poster[0]['personal'])) {
                     $lastarticleinfo['name'] = $poster[0]['personal'];
                 } else {
                     $lastarticleinfo['name'] = $poster[0]['mailbox'];
@@ -1761,6 +1761,7 @@ function throttle_hits($client_device)
 
 function get_client_user_agent_info()
 {
+    global $config_dir;
     // Try to get browser info to use for extra formatting of page
     $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
     $devices = array(
