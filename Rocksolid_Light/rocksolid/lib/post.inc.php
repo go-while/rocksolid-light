@@ -454,10 +454,15 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     if ($do_attach) {
         move_uploaded_file($_FILES["photo"]["tmp_name"], $attachment_temp_dir . $_FILES["photo"]["name"]);
         if ($authname != null) {
-            if (! is_dir($spooldir . '/upload/' . $authname)) {
-                mkdir($spooldir . '/upload/' . $authname);
-            }
-            copy($attachment_temp_dir . $_FILES["photo"]["name"], $spooldir . '/upload/' . $authname . '/' . $_FILES["photo"]["name"]);
+            $uploadname = $authname;
+        } else {
+            $uploadname = $CONFIG['anonusername'];
+        }
+        if (! is_dir($spooldir . '/upload/' . $uploadname)) {
+            mkdir($spooldir . '/upload/' . $uploadname);
+        }
+        if (! file_exists($spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"])) {
+            copy($attachment_temp_dir . $_FILES["photo"]["name"], $spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"]);
         }
     }
     $ns = nntp_open($server, $port);
