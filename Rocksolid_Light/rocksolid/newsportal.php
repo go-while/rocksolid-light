@@ -629,7 +629,7 @@ function groups_show($gruppen)
             }
             $groupdisplay = '<tr class="' . $lineclass . '"><td style="text-align: center;" class="' . $lineclass . '">';
             $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '">';
-            if (file_exists('../common/themes/' . $_SESSION['theme'] . '/images/latest.png')) {
+            if ((isset($_SESSION['theme'])) && file_exists('../common/themes/' . $_SESSION['theme'] . '/images/latest.png')) {
                 $latest_image = '../common/themes/' . $_SESSION['theme'] . '/images/latest.png';
             } else {
                 $latest_image = '../common/images/latest.png';
