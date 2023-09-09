@@ -37,13 +37,9 @@ $CONFIG = include ($config_file);
 @$abspeichern = $_REQUEST["abspeichern"];
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
-if (! isset($group))
+if (! isset($group) && isset($newsgroups)) {
     $group = $newsgroups;
-
-include "auth.inc";
-if ($post_captcha)
-    include "lib/captcha/captcha.php";
-
+}
 // Save name in cookies
 if (($setcookies == true) && (isset($abspeichern)) && ($abspeichern == "ja")) {
     setcookie("cookie_name", stripslashes($name), time() + (3600 * 24 * 90), "/");
@@ -327,8 +323,8 @@ if ($show == 1) {
 					name="<?php echo md5($fieldencrypt."subject")?>"
 					value="<?php
         echo htmlspecialchars($subject);
-        ?>" size="40"
-					maxlength="80"></td>
+        ?>"
+					size="40" maxlength="80"></td>
 			</tr>
 			<tr>
 				<td align="right"><b><?php echo $text_post["name"]?></b></td>
@@ -336,7 +332,7 @@ if ($show == 1) {
  <?php
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
-        if ($form_noname === true) {
+        if (isset($form_noname) && $form_noname === true) {
             echo htmlspecialchars($name);
         } else {
             echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
@@ -398,9 +394,7 @@ if ($show == 1) {
 					value="<?php
             if (isset($bodyzeile))
                 echo htmlspecialchars(stripslashes($bodyzeile));
-            ?>">
-
-					<script language="JavaScript">
+            ?>"> <script language="JavaScript">
 <!--
 function quoten() {
   document.getElementById("postbody").value=document.getElementById("hidebody").value;
@@ -426,7 +420,7 @@ function quoten() {
 
 <?php
 
-if ($post_captcha) {
+        if ($post_captcha) {
             echo '<tr><td>';
             echo captcha::form($text_post["captchainfo1"], $text_post["captchainfo2"]);
             echo '</td></tr>';
