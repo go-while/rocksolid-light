@@ -5,10 +5,15 @@ include "newsportal.php";
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
 
+$pid = getmypid();
+$logfile = $logdir . '/cron.log';
 if (file_exists($config_dir . '/cron.disable')) {
-    $logfile = $logdir . '/cron.log';
-    file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron.php disabled by semaphore: ".$config_dir . "/cron.disable Exiting...", FILE_APPEND);
-    exit;
+    file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron.php disabled by semaphore: " . $config_dir . "/cron.disable Exiting...", FILE_APPEND);
+    chown($logfile, $CONFIG['webserver_user']);
+    exit();
+} else {
+    file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron ".$pid." started...", FILE_APPEND);
+    chown($logfile, $CONFIG['webserver_user']);
 }
 
 $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -128,6 +133,7 @@ echo "Log files rotated\n";
 # Rotate keys
 rotate_keys();
 echo "Keys rotated\n";
+file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron ".$pid." completed...", FILE_APPEND);
 
 function log_rotate()
 {
