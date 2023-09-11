@@ -910,11 +910,11 @@ function parse_header($hdr, $number = "")
                 break;
             case "x-newsreader:":
             case "x-mailer:":
-            case "x--to:":
-                $header->_to = trim($value);
+            case "x-rslight-to:":
+                $header->rslight_to = trim($value);
                 break;
-            case "x--site:":
-                $header->_site = trim($value);
+            case "x-rslight-site:":
+                $header->rslight_site = trim($value);
                 break;
             case "user-agent:":
                 $header->user_agent = trim($value);
@@ -1098,7 +1098,7 @@ function message_cancel($subject, $from, $newsgroups, $ref, $body, $id)
     return $message;
 }
 
-function _encrypt($data, $key)
+function rslight_encrypt($data, $key)
 {
     $encryption_key = base64_decode($key);
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -1118,7 +1118,7 @@ function _rawurldecode($string)
     return $string;
 }
 
-function _decrypt($data, $key)
+function rslight_decrypt($data, $key)
 {
     $encryption_key = base64_decode($key);
     list ($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
@@ -1156,7 +1156,7 @@ function check_bbs_auth($username, $password)
 
     // Create accounts for $anonymous and $CONFIG['server_auth_user'] if not exist
     if ($username == strtolower($CONFIG['anonusername'])) {
-        if (filemtime($config_dir . ".inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['anonuserpass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
@@ -1164,7 +1164,7 @@ function check_bbs_auth($username, $password)
         }
     }
     if ($username == strtolower($CONFIG['server_auth_user'])) {
-        if (filemtime($config_dir . ".inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['server_auth_pass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
