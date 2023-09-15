@@ -45,7 +45,7 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir.'common/themes/'.$_SESSI
 ?>
 	</head>
 	<body>
-<table width="100%" valign="middle">
+<table class="np_header_bar_top" width="100%" valign="middle">
 	<tr>
 		<td width="30%">
 			<a href="<?php echo $CONFIG['default_content'];?>"><img src="<?php echo $header_image ?>" alt="Rocksolid Light" class="responsive_image"></a>
@@ -76,13 +76,13 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir.'common/themes/'.$_SESSI
 				}
 				if($unread && (strpos($linkitem[1], 'spoolnews/mail.php') !== false)) {
 				  echo '<strong>';
-           			  echo '<a href="'.trim($linkitem[1]).'">'.trim(strtoupper($linkitem[0])).'</a>&nbsp;&nbsp';
+           			  echo '<a class="np_header_links" href="'.trim($linkitem[1]).'">'.trim(strtoupper($linkitem[0])).'</a>&nbsp;&nbsp';
 				  echo '</strong>';
 				} else {
-				  echo '<a href="'.trim($linkitem[1]).'">'.trim($linkitem[0]).'</a>&nbsp;&nbsp';
+				  echo '<a class="np_header_links" href="'.trim($linkitem[1]).'">'.trim($linkitem[0]).'</a>&nbsp;&nbsp';
 				}
 			}
-			echo '<a href="../spoolnews/user.php">';
+			echo '<a class="np_header_links" href="../spoolnews/user.php">';
                         if(isset($user)) {
                                 echo '('.$_COOKIE['mail_name'].')';
                         } else {
@@ -124,8 +124,8 @@ ob_end_clean();
 if(file_exists($config_dir.'/motd.txt')) {
   $motd = file_get_contents($config_dir.'/motd.txt');
 }
-echo '<p align="center">';
-echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_large"><tr>';
+echo '<p align="center" class="np_header_button_bar">';
+echo '<table cellpadding="0" cellspacing="0"><tr>';
 foreach($menulist as $menu) {
     if($menu[0] == '#') {
       continue;
@@ -143,23 +143,8 @@ foreach($menulist as $menu) {
     echo '</form>';
     echo '</td>';
 }
-    echo '</tr></table>';
+    echo '</tr></table></p><p>';
 echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_small"><tr>';
-
-foreach($menulist as $menu) {
-    if($menu[0] == '#') {
-      continue;
-    }
-    $menuitem=explode(':', $menu);
-    if($menuitem[1] == '0') { 
-      continue;
-    }
-    echo '<td>';
-    echo '<form target="'.$frame['content'].'" action="'.$rootdir.$menuitem[0].'">';
-    echo '<button class="np_header_button_link" type="submit">'.$menuitem[0].'</button>';
-    echo '</form>';
-    echo '</td>';
-}
 if($unread) {
     $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';
 }

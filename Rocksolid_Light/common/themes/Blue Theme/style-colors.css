@@ -2,6 +2,13 @@
   --color-dark: #191970;
   --color-medium: #000052;
   --color-light: #000066;
+  
+  --color-header-background: #191970;
+  --color-header-background-light: #000066;
+  --color-header-link: #D0BDBD;
+  
+  --color-section-background: #191970;
+  --color-section-link: #6688BB;
 
   --color-text: #D0BDBD;
   --color-text-quote: teal;

@@ -2,6 +2,13 @@
   --color-dark: #9499A1;
   --color-medium: #989CA2;
   --color-light: #9AA3AF;
+  
+  --color-header-background: #9AA3AF;
+  --color-header-background-light: #9499A1;
+  --color-header-link: #0D0FE0;
+  
+  --color-section-background: #9499A1;
+  --color-section-link: #1B3D8E;
 
   --color-text: black;
   --color-text-quote: #014853;

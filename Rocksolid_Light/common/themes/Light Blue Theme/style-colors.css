@@ -1,0 +1,22 @@
+:root {
+  --color-dark: #E1EBF2;
+  --color-medium: #CADCEB;
+  --color-light: #ECF3F7;
+  
+  --color-header-background: #7C8891;
+  --color-header-background-light: #CADCEB;
+  --color-header-link: #ffffff;
+  
+  --color-section-background: #CADCEB;
+  --color-section-link: #24669F;
+
+  --color-text: #0C090A;
+  --color-text-quote: #52595D;
+  --color-highlight: #36013F;
+
+  --color-link: #1052DA;
+  --color-visited: #24669F;
+
+  --color-border: #F5F7FA;
+  --color-row-border: #4C5D77;
+}
