@@ -29,6 +29,7 @@ $CONFIG = include ($config_file);
 $OVERRIDES = include ($config_dir . '/overrides.inc.php');
 
 $logdir = $spooldir . '/log';
+$debug_log = $logdir . '/debug.log';
 $lockdir = $spooldir . '/lock';
 $ssldir = $spooldir . '/ssl/';
 $user_ban_file = $config_dir . '/banned_names.conf';

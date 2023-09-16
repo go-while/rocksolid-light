@@ -115,6 +115,7 @@ if ($message) {
     $subthread = thread_getsubthreadids($message->header->id, $thread);
     if (! $subthread) {
         echo '<center>Group is rebuilding... Please try again later</center>';
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " GROUP ERROR: ".$group." may need repair", FILE_APPEND);
         exit();
     }
     if ($thread_articles == false) {
