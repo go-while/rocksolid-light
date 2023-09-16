@@ -1704,7 +1704,7 @@ function get_config_value($configfile, $request)
                 $dataline = $buffer;
                 fclose($configFileHandle);
                 $datafound = explode(':', $dataline);
-                return $datafound[1];
+                return trim($datafound[1]);
             }
         }
         fclose($configFileHandle);

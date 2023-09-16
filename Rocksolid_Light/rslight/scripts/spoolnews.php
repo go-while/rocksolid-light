@@ -152,6 +152,10 @@ function get_articles($ns, $group)
 
     $grouppath = $path . preg_replace('/\./', '/', $group);
     $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $msgid_filter = get_config_value('header_filters.conf', 'Message-ID');
+    $subject_filter = get_config_value('header_filters.conf', 'Subject');
+    $from_filter = get_config_value('header_filters.conf', 'From');
+    $path_filter = get_config_value('header_filters.conf', 'Path');
 
     $nocem_check = "@@NCM";
     $bbsmail_check = "@@RSL";
@@ -291,7 +295,7 @@ function get_articles($ns, $group)
         $lines = 0;
         $bytes = 0;
         $ref = 0;
-        $banned = 0;
+        $banned = false;
         $is_header = 1;
         $body = "";
         while (strcmp($response, ".") != 0) {
@@ -310,21 +314,30 @@ function get_articles($ns, $group)
                 // Get overview data
                 if (stripos($response, "Message-ID: ") === 0) {
                     $mid = explode(': ', $response, 2);
+                    if (preg_match($msgid_filter, $mid[1])) {
+                        $banned = "msgid_filter";
+                    }
                     $ref = 0;
                 }
                 if (stripos($response, "From: ") === 0) {
                     $from = explode(': ', $response, 2);
-                    if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
-                        foreach ($banned_names as $banned_name) {
-                            if (stripos($from[1], $banned_name) !== false) {
-                                $banned = 1;
-                            }
-                        }
+                    if (preg_match($from_filter, $from[1])) {
+                        $banned = "from_filter";
+                    }
+                    $ref = 0;
+                }
+                if (stripos($response, "Path: ") === 0) {
+                    $msgpath = explode(': ', $response, 2);
+                    if (preg_match($path_filter, $msgpath[1])) {
+                        $banned = "path_filter";
                     }
                     $ref = 0;
                 }
                 if (stripos($response, "Subject: ") === 0) {
                     $subject = explode('Subject: ', $response, 2);
+                    if (preg_match($subject_filter, $subject[1])) {
+                        $banned = "subject_filter";
+                    }
                     $ref = 0;
                 }
                 if (stripos($response, "Newsgroups: ") === 0) {
@@ -359,7 +372,7 @@ function get_articles($ns, $group)
             // Check here for broken $ns connection before continuing
             $response = fgets($ns, 1200);
             if ($response == false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . " retrieving article " . $article, FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . " retrieving article " . $article, FILE_APPEND);               
                 unlink($grouppath . "/" . $local);
                 break;
                 // continue;
@@ -369,10 +382,11 @@ function get_articles($ns, $group)
         file_put_contents($articleHandle, $response . "\n", FILE_APPEND);
         $lines = $lines - 1;
         $bytes = $bytes + ($lines * 2);
-        // Don't spool article if $banned=1
-        if ($banned == 1) {
+        // Don't spool article if $banned != 0
+        if ($banned != false) {
             unlink($grouppath . "/" . $local);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " user: " . $from[1] . " is banned", FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
+        //    file_put_contents($logfile, "\nFrom: ".$from[1]."\nPath: ".$msgpath[1], FILE_APPEND);
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
