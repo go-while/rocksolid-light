@@ -861,6 +861,12 @@ function parse_header($hdr, $number = "")
             case "content-transfer-encoding:":
                 $header->content_transfer_encoding = trim(strtolower($value));
                 break;
+            case "content-disposition:":
+                    $getname = preg_split("/name\=/", $value, 2);
+                    if(isset($getname[1])) {
+                        $header->content_type_name = array($getname[1]);
+                    }
+                break;
             case "content-type:":
                 $header->content_type = array();
                 $subheader = explode(";", $value);
