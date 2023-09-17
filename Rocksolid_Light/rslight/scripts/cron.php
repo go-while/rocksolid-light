@@ -7,7 +7,7 @@ include $config_dir . "/gpg.conf";
 
 $pid = getmypid();
 $logfile = $logdir . '/cron.log';
-if (file_exists($config_dir . '/cron.disable')) {
+if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron.disable')) {
     file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron.php disabled by semaphore: " . $config_dir . "/cron.disable Exiting...", FILE_APPEND);
     chown($logfile, $CONFIG['webserver_user']);
     exit();

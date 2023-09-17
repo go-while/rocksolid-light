@@ -26,6 +26,8 @@ include ("$file_newsportal");
 $logfile = $logdir . '/import.log';
 
 $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
+$cronfile = $spooldir.'/cron.disable';
+
 $pid = file_get_contents($lockfile);
 if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     print "Starting Import...\n";
@@ -34,6 +36,8 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     print "Import currently running\n";
     exit();
 }
+
+touch ($cronfile);
 
 if (! isset($argv[1])) {
     $argv[1] = "-help";
@@ -74,8 +78,10 @@ if ($argv[1][0] == '-') {
             echo "-reset: Reset a group to restart from zero messages (-reset alt.test)\n";
             break;
     }
+    unlink($cronfile);
     exit();
 } else {
+    unlink($cronfile);
     exit();
 }
 
