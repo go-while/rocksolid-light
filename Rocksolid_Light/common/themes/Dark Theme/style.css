@@ -226,6 +226,10 @@
 	font-size: 0.9em;
 }
 
+.np_header_button_checkbox {
+    transform: scale(0.8);
+}
+
 .np_header_button_link:hover {
 	color: var(--color-section-background);
 	background: var(--color-section-link);

@@ -5,6 +5,12 @@ return [
 
     // spoolnews.php
     'maxarticles_per_run' => 100,
-    'maxfirstrequest' => 100
+    'maxfirstrequest' => 100,
+    
+    // Display short view of headers (only subject, name, date)
+    'short_headers' => false,
+
+    // Just leave this here to avoid comma errors
+    'comma' => true
 ];
 ?>
