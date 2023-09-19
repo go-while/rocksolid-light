@@ -643,35 +643,27 @@ function groups_show($gruppen)
             $groupdisplay .= '<a ';
             $groupdisplay .= 'target="' . $frame['content'] . '" ';
             $groupdisplay .= 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '"><span class="np_group_line_text">' . group_display_name($g->name) . "</span></a>\n";
-            if ($g->description != "-")
+            if ($g->description != "-") {
                 $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
-            // Subscribed features
-            // lastarticleinfo.dat is NOT reliable
-            /*
-             * $filename = $spooldir . "/" . $g->name . "-lastarticleinfo.dat";
-             * if (is_file($filename)) {
-             * $lastarticleinfo = unserialize(file_get_contents($filename));
-             * } else {
-             * $lastarticleinfo['date'] = 0;
-             * }
-             */
-            // if ($lastarticleinfo['date'] < 1) {
-            // Look up last article info for group (np does not write lastarticleinfo.dat properly for some reason)
-            $database = $spooldir . '/' . $g->name . '-articles.db3';
-            $table = 'articles';
-            $articles_dbh = article_db_open($database);
-            $articles_query = $articles_dbh->prepare('SELECT * FROM articles ORDER BY date DESC LIMIT 2');
-            $articles_query->execute();
+            }
+
+            // Get last article info from overview
+            $database = $spooldir . '/articles-overview.db3';
+            $table = 'overview';
+            $overview_dbh = overview_db_open($database);
+            $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY date DESC LIMIT 2');
+            $overview_query->execute([
+                'newsgroup' => $g->name
+            ]);
             $found = 0;
-            while ($row = $articles_query->fetch()) {
+            while ($row = $overview_query->fetch()) {
                 $found = 1;
                 break;
             }
-            $articles_dbh = null;
             if ($found == 1) {
                 $lastarticleinfo['date'] = $row['date'];
             }
-            // }
+            $overview_dbh = null;
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_desc">';
                 $groupdisplay .= '<a class="np_group_desc" href="index.php?unsub=' . $g->name . '">(unsubscribe)</a>';
@@ -862,10 +854,12 @@ function parse_header($hdr, $number = "")
                 $header->content_transfer_encoding = trim(strtolower($value));
                 break;
             case "content-disposition:":
-                    $getname = preg_split("/name\=/", $value, 2);
-                    if(isset($getname[1])) {
-                        $header->content_type_name = array($getname[1]);
-                    }
+                $getname = preg_split("/name\=/", $value, 2);
+                if (isset($getname[1])) {
+                    $header->content_type_name = array(
+                        $getname[1]
+                    );
+                }
                 break;
             case "content-type:":
                 $header->content_type = array();
@@ -1012,6 +1006,11 @@ function display_links_in_body($text)
 {
     preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\~\@\!\(\)\#&_\/]+/', $text, $matches);
     $found = array();
+    $isquote = false;
+    if (strpos($text, ">") == 0) {
+        $isquote = true;
+        echo '<blockquote class="np_article_quote">';
+    }
     foreach ($matches[0] as $match) {
         if (! $match) {
             continue;
@@ -1027,6 +1026,9 @@ function display_links_in_body($text)
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
     echo $text;
+    if ($isquote) {
+        echo '</blockquote>';
+    }
 }
 
 /*
