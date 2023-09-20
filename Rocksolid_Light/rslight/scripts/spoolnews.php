@@ -286,7 +286,7 @@ function get_articles($ns, $group)
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "220") != 0) {
             echo "\n" . $response;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " ".$group." " . $response, FILE_APPEND);
             $article ++;
             continue;
         }
