@@ -666,7 +666,7 @@ function groups_show($gruppen)
             $overview_dbh = null;
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_user_tools">';
-                $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . $g->name . '">(unsubscribe)</a>';
+                $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . _rawurlencode($g->name) . '">(unsubscribe)</a>';
                 if ($userdata[$g->name] < $lastarticleinfo['date']) {
                     $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
                 }

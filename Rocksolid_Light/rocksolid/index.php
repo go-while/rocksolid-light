@@ -47,8 +47,9 @@ if (isset($_GET['unsub'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
             $newsubs = array();
+            $thisgroup = _rawurldecode($_GET['unsub']);
             foreach ($userdata as $key => $usertime) {
-                if ($key !== $_GET['unsub']) {
+                if ($key !== $thisgroup) {
                     $newsubs[$key] = $usertime;
                 }
             }
