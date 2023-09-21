@@ -356,17 +356,16 @@ function message_thread($id, $group, $thread, $highlightids = false)
  * $group: the name of the newsgroup, is needed for the links to post.php3
  * and the header.
  */
-
 function show_header($head, $group, $local_poster = false)
 {
     global $article_show, $text_header, $file_article, $attachment_show;
     global $file_attachment, $anonym_address, $CONFIG, $OVERRIDES;
-    
-    if($OVERRIDES['short_headers'] == true) {
+
+    if ($OVERRIDES['short_headers'] == true) {
         show_header_short($head, $group, $local_poster);
         return;
     }
-    
+
     if (isset($_COOKIE['tzo'])) {
         $offset = $_COOKIE['tzo'];
     } else {
@@ -375,108 +374,108 @@ function show_header($head, $group, $local_poster = false)
     echo '<div class="np_article_header">';
     if ($article_show["Subject"])
         echo $text_header["subject"] . htmlspecialchars($head->subject) . "<br>";
-        if ($article_show["From"]) {
-            echo $text_header["from"];
-            if ($head->from == $anonym_address) {
-                // this is the anonymous address, so only show the name
-                echo htmlspecialchars($head->name);
+    if ($article_show["From"]) {
+        echo $text_header["from"];
+        if ($head->from == $anonym_address) {
+            // this is the anonymous address, so only show the name
+            echo htmlspecialchars($head->name);
+        } else {
+            if ($article_show["From_link"])
+                echo '<a href="mailto:' . htmlspecialchars($head->from) . '">';
+            if (isset($article_show["From_rewrite"]))
+                echo preg_replace('/{$article_show["From_rewrite"][0]}/', $article_show["From_rewrite"][1], htmlspecialchars($head->from));
+            $before_at = explode('@', $head->from);
+            $namelen = strlen($before_at[0]);
+            if ($namelen > 3) {
+                $endname = $namelen - 3;
+                if ($endname > 8)
+                    $endname = 8;
+                if ($endname < 3)
+                    $endname ++;
+                if ($endname < 3)
+                    $endname ++;
             } else {
-                if ($article_show["From_link"])
-                    echo '<a href="mailto:' . htmlspecialchars($head->from) . '">';
-                    if (isset($article_show["From_rewrite"]))
-                        echo preg_replace('/{$article_show["From_rewrite"][0]}/', $article_show["From_rewrite"][1], htmlspecialchars($head->from));
-                        $before_at = explode('@', $head->from);
-                        $namelen = strlen($before_at[0]);
-                        if ($namelen > 3) {
-                            $endname = $namelen - 3;
-                            if ($endname > 8)
-                                $endname = 8;
-                                if ($endname < 3)
-                                    $endname ++;
-                                    if ($endname < 3)
-                                        $endname ++;
-                        } else {
-                            $endname = $namelen;
-                        }
-                        if ($article_show["From_link"])
-                            echo '</a>';
-                            echo '<span class="visited">';
-                            if ($local_poster) {
-                                echo '<i>';
-                            }
-                            if ($head->name != "") {
-                                echo create_name_link($head->name, $head->from);
-                            } else {
-                                if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
-                                    echo truncate_email($head->from);
-                                } else {
-                                    echo htmlspecialchars($head->from);
-                                }
-                            }
-                            if ($local_poster) {
-                                echo '</i>';
-                            }
-                            echo '</span>';
+                $endname = $namelen;
             }
-            echo "<br>";
+            if ($article_show["From_link"])
+                echo '</a>';
+            echo '<span class="visited">';
+            if ($local_poster) {
+                echo '<i>';
+            }
+            if ($head->name != "") {
+                echo create_name_link($head->name, $head->from);
+            } else {
+                if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
+                    echo truncate_email($head->from);
+                } else {
+                    echo htmlspecialchars($head->from);
+                }
+            }
+            if ($local_poster) {
+                echo '</i>';
+            }
+            echo '</span>';
         }
-        if ($article_show["Newsgroups"])
-            echo $text_header["newsgroups"] . htmlspecialchars(str_replace(',', ', ', $head->newsgroups)) . "<br>\n";
-            if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != ""))
-                echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
-                if ((isset($head->organization)) && ($article_show["Organization"]) && ($head->organization != ""))
-                    echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
-                    if ($article_show["Date"]) {
-                        $ts = new DateTime(date($text_header["date_format"], $head->date), new DateTimeZone('UTC'));
-                        $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
-                        if ($offset != 0) {
-                            echo $text_header["date"] . $ts->format('D, j M Y H:i') . "<br>\n";
-                        } else {
-                            echo $text_header["date"] . $ts->format($text_header["date_format"]) . "<br>\n";
-                        }
-                        unset($ts);
-                    }
-                    
-                    // echo $text_header["date"].date($text_header["date_format"],$head->date)."<br>\n";
-                    if ($article_show["Message-ID"]) {
-                        echo ' ' . $text_header["message-id"] . htmlspecialchars($head->id) . "<br>\n";
-                    }
-                    if (($article_show["References"]) && (isset($head->references[0]))) {
-                        echo $text_header["references"];
-                        for ($i = 0; $i <= count($head->references) - 1; $i ++) {
-                            $ref = $head->references[$i];
-                            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
-                        }
-                        echo "<br>";
-                    }
-                    if (isset($head->user_agent)) {
-                        if ((isset($article_show["User-Agent"])) && ($article_show["User-Agent"])) {
-                            echo $text_header["user-agent"] . htmlspecialchars($head->user_agent) . "<br>\n";
-                        } else {
-                            echo "<!-- User-Agent: " . htmlspecialchars($head->user_agent) . " -->\n";
-                        }
-                    }
-                    if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
-                        echo $text_header["attachments"];
-                        for ($i = 1; $i < count($head->content_type); $i ++) {
-                            if (! strcmp($head->content_type[$i], "text/html")) {
-                                $contype = "HTML Version";
-                            } else {
-                                $contype = $head->content_type_name[$i];
-                            }
-                            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
-                            if ($i < count($head->content_type) - 1)
-                                echo ', ';
-                        }
-                    }
-                    if ($article_show["trigger_headers"]) {
-                        echo '<div>';
-                        echo '<input type="checkbox" id="trigger_headers">';
-                        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
-                        echo ' View all headers' . "<br>\n";
-                        echo '</div>';
-                    }
-                    echo '</div>';
+        echo "<br>";
+    }
+    if ($article_show["Newsgroups"])
+        echo $text_header["newsgroups"] . htmlspecialchars(str_replace(',', ', ', $head->newsgroups)) . "<br>\n";
+    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != ""))
+        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
+    if ((isset($head->organization)) && ($article_show["Organization"]) && ($head->organization != ""))
+        echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
+    if ($article_show["Date"]) {
+        $ts = new DateTime(date($text_header["date_format"], $head->date), new DateTimeZone('UTC'));
+        $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
+        if ($offset != 0) {
+            echo $text_header["date"] . $ts->format('D, j M Y H:i') . "<br>\n";
+        } else {
+            echo $text_header["date"] . $ts->format($text_header["date_format"]) . "<br>\n";
+        }
+        unset($ts);
+    }
+
+    // echo $text_header["date"].date($text_header["date_format"],$head->date)."<br>\n";
+    if ($article_show["Message-ID"]) {
+        echo ' ' . $text_header["message-id"] . htmlspecialchars($head->id) . "<br>\n";
+    }
+    if (($article_show["References"]) && (isset($head->references[0]))) {
+        echo $text_header["references"];
+        for ($i = 0; $i <= count($head->references) - 1; $i ++) {
+            $ref = $head->references[$i];
+            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
+        }
+        echo "<br>";
+    }
+    if (isset($head->user_agent)) {
+        if ((isset($article_show["User-Agent"])) && ($article_show["User-Agent"])) {
+            echo $text_header["user-agent"] . htmlspecialchars($head->user_agent) . "<br>\n";
+        } else {
+            echo "<!-- User-Agent: " . htmlspecialchars($head->user_agent) . " -->\n";
+        }
+    }
+    if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
+        echo $text_header["attachments"];
+        for ($i = 1; $i < count($head->content_type); $i ++) {
+            if (! strcmp($head->content_type[$i], "text/html")) {
+                $contype = "HTML Version";
+            } else {
+                $contype = $head->content_type_name[$i];
+            }
+            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+            if ($i < count($head->content_type) - 1)
+                echo ', ';
+        }
+    }
+    if ($article_show["trigger_headers"]) {
+        echo '<div>';
+        echo '<input type="checkbox" id="trigger_headers">';
+        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+        echo ' View all headers' . "<br>\n";
+        echo '</div>';
+    }
+    echo '</div>';
 }
 
 function show_header_short($head, $group, $local_poster = false)
@@ -512,6 +511,17 @@ function show_header_short($head, $group, $local_poster = false)
         $displaydate = $ts->format($text_header["date_format"]) . "<br>\n";
     }
     unset($ts);
+    if ($article_show["trigger_headers"]) {
+        echo '<div class=np_ob_posted_date>';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers">';
+        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+        if ($local_poster) {
+            echo "&nbsp;by: <i>" . $displayname . "</i> - " . $displaydate;
+        } else {
+            echo "&nbsp;by: " . $displayname . " - " . $displaydate;
+        }
+        echo '</div>';
+    }
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
         echo '<div class=np_ob_posted_date>';
         echo $text_header["attachments"];
@@ -524,17 +534,6 @@ function show_header_short($head, $group, $local_poster = false)
             echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
             if ($i < count($head->content_type) - 1)
                 echo ', ';
-        }
-        echo '</div>';
-    }
-    if ($article_show["trigger_headers"]) {
-        echo '<div class=np_ob_posted_date>';
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers">';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
-        if($local_poster) {
-            echo "&nbsp;by: <i>".$displayname."</i> - ".$displaydate;
-        } else {
-            echo "&nbsp;by: ".$displayname." - ".$displaydate;
         }
         echo '</div>';
     }
@@ -688,8 +687,7 @@ function nl2p($string, $line_breaks = true, $xml = true)
             "</p>\n<p>",
             "</p>\n<p>",
             '$1<br' . ($xml == true ? ' /' : '') . '>$2'
-        ), 
-        trim($string)) . '</p>';
+        ), trim($string)) . '</p>';
 }
 
 /*
