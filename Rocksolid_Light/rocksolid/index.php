@@ -1,5 +1,8 @@
 <?php
 session_start();
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (100)) . " GMT");
+header("Cache-Control: max-age=100");
+header("Pragma: cache");
 
 $_SESSION['isframed'] = 1;
 

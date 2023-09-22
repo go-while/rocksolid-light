@@ -2,8 +2,8 @@
 session_cache_limiter('public');
 session_start();
 
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (600)) . " GMT");
-header("Cache-Control: max-age=100");
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
+header("Cache-Control: max-age=120");
 header("Pragma: cache");
 
 include "config.inc.php";

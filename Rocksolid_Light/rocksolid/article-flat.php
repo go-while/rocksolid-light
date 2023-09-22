@@ -1,6 +1,6 @@
 <?php
 session_start();
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (600)) . " GMT");
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (100)) . " GMT");
 header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
@@ -115,7 +115,7 @@ if ($message) {
     $subthread = thread_getsubthreadids($message->header->id, $thread);
     if (! $subthread) {
         echo '<center>Group is rebuilding... Please try again later</center>';
-        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " GROUP ERROR: ".$group." may need repair", FILE_APPEND);
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . " may need repair", FILE_APPEND);
         exit();
     }
     if ($thread_articles == false) {
