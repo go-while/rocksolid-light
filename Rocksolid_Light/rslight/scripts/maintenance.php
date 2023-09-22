@@ -9,10 +9,7 @@
  * Place the article database file group.name-articles.db3 in
  * your spool directory, and change user/group to your web user.
  * Run this script as your web user from your $webdir/spoolnews dir:
- * php $config_dir/scripts/import.php group.name
- *
- * To import/upgrade all group.db3 files, do not list group.name
- * after the above command.
+ * php $config_dir/scripts/maintenance -import group.name
  *
  * This will create the overview files necessary to import the group
  * into your site.
@@ -26,7 +23,7 @@ include ("$file_newsportal");
 $logfile = $logdir . '/import.log';
 
 $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
-$cronfile = $spooldir.'/cron.disable';
+$cronfile = $spooldir . '/cron.disable';
 
 $pid = file_get_contents($lockfile);
 if (posix_getsid($pid) === false || ! is_file($lockfile)) {
@@ -37,7 +34,7 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     exit();
 }
 
-touch ($cronfile);
+touch($cronfile);
 
 if (! isset($argv[1])) {
     $argv[1] = "-help";
