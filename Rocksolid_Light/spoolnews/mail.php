@@ -113,6 +113,7 @@ if ($logged_in !== true) {
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $name . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
+    echo '<td><input name="source" type="hidden" id="source" value="Mail:mail.php" readonly="readonly"></td>';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
     echo '<td>&nbsp;</td>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';

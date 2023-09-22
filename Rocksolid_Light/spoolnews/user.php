@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include("config.inc.php");
-include("newsportal.php");
+include ("config.inc.php");
+include ("newsportal.php");
 
 if (isset($_COOKIE['tzo'])) {
     $offset = $_COOKIE['tzo'];
@@ -169,8 +169,13 @@ if (is_file($userfile)) {
 }
 // Show Logged-In Message
 if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
+    if (isset($_POST['source'])) {
+        $link = explode(':', $_POST['source']);
+        $golink = '<a href="' . $link[1] . '">Continue to ' . $link[0] . '</a>';
+    }
     echo "<center>";
     echo "<hr><p>You are logged in as " . $_POST['username'] . "</p>";
+    echo "<p>" . $golink . "</p>";
     echo '</center>';
 }
 // Apply Config
