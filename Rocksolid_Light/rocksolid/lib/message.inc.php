@@ -480,7 +480,7 @@ function show_header($head, $group, $local_poster = false)
 
 function show_header_short($head, $group, $local_poster = false)
 {
-    global $article_show, $text_header, $file_article, $attachment_show;
+    global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
     global $file_attachment, $anonym_address, $CONFIG;
     if (isset($_COOKIE['tzo'])) {
         $offset = $_COOKIE['tzo'];
@@ -511,17 +511,31 @@ function show_header_short($head, $group, $local_poster = false)
         $displaydate = $ts->format($text_header["date_format"]) . "<br>\n";
     }
     unset($ts);
+    echo '<div class=np_ob_posted_date>';
+
+    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
+    $ngroups = explode("\t", $ngroups);
+    echo "&nbsp;";
+    foreach ($ngroups as $onegroup) {
+        if ($s = get_section_by_group($onegroup)) {
+            echo '<a href="' . $file_thread . '?group=' . _rawurlencode($onegroup) . '"> ' . $onegroup . " </a>";
+        } else {
+            echo " ".$onegroup." ";
+        }
+    }
+    echo "<br />";
+    
     if ($article_show["trigger_headers"]) {
-        echo '<div class=np_ob_posted_date>';
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers">';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
-        if ($local_poster) {
-            echo "&nbsp;by: <i>" . $displayname . "</i> - " . $displaydate;
-        } else {
-            echo "&nbsp;by: " . $displayname . " - " . $displaydate;
-        }
-        echo '</div>';
     }
+    if ($local_poster) {
+        echo "&nbsp;by: <i>" . $displayname . "</i> - " . $displaydate;
+    } else {
+        echo "&nbsp;by: " . $displayname . " - " . $displaydate;
+    }
+    echo '</div>';
+
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
         echo '<div class=np_ob_posted_date>';
         echo $text_header["attachments"];
