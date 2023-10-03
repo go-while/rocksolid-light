@@ -642,11 +642,6 @@ function groups_show($gruppen)
             $groupdisplay .= '<span class="np_group_line_text">';
             $groupdisplay .= '<a ';
             $groupdisplay .= 'target="' . $frame['content'] . '" ';
-            $groupdisplay .= 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '"><span class="np_group_line_text">' . group_display_name($g->name) . "</span></a>\n";
-            if ($g->description != "-") {
-                $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
-            }
-
             // Get last article info from overview
             $database = $spooldir . '/articles-overview.db3';
             $table = 'overview';
@@ -663,12 +658,27 @@ function groups_show($gruppen)
             if ($found == 1) {
                 $lastarticleinfo['date'] = $row['date'];
             }
+            $new = false;
+            $new_style_on = '';
+            $new_style_off = '';
+            if (isset($userdata[$g->name]) && ($userdata[$g->name] < $lastarticleinfo['date'])) {
+                $new_style_on = '<b><i>*';
+                $new_style_off = '</i></b>';
+                $new = true;
+            }
+            $groupdisplay .= 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
+            if ($new) {
+                echo '</i></b>';
+            }
+            if ($g->description != "-") {
+                $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
+            }
             $overview_dbh = null;
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_user_tools">';
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . _rawurlencode($g->name) . '">(unsubscribe)</a>';
-                if ($userdata[$g->name] < $lastarticleinfo['date']) {
-                    $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
+                if ($new) {
+                    $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
                 }
                 $groupdisplay .= '</p';
             }
