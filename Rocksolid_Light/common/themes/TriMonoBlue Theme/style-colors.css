@@ -1,0 +1,29 @@
+/* TriMonoBlue Theme for Rocksolid Light (https://novabbs.org)
+   hacked by 3883@sugar.bug (https://sybershock.com) */
+
+:root {
+  --color-dark: #fff;
+  --color-medium: #EEEEEC;
+  --color-light: #fff;
+
+  --color-text: #222;
+  --color-text-quote: green;
+  --color-highlight: #3465A4;
+
+  --color-link: #3465A4;
+  --color-visited: #729FCF;
+
+  --color-border: #999;
+  --color-row-border: #999;
+  
+  --color-row1: #EEEEEC;
+  --color-link-dark-blue: #0D1929;
+  
+  --color-header-background: #FFF;
+  --color-header-background-light: #FFF;
+  --color-header-link: #0C090A;
+  
+  --color-section-background: #F3E8EA;
+  --color-section-link: #663399;
+}
+
