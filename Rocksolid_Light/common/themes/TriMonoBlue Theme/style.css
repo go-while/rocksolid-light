@@ -625,6 +625,7 @@ div.np_article_header {
 div.np_article_body {
   background: var(--color-light);
   margin-top: 20px;
+  white-space: pre-wrap;
 /*  font-family: "Lucida Console", "Courier New", Courier, "Andale Mono", monospace; */
   font-size: 0.55em;
 }
