@@ -25,6 +25,13 @@
 session_start();
 include "config.inc.php";
 $CONFIG = include ($config_file);
+$logfile = $logdir . '/post.log';
+
+// This will log user post info (group and username)
+$enable_post_log = false;
+if ($OVERRIDES['enable_post_log'] > 0) {
+    $enable_post_log = $OVERRIDES['enable_post_log'];
+}
 
 @$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
 // @$newsgroups=$_REQUEST["newsgroups"];
@@ -218,6 +225,10 @@ if ($type == "post") {
                         $wait = check_rate_limit($name, 0, 1);
                         echo 'Please wait ' . round($wait) . ' minutes before posting again.<br />';
                     }
+                }
+                // Post logging
+                if ($enable_post_log) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $returngroup[0] . " by " . $name, FILE_APPEND);
                 }
                 // echo '<p><a href="'.$file_thread.'?group='.urlencode($returngroup[0]).'">'.$text_post["button_back"].'</a> '.$text_post["button_back2"].' '.group_display_name($returngroup[0]).'</p>';
                 if (isset($_REQUEST['returngroup']) && $_REQUEST['returngroup'] !== '') {
