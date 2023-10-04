@@ -44,6 +44,7 @@ foreach ($grouplist as $groupline) {
     }
     $expire = trim($expire);
     if ($expire < 1) {
+        vacuum_group_database($group);
         continue;
     }
     $expireme = time() - ($expire * 86400);
@@ -126,8 +127,30 @@ foreach ($grouplist as $groupline) {
         }
         thread_load_newsserver($ns, $group, 0);
     }
+    vacuum_group_database($group);
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
+}
+
+function vacuum_group_database($group)
+{
+    global $spooldir, $logfile, $config_name, $OVERRIDES, $CONFIG;
+    if ($CONFIG['article_database'] == '1') {
+        $database = $spooldir . '/' . $group . '-articles.db3';
+        if ($article_dbh = article_db_open($database)) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " VACUUM article database...", FILE_APPEND);
+            $article_stmt = $article_dbh->prepare('VACUUM');
+            $article_stmt->execute();
+            $article_dbh = null;
+        }
+    }
+    $database = $spooldir . '/' . $group . '-data.db3';
+    if ($data_dbh = threads_db_open($database)) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " VACUUM threads database...", FILE_APPEND);
+        $data_stmt = $data_dbh->prepare('VACUUM');
+        $data_stmt->execute();
+        $data_dbh = null;
+    }
 }
 
 function convert_max_articles_to_days($group)
