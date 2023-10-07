@@ -1306,8 +1306,9 @@ function is_multibyte($s)
 
 function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
 {
-    global $msgid_generate, $msgid_fqdn, $spooldir;
+    global $msgid_generate, $msgid_fqdn, $spooldir, $logdir;
     global $CONFIG;
+    $logfile = $logdir . '/spam.log';
     $spamfile = tempnam($spooldir, 'spam-');
 
     $tmpheader = 'From: ' . $from . "\r\n";
@@ -1342,6 +1343,9 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
     }
     fclose($spamFileHandle);
     unlink($spamfile);
+    if ($res === 1) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $spamresult . "\n------------\n", FILE_APPEND);
+    }
     return array(
         'res' => $res,
         'spamresult' => $spamresult,
