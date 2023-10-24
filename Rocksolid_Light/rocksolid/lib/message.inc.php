@@ -589,9 +589,6 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
         if (stripos($line, ': ') !== false) {
             $isface = 0;
         }
-        if (stripos($line, 'Xref: ') === 0) {
-            continue;
-        }
         if (stripos($line, 'From: ') === 0) {
             $return .= 'From: ';
             if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {

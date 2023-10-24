@@ -113,6 +113,7 @@ if ($CONFIG['remote_server'] != '') {
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " remote_server: " . $CONFIG['remote_server'], FILE_APPEND);
     $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
     $ns2 = nntp_open();
+    echo 'Open ns2: ' . $ns2 . "\n";
     if (! $ns) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
         exit();
@@ -130,6 +131,7 @@ if ($CONFIG['remote_server'] != '') {
         if ($enable_rslight == 1) {
             if ($timer) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
+                echo 'Use ns2: ' . $ns2 . "\n";
                 thread_load_newsserver($ns2, $name[0], 0);
             }
         }
@@ -182,21 +184,8 @@ function get_articles($ns, $group)
         }
     }
     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
-
-        // Get list of article numbers to find what number is next
-        $ok_article = get_article_list($group);
-        sort($ok_article);
-        $local = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
-        if (! is_numeric($local)) {
-            $local = 0;
-        }
-        $local = $local + 1;
-        if ($local < 1) {
-            $local = 1;
-        }
-        while (is_deleted_post($group, $local)) {
-            $local ++;
-        }
+        // Get next available article number for group
+        $local = get_next_article_number($group);
     }
     # Split group response line to get last article number
     $detail = explode(" ", $response);
@@ -210,12 +199,6 @@ function get_articles($ns, $group)
         $article = $detail[2];
     }
 
-    // Articles Database
-    if ($CONFIG['article_database'] == '1') {
-        $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
-        $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
-        $article_stmt = $article_dbh->prepare($article_sql);
-    }
     // Create list of message-ids
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
@@ -239,12 +222,6 @@ function get_articles($ns, $group)
         $msgids[$row['msgid']] = true;
     }
     $dbh = null;
-    // Overview database
-    $database = $spooldir . '/articles-overview.db3';
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-    $stmt = $dbh->prepare($sql);
 
     // Get overview from server
     $server_overview = array();
@@ -268,16 +245,22 @@ function get_articles($ns, $group)
     # Pull articles and save them in our spool
     @mkdir($grouppath, 0755, 'recursive');
     $i = 0;
+    // GET INDIVIDUAL ARTICLE
     while ($article <= $detail[3]) {
         if (! is_numeric($article)) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG This should show server group:article number: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
             break;
         }
+        // Create array for article, then send to insert_article_from_array()
+        if (isset($current_article)) {
+            unset($current_article);
+            $current_article = array();
+        }
         if ($CONFIG['enable_nntp'] != true) {
             $local = $article;
         }
         if ($msgids[$overview_msgid[$article]] == true) {
-            echo "\nDuplicate Message-ID for: " . $group . ":" . $article;
+            echo "\nDuplicate Message-ID for: " . $group . ":" . $local;
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article, FILE_APPEND);
             $article ++;
             continue;
@@ -286,7 +269,7 @@ function get_articles($ns, $group)
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "220") != 0) {
             echo "\n" . $response;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " ".$group." " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " " . $response, FILE_APPEND);
             $article ++;
             continue;
         }
@@ -299,8 +282,28 @@ function get_articles($ns, $group)
         $is_header = 1;
         $body = "";
         while (strcmp($response, ".") != 0) {
+            $is_xref = false;
             $bytes = $bytes + mb_strlen($response, '8bit');
             if (trim($response) == "" || $lines > 0) {
+                // Create Xref: header
+                $current_article['xref'] = "Xref: " . $CONFIG['pathhost'];
+                foreach ($allgroups as $agroup) {
+                    $agroup = trim($agroup);
+                    if ((! testGroup($agroup)) || $agroup == '') {
+                        continue;
+                    }
+                    if ($group == $agroup) {
+                        $artnum = $local;
+                    } else {
+                        $artnum = get_next_article_number($agroup);
+                    }
+                    if($artnum > 0) {
+                        $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
+                    }
+                }
+                if ($is_header != 0) {
+                    file_put_contents($articleHandle, $current_article['xref'] . "\n", FILE_APPEND);
+                }
                 $is_header = 0;
                 $lines ++;
             }
@@ -342,11 +345,14 @@ function get_articles($ns, $group)
                 }
                 if (stripos($response, "Newsgroups: ") === 0) {
                     $response = str_ireplace($group, $group, $response);
+                    // Identify each group name for xref
+                    $groupnames = explode("Newsgroups: ", $response);
+                    $allgroups = preg_split("/\ |\,/", $groupnames[1]);
                     $ref = 0;
                 }
                 if (stripos($response, "Xref: ") === 0) {
                     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
-                        $response = "Xref: " . $CONFIG['pathhost'] . " " . $group . ":" . $local;
+                        $is_xref = true;
                     }
                     $xref = $response;
                     $ref = 0;
@@ -368,11 +374,13 @@ function get_articles($ns, $group)
             } else {
                 $body .= $response . "\n";
             }
-            file_put_contents($articleHandle, $response . "\n", FILE_APPEND);
+            if (! $is_xref) {
+                file_put_contents($articleHandle, $response . "\n", FILE_APPEND);
+            }
             // Check here for broken $ns connection before continuing
             $response = fgets($ns, 1200);
             if ($response == false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . " retrieving article " . $article, FILE_APPEND);               
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . " retrieving article " . $article, FILE_APPEND);
                 unlink($grouppath . "/" . $local);
                 break;
                 // continue;
@@ -386,7 +394,6 @@ function get_articles($ns, $group)
         if ($banned != false) {
             unlink($grouppath . "/" . $local);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
-        //    file_put_contents($logfile, "\nFrom: ".$from[1]."\nPath: ".$msgpath[1], FILE_APPEND);
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
@@ -402,47 +409,43 @@ function get_articles($ns, $group)
                     copy($grouppath . "/" . $local, $bbsmail_filename);
                 }
             }
-            // Overview
-            $stmt->execute([
-                $group,
-                $local,
-                $mid[1],
-                $article_date,
-                $finddate[1],
-                $from[1],
-                $subject[1],
-                $references,
-                $bytes,
-                $lines,
-                $xref
-            ]);
-            $references = "";
             if ($CONFIG['article_database'] == '1') {
                 $this_article = file_get_contents($grouppath . "/" . $local);
                 // CREATE SEARCH SNIPPET
                 $this_snippet = get_search_snippet($body, $content_type[1]);
-                $article_stmt->execute([
-                    $group,
-                    $local,
-                    $mid[1],
-                    $article_date,
-                    $from[1],
-                    $subject[1],
-                    $this_article,
-                    $this_snippet
-                ]);
-                unlink($grouppath . "/" . $local);
             } else {
-                if ($article_date > time())
+                if ($article_date > time()) {
                     $article_date = time();
+                }
                 touch($grouppath . "/" . $local, $article_date);
             }
-            echo "\nRetrieved: " . $group . " " . $article;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Wrote to spool: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
-            $status = "spooled";
-            $statusdate = time();
-            $statusreason = "imported";
-            add_to_history($group, $local, $mid[1], $status, $statusdate, $statusreason, $statusnotes);
+
+            $current_article['mid'] = $mid[1];
+            $current_article['epochdate'] = $article_date;
+            $current_article['stringdate'] = $finddate[1];
+            $current_article['from'] = $from[1];
+            $current_article['subject'] = $subject[1];
+            $current_article['references'] = $references;
+            $current_article['bytes'] = $bytes;
+            $current_article['lines'] = $lines;
+            $current_article['article'] = $this_article;
+            $current_article['snippet'] = $this_snippet;
+
+            foreach ($allgroups as $agroup) {
+                $agroup = trim($agroup);
+                if ((! testGroup($agroup)) || $agroup == '') {
+                    continue;
+                }
+                $current_article['group'] = $agroup;
+                if ($group == $agroup) {
+                    $current_article['local'] = $local;
+                    insert_article_from_array($current_article);
+                } else {
+                    $current_article['local'] = get_next_article_number($agroup);
+                    insert_article_from_array($current_article);
+                }
+            }
+
             $i ++;
             $article ++;
             $local ++;
@@ -451,6 +454,7 @@ function get_articles($ns, $group)
             }
         }
     }
+    // END GET INDIVIDUAL ARTICLE
     $article --;
     // $local--;
     // Update title

@@ -123,6 +123,7 @@ function nntp2_open($nserver = 0, $nport = 0)
         }
     }
     // $ns=@fsockopen($nserver,$nport);
+    // echo "PORT: ".$nport." ns: ".$ns;
     $weg = line_read($ns); // kill the first line
     if (substr($weg, 0, 2) != "20") {
         echo "<p>" . $text_error["error:"] . $weg . "</p>";
@@ -1860,15 +1861,126 @@ function verify_gpg_signature($res, $signed_text)
     }
 }
 
+function get_next_article_number($group)
+{
+    $ok_article = get_article_list($group);
+    sort($ok_article);
+    $local = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    if (! is_numeric($local)) {
+        $local = 0;
+    }
+    $local = $local + 1;
+    if ($local < 1) {
+        $local = 1;
+    }
+    while (is_deleted_post($group, $local)) {
+        $local ++;
+    }
+    return $local;
+}
+
+function insert_article_from_array($this_article)
+{
+    global $CONFIG, $config_name, $spooldir, $logdir;
+    $logfile = $logdir . '/spoolnews.log';
+    $group = $this_article['group'];
+    $grouppath = $path . preg_replace('/\./', '/', $group);
+
+    // Create list of message-ids
+    $database = $spooldir . '/articles-overview.db3';
+    $table = 'overview';
+    $dbh = overview_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+    $stmt->bindParam(':newsgroup', $group);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $msgids[$row['msgid']] = true;
+    }
+    $dbh = null;
+
+    // Check history database for deleted message-ids
+    $database = $spooldir . '/history.db3';
+    $table = 'history';
+    $dbh = history_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+    $stmt->bindParam(':newsgroup', $group);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $msgids[$row['msgid']] = true;
+    }
+    $dbh = null;
+    
+    if ($msgids[$this_article['mid']] == true) {
+        echo "\nDuplicate Message-ID for: " . $group . ":" . $this_article['local'];
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['local'], FILE_APPEND);
+        return "441 Insert failed (duplicate)\r\n";
+    }
+    // Open articles Database
+    if ($CONFIG['article_database'] == '1') {
+        $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
+        $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
+        $article_stmt = $article_dbh->prepare($article_sql);
+    }
+    // Open overview database
+    $database = $spooldir . '/articles-overview.db3';
+    $table = 'overview';
+    $overview_dbh = overview_db_open($database, $table);
+    $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $overview_stmt = $overview_dbh->prepare($overview_sql);
+
+    // Overview
+    $overview_stmt->execute([
+        $group,
+        $this_article['local'],
+        $this_article['mid'],
+        $this_article['epochdate'],
+        $this_article['stringdate'],
+        $this_article['from'],
+        $this_article['subject'],
+        $this_article['references'],
+        $this_article['bytes'],
+        $this_article['lines'],
+        $this_article['xref']
+    ]);
+    $overview_dbh = null;
+    $references = "";
+    // Articles
+    if ($CONFIG['article_database'] == '1') {
+        $article_stmt->execute([
+            $group,
+            $this_article['local'],
+            $this_article['mid'],
+            $this_article['epochdate'],
+            $this_article['from'],
+            $this_article['subject'],
+            $this_article['article'],
+            $this_article['snippet']
+        ]);
+        unlink($grouppath . "/" . $this_article['local']);
+        $article_dbh = null;
+    } else {
+        if ($article_date > time())
+            $article_date = time();
+            touch($grouppath . "/" . $this_article['local'], $article_date);
+    }
+
+    echo "\nRetrieved: " . $group . " " . $this_article['local'];
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
+    $status = "spooled";
+    $statusdate = time();
+    $statusreason = "imported";
+    add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
+}
+
 function is_deleted_post($group, $number)
 {
     global $spooldir;
     $database = $spooldir . '/history.db3';
     $table = 'history';
     $dbh = history_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:nicole");
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:newsnum");
     $stmt->bindParam(':newsgroup', $group);
-    $stmt->bindParam(':nicole', $number);
+    $stmt->bindParam(':newsnum', $number);
     $stmt->execute();
     $status = false;
     while ($row = $stmt->fetch()) {
