@@ -548,20 +548,26 @@ function get_xhdr($header, $articles)
     global $config_dir, $spooldir, $nntp_group, $nntp_article, $workpath, $path;
     $tmpgroup = $nntp_group;
     $mid = false;
+
     // Use article pointer
     if (! isset($articles) && is_numeric($nntp_article)) {
         $articles = $nntp_article;
     }
     // By Message-ID
-    if (! is_numeric($articles)) {
+    if (strpos($articles, "@") !== false) {
         $found = find_article_by_msgid($articles);
-        $tmpgroup = $found['newsgroup'];
+        $nntp_group = $found['newsgroup'];
+        $first = $found['number'];
+        $last = $first;
+        $this_id = $found['msgid'];
         $articles = $found['number'];
-        if ($tmpgroup == '') {
-            $msg = "430 No article with that message-id\r\n";
-            return $msg;
+        if (! isset($articles)) {
+            $output = "430 No article with that message-id\r\n";
+            return $output;
         }
+        $output = "221 Header information for " . $header . " follows (from articles)\r\n";
     }
+
     if (! isset($tmpgroup)) {
         $msg = "412 no newsgroup selected\r\n";
         return $msg;
