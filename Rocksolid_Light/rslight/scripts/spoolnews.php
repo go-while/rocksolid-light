@@ -297,7 +297,7 @@ function get_articles($ns, $group)
                     } else {
                         $artnum = get_next_article_number($agroup);
                     }
-                    if($artnum > 0) {
+                    if ($artnum > 0) {
                         $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
                     }
                 }
@@ -398,7 +398,8 @@ function get_articles($ns, $group)
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
                 if (strpos($subject[1], $nocem_check) !== false) {
-                    $nocem_file = tempnam($spooldir . "/nocem", "nocem-" . $group . "-");
+                    $is_from = address_decode($from[1], 'nowhere');
+                    $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]");
                     copy($grouppath . "/" . $local, $nocem_file);
                 }
             }
