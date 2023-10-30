@@ -401,6 +401,7 @@ function get_articles($ns, $group)
                     $is_from = address_decode($from[1], 'nowhere');
                     $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]");
                     copy($grouppath . "/" . $local, $nocem_file);
+                    chmod($nocem_file, 0644);
                 }
             }
             if ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
