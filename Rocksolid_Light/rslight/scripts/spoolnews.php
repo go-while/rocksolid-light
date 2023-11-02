@@ -27,6 +27,15 @@ include $config_dir . '/gpg.conf';
 if ($CONFIG['remote_server'] != '') {
     $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
 }
+
+if(isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
+    $save_nocem_messages = true;
+    $nocem_dir = $spooldir."/saved_nocem";
+    @mkdir($nocem_dir.'/done', 0755, true);
+} else {
+    $save_nocem_messages = false;
+}
+
 $file_groups = $config_path . "groups.txt";
 $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
 $logfile = $logdir . '/spoolnews.log';
@@ -145,7 +154,7 @@ echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group)
 {
-    global $enable_rslight, $rslight_gpg, $spooldir, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
+    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -402,6 +411,10 @@ function get_articles($ns, $group)
                     $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]");
                     copy($grouppath . "/" . $local, $nocem_file);
                     chmod($nocem_file, 0644);
+                    if($save_nocem_messages == true) {
+                        $saved_nocem_file = tempnam($nocem_dir, $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]-");
+                        copy($grouppath . "/" . $local, $saved_nocem_file);
+                    }
                 }
             }
             if ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
