@@ -117,13 +117,14 @@ foreach ($menulist as $menu) {
         # Refresh spool
         if (isset($spoolnews) && ($spoolnews == true)) {
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
-            echo "Refreshed spoolnews\n";
+            echo "\nRefreshed spoolnews\n";
         }
     }
     # Expire articles
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/expire.php");
     echo "Expired articles\n";
 }
+
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
@@ -133,7 +134,45 @@ echo "Log files rotated\n";
 # Rotate keys
 rotate_keys();
 echo "Keys rotated\n";
+# Expire files
+expire_files();
+echo "Removed old files\n";
 file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron ".$pid." completed...", FILE_APPEND);
+
+function expire_files() {
+    global $spooldir, $logdir;
+    $now = time();
+    // Days to prune
+    $nocemdays = 7;
+    // Days to seconds from now
+    $nocem = $now - ($nocemdays * 86400);
+    // Dirs to prune
+    $nocem_processed = $spooldir . "/nocem/processed/";
+    $nocem_failed = $spooldir . "/nocem/failed/";
+    
+    // $nocem_processed
+    $filenames = array_diff(scandir($nocem_processed), array(
+        '..',
+        '.'
+    ));
+    foreach($filenames as $one) {
+        if(filemtime($nocem_processed.$one) < $nocem) {
+            unlink($nocem_processed.$one);
+        }
+    }
+    
+    // $nocem_failed
+    $filenames = array_diff(scandir($nocem_failed), array(
+        '..',
+        '.'
+    ));
+    foreach($filenames as $one) {
+        if(filemtime($nocem_failed.$one) < $nocem) {
+            unlink($nocem_failed.$one);
+        }
+    }
+    
+}
 
 function log_rotate()
 {
