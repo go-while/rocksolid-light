@@ -271,7 +271,7 @@ function prepare_post($filename)
         }
         if (stripos($line, "Newsgroups: ") === 0) {
             $ngroups = explode(': ', $line);
-            $newsgroups = $ngroups[1];
+            // $newsgroups = $ngroups[1];
             $lines ++;
             continue;
         }
@@ -282,16 +282,19 @@ function prepare_post($filename)
             continue;
         }
     }
-    $ngroups = preg_split("/(\ |\,)/", trim($newsgroups));
-    // DEBUG
-    file_put_contents($logfile, "\n" . format_log_date() . " DEBUG process_post: " . $newsgroups . " " . $ngroups[0], FILE_APPEND);
     $ok = 0;
-    foreach ($ngroups as $group) {
-        $result = process_post($message, $group);
-        if (substr($result, 0, 3) == "240") {
-            $ok = 1;
+
+    $allgroups = preg_split("/\ |\,/", $ngroups[1]);
+    foreach ($allgroups as $agroup) {
+        $agroup = trim($agroup);
+        if ((testGroup($agroup)) || $agroup == '') {
+            $result = process_post($message, $agroup);
+            if (substr($result, 0, 3) == "240") {
+                $ok = 1;
+            }
         }
     }
+
     if ($ok == 1) {
         if ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
             if (strpos($subject, $bbsmail_check) !== false) {
@@ -314,7 +317,6 @@ function prepare_post($filename)
 function process_post($message, $group)
 {
     global $logfile, $spooldir, $config_dir, $CONFIG, $nntp_group;
-    // $message = file($filename, FILE_IGNORE_NEW_LINES);
     $no_mid = 1;
     $no_date = 1;
     $no_org = 1;
@@ -375,7 +377,6 @@ function process_post($message, $group)
             }
         }
     }
-    // rewind($message);
     /*
      * SPAM CHECK
      */
@@ -392,26 +393,11 @@ function process_post($message, $group)
         $group = $newsgroups;
     }
     /* Find section for posting */
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($menulist as $menu) {
-        if ($menu[0] == '#') {
-            continue;
-        }
-        $menuitem = explode(':', $menu);
-        $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
-        $section = "";
-        while ($gl = fgets($glfp)) {
-            $group_name = preg_split("/( |\t)/", $gl, 2);
-            if (strcasecmp($group, trim($group_name[0])) == 0) {
-                $section = $menuitem[0];
-                break 2;
-            }
-        }
-    }
-    fclose($glfp);
+    $section = get_section_by_group($group);
+
     @mkdir($spooldir . "/" . $section . "/outgoing", 0755, 'recursive');
-    $postfilename = tempnam($spooldir . '/' . $section . '/outgoing', '');
-    $postfilehandle = fopen($postfilename, 'wb');
+    $postfilename = $spooldir . '/' . $section . '/outgoing/'.$mid[1].'.msg';
+    $postfilehandle = fopen($postfilename, 'w');
     if ($no_date == 1) {
         $article_date = time();
         $date_rep = date('D, j M Y H:i:s O', $article_date);
@@ -448,35 +434,12 @@ function process_post($message, $group)
         }
     }
     fclose($postfilehandle);
+    chmod($postfilename, 0600);
     unlink($filename);
     if ($section == "") {
         $response = "441 Posting failed (group not found)\r\n";
     } else {
-        if ($response == "") {
-            // Check for duplicate msgid
-            $duplicate = 0;
-            $database = $spooldir . '/articles-overview.db3';
-            $table = 'overview';
-            $dbh = overview_db_open($database, $table);
-            $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND msgid=:msgid ORDER BY number");
-            $stmt->execute([
-                ':thisgroup' => $group,
-                ':msgid' => $msgid
-            ]);
-            while ($found = $stmt->fetch()) {
-                unlink($postfilename);
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Duplicate Message-ID for: " . $msgid, FILE_APPEND);
-                $duplicate = 1;
-                break;
-            }
-            $dbh = null;
-
-            if ($duplicate == 0) {
-                $response = insert_article($section, $group, $postfilename, $subject[1], $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
-            } else {
-                $response = "441 Posting failed (duplicate)\r\n";
-            }
-        }
+        $response = insert_article($section, $group, $postfilename, $subject[1], $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
     }
     return $response;
 }
@@ -1130,19 +1093,8 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     $article_date = strtotime($date_i);
 
     // Get list of article numbers to find what number is next
-    $ok_article = get_article_list($nntp_group);
-    sort($ok_article);
-    $local = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
-    if (! is_numeric($local)) {
-        $local = 0;
-    }
-    $local = $local + 1;
-    if ($local < 1) {
-        $local = 1;
-    }
-    while (is_deleted_post($nntp_group, $local)) {
-        $local ++;
-    }
+    $local = get_next_article_number($nntp_group);
+
     if ($article_date > time())
         $article_date = time();
     $in_file = fopen($filename, 'r');
@@ -1161,12 +1113,38 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     $header = 1;
     $tmp_file_handle = fopen($tmp_file, 'w');
     while ($buf = fgets($in_file)) {
+        if ($header == 1) {
+            if (stripos($buf, "Content-Type: ") === 0) {
+                preg_match('/.*charset=.*/', $buf, $te);
+                $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
+            }
+            if (stripos($buf, "Newsgroups: ") === 0) {
+                $response = str_ireplace($group, $group, $buf);
+                // Identify each group name for xref
+                $groupnames = explode("Newsgroups: ", $buf);
+                $allgroups = preg_split("/\ |\,/", $groupnames[1]);
+                $ref = 0;
+            }
+        } else {}
         if ((trim($buf) == "") && ($header == 1)) {
-            $buf = "Xref: " . $CONFIG['pathhost'] . " " . $nntp_group . ":" . $local;
-            fputs($tmp_file_handle, rtrim($buf, "\n\r") . PHP_EOL);
-            $xref_i = $buf;
-            $buf = "";
+            $current_article['xref'] = "Xref: " . $CONFIG['pathhost'];
+            foreach ($allgroups as $agroup) {
+                $agroup = trim($agroup);
+                if ((! testGroup($agroup)) || $agroup == '') {
+                    continue;
+                }
+                if ($group == $agroup) {
+                    $artnum = $local;
+                } else {
+                    $artnum = get_next_article_number($agroup);
+                }
+                if ($artnum > 0) {
+                    $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
+                }
+            }
             $header = 0;
+            fputs($tmp_file_handle, $current_article['xref'] . PHP_EOL);
+            $buf .= '';
         }
         fputs($tmp_file_handle, rtrim($buf, "\n\r") . PHP_EOL);
     }
@@ -1175,72 +1153,45 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     fclose($in_file);
     touch($tmp_file, $article_date);
     file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Inserting local post: " . $nntp_group . ":" . $local, FILE_APPEND);
-    // Overview
-    # Prepare overview database
-    $database = $spooldir . '/articles-overview.db3';
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    if (! $dbh) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Failed to connect to database: " . $database, FILE_APPEND);
-        $return_val = "441 Posting failed (overview db error)\r\n";
-    } else {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Connected to database: " . $database, FILE_APPEND);
-        $sql = 'INSERT INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-        $stmt = $dbh->prepare($sql);
-        $stmt->execute([
-            $nntp_group,
-            $local,
-            $mid_i,
-            $article_date,
-            $date_i,
-            $from_i,
-            $subject_i,
-            $references_i,
-            $bytes_i,
-            $lines_i,
-            $xref_i
-        ]);
-        $dbh = null;
-    }
+
+    $current_article = array();
+    $current_article['article'] = file_get_contents($tmp_file);
 
     if ($CONFIG['article_database'] == '1') {
-        foreach ($body as $line) {
-            if (trim($line) == "") {
-                break;
-            }
-            if (stripos($line, "Content-Type: ") === 0) {
-                preg_match('/.*charset=.*/', $line, $te);
-                $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
-            }
-        }
         if (isset($content_type[1])) {
             $this_snippet = get_search_snippet($body, $content_type[1]);
         } else {
             $this_snippet = get_search_snippet($body);
         }
-        $article_dbh = article_db_open($spooldir . '/' . $nntp_group . '-articles.db3');
-        if (! $article_dbh) {
-            $return_val = "441 Posting failed (articles db error)\r\n";
-        } else {
-            $article_sql = 'INSERT INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
-            $article_stmt = $article_dbh->prepare($article_sql);
-            $this_article = file_get_contents($tmp_file);
-            $article_stmt->execute([
-                $nntp_group,
-                $local,
-                $mid_i,
-                $article_date,
-                $from_i,
-                $subject_i,
-                trim($this_article),
-                $this_snippet
-            ]);
-            unlink($tmp_file);
-            $article_dbh = null;
-        }
     } else {
         rename($tmp_file, $tradspool_out_file);
     }
+
+    $current_article['mid'] = $mid_i;
+    $current_article['epochdate'] = $article_date;
+    $current_article['stringdate'] = $date_i;
+    $current_article['from'] = $from_i;
+    $current_article['subject'] = $subject_i;
+    $current_article['references'] = $references_i;
+    $current_article['bytes'] = $bytes_i;
+    $current_article['lines'] = $lines_i;
+    $current_article['snippet'] = $this_snippet;
+
+    foreach ($allgroups as $agroup) {
+        $agroup = trim($agroup);
+        if ((! testGroup($agroup)) || $agroup == '') {
+            continue;
+        }
+        $current_article['group'] = $agroup;
+        if ($nntp_group == $agroup) {
+            $current_article['local'] = $local;
+            insert_article_from_array($current_article);
+        } else {
+            $current_article['local'] = get_next_article_number($agroup);
+            insert_article_from_array($current_article);
+        }
+    }
+
     $references = "";
     // End Overview
     $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
