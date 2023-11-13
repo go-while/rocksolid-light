@@ -28,10 +28,10 @@ if ($CONFIG['remote_server'] != '') {
     $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
 }
 
-if(isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
+if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
     $save_nocem_messages = true;
-    $nocem_dir = $spooldir."/saved_nocem";
-    @mkdir($nocem_dir.'/done', 0755, true);
+    $nocem_dir = $spooldir . "/saved_nocem";
+    @mkdir($nocem_dir . '/done', 0755, true);
 } else {
     $save_nocem_messages = false;
 }
@@ -70,6 +70,7 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
     file_put_contents($lockfile, getmypid()); // create lockfile
 } else {
     print "Spoolnews currently running\n";
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Spoolnews currently running...", FILE_APPEND);
     exit();
 }
 
@@ -139,9 +140,11 @@ if ($CONFIG['remote_server'] != '') {
 
         if ($enable_rslight == 1) {
             if ($timer) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
-                echo 'Use ns2: ' . $ns2 . "\n";
-                thread_load_newsserver($ns2, $name[0], 0);
+                if ($ns) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
+                    echo 'Use ns2: ' . $ns2 . "\n";
+                    thread_load_newsserver($ns2, $name[0], 0);
+                }
             }
         }
     }
@@ -283,6 +286,8 @@ function get_articles($ns, $group)
             continue;
         }
         $articleHandle = $grouppath . "/" . $local;
+        unlink($articleHandle);
+        unset($references);
         $response = line_read($ns);
         $lines = 0;
         $bytes = 0;
@@ -293,28 +298,11 @@ function get_articles($ns, $group)
         while (strcmp($response, ".") != 0) {
             $is_xref = false;
             $bytes = $bytes + mb_strlen($response, '8bit');
-            if (trim($response) == "" || $lines > 0) {
-                // Create Xref: header
-                $current_article['xref'] = "Xref: " . $CONFIG['pathhost'];
-                foreach ($allgroups as $agroup) {
-                    $agroup = trim($agroup);
-                    if ((! testGroup($agroup)) || $agroup == '') {
-                        continue;
-                    }
-                    if ($group == $agroup) {
-                        $artnum = $local;
-                    } else {
-                        $artnum = get_next_article_number($agroup);
-                    }
-                    if ($artnum > 0) {
-                        $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
-                    }
-                }
-                if ($is_header != 0) {
+            if (trim($response) == "" && $lines > 0) {
+                if ($is_header == 1) {
                     file_put_contents($articleHandle, $current_article['xref'] . "\n", FILE_APPEND);
                 }
                 $is_header = 0;
-                $lines ++;
             }
             if ($is_header == 1) {
                 $response = str_replace("\t", " ", $response);
@@ -357,6 +345,22 @@ function get_articles($ns, $group)
                     // Identify each group name for xref
                     $groupnames = explode("Newsgroups: ", $response);
                     $allgroups = preg_split("/\ |\,/", $groupnames[1]);
+                    // Create Xref: header
+                    $current_article['xref'] = "Xref: " . $CONFIG['pathhost'];
+                    foreach ($allgroups as $agroup) {
+                        $agroup = trim($agroup);
+                        if ((! testGroup($agroup)) || $agroup == '') {
+                            continue;
+                        }
+                        if ($group == $agroup) {
+                            $artnum = $local;
+                        } else {
+                            $artnum = get_next_article_number($agroup);
+                        }
+                        if ($artnum > 0) {
+                            $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
+                        }
+                    }
                     $ref = 0;
                 }
                 if (stripos($response, "Xref: ") === 0) {
@@ -395,6 +399,7 @@ function get_articles($ns, $group)
                 // continue;
             }
             $response = str_replace("\n", "", str_replace("\r", "", $response));
+            $lines ++;
         }
         file_put_contents($articleHandle, $response . "\n", FILE_APPEND);
         $lines = $lines - 1;
@@ -408,11 +413,11 @@ function get_articles($ns, $group)
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
                 if (strpos($subject[1], $nocem_check) !== false) {
                     $is_from = address_decode($from[1], 'nowhere');
-                    $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]");
+                    $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]");
                     copy($grouppath . "/" . $local, $nocem_file);
                     chmod($nocem_file, 0644);
-                    if($save_nocem_messages == true) {
-                        $saved_nocem_file = tempnam($nocem_dir, $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[".date("Y.m.d.H.i.s")."]-");
+                    if ($save_nocem_messages == true) {
+                        $saved_nocem_file = tempnam($nocem_dir, $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]-");
                         copy($grouppath . "/" . $local, $saved_nocem_file);
                     }
                 }
