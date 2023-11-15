@@ -231,13 +231,13 @@ function import_articles($group)
     $new_article_stmt = $new_article_dbh->prepare($new_article_sql);
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
+    $overview_dbh = overview_db_open($database, $table);
+    $clear_stmt = $overview_dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
     $clear_stmt->bindParam(':group', $group);
     $clear_stmt->execute();
     clear_history_by_group($group);
-    $sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-    $stmt = $dbh->prepare($sql);
+    $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $overview_stmt = $overview_dbh->prepare($overview_sql);
 
     // Incoming db
     $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
@@ -269,14 +269,6 @@ function import_articles($group)
                 $from[1] = $row['name'];
                 $subject[1] = $row['subject'];
                 $article_date = $row['date'];
-
-                if (stripos($response, "Xref: ") === 0) {
-                    if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
-                        $response = "Xref: " . $CONFIG['pathhost'] . " " . $group . ":" . $local;
-                    }
-                    $xref = $response;
-                    $ref = 0;
-                }
                 if (stripos($response, "Content-Type: ") === 0) {
                     preg_match('/.*charset=.*/', $response, $te);
                     $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
@@ -301,6 +293,7 @@ function import_articles($group)
         // add to database
         // CREATE SEARCH SNIPPET
         $this_snippet = get_search_snippet($body, $content_type[1]);
+        $xref = create_xref_from_msgid($msgid, $group, $local);
         $new_article_stmt->execute([
             $group,
             $local,
@@ -311,7 +304,7 @@ function import_articles($group)
             $row['article'],
             $this_snippet
         ]);
-        $stmt->execute([
+        $overview_stmt->execute([
             $group,
             $local,
             $mid[1],
@@ -335,7 +328,7 @@ function import_articles($group)
     }
     $new_article_dbh = null;
     $article_dbh = null;
-    $dbh = null;
+    $overview_dbh = null;
     unlink($spooldir . '/' . $group . '-articles.db3');
     rename($spooldir . '/' . $group . '-articles.db3-new', $spooldir . '/' . $group . '-articles.db3');
     unlink($spooldir . '/' . $group . '-info.txt');

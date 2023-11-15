@@ -1457,6 +1457,31 @@ function get_date_interval($value)
     return $variance;
 }
 
+function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
+{
+    global $spooldir, $CONFIG;
+    $database = $spooldir . '/articles-overview.db3';
+    $table = 'overview';
+    $overview_dbh = overview_db_open($database, $table);
+    $overview_stmt = $overview_dbh->prepare("SELECT * FROM overview WHERE msgid=:msgid");
+    $overview_stmt->bindParam(':msgid', $msgid);
+    $overview_stmt->execute();
+
+    $found = false;
+    $xref = "Xref: " . $CONFIG['pathhost'];
+    while ($row = $overview_stmt->fetch()) {
+        if ($row['newsgroup'] == $thisgroup && $thisgroup != null) {
+            $found = true;
+        }
+        $xref .= ' ' . $row['newsgroup'] . ':' . $row['number'];
+    }
+    if (!$found) {
+        $xref .= ' ' . $thisgroup . ':' . $thisnumber;
+    }
+    $overview_dbh = null;
+    return ($xref);
+}
+
 function get_search_snippet($body, $content_type = '')
 {
     $body = quoted_printable_decode($body);
@@ -1909,7 +1934,7 @@ function insert_article_from_array($this_article)
         $msgids[$row['msgid']] = true;
     }
     $dbh = null;
-    
+
     if ($msgids[$this_article['mid']] == true) {
         echo "\nDuplicate Message-ID for: " . $group . ":" . $this_article['local'];
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['local'], FILE_APPEND);
@@ -1961,7 +1986,7 @@ function insert_article_from_array($this_article)
     } else {
         if ($article_date > time())
             $article_date = time();
-            touch($grouppath . "/" . $this_article['local'], $article_date);
+        touch($grouppath . "/" . $this_article['local'], $article_date);
     }
 
     echo "\nRetrieved: " . $group . " " . $this_article['local'];
