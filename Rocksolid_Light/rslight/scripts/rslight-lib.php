@@ -256,8 +256,12 @@ function prepare_post($filename)
     global $logdir, $spooldir, $config_dir, $rslight_gpg;
     $logfile = $logdir . '/nntp.log';
     $message = file($filename, FILE_IGNORE_NEW_LINES);
+    $response = "441 Posting failed\r\n";
     $lines = 0;
     $is_header = 1;
+    $head_from = false;
+    $head_subject = false;
+    $head_newsgroups = false;
     $nocem_check = "@@NCM";
     $bbsmail_check = "@@RSL";
 
@@ -269,27 +273,36 @@ function prepare_post($filename)
         if ($lines > 0 && $is_header = 0) {
             $break;
         }
+        if (stripos($line, "From: ") === 0) {
+            $lines ++;
+            $head_from = true;
+            continue;
+        }
         if (stripos($line, "Newsgroups: ") === 0) {
             $ngroups = explode(': ', $line);
-            // $newsgroups = $ngroups[1];
             $lines ++;
+            $head_newsgroups = true;
             continue;
         }
         if (stripos($line, "Subject: ") === 0) {
             $sub = explode(': ', $line);
             $subject = $sub[1];
             $lines ++;
+            $head_subject = true;
             continue;
         }
     }
     $ok = 0;
-
+    if (! $head_from || ! $head_subject || ! $head_newsgroups) {
+        $response = "441 Posting failed (Missing header line)\r\n";
+        return $response;
+    }
     $allgroups = preg_split("/\ |\,/", $ngroups[1]);
     foreach ($allgroups as $agroup) {
         $agroup = trim($agroup);
         if ((testGroup($agroup)) || $agroup == '') {
-            $result = process_post($message, $agroup);
-            if (substr($result, 0, 3) == "240") {
+            $response = process_post($message, $agroup);
+            if (substr($response, 0, 3) == "240") {
                 $ok = 1;
             }
         }
@@ -309,7 +322,7 @@ function prepare_post($filename)
         }
         $response = "240 Article received OK\r\n";
     } else {
-        $response = "441 Posting failed\r\n";
+        $response = "441 Posting failed (group not found)\r\n";
     }
     return $response;
 }
@@ -396,7 +409,7 @@ function process_post($message, $group)
     $section = get_section_by_group($group);
 
     @mkdir($spooldir . "/" . $section . "/outgoing", 0755, 'recursive');
-    $postfilename = $spooldir . '/' . $section . '/outgoing/'.$mid[1].'.msg';
+    $postfilename = $spooldir . '/' . $section . '/outgoing/' . $mid[1] . '.msg';
     $postfilehandle = fopen($postfilename, 'w');
     if ($no_date == 1) {
         $article_date = time();
