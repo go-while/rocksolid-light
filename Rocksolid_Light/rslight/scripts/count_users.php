@@ -7,6 +7,13 @@ if (trim($CONFIG['tac'] == '')) {
     }
     exit(0);
 }
+
+if (isset($OVERRIDES['count_bots'])) {
+    $count_bots = $OVERRIDES['count_bots'];
+} else {
+    $count_bots = false;
+}
+
 count_users();
 
 function count_articles()
@@ -21,7 +28,7 @@ function count_articles()
 
 function count_users()
 {
-    GLOBAL $CONFIG, $spooldir;
+    GLOBAL $CONFIG, $spooldir, $count_bots;
     $session_age = 600;
     $session_save_file = $spooldir . '/sessions.dat';
     $session_dir = $CONFIG['tac'];
@@ -58,8 +65,12 @@ function count_users()
     } else {
         $bot_users = 'bots';
     }
-    $throttled_users = 'throttled';
-    $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online (including ' . $bot_count . ' ' . $bot_users . ' and ' . $throttled_count . ' ' . $throttled_users . ')<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+    if($count_bots) {
+        $throttled_users = 'throttled';
+        $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online (including ' . $bot_count . ' ' . $bot_users . ' and ' . $throttled_count . ' ' . $throttled_users . ')<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+    } else {
+        $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online <br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+    }
     file_put_contents($session_save_file, $session_info);
 }
 ?>
