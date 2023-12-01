@@ -63,7 +63,8 @@ foreach ($messages as $message) {
             continue;
         }
         if (($nocem_line[0] == '<') && $start == 1) {
-            $found = explode(' ', $nocem_line);
+            $found = preg_split("/\ |\,/", $nocem_line);
+//            $found = explode(' ', $nocem_line);
             $i = 0;
             foreach ($found as $group_item) {
                 if ($i == 0) {
