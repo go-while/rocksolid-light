@@ -688,7 +688,7 @@ function nl2p($string, $line_breaks = true, $xml = true)
         ), array(
             "</p>\n<p>",
             '$1<br' . ($xml == true ? ' /' : '') . '>$2'
-        ), trim($string)) . '</p>';
+        ), rtrim($string)) . '</p>';
     else
         return '<p>' . preg_replace(array(
             "/([\n]{2,})/i",
@@ -698,7 +698,7 @@ function nl2p($string, $line_breaks = true, $xml = true)
             "</p>\n<p>",
             "</p>\n<p>",
             '$1<br' . ($xml == true ? ' /' : '') . '>$2'
-        ), trim($string)) . '</p>';
+        ), rtrim($string)) . '</p>';
 }
 
 /*
