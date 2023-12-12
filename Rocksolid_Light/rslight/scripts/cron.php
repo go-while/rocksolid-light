@@ -40,9 +40,17 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
             }
         }
     }
-    exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp.php > /dev/null 2>&1");
-    if (is_numeric($CONFIG['local_ssl_port'])) {
-        exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp-ssl.php > /dev/null 2>&1");
+    
+    $disabled_php = ini_get('disable_functions');
+    echo $disabled_php;
+    if(strpos($disabled_php, 'pcntl_fork') !== false) {
+        echo "\nERROR: pcntl_fork() disabled in php ini file, cannot fork (nntp server will not start).";
+        file_put_contents($logfile, "\n" . format_log_date() . " ERROR: pcntl_fork() disabled in php ini file, cannot fork (nntp server will not start).", FILE_APPEND);
+    } else {
+        exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp.php > /dev/null 2>&1");
+        if (is_numeric($CONFIG['local_ssl_port'])) {
+           exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp-ssl.php > /dev/null 2>&1");
+        }
     }
 }
 # Generate user count file (must be root)
