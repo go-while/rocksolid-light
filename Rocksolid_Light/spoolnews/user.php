@@ -57,7 +57,8 @@ if (! isset($_POST['password'])) {
 if (! isset($_COOKIE['mail_auth'])) {
     $_COOKIE['mail_auth'] = null;
 }
-if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+// if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
     $logged_in = true;
 } else {
     if (check_bbs_auth($_POST['username'], $_POST['password'])) {
@@ -211,7 +212,7 @@ $themedir = $rootdir . '/common/themes';
 if (is_dir($themedir)) {
     if ($theme_list = opendir($themedir)) {
         while (($theme_dir = readdir($theme_list)) !== false) {
-            if ($theme_dir == '.' || $theme_dir == '..') {
+            if ($theme_dir == '.' || $theme_dir == '..' || !is_dir($themedir.'/'.$theme_dir)) {
                 continue;
             }
             $themes[] = $theme_dir;
