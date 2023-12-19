@@ -157,6 +157,16 @@ function expire_files() {
     // Dirs to prune
     $nocem_processed = $spooldir . "/nocem/processed/";
     $nocem_failed = $spooldir . "/nocem/failed/";
+    if(!is_dir($nocem_processed)) {
+        @mkdir($nocem_processed, 0755, 'recursive');
+        @chown($nocem_processed, $uinfo["uid"]);
+        @chgrp($nocem_processed, $uinfo["gid"]);
+    }
+    if(!is_dir($nocem_failed)) {
+        @mkdir($nocem_failed, 0755, 'recursive');
+        @chown($nocem_failed, $uinfo["uid"]);
+        @chgrp($nocem_failed, $uinfo["gid"]);
+    }
     
     // $nocem_processed
     $filenames = array_diff(scandir($nocem_processed), array(
