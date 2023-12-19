@@ -8,7 +8,7 @@ return [
 # REMOTE server configuration
 'remote_server' => 'The remote news server you connect to for syncing', 
 'remote_port' => 'Remote server port', 
-'remote_ssl' => 'Enable if connecting to remote server using ssl (1=true, blank=false)', 
+'remote_ssl' => 'Remote SSL server port (this will take priority over non-SSL)', 
 'remote_auth_user' => 'Username to authenticate to remote server',
 'remote_auth_pass' => 'Password to authenticate to remote server', 
 'socks_host' => 'ip address of your socks4a server (use this for tor)',
