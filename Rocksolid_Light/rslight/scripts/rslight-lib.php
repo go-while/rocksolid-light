@@ -1117,7 +1117,8 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     if ($CONFIG['article_database'] !== '1') {
         $path = $spooldir . "/articles/";
         $grouppath = $path . preg_replace('/\./', '/', $nntp_group);
-        $tradspool_out_file = fopen($grouppath . "/" . $local, 'w+');
+        $tradspool_out_file = $grouppath . "/" . $local;
+        // $tradspool_out_file = fopen($grouppath . "/" . $local, 'w+');
         if (! is_dir($grouppath)) {
             mkdir($grouppath, 0755, true);
         }
