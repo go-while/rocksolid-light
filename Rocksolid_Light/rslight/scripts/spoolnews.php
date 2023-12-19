@@ -140,7 +140,7 @@ if ($CONFIG['remote_server'] != '') {
 
         if ($enable_rslight == 1) {
             if ($timer) {
-                if ($ns) {
+                if ($ns2) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
                     echo 'Use ns2: ' . $ns2 . "\n";
                     thread_load_newsserver($ns2, $name[0], 0);
