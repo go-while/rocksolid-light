@@ -134,7 +134,7 @@ if (isset($_POST['username'])) {
     $name = $_POST['username'];
     // Save name in cookie
     if ($setcookies == true) {
-        setcookie("mail_name", stripslashes($name), time() + (3600 * 24 * 90));
+        setcookie("mail_name", stripslashes($name), time() + (3600 * 24 * 90), '/');
     }
 } else {
     if ($setcookies) {
