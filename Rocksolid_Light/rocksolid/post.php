@@ -27,6 +27,26 @@ include "config.inc.php";
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/post.log';
 
+$ip_pass = false;
+if (! isset($_SESSION['remote_address'])) {
+    $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
+    $_SESSION['start_address'] = $_SESSION['remote_address'];
+    $ip_pass = true;
+} else {
+    if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
+        $ip_pass = false;
+    } else {
+        $ip_pass = true;
+    }
+}
+if ($ip_pass && $_SESSION['pass']) {
+    $logged_in = true;
+} else {
+    $logged_in = false;
+}
+if($CONFIG['anonuser'] == '1') {
+    $logged_in = false;
+}
 // This will log user post info (group and username)
 $enable_post_log = false;
 if ($OVERRIDES['enable_post_log'] > 0) {
@@ -48,8 +68,10 @@ if (! isset($group) && isset($newsgroups)) {
     $group = $newsgroups;
 }
 // Save name in cookies
-if (($setcookies == true) && (isset($abspeichern)) && ($abspeichern == "ja")) {
-    setcookie("cookie_name", stripslashes($name), time() + (3600 * 24 * 90), "/");
+if (strcmp(stripslashes($name), $CONFIG['anonusername']) !== 0) {
+    if (($setcookies == true) && (isset($abspeichern)) && ($abspeichern == "ja")) {
+        setcookie("mail_name", stripslashes($name), time() + (3600 * 24 * 90), "/");
+    }
 }
 if ((isset($post_server)) && ($post_server != ""))
     $server = $post_server;
@@ -90,8 +112,8 @@ if ((function_exists("npreg_group_has_read_access") && ! npreg_group_has_read_ac
 
 // Load name from cookies
 if ($setcookies) {
-    if ((isset($_COOKIE["cookie_name"])) && (! isset($name)))
-        $name = $_COOKIE["cookie_name"];
+    if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
+        $name = $_COOKIE["mail_name"];
     // if ((isset($_COOKIE["cookie_email"])) && (!isset($email)))
     // $email=$_COOKIE["cookie_email"];
 }
@@ -109,6 +131,7 @@ if (function_exists("npreg_get_email")) {
 if (! strcmp($name, $CONFIG['anonusername']) && (isset($CONFIG['anonuser']))) {
     $userpass = $CONFIG['anonuserpass'];
     $email = $name . $CONFIG['email_tail'];
+    $_SESSION['pass'] = '0';
 } else {
     $userpass = $email;
     $request = "email";
@@ -146,9 +169,16 @@ if ($type == "new") {
 if ($type == "post") {
     $show = 0;
     if (! $CONFIG['synchronet']) {
-        if (check_bbs_auth(trim($name), $userpass) == FALSE) {
-            $type = "retry";
-            $error = $text_error["auth_error"];
+        if (! $logged_in) {
+            if (check_bbs_auth(trim($name), $userpass) == FALSE) {
+                $type = "retry";
+                $error = $text_error["auth_error"];
+                $_SESSION['pass'] = false;
+                $logged_in = false;
+            } else {
+                $_SESSION['pass'] = true;
+                $logged_in = true;
+            }
         }
     }
     // error handling
@@ -349,7 +379,11 @@ if ($show == 1) {
             echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
             if (isset($name))
                 echo 'value="' . htmlspecialchars(stripslashes($name)) . '"';
-            echo 'size="40" maxlength="40">';
+            if ($logged_in) {
+                echo 'size="40" maxlength="40" readonly>';
+            } else {
+                echo 'size="40" maxlength="40">';
+            }
             if ($CONFIG['anonuser'])
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
         }
@@ -360,9 +394,17 @@ if ($show == 1) {
 				<td align="right"><b><?php echo $text_post["password"]?></b></td>
 				<td align="left">
  <?php
-        echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
-        // if (isset($email)) echo 'value="'.htmlspecialchars(stripslashes($email)).'"';
-        echo 'size="40" maxlength="40">';
+//        if (strcmp($user, $CONFIG['anonusername']) === 0) {
+//            $logged_in = false;
+//        }
+
+        if ($logged_in) {
+            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"value="**********"';
+            echo 'size="40" maxlength="40" readonly>';
+        } else {
+            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
+            echo 'size="40" maxlength="40">';
+        }
         ?>
  </td
 			
