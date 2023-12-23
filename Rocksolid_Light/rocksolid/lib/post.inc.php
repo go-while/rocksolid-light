@@ -443,13 +443,12 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     /*
      * SPAM CHECK
      */
-    if ((isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true))) {
+    if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
         $spam_result_array = check_spam($subject, $from, $newsgroups, $ref, $body, $msgid);
         $res = $spam_result_array['res'];
         $spamresult = $spam_result_array['spamresult'];
         $spamcheckerversion = $spam_result_array['spamcheckerversion'];
         $spamlevel = $spam_result_array['spamlevel'];
-        $spam_fail = $spam_result_array['spam_fail'];
     }
     if ($do_attach) {
         move_uploaded_file($_FILES["photo"]["tmp_name"], $attachment_temp_dir . $_FILES["photo"]["name"]);
@@ -461,9 +460,8 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
         if (! is_dir($spooldir . '/upload/' . $uploadname)) {
             mkdir($spooldir . '/upload/' . $uploadname);
         }
-        if (! file_exists($spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"])) {
-            copy($attachment_temp_dir . $_FILES["photo"]["name"], $spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"]);
-        }
+        // Copy attachment to user's upload directory
+        copy($attachment_temp_dir . $_FILES["photo"]["name"], $spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"]);
     }
     $ns = nntp_open($server, $port);
     if ($ns != false) {
@@ -484,8 +482,9 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
         }
 
         // X-Rslight headers
+
         if ((isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true))) {
-            if (isset($res) && $spam_fail == 0) {
+            if ($res === 1) {
                 fputs($ns, $spamcheckerversion . "\r\n");
                 if (strpos($spamlevel, '*') !== false)
                     fputs($ns, $spamlevel . "\r\n");
@@ -495,6 +494,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
                 }
             }
         }
+
         fputs($ns, 'From: ' . $from . "\r\n");
         if ($followupto !== null) {
             fputs($ns, 'Followup-To: ' . $followupto . "\r\n");

@@ -300,7 +300,8 @@ function prepare_post($filename)
     $allgroups = preg_split("/\ |\,/", $ngroups[1]);
     foreach ($allgroups as $agroup) {
         $agroup = trim($agroup);
-        if ((testGroup($agroup)) || $agroup == '') {
+        if (testGroup($agroup)) {
+      //  if ((testGroup($agroup)) || $agroup == '') {
             $response = process_post($message, $agroup);
             if (substr($response, 0, 3) == "240") {
                 $ok = 1;
@@ -322,7 +323,7 @@ function prepare_post($filename)
         }
         $response = "240 Article received OK\r\n";
     } else {
-        $response = "441 Posting failed (group not found)\r\n";
+      //  $response = "441 Posting failed (group not found)\r\n";
     }
     return $response;
 }
@@ -404,6 +405,8 @@ function process_post($message, $group)
         $orig_newsgroups = $newsgroups;
         $newsgroups = $CONFIG['spamgroup'];
         $group = $newsgroups;
+        $response = "441 Posting failed (Exceeds Spam Score)\r\n";
+        return $response;
     }
     /* Find section for posting */
     $section = get_section_by_group($group);
@@ -450,7 +453,7 @@ function process_post($message, $group)
     chmod($postfilename, 0600);
     unlink($filename);
     if ($section == "") {
-        $response = "441 Posting failed (group not found)\r\n";
+        $response = "441 Posting failed (section not found)\r\n";
     } else {
         $response = insert_article($section, $group, $postfilename, $subject[1], $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
     }

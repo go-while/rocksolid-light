@@ -451,18 +451,36 @@ function get_articles($ns, $group)
             $current_article['article'] = $this_article;
             $current_article['snippet'] = $this_snippet;
 
-            foreach ($allgroups as $agroup) {
-                $agroup = trim($agroup);
-                if ((! testGroup($agroup)) || $agroup == '') {
-                    continue;
-                }
-                $current_article['group'] = $agroup;
-                if ($group == $agroup) {
-                    $current_article['local'] = $local;
-                    insert_article_from_array($current_article);
-                } else {
-                    $current_article['local'] = get_next_article_number($agroup);
-                    insert_article_from_array($current_article);
+            // Check Spam
+            if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
+                $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $body, $mid[1]);
+                $res = $spam_result_array['res'];
+                $spamresult = $spam_result_array['spamresult'];
+                $spamcheckerversion = $spam_result_array['spamcheckerversion'];
+                $spamlevel = $spam_result_array['spamlevel'];
+            }
+            if ($res === 1) {
+                unlink($grouppath . "/" . $local);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " Exceeds Spam Score", FILE_APPEND);
+                // $orig_newsgroups = $newsgroups;
+                // $newsgroups = $CONFIG['spamgroup'];
+                // $group = $newsgroups;
+                $i --;
+                $local --;
+            } else {
+                foreach ($allgroups as $agroup) {
+                    $agroup = trim($agroup);
+                    if ((! testGroup($agroup)) || $agroup == '') {
+                        continue;
+                    }
+                    $current_article['group'] = $agroup;
+                    if ($group == $agroup) {
+                        $current_article['local'] = $local;
+                        insert_article_from_array($current_article);
+                    } else {
+                        $current_article['local'] = get_next_article_number($agroup);
+                        insert_article_from_array($current_article);
+                    }
                 }
             }
 

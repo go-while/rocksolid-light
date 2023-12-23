@@ -1311,38 +1311,30 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
     global $CONFIG;
     $logfile = $logdir . '/spam.log';
     $spamfile = tempnam($spooldir, 'spam-');
-
-    $tmpheader = 'From: ' . $from . "\r\n";
-    if (strpos($from, $CONFIG['anonusername'])) {
-        $tmpheader .= "Anonymous: TRUE\r\n";
-    }
-    $tmpheader .= 'Message-ID: ' . $msgid . "\r\n";
-    $tmpheader .= 'Subject: ' . encode_subject($subject) . "\r\n\r\n";
-    if ($spamFileHandle = fopen($spamfile, 'w')) {
-        fwrite($spamFileHandle, $tmpheader);
-        fwrite($spamFileHandle, $body);
-        $spamcommand = $CONFIG['spamc'] . ' -E < ' . $spamfile;
-        ob_start();
-        $spamresult = passthru($spamcommand, $res);
-        $spamresult = ob_get_contents();
-        ob_end_clean();
-        $spam_fail = 1;
-        foreach (explode(PHP_EOL, $spamresult) as $line) {
-            $line = str_replace(array(
-                "\n\r",
-                "\n",
-                "\r"
-            ), '', $line);
-            if (strpos($line, 'X-Spam-Checker-Version:') !== FALSE) {
-                $spamcheckerversion = $line;
-                $spam_fail = 0;
-            }
-            if (strpos($line, 'X-Spam-Level:') !== FALSE) {
-                $spamlevel = $line;
-            }
+    file_put_contents($spamfile, $body);
+    $spamcommand = $CONFIG['spamc'] . ' -E < ' . $spamfile;
+    ob_start();
+    passthru($spamcommand, $res);
+    $spamresult = ob_get_contents();
+    ob_end_clean();
+    $spam_fail = 1;
+    foreach (explode(PHP_EOL, $spamresult) as $line) {
+        $line = str_replace(array(
+            "\n\r",
+            "\n",
+            "\r"
+        ), '', $line);
+        if (strpos($line, 'X-Spam-Checker-Version:') !== FALSE) {
+            $spamcheckerversion = $line;
+            $spam_fail = 0;
+        }
+        if (strpos($line, 'X-Spam-Level:') !== FALSE) {
+            $spamlevel = $line;
+        }
+        if ((strpos($line, "X-Spam-Flag: YES") === 0) && ($res !== 1)) {
+            $res = 1;
         }
     }
-    fclose($spamFileHandle);
     unlink($spamfile);
     if ($res === 1) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $spamresult . "\n------------\n", FILE_APPEND);
@@ -1475,7 +1467,7 @@ function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
         }
         $xref .= ' ' . $row['newsgroup'] . ':' . $row['number'];
     }
-    if (!$found) {
+    if (! $found) {
         $xref .= ' ' . $thisgroup . ':' . $thisnumber;
     }
     $overview_dbh = null;
