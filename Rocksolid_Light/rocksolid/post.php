@@ -23,6 +23,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 session_start();
+if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
+    $_SESSION['last_access'] = time();
+}
+
 include "config.inc.php";
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/post.log';
@@ -44,7 +48,7 @@ if ($ip_pass && $_SESSION['pass']) {
 } else {
     $logged_in = false;
 }
-if($CONFIG['anonuser'] == '1') {
+if ($CONFIG['anonuser'] == '1') {
     $logged_in = false;
 }
 // This will log user post info (group and username)
@@ -394,9 +398,9 @@ if ($show == 1) {
 				<td align="right"><b><?php echo $text_post["password"]?></b></td>
 				<td align="left">
  <?php
-//        if (strcmp($user, $CONFIG['anonusername']) === 0) {
-//            $logged_in = false;
-//        }
+        // if (strcmp($user, $CONFIG['anonusername']) === 0) {
+        // $logged_in = false;
+        // }
 
         if ($logged_in) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"value="**********"';
