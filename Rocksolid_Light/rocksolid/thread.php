@@ -77,7 +77,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     if (isset($overboard) && ($overboard == true)) {
         echo '<td>';
         echo '<form action="overboard.php">';
-        echo '<input type="hidden" name="thisgroup" value="' . _rawurlencode($group) . '"/>';
+        echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '"/>';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
         echo '</form>';
         echo '</td>';
