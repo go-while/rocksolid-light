@@ -65,7 +65,7 @@ $path = $workpath . "articles/";
 
 if($low_spool_disk_space) {
     print "Low Disk Space (less than ".$min_spool_disk_space." available)\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than ".$min_spool_disk_space." available for spool). Pausing spoolnews", FILE_APPEND);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than ".$min_spool_disk_space."Gb available for spool). Pausing spoolnews", FILE_APPEND);
     exit();
 }
 
