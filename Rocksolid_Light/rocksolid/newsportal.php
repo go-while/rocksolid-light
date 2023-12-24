@@ -1337,7 +1337,9 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $spamresult . "\n------------\n", FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $spamresult . "\n", FILE_APPEND);
+    } else {
+        file_put_contents($logfile, "\n" . format_log_date() . " Checked: " . $from . " " . $newsgroups . " " . $msgid . "\n------------\n", FILE_APPEND);
     }
     return array(
         'res' => $res,
