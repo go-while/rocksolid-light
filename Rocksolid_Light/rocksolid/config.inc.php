@@ -28,6 +28,15 @@ $script_path = $config_dir . "/scripts/";
 $CONFIG = include ($config_file);
 $OVERRIDES = include ($config_dir . '/overrides.inc.php');
 
+// Spool directory size and minimum in Gigabytes
+$min_spool_disk_space = 2;
+$free_spool_disk_space = disk_free_space($spooldir)*9.313E-10;
+if($free_spool_disk_space < $min_spool_disk_space) {
+    $low_spool_disk_space = true;
+} else {
+    $low_spool_disk_space = false;
+}
+
 $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
 $lockdir = $spooldir . '/lock';
