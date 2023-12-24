@@ -163,7 +163,7 @@ echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group)
 {
-    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
+    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
