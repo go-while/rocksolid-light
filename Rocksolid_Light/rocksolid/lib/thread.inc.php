@@ -38,7 +38,7 @@ function thread_pageselect($group, $article_count, $first)
     for ($i = 0; $i < $pages; $i ++) {
         // echo '[';
         if ($first != $i * $articles_per_page + 1) {
-            echo '<a class="np_pages_unselected" href="' . $file_thread . '?group=' . $group . '&amp;first=' . ($i * $articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articles_per_page . '">';
+            echo '<a class="np_pages_unselected" href="' . $file_thread . '?group=' . urlencode($group) . '&amp;first=' . ($i * $articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articles_per_page . '">';
         } else {
             // echo 'PAGE: '.$i.' OF: '.$pages;
         }
