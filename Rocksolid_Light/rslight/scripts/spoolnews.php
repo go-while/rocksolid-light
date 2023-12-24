@@ -63,9 +63,9 @@ if (! isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) {
 $workpath = $spooldir . "/";
 $path = $workpath . "articles/";
 
-if($low_spool_disk_space) {
-    print "Low Disk Space (less than ".$min_spool_disk_space." available)\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than ".$min_spool_disk_space."Gb available for spool). Pausing spoolnews", FILE_APPEND);
+if ($low_spool_disk_space) {
+    print "Low Disk Space (less than " . $min_spool_disk_space . " available)\n";
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for spool). Pausing spoolnews", FILE_APPEND);
     exit();
 }
 
@@ -458,11 +458,8 @@ function get_articles($ns, $group)
             $current_article['snippet'] = $this_snippet;
 
             // Check Spam
-            if ($OVERRIDES['disable_spamassassin_spooling'] === true) {
-                $CONFIG['spamassassin'] = false;
-                $res = 0;
-            }
-            if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
+            $res = 0;
+            if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true) && ($OVERRIDES['disable_spamassassin_spooling'] !== true)) {
                 $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $body, $mid[1]);
                 $res = $spam_result_array['res'];
                 $spamresult = $spam_result_array['spamresult'];
