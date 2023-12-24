@@ -1896,41 +1896,43 @@ function get_next_article_number($group)
     return $local;
 }
 
-function insert_article_from_array($this_article)
+function insert_article_from_array($this_article, $check_duplicates = true)
 {
     global $CONFIG, $config_name, $spooldir, $logdir;
     $logfile = $logdir . '/spoolnews.log';
     $group = $this_article['group'];
     $grouppath = $path . preg_replace('/\./', '/', $group);
 
-    // Create list of message-ids
-    $database = $spooldir . '/articles-overview.db3';
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $group);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-        $msgids[$row['msgid']] = true;
-    }
-    $dbh = null;
+    if ($check_duplicates) {
+        // Create list of message-ids
+        $database = $spooldir . '/articles-overview.db3';
+        $table = 'overview';
+        $dbh = overview_db_open($database, $table);
+        $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+        $stmt->bindParam(':newsgroup', $group);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $msgids[$row['msgid']] = true;
+        }
+        $dbh = null;
 
-    // Check history database for deleted message-ids
-    $database = $spooldir . '/history.db3';
-    $table = 'history';
-    $dbh = history_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $group);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-        $msgids[$row['msgid']] = true;
-    }
-    $dbh = null;
+        // Check history database for deleted message-ids
+        $database = $spooldir . '/history.db3';
+        $table = 'history';
+        $dbh = history_db_open($database, $table);
+        $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
+        $stmt->bindParam(':newsgroup', $group);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $msgids[$row['msgid']] = true;
+        }
+        $dbh = null;
 
-    if ($msgids[$this_article['mid']] == true) {
-        echo "\nDuplicate Message-ID for: " . $group . ":" . $this_article['local'];
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['local'], FILE_APPEND);
-        return "441 Insert failed (duplicate)\r\n";
+        if ($msgids[$this_article['mid']] == true) {
+            echo "\nDuplicate Message-ID for: " . $group . ":" . $this_article['local'];
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['local'], FILE_APPEND);
+            return "441 Insert failed (duplicate)\r\n";
+        }
     }
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {

@@ -29,9 +29,14 @@ $CONFIG = include ($config_file);
 $OVERRIDES = include ($config_dir . '/overrides.inc.php');
 
 // Spool directory size and minimum in Gigabytes
-$min_spool_disk_space = 2;
-$free_spool_disk_space = disk_free_space($spooldir)*9.313E-10;
-if($free_spool_disk_space < $min_spool_disk_space) {
+if ($OVERRIDES['min_spool_disk_space'] > 0) {
+    $min_spool_disk_space = $OVERRIDES['min_spool_disk_space'];
+} else {
+    $min_spool_disk_space = 2;
+}
+
+$free_spool_disk_space = disk_free_space($spooldir) * 9.313E-10;
+if ($free_spool_disk_space < $min_spool_disk_space) {
     $low_spool_disk_space = true;
 } else {
     $low_spool_disk_space = false;

@@ -458,6 +458,10 @@ function get_articles($ns, $group)
             $current_article['snippet'] = $this_snippet;
 
             // Check Spam
+            if ($OVERRIDES['disable_spamassassin_spooling'] === true) {
+                $CONFIG['spamassassin'] = false;
+                $res = 0;
+            }
             if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
                 $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $body, $mid[1]);
                 $res = $spam_result_array['res'];
@@ -482,10 +486,10 @@ function get_articles($ns, $group)
                     $current_article['group'] = $agroup;
                     if ($group == $agroup) {
                         $current_article['local'] = $local;
-                        insert_article_from_array($current_article);
+                        insert_article_from_array($current_article, false);
                     } else {
                         $current_article['local'] = get_next_article_number($agroup);
-                        insert_article_from_array($current_article);
+                        insert_article_from_array($current_article, false);
                     }
                 }
             }
