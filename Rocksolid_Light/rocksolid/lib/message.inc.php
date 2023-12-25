@@ -518,7 +518,7 @@ function show_header_short($head, $group, $local_poster = false)
     echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
         if ($s = get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . _rawurlencode($onegroup) . '"> ' . $onegroup . " </a>";
+            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '"> ' . $onegroup . " </a>";
         } else {
             echo " ".$onegroup." ";
         }
@@ -812,7 +812,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                 }
             }
             if ($maxlen != false && $currentlen >= $maxlen) {
-                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . $group . '">' . $text_article["full_article"] . '</a>';
+                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
             }
             // If attachment is image embed into article
             if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
@@ -893,7 +893,7 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
             }
             echo '</div>';
             if ($maxlen != false && $currentlen >= $maxlen) {
-                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . $group . '">' . $text_article["full_article"] . '</a>';
+                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
             }
         } else {
             echo $body;
@@ -915,7 +915,7 @@ function articleflat_pageselect($group, $id, $article_count, $first)
         $return .= $text_thread["pages"];
     for ($i = 0; $i < $pages; $i ++) {
         if ($first != $i * $articleflat_articles_per_page + 1)
-            $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . _rawurlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $articleflat_articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articleflat_articles_per_page . '#start">';
+            $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $articleflat_articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articleflat_articles_per_page . '#start">';
         else
             $return .= '<span class="np_pages_selected">';
         $return .= $i + 1;
