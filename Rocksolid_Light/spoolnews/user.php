@@ -1,8 +1,31 @@
 <?php
 session_start();
 
+if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
+    $past = time() - 3600;
+    foreach ( $_COOKIE as $key => $value )
+    {
+        setcookie( $key, $value, $past, '/' );
+    }
+    $_SESSION = array();
+    session_destroy();
+    $logmeout = true;
+} else {
+    $logmeout = false;
+}
+
 include ("config.inc.php");
 include ("newsportal.php");
+
+if ($logmeout) {
+    include "head.inc";
+    echo "<center>";
+    echo "<hr><p>You have been logged out</p>";
+    echo '</center>';
+    echo '<br />';
+    include "tail.inc";
+    exit(0);
+}
 
 if (isset($_COOKIE['tzo'])) {
     $offset = $_COOKIE['tzo'];
@@ -15,25 +38,7 @@ if (! isset($_POST['command'])) {
 
 $keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
-if ($_POST['command'] == 'Logout') {
-    unset($_COOKIE['mail_name']);
-    setcookie('mail_name', null, - 1, '/');
-    unset($_COOKIE['mail_auth']);
-    setcookie('mail_auth', null, - 1, '/');
-    unset($_COOKIE['cookie_name']);
-    setcookie('cookie_name', null, - 1, '/');
-    unset($_COOKIE['pkey']);
-    setcookie('pkey', null, - 1, '/');
-    unset($_SESSION['theme']);
-    unset($_POST['username']);
-    include "head.inc";
-    echo "<center>";
-    echo "<hr><p>You have been logged out</p>";
-    echo '</center>';
-    echo '<br />';
-    include "tail.inc";
-    exit(0);
-}
+
 $title .= ' - User Configuration';
 include "head.inc";
 
@@ -58,7 +63,7 @@ if (! isset($_COOKIE['mail_auth'])) {
     $_COOKIE['mail_auth'] = null;
 }
 if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
-// if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+    // if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
     $logged_in = true;
 } else {
     if (check_bbs_auth($_POST['username'], $_POST['password'])) {
@@ -212,7 +217,7 @@ $themedir = $rootdir . '/common/themes';
 if (is_dir($themedir)) {
     if ($theme_list = opendir($themedir)) {
         while (($theme_dir = readdir($theme_list)) !== false) {
-            if ($theme_dir == '.' || $theme_dir == '..' || !is_dir($themedir.'/'.$theme_dir)) {
+            if ($theme_dir == '.' || $theme_dir == '..' || ! is_dir($themedir . '/' . $theme_dir)) {
                 continue;
             }
             $themes[] = $theme_dir;
