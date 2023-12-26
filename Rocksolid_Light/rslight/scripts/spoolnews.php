@@ -149,7 +149,7 @@ if ($CONFIG['remote_server'] != '') {
                 if ($ns2) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
                     echo 'Use ns2: ' . $ns2 . "\n";
-                    thread_load_newsserver($ns2, $name[0], 0);
+                 //   thread_load_newsserver($ns2, $name[0], 0);
                 }
             }
         }
@@ -216,31 +216,6 @@ function get_articles($ns, $group)
     if ($article < $detail[2]) {
         $article = $detail[2];
     }
-
-    // Create list of message-ids
-    $database = $spooldir . '/articles-overview.db3';
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $group);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-        $msgids[$row['msgid']] = true;
-    }
-    $dbh = null;
-
-    // Check history database for deleted message-ids
-    $database = $spooldir . '/history.db3';
-    $table = 'history';
-    $dbh = history_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-    $stmt->bindParam(':newsgroup', $group);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-        $msgids[$row['msgid']] = true;
-    }
-    $dbh = null;
-
     // Get overview from server
     $server_overview = array();
     $re = false;
@@ -277,9 +252,9 @@ function get_articles($ns, $group)
         if ($CONFIG['enable_nntp'] != true) {
             $local = $article;
         }
-        if ($msgids[$overview_msgid[$article]] == true) {
-            echo "\nDuplicate Message-ID for: " . $group . ":" . $local;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article, FILE_APPEND);
+        if (check_duplicate_msgid($overview_msgid[$article], $group)) {
+            echo "\n(spoolnews)Duplicate Message-ID for: " . $group . ":" . $overview_msgid[$article];
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $overview_msgid[$article], FILE_APPEND);
             $article ++;
             continue;
         }
@@ -312,6 +287,9 @@ function get_articles($ns, $group)
             }
             if ($is_header == 1) {
                 $response = str_replace("\t", " ", $response);
+                if (strpos($response, ': ') !== false) {
+                    $ref = 0;
+                }
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
                     $finddate = explode(': ', $response, 2);
@@ -323,28 +301,24 @@ function get_articles($ns, $group)
                     if (preg_match($msgid_filter, $mid[1])) {
                         $banned = "msgid_filter";
                     }
-                    $ref = 0;
                 }
                 if (stripos($response, "From: ") === 0) {
                     $from = explode(': ', $response, 2);
                     if (preg_match($from_filter, $from[1])) {
                         $banned = "from_filter";
                     }
-                    $ref = 0;
                 }
                 if (stripos($response, "Path: ") === 0) {
                     $msgpath = explode(': ', $response, 2);
                     if (preg_match($path_filter, $msgpath[1])) {
                         $banned = "path_filter";
                     }
-                    $ref = 0;
                 }
                 if (stripos($response, "Subject: ") === 0) {
                     $subject = explode('Subject: ', $response, 2);
                     if (preg_match($subject_filter, $subject[1])) {
                         $banned = "subject_filter";
                     }
-                    $ref = 0;
                 }
                 if (stripos($response, "Newsgroups: ") === 0) {
                     $response = str_ireplace($group, $group, $response);
@@ -367,14 +341,12 @@ function get_articles($ns, $group)
                             $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
                         }
                     }
-                    $ref = 0;
                 }
                 if (stripos($response, "Xref: ") === 0) {
                     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
                         $is_xref = true;
                     }
                     $xref = $response;
-                    $ref = 0;
                 }
                 if (stripos($response, "Content-Type: ") === 0) {
                     preg_match('/.*charset=.*/', $response, $te);
@@ -385,10 +357,8 @@ function get_articles($ns, $group)
                     $references = $this_references[1];
                     $ref = 1;
                 }
-                if ((stripos($response, ':') === false) && (strpos($response, '>'))) {
-                    if ($ref == 1) {
-                        $references = $references . $response;
-                    }
+                if (preg_match('/^\s/', $response) && $ref == 1) {
+                    $references = $references . $response;
                 }
             } else {
                 $body .= $response . "\n";
@@ -400,7 +370,7 @@ function get_articles($ns, $group)
             $response = fgets($ns, 1200);
             if ($response == false) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . " retrieving article " . $article, FILE_APPEND);
-                unlink($grouppath . "/" . $local);
+                unlink($articleHandle);
                 break;
                 // continue;
             }
@@ -412,7 +382,7 @@ function get_articles($ns, $group)
         $bytes = $bytes + ($lines * 2);
         // Don't spool article if $banned != 0
         if ($banned != false) {
-            unlink($grouppath . "/" . $local);
+            unlink($articleHandle);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
             $article ++;
         } else {
@@ -420,11 +390,11 @@ function get_articles($ns, $group)
                 if (strpos($subject[1], $nocem_check) !== false) {
                     $is_from = address_decode($from[1], 'nowhere');
                     $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]");
-                    copy($grouppath . "/" . $local, $nocem_file);
+                    copy($articleHandle, $nocem_file);
                     chmod($nocem_file, 0644);
                     if ($save_nocem_messages == true) {
                         $saved_nocem_file = tempnam($nocem_dir, $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]-");
-                        copy($grouppath . "/" . $local, $saved_nocem_file);
+                        copy(articleHandle, $saved_nocem_file);
                     }
                 }
             }
@@ -432,20 +402,20 @@ function get_articles($ns, $group)
                 if (strpos($subject[1], $bbsmail_check) !== false) {
                     $bbsmail_file = preg_replace('/@@RSL /', '', $subject[1]);
                     $bbsmail_filename = $spooldir . "/bbsmail/in/bbsmail-" . $bbsmail_file;
-                    copy($grouppath . "/" . $local, $bbsmail_filename);
+                    copy($articleHandle, $bbsmail_filename);
                 }
             }
+            $this_article = file_get_contents($articleHandle);
             if ($CONFIG['article_database'] == '1') {
-                $this_article = file_get_contents($grouppath . "/" . $local);
+                unlink($articleHandle);
                 // CREATE SEARCH SNIPPET
                 $this_snippet = get_search_snippet($body, $content_type[1]);
             } else {
                 if ($article_date > time()) {
                     $article_date = time();
                 }
-                touch($grouppath . "/" . $local, $article_date);
+                touch($articleHandle, $article_date);
             }
-
             $current_article['mid'] = $mid[1];
             $current_article['epochdate'] = $article_date;
             $current_article['stringdate'] = $finddate[1];
@@ -460,14 +430,14 @@ function get_articles($ns, $group)
             // Check Spam
             $res = 0;
             if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true) && ($OVERRIDES['disable_spamassassin_spooling'] !== true)) {
-                $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $body, $mid[1]);
+                $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $this_article, $mid[1]);
                 $res = $spam_result_array['res'];
                 $spamresult = $spam_result_array['spamresult'];
                 $spamcheckerversion = $spam_result_array['spamcheckerversion'];
                 $spamlevel = $spam_result_array['spamlevel'];
             }
             if ($res === 1) {
-                unlink($grouppath . "/" . $local);
+                unlink($articleHandle);
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " Exceeds Spam Score", FILE_APPEND);
                 // $orig_newsgroups = $newsgroups;
                 // $newsgroups = $CONFIG['spamgroup'];
@@ -475,6 +445,7 @@ function get_articles($ns, $group)
                 $i --;
                 $local --;
             } else {
+                $pass = false;
                 foreach ($allgroups as $agroup) {
                     $agroup = trim($agroup);
                     if ((! testGroup($agroup)) || $agroup == '') {
@@ -483,11 +454,16 @@ function get_articles($ns, $group)
                     $current_article['group'] = $agroup;
                     if ($group == $agroup) {
                         $current_article['local'] = $local;
-                        insert_article_from_array($current_article, false);
                     } else {
                         $current_article['local'] = get_next_article_number($agroup);
-                        insert_article_from_array($current_article, false);
                     }
+                    $tmp = insert_article_from_array($current_article, true);
+                    if ($tmp[0] != "4") {
+                        $pass = true;
+                    }
+                }
+                if (! $pass) {
+                    $i --;
                 }
             }
 

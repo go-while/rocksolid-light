@@ -395,7 +395,7 @@ function process_post($message, $group)
      * SPAM CHECK
      */
     if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
-        $spam_result_array = check_spam($subject[1], $from[1], $newsgroups, $references, $body, $msgid);
+        $spam_result_array = check_spam($subject[1], $from[1], $newsgroups, $references, $body, $msgid, true);
         $res = $spam_result_array['res'];
         $spamresult = $spam_result_array['spamresult'];
         $spamcheckerversion = $spam_result_array['spamcheckerversion'];

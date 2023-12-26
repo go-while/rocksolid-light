@@ -443,8 +443,8 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     /*
      * SPAM CHECK
      */
-    if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
-        $spam_result_array = check_spam($subject, $from, $newsgroups, $ref, $body, $msgid);
+    if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true) && ($CONFIG['enable_nntp'] != true)) {
+        $spam_result_array = check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, true);
         $res = $spam_result_array['res'];
         $spamresult = $spam_result_array['spamresult'];
         $spamcheckerversion = $spam_result_array['spamcheckerversion'];

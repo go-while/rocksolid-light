@@ -1305,13 +1305,39 @@ function is_multibyte($s)
     return mb_strlen($s, 'utf-8') < strlen($s);
 }
 
-function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
+function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheaders = false)
 {
     global $msgid_generate, $msgid_fqdn, $spooldir, $logdir;
     global $CONFIG;
+    $spamdir = $spooldir . '/spam';
+    if (! is_dir($spamdir)) {
+        mkdir($spamdir);
+    }
     $logfile = $logdir . '/spam.log';
     $spamfile = tempnam($spooldir, 'spam-');
-    file_put_contents($spamfile, $body);
+    if ($useheaders) {
+        // Add headers
+        $head = '';
+        if (trim($subject) != '') {
+            $head .= 'Subject: ' . $subject . "\r\n";
+        }
+        if (trim($from) != '') {
+            $head .= 'From: ' . $from . "\r\n";
+        }
+        if (trim($newsgroups) != '') {
+            $head .= 'Newsgroups: ' . $newsgroups . "\r\n";
+        }
+        if (trim($ref) != '') {
+            $head .= 'References: ' . $ref . "\r\n";
+        }
+        if (trim($msgid) != '') {
+            $head .= 'Message-ID: ' . $msgid . "\r\n";
+        }
+        $message = $head . "\r\n" . $body;
+    } else {
+        $message = $body;
+    }
+    file_put_contents($spamfile, $message);
     $spamcommand = $CONFIG['spamc'] . ' -E < ' . $spamfile;
     ob_start();
     passthru($spamcommand, $res);
@@ -1337,9 +1363,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid)
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $spamresult . "\n", FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " identified spam: " . $from . " " . $newsgroups . " " . $msgid, FILE_APPEND);
+        file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . format_log_date() . " Checked: " . $from . " " . $newsgroups . " " . $msgid . "\n------------\n", FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " clean message: " . $from . " " . $newsgroups . " " . $msgid, FILE_APPEND);
     }
     return array(
         'res' => $res,
@@ -1898,6 +1925,43 @@ function get_next_article_number($group)
     return $local;
 }
 
+function check_duplicate_msgid($msgid, $group)
+{
+    global $spooldir, $logdir;
+
+    $found = false;
+
+    $database = $spooldir . '/articles-overview.db3';
+    $table = 'overview';
+    $dbh = overview_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE msgid=:msgid AND newsgroup=:newsgroup");
+    $stmt->bindParam(':msgid', $msgid);
+    $stmt->bindParam(':newsgroup', $group);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        if($row['msgid'] == $msgid) {
+            $found = true;
+        }
+    }
+    $dbh = null;
+
+    $database = $spooldir . '/history.db3';
+    $table = 'history';
+    $dbh = history_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE msgid=:msgid AND newsgroup=:newsgroup");
+    $stmt->bindParam(':msgid', $msgid);
+    $stmt->bindParam(':newsgroup', $group);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        if($row['msgid'] == $msgid) {
+            $found = true;
+        }
+    }
+    $dbh = null;
+
+    return $found;
+}
+
 function insert_article_from_array($this_article, $check_duplicates = true)
 {
     global $CONFIG, $config_name, $spooldir, $logdir;
@@ -1906,47 +1970,24 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $grouppath = $path . preg_replace('/\./', '/', $group);
 
     if ($check_duplicates) {
-        // Create list of message-ids
-        $database = $spooldir . '/articles-overview.db3';
-        $table = 'overview';
-        $dbh = overview_db_open($database, $table);
-        $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-        $stmt->bindParam(':newsgroup', $group);
-        $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $msgids[$row['msgid']] = true;
-        }
-        $dbh = null;
-
-        // Check history database for deleted message-ids
-        $database = $spooldir . '/history.db3';
-        $table = 'history';
-        $dbh = history_db_open($database, $table);
-        $stmt = $dbh->prepare("SELECT msgid FROM $table WHERE newsgroup=:newsgroup");
-        $stmt->bindParam(':newsgroup', $group);
-        $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $msgids[$row['msgid']] = true;
-        }
-        $dbh = null;
-
-        if ($msgids[$this_article['mid']] == true) {
-            echo "\nDuplicate Message-ID for: " . $group . ":" . $this_article['local'];
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['local'], FILE_APPEND);
+        if (check_duplicate_msgid($this_article['mid'], $group)) {
+            echo "\n(newsportal)Duplicate Message-ID for: " . $group . ":" . $this_article['mid'];
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['mid'], FILE_APPEND);
             return "441 Insert failed (duplicate)\r\n";
         }
     }
+
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {
         $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
-        $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
+        $article_sql = 'INSERT INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
         $article_stmt = $article_dbh->prepare($article_sql);
     }
     // Open overview database
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $overview_dbh = overview_db_open($database, $table);
-    $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $overview_sql = 'INSERT INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $overview_stmt = $overview_dbh->prepare($overview_sql);
 
     // Overview
@@ -1985,7 +2026,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
 
-    echo "\nRetrieved: " . $group . " " . $this_article['local'];
+    echo "\nSpooling: " . $group . " " . $this_article['local'];
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
     $status = "spooled";
     $statusdate = time();
