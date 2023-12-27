@@ -143,16 +143,17 @@ if ($CONFIG['remote_server'] != '') {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
         get_articles($ns, $name[0]);
-
+/*
         if ($enable_rslight == 1) {
             if ($timer) {
                 if ($ns2) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
                     echo 'Use ns2: ' . $ns2 . "\n";
-                 //   thread_load_newsserver($ns2, $name[0], 0);
+                    thread_load_newsserver($ns2, $name[0], 0);
                 }
             }
         }
+*/
     }
     nntp_close($ns2);
     nntp_close($ns);
@@ -187,7 +188,6 @@ function get_articles($ns, $group)
         echo "\n" . $response;
         return (1);
     }
-
     # Get config
     $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $findgroup) {
@@ -201,6 +201,7 @@ function get_articles($ns, $group)
             break;
         }
     }
+
     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
         // Get next available article number for group
         $local = get_next_article_number($group);
@@ -224,6 +225,7 @@ function get_articles($ns, $group)
     } else {
         $getlast = $detail[3];
     }
+
     fputs($ns, "xover " . $article . "-" . $getlast . "\r\n");
     $response = line_read($ns); // and once more
     if ((substr($response, 0, 3) != "224")) {
@@ -492,6 +494,8 @@ function get_articles($ns, $group)
         }
     }
     # Save config
+    $configfile = '/var/spool/rslight/rocksolid/test-config.txt';
+    save_config_value($configfile, $name, $value);
     $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $saveconfig = fopen($remote_groupfile, 'w+');
     foreach ($grouplist as $savegroup) {
@@ -525,27 +529,17 @@ function create_spool_groups($in_groups, $out_groups)
     global $spooldir;
     $grouplist = file($in_groups, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $temp_file = tempnam($spooldir . "/tmp/", 'groupfile-');
-    $groupout = fopen($out_groups, "a+");
     foreach ($grouplist as $group) {
         if ($group[0] == ":") {
             continue;
         }
         $thisgroup = preg_split("/( |\t)/", $group, 2);
-        $found = 0;
-        while (($buffer = fgets($groupout)) !== false) {
-            $mod_buffer = explode(':', $buffer);
-            if (strcmp($thisgroup[0], $mod_buffer[0]) == 0) {
-                file_put_contents($temp_file, "$buffer", FILE_APPEND);
-                $found = 1;
-                break;
-            }
-        }
-        if ($found == 0) {
-            file_put_contents($temp_file, "$thisgroup[0]\n", FILE_APPEND);
-            continue;
+        if($val = get_config_file_value($out_groups, $thisgroup[0])) {
+            file_put_contents($temp_file, $thisgroup[0].":".$val."\n", FILE_APPEND);
+        } else {
+            file_put_contents($temp_file, $thisgroup[0]."\n", FILE_APPEND);
         }
     }
-    fclose($groupout);
     rename($temp_file, $out_groups);
     return;
 }

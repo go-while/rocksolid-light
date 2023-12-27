@@ -1762,6 +1762,39 @@ function get_poster_name($name)
     return ($thisposter);
 }
 
+function save_config_value($configfile, $name, $value) {
+    $list = file($configfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $saveconfig = fopen($configfile, 'w+');
+    foreach ($list as $save) {
+        $name = explode(':', $save);
+        if (strcmp($name[0], $group) == 0) {
+            fputs($saveconfig, $group . ":" . $article . "\n");
+        } else {
+            fputs($saveconfig, $save . "\n");
+        }
+    }
+}
+
+function get_config_file_value($configfile, $request)
+{
+    if ($configFileHandle = @fopen($configfile, 'r')) {
+        while (! feof($configFileHandle)) {
+            $buffer = fgets($configFileHandle);
+            if (strpos($buffer, $request . ':') !== FALSE) {
+                $dataline = $buffer;
+                fclose($configFileHandle);
+                $datafound = explode(':', $dataline);
+                return trim($datafound[1]);
+            }
+        }
+        fclose($configFileHandle);
+        return FALSE;
+    } else {
+        return FALSE;
+    }
+}
+
+// This function is specific to user configuration values 
 function get_config_value($configfile, $request)
 {
     global $config_dir;
