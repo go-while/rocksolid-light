@@ -2013,14 +2013,14 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {
         $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
-        $article_sql = 'INSERT INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
+        $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
         $article_stmt = $article_dbh->prepare($article_sql);
     }
     // Open overview database
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $overview_dbh = overview_db_open($database, $table);
-    $overview_sql = 'INSERT INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+    $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $overview_stmt = $overview_dbh->prepare($overview_sql);
 
     // Overview

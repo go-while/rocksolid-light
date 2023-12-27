@@ -128,8 +128,6 @@ if ($CONFIG['remote_server'] == '') {
 if ($CONFIG['remote_server'] != '') {
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " remote_server: " . $CONFIG['remote_server'], FILE_APPEND);
     $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
-    $ns2 = nntp_open();
-    echo 'Open ns2: ' . $ns2 . "\n";
     if (! $ns) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
         exit();
@@ -143,22 +141,10 @@ if ($CONFIG['remote_server'] != '') {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
         get_articles($ns, $name[0]);
-/*
-        if ($enable_rslight == 1) {
-            if ($timer) {
-                if ($ns2) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
-                    echo 'Use ns2: ' . $ns2 . "\n";
-                    thread_load_newsserver($ns2, $name[0], 0);
-                }
-            }
-        }
-*/
     }
-    nntp_close($ns2);
     nntp_close($ns);
 }
-# expire_overview();
+
 unlink($lockfile);
 echo "\nSpoolnews Done\n";
 
@@ -459,7 +445,7 @@ function get_articles($ns, $group)
                     } else {
                         $current_article['local'] = get_next_article_number($agroup);
                     }
-                    $tmp = insert_article_from_array($current_article, true);
+                    $tmp = insert_article_from_array($current_article, false);
                     if ($tmp[0] != "4") {
                         $pass = true;
                     }
@@ -496,6 +482,7 @@ function get_articles($ns, $group)
     # Save config
     $configfile = '/var/spool/rslight/rocksolid/test-config.txt';
     save_config_value($configfile, $name, $value);
+
     $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $saveconfig = fopen($remote_groupfile, 'w+');
     foreach ($grouplist as $savegroup) {
@@ -534,10 +521,10 @@ function create_spool_groups($in_groups, $out_groups)
             continue;
         }
         $thisgroup = preg_split("/( |\t)/", $group, 2);
-        if($val = get_config_file_value($out_groups, $thisgroup[0])) {
-            file_put_contents($temp_file, $thisgroup[0].":".$val."\n", FILE_APPEND);
+        if ($val = get_config_file_value($out_groups, $thisgroup[0])) {
+            file_put_contents($temp_file, $thisgroup[0] . ":" . $val . "\n", FILE_APPEND);
         } else {
-            file_put_contents($temp_file, $thisgroup[0]."\n", FILE_APPEND);
+            file_put_contents($temp_file, $thisgroup[0] . "\n", FILE_APPEND);
         }
     }
     rename($temp_file, $out_groups);
