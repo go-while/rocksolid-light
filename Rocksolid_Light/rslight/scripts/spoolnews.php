@@ -480,9 +480,6 @@ function get_articles($ns, $group)
         }
     }
     # Save config
-    $configfile = '/var/spool/rslight/rocksolid/test-config.txt';
-    save_config_value($configfile, $name, $value);
-
     $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $saveconfig = fopen($remote_groupfile, 'w+');
     foreach ($grouplist as $savegroup) {
