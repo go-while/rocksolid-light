@@ -382,7 +382,7 @@ function get_articles($ns, $group)
                     chmod($nocem_file, 0644);
                     if ($save_nocem_messages == true) {
                         $saved_nocem_file = tempnam($nocem_dir, $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]-");
-                        copy(articleHandle, $saved_nocem_file);
+                        copy($articleHandle, $saved_nocem_file);
                     }
                 }
             }
