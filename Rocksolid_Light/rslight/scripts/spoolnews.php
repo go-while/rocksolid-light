@@ -261,6 +261,7 @@ function get_articles($ns, $group)
         $lines = 0;
         $bytes = 0;
         $ref = 0;
+        $sub = 0;
         $banned = false;
         $is_header = 1;
         $body = "";
@@ -277,6 +278,7 @@ function get_articles($ns, $group)
                 $response = str_replace("\t", " ", $response);
                 if (strpos($response, ': ') !== false) {
                     $ref = 0;
+                    $sub = 0;
                 }
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
@@ -303,8 +305,10 @@ function get_articles($ns, $group)
                     }
                 }
                 if (stripos($response, "Subject: ") === 0) {
-                    $subject = explode('Subject: ', $response, 2);
-                    if (preg_match($subject_filter, $subject[1])) {
+                    $this_subject = explode('Subject: ', $response, 2);
+                    $subject = $this_subject[1];
+                    $sub = 1;
+                    if (preg_match($subject_filter, $subject)) {
                         $banned = "subject_filter";
                     }
                 }
@@ -348,6 +352,9 @@ function get_articles($ns, $group)
                 if (preg_match('/^\s/', $response) && $ref == 1) {
                     $references = $references . $response;
                 }
+                if (preg_match('/^\s/', $response) && $sub == 1) {
+                    $subject = $subject . $response;
+                }
             } else {
                 $body .= $response . "\n";
             }
@@ -375,7 +382,7 @@ function get_articles($ns, $group)
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
-                if (strpos($subject[1], $nocem_check) !== false) {
+                if (strpos($subject, $nocem_check) !== false) {
                     $is_from = address_decode($from[1], 'nowhere');
                     $nocem_file = tempnam($spooldir . "/nocem", $is_from[0]['mailbox'] . "@" . $is_from[0]['host'] . "[" . date("Y.m.d.H.i.s") . "]");
                     copy($articleHandle, $nocem_file);
@@ -387,8 +394,8 @@ function get_articles($ns, $group)
                 }
             }
             if ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
-                if (strpos($subject[1], $bbsmail_check) !== false) {
-                    $bbsmail_file = preg_replace('/@@RSL /', '', $subject[1]);
+                if (strpos($subject, $bbsmail_check) !== false) {
+                    $bbsmail_file = preg_replace('/@@RSL /', '', $subject);
                     $bbsmail_filename = $spooldir . "/bbsmail/in/bbsmail-" . $bbsmail_file;
                     copy($articleHandle, $bbsmail_filename);
                 }
@@ -408,7 +415,7 @@ function get_articles($ns, $group)
             $current_article['epochdate'] = $article_date;
             $current_article['stringdate'] = $finddate[1];
             $current_article['from'] = $from[1];
-            $current_article['subject'] = $subject[1];
+            $current_article['subject'] = $subject;
             $current_article['references'] = $references;
             $current_article['bytes'] = $bytes;
             $current_article['lines'] = $lines;
@@ -418,7 +425,7 @@ function get_articles($ns, $group)
             // Check Spam
             $res = 0;
             if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true) && ($OVERRIDES['disable_spamassassin_spooling'] !== true)) {
-                $spam_result_array = check_spam($subject[1], $from[1], $groupnames[1], $references, $this_article, $mid[1]);
+                $spam_result_array = check_spam($subject, $from[1], $groupnames[1], $references, $this_article, $mid[1]);
                 $res = $spam_result_array['res'];
                 $spamresult = $spam_result_array['spamresult'];
                 $spamcheckerversion = $spam_result_array['spamcheckerversion'];

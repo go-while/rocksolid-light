@@ -337,6 +337,7 @@ function process_post($message, $group)
     $is_header = 1;
     $body = "";
     $ref = 0;
+    $sub = 0;
     $response = "";
     $bytes = 0;
     $lines = 0;
@@ -350,6 +351,10 @@ function process_post($message, $group)
         if ($is_header == 0) {
             $body .= $line . "\n";
         } else {
+            if (strpos($line, ': ') !== false) {
+                $ref = 0;
+                $sub = 0;
+            }
             if (stripos($line, "Date: ") === 0) {
                 $finddate = explode(': ', $line);
                 $article_date = strtotime($finddate[1]);
@@ -359,31 +364,30 @@ function process_post($message, $group)
                 $no_org = 0;
             }
             if (stripos($line, "Subject: ") !== false) {
-                $subject = explode('Subject: ', $line, 2);
-                $ref = 0;
+                $this_subject = explode('Subject: ', $line, 2);
+                $subject = $this_subject[1];
+                $sub = 1;
             }
             if (stripos($line, "From: ") === 0) {
                 $from = explode(': ', $line);
-                $ref = 0;
             }
             if (stripos($line, "Xref: ") === 0) {
                 $xref = $line;
-                $ref = 0;
             }
             if (stripos($line, "Newsgroups: ") === 0) {
                 $ngroups = explode(': ', $line);
                 $newsgroups = $ngroups[1];
-                $ref = 0;
             }
             if (stripos($line, "References: ") === 0) {
                 $references_line = explode(': ', $line);
                 $references = $references_line[1];
                 $ref = 1;
             }
-            if ((stripos($line, ':') === false) && (strpos($line, '>'))) {
-                if ($ref == 1) {
-                    $references = $references . " " . trim($line);
-                }
+            if (preg_match('/^\s/', $line) && $ref == 1) {
+                $references = $references . $line;
+            }
+            if (preg_match('/^\s/', $line) && $sub == 1) {
+                $subject = $subject . $line;
             }
             if (stripos($line, "Message-ID: ") !== false) {
                 $mid = explode(': ', $line);
@@ -395,7 +399,7 @@ function process_post($message, $group)
      * SPAM CHECK
      */
     if (isset($CONFIG['spamassassin']) && ($CONFIG['spamassassin'] == true)) {
-        $spam_result_array = check_spam($subject[1], $from[1], $newsgroups, $references, $body, $msgid, true);
+        $spam_result_array = check_spam($subject, $from[1], $newsgroups, $references, $body, $msgid, true);
         $res = $spam_result_array['res'];
         $spamresult = $spam_result_array['spamresult'];
         $spamcheckerversion = $spam_result_array['spamcheckerversion'];
@@ -422,7 +426,7 @@ function process_post($message, $group)
         $date_rep = $finddate[1];
     }
     if ($no_mid == 1) {
-        $identity = $subject[1] . "," . $from[1] . "," . $ngroups[1] . "," . $references . "," . $body;
+        $identity = $subject . "," . $from[1] . "," . $ngroups[1] . "," . $references . "," . $body;
         $msgid = '<' . md5($identity) . '$1@' . trim($CONFIG['email_tail'], '@') . '>';
         fputs($postfilehandle, "Message-ID: " . $msgid . "\r\n");
     } else {
@@ -455,7 +459,7 @@ function process_post($message, $group)
     if ($section == "") {
         $response = "441 Posting failed (section not found)\r\n";
     } else {
-        $response = insert_article($section, $group, $postfilename, $subject[1], $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
+        $response = insert_article($section, $group, $postfilename, $subject, $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
     }
     return $response;
 }
