@@ -11,6 +11,13 @@ include "newsportal.php";
 
 $snippet_size = 100;
 
+if (isset($_GET['group'])) {
+    $search_group = urldecode($_GET['group']);
+}
+if (isset($_POST['group'])) {
+    $search_group = urldecode($_POST['group']);
+}
+
 if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
     unset($_REQUEST['data']);
 }
@@ -28,8 +35,8 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo 'search</h1>';
     echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-    if (isset($_GET['group'])) {
-        $searching = $_GET['group'];
+    if (isset($search_group)) {
+        $searching = $search_group;
     } else {
         $searching = $config_name;
     }
@@ -74,8 +81,8 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '</td></tr>';
     echo '<tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
-    if (isset($_GET['group'])) {
-        echo '<input type="hidden" name="group" value="' . $_GET['group'] . '">';
+    if (isset($search_group)) {
+        echo '<input type="hidden" name="group" value="' . $search_group . '">';
     }
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
     if (isset($_GET['data'])) {
@@ -154,16 +161,16 @@ if (isset($_COOKIE['tzo'])) {
     $offset = $CONFIG['timezone'];
 }
 $overview = array();
-if (! isset($group)) {
-    $group = null;
+if (trim($search_group = '')) {
+    $search_group = null;
 }
 if ($_POST['searchpoint'] == 'body') {
-    $overview = get_body_search($group, $_POST['terms']);
+    $overview = get_body_search($search_group, $_POST['terms']);
 } else {
     if (isset($_REQUEST['data'])) {
-        $overview = get_header_search($group, base64_decode(urldecode($_REQUEST['data'])));
+        $overview = get_header_search($search_group, base64_decode(urldecode($_REQUEST['data'])));
     } else {
-        $overview = get_header_search($group, $_POST['terms']);
+        $overview = get_header_search($search_group, $_POST['terms']);
     }
 }
 foreach ($overview as $overviewline) {
@@ -282,8 +289,8 @@ function get_body_search($group, $terms)
         $terms = preg_replace('/"NOT"/', 'NOT', $terms);
         $terms = '"' . $terms . '"';
     }
-    if (isset($_POST['group'])) {
-        $grouplist[0] = $_POST['group'];
+    if ($group != '') {
+        $grouplist[0] = $group;
     } else {
         $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -318,8 +325,8 @@ function get_header_search($group, $terms)
     GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
-    if (isset($_POST['group']) && $_POST['searchpoint'] != 'msgid') {
-        $grouplist[0] = $_POST['group'];
+    if (isset($search_group) && $_POST['searchpoint'] != 'msgid') {
+        $grouplist[0] = $search_group;
     } elseif ($_POST['searchpoint'] != 'msgid') {
         $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
