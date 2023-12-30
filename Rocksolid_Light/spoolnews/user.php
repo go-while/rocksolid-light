@@ -1,11 +1,13 @@
 <?php
 session_start();
+if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
+    $_SESSION['last_access'] = time();
+}
 
 if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $past = time() - 3600;
-    foreach ( $_COOKIE as $key => $value )
-    {
-        setcookie( $key, $value, $past, '/' );
+    foreach ($_COOKIE as $key => $value) {
+        setcookie($key, $value, $past, '/');
     }
     $_SESSION = array();
     session_destroy();
@@ -16,6 +18,19 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
 
 include ("config.inc.php");
 include ("newsportal.php");
+
+$ip_pass = false;
+if (! isset($_SESSION['remote_address'])) {
+    $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
+    $_SESSION['start_address'] = $_SESSION['remote_address'];
+    $ip_pass = true;
+} else {
+    if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
+        $ip_pass = false;
+    } else {
+        $ip_pass = true;
+    }
+}
 
 if ($logmeout) {
     include "head.inc";
@@ -67,6 +82,9 @@ if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['use
     $logged_in = true;
 } else {
     if (check_bbs_auth($_POST['username'], $_POST['password'])) {
+        if ($ip_pass) {
+            $_SESSION['pass'] = true;
+        }
         $authkey = password_hash($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), PASSWORD_DEFAULT);
         $pkey = hash('crc32', get_user_config($_POST['username'], 'encryptionkey'));
         set_user_config(strtolower($_POST['username']), "pkey", $pkey);
