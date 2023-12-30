@@ -132,7 +132,7 @@ $thread_show["replies"] = false;
 $thread_show["lastdate"] = true; // makes only sense with $thread_show["replies"]=false
 $thread_show["threadsize"] = true;
 $thread_show["latest"] = true;
-$thread_maxSubject = 70;
+$thread_maxSubject = 80;
 $maxfetch = 1000;
 $maxarticles = 0;
 $maxarticles_extra = 0;
