@@ -195,8 +195,8 @@ foreach ($overview as $overviewline) {
 
     fclose($glfp);
     # Generate link
-    $url = "../" . $section . "/article-flat.php?id=" . $overviewline['number'] . "&group=" . _rawurlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
-    $groupurl = "../" . $section . "/thread.php?group=" . _rawurlencode($overviewline['newsgroup']);
+    $url = "../" . $section . "/article-flat.php?id=" . $overviewline['number'] . "&group=" . urlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
+    $groupurl = "../" . $section . "/thread.php?group=" . urlencode($overviewline['newsgroup']);
     $fromoutput = explode("<", html_entity_decode($overviewline['name']));
 
     // Use local timezone if possible
