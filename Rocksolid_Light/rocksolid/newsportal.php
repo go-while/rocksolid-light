@@ -1363,10 +1363,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . format_log_date() . " identified spam: " . $from . " " . $newsgroups . " " . $msgid, FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . $from, FILE_APPEND);
         file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . format_log_date() . " clean message: " . $from . " " . $newsgroups . " " . $msgid, FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . $from, FILE_APPEND);
     }
     return array(
         'res' => $res,
@@ -1794,7 +1794,7 @@ function get_config_file_value($configfile, $request)
     }
 }
 
-// This function is specific to user configuration values 
+// This function is specific to $config_dir configuration values 
 function get_config_value($configfile, $request)
 {
     global $config_dir;

@@ -39,6 +39,7 @@ if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'
 $file_groups = $config_path . "groups.txt";
 $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
 $logfile = $logdir . '/spoolnews.log';
+$spamlog = $logdir . '/spam.log';
 
 # END MAIN CONFIGURATION
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
@@ -150,7 +151,7 @@ echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group)
 {
-    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $logfile;
+    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $spamlog, $logfile;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -158,7 +159,7 @@ function get_articles($ns, $group)
     }
 
     $grouppath = $path . preg_replace('/\./', '/', $group);
-    $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+//    $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $msgid_filter = get_config_value('header_filters.conf', 'Message-ID');
     $subject_filter = get_config_value('header_filters.conf', 'Subject');
     $from_filter = get_config_value('header_filters.conf', 'From');
@@ -376,9 +377,10 @@ function get_articles($ns, $group)
         $lines = $lines - 1;
         $bytes = $bytes + ($lines * 2);
         // Don't spool article if $banned != 0
-        if ($banned != false) {
+        if ($banned !== false) {
             unlink($articleHandle);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
+            file_put_contents($spamlog, "\n" . format_log_date() . " ".$banned." :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
+//            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {

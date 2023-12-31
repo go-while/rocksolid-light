@@ -395,6 +395,12 @@ function process_post($message, $group)
             }
         }
     }
+    if ($no_mid == 1) {
+        $identity = $subject . "," . $from[1] . "," . $ngroups[1] . "," . $references . "," . $body;
+        $msgid = '<' . md5($identity) . '$1@' . trim($CONFIG['email_tail'], '@') . '>';
+    } else {
+        $msgid = $mid[1];
+    }
     /*
      * SPAM CHECK
      */
@@ -416,7 +422,7 @@ function process_post($message, $group)
     $section = get_section_by_group($group);
 
     @mkdir($spooldir . "/" . $section . "/outgoing", 0755, 'recursive');
-    $postfilename = $spooldir . '/' . $section . '/outgoing/' . $mid[1] . '.msg';
+    $postfilename = $spooldir . '/' . $section . '/outgoing/' . $msgid . '.msg';
     $postfilehandle = fopen($postfilename, 'w');
     if ($no_date == 1) {
         $article_date = time();
@@ -426,11 +432,7 @@ function process_post($message, $group)
         $date_rep = $finddate[1];
     }
     if ($no_mid == 1) {
-        $identity = $subject . "," . $from[1] . "," . $ngroups[1] . "," . $references . "," . $body;
-        $msgid = '<' . md5($identity) . '$1@' . trim($CONFIG['email_tail'], '@') . '>';
         fputs($postfilehandle, "Message-ID: " . $msgid . "\r\n");
-    } else {
-        $msgid = $mid[1];
     }
     if ($no_org == 1) {
         fputs($postfilehandle, "Organization: " . $CONFIG['organization'] . "\r\n");
