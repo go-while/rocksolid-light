@@ -24,6 +24,10 @@ include "config.inc.php";
 include ("$file_newsportal");
 include $config_dir . '/gpg.conf';
 
+set_error_handler(function (int $number, string $message) {
+    echo "Handler captured error $number: '$message'" . PHP_EOL;
+});
+
 if ($CONFIG['remote_server'] != '') {
     $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
 }
@@ -139,21 +143,28 @@ if ($CONFIG['remote_server'] != '') {
         get_articles($ns, $name[0]);
 
         if ($enable_rslight == 1) {
-            if (filemtime($spooldir . '/' . $name[0] . '-thread-timer') + 600 < time()) {
+            $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
+            if (filemtime($timer_file) + 600 < time()) {
+                touch($timer_file);
                 if (! $ns2) {
                     $ns2 = nntp_open();
+                    echo "\nOPENING $ns2: " . $ns2 . "\n";
                 }
                 if (! $ns2) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
                     // exit();
                 } else {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
-                    thread_load_newsserver($ns2, $name[0], 0);
+                    try {
+                        thread_load_newsserver($ns2, $name[0], 0);
+                    } catch (Exception $exc) {
+                        echo "\nFatal exception caught: " . $exc->getMessage();
+                    } catch (Error $err) {
+                        echo "\nFatal error caught: " . $err->getMessage();
+                    }
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Threads updated for: " . $name[0], FILE_APPEND);
-                    // nntp_close($ns2);
                 }
-                touch($spooldir . '/' . $name[0] . '-thread-timer');
-            } 
+            }
         }
     }
     if ($ns2) {
@@ -240,7 +251,9 @@ function get_articles($ns, $group)
     }
 
     # Pull articles and save them in our spool
-    @mkdir($grouppath, 0755, 'recursive');
+    if (! is_dir($grouppath)) {
+        mkdir($grouppath, 0755, 'recursive');
+    }
     $i = 0;
     // GET INDIVIDUAL ARTICLE
     while ($article <= $detail[3]) {

@@ -296,12 +296,23 @@ function thread_mycompare($a, $b)
 function thread_load_newsserver(&$ns, $groupname, $poll)
 {
     global $spooldir, $logdir, $maxarticles, $maxfetch, $initialfetch, $maxarticles_extra, $config_name;
-    global $text_error, $text_thread, $compress_spoolfiles, $server;
+    global $text_error, $text_thread, $compress_spoolfiles, $server, $CONFIG;
     global $www_charset, $iconv_enable, $thread_show, $thread_sort_order;
     $logfile = $logdir . '/newsportal.log';
     $maxfetch = 0;
     $idstring = "0.36," . $server . "," . $compress_spoolfiles . "," . $maxarticles . "," . $maxarticles_extra . "," . $maxfetch . "," . $initialfetch . "," . $www_charset . ',' . $iconv_enable . ',' . $thread_show["replies"];
-    $overviewformat = thread_overview_read($ns);
+    if ($CONFIG['enable_nntp'] == '1') {
+        $overviewfmt = array(
+            "Subject:",
+            "From:",
+            "Date:",
+            "Message-ID:",
+            "References:",
+            "Bytes:"
+        );
+    } else {
+        $overviewformat = thread_overview_read($ns);
+    }
     $spoolfilename = $spooldir . '/' . $groupname . '-data.db3';
     fputs($ns, "GROUP $groupname\r\n"); // select a group
     $groupinfo = explode(" ", line_read($ns));
