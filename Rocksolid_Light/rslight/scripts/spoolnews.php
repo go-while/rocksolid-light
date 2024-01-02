@@ -87,12 +87,7 @@ if (is_file($sem)) {
     unlink($sem);
     $maxfirstrequest = 500;
 }
-if (filemtime($spooldir . '/' . $config_name . '-thread-timer') + 600 < time()) {
-    $timer = true;
-    touch($spooldir . '/' . $config_name . '-thread-timer');
-} else {
-    $timer = false;
-}
+
 # Check for groups file, create if necessary
 // only do remote server groups if necessary
 if ($CONFIG['remote_server'] != '') {
@@ -142,10 +137,30 @@ if ($CONFIG['remote_server'] != '') {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
         get_articles($ns, $name[0]);
+
+        if ($enable_rslight == 1) {
+            if (filemtime($spooldir . '/' . $name[0] . '-thread-timer') + 600 < time()) {
+                if (! $ns2) {
+                    $ns2 = nntp_open();
+                }
+                if (! $ns2) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+                    // exit();
+                } else {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
+                    thread_load_newsserver($ns2, $name[0], 0);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Threads updated for: " . $name[0], FILE_APPEND);
+                    // nntp_close($ns2);
+                }
+                touch($spooldir . '/' . $name[0] . '-thread-timer');
+            } 
+        }
+    }
+    if ($ns2) {
+        nntp_close($ns2);
     }
     nntp_close($ns);
 }
-
 unlink($lockfile);
 echo "\nSpoolnews Done\n";
 
@@ -159,7 +174,7 @@ function get_articles($ns, $group)
     }
 
     $grouppath = $path . preg_replace('/\./', '/', $group);
-//    $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    // $banned_names = file($user_ban_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $msgid_filter = get_config_value('header_filters.conf', 'Message-ID');
     $subject_filter = get_config_value('header_filters.conf', 'Subject');
     $from_filter = get_config_value('header_filters.conf', 'From');
@@ -379,8 +394,8 @@ function get_articles($ns, $group)
         // Don't spool article if $banned != 0
         if ($banned !== false) {
             unlink($articleHandle);
-            file_put_contents($spamlog, "\n" . format_log_date() . " ".$banned." :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
-//            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
+            file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
+            // file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
