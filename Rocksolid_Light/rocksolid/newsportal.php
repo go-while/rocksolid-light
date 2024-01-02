@@ -62,7 +62,8 @@ function nntp_open($nserver = 0, $nport = 0)
         echo '<br>';
         echo '<p>Please wait a few moments and try again. If you see the same error, notify the owner that their Message Server is offline.</p>';
         echo '</center>';
-        exit(0);
+        return false;
+       // exit(0);
     }
 
     $weg = line_read($ns); // kill the first line
@@ -1363,10 +1364,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . $from, FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
         file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . $from, FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
     }
     return array(
         'res' => $res,
