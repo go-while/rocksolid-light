@@ -259,10 +259,12 @@ function import_articles($group)
             }
             if ($is_header == 1) {
                 $response = str_replace("\t", " ", $response);
+                if (strpos($response, ': ') !== false) {
+                    $ref = 0;
+                }
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
                     $finddate = explode(': ', $response, 2);
-                    $ref = 0;
                 }
                 // Get overview data
                 $mid[1] = $row['msgid'];
@@ -278,10 +280,8 @@ function import_articles($group)
                     $references = $this_references[1];
                     $ref = 1;
                 }
-                if ((stripos($response, ':') === false) && (strpos($response, '>'))) {
-                    if ($ref == 1) {
-                        $references = $references . $response;
-                    }
+                if (preg_match('/^\s/', $response) && $ref == 1) {
+                    $references = $references . $response;
                 }
                 $response = str_replace("\n", "", str_replace("\r", "", $response));
             } else {
