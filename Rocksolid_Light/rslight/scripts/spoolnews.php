@@ -24,10 +24,6 @@ include "config.inc.php";
 include ("$file_newsportal");
 include $config_dir . '/gpg.conf';
 
-set_error_handler(function (int $number, string $message) {
-    echo "Handler captured error $number: '$message'" . PHP_EOL;
-});
-
 if ($CONFIG['remote_server'] != '') {
     $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
 }

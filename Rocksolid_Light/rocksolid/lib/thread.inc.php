@@ -301,18 +301,7 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
     $logfile = $logdir . '/newsportal.log';
     $maxfetch = 0;
     $idstring = "0.36," . $server . "," . $compress_spoolfiles . "," . $maxarticles . "," . $maxarticles_extra . "," . $maxfetch . "," . $initialfetch . "," . $www_charset . ',' . $iconv_enable . ',' . $thread_show["replies"];
-    if ($CONFIG['enable_nntp'] == '1') {
-        $overviewfmt = array(
-            "Subject:",
-            "From:",
-            "Date:",
-            "Message-ID:",
-            "References:",
-            "Bytes:"
-        );
-    } else {
-        $overviewformat = thread_overview_read($ns);
-    }
+    $overviewformat = thread_overview_read($ns);
     $spoolfilename = $spooldir . '/' . $groupname . '-data.db3';
     fputs($ns, "GROUP $groupname\r\n"); // select a group
     $groupinfo = explode(" ", line_read($ns));
