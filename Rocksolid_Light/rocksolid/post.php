@@ -64,7 +64,7 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 @$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
 @$name = $_POST[md5($fieldnamedecrypt . "name")];
 @$email = $_POST[md5($fieldnamedecrypt . "email")];
-@$body = stripslashes($_POST[md5($fieldnamedecrypt . "body")]);
+@$body = $_POST[md5($fieldnamedecrypt . "body")];
 @$abspeichern = $_REQUEST["abspeichern"];
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
@@ -382,7 +382,7 @@ if ($show == 1) {
         } else {
             echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
             if (isset($name))
-                echo 'value="' . htmlspecialchars(stripslashes($name)) . '"';
+                echo 'value="' . htmlspecialchars($name) . '"';
             if ($logged_in) {
                 echo 'size="40" maxlength="40" readonly>';
             } else {
@@ -450,7 +450,7 @@ if ($show == 1) {
 <input type="hidden" id="hidebody"
 					value="<?php
             if (isset($bodyzeile))
-                echo htmlspecialchars(stripslashes($bodyzeile));
+                echo htmlspecialchars($bodyzeile);
             ?>"> <script language="JavaScript">
 <!--
 function quoten() {
