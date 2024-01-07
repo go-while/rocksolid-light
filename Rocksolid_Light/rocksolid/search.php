@@ -11,11 +11,10 @@ include "newsportal.php";
 
 $snippet_size = 100;
 
-if (isset($_GET['group'])) {
-    $search_group = urldecode($_GET['group']);
-}
-if (isset($_POST['group'])) {
-    $search_group = urldecode($_POST['group']);
+if (isset($_REQUEST['group'])) {
+    $search_group = urldecode($_REQUEST['group']);
+} else {
+    $search_group = null;
 }
 
 if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
@@ -33,6 +32,9 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
 
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    if ($search_group) {
+        echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+    }
     echo 'search</h1>';
     echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
     if (isset($search_group)) {
@@ -62,7 +64,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
         echo '<input name="terms" type="text" id="terms"></td>';
     }
     echo '</tr><tr></tr><tr><td>';
-
     if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
         if ($CONFIG['article_database'] == '1') {
             echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
@@ -82,7 +83,7 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '<tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
     if (isset($search_group)) {
-        echo '<input type="hidden" name="group" value="' . $search_group . '">';
+        echo '<input type="hidden" name="group" value="' . urlencode($search_group) . '">';
     }
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
     if (isset($_GET['data'])) {
@@ -120,16 +121,11 @@ $title .= ' - search results for: ' . $_POST['terms'];
 include "head.inc";
 
 ob_start();
-if (isset($_POST['thisgroup'])) {
-    echo '<h1 class="np_thread_headline">' . $grouplist[0] . ' (latest)</h1>';
-    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-    // Article List button
-    echo '<td>';
-    echo '<form action="' . $file_thread . '">';
-    echo '<input type="hidden" name="group" value="' . $grouplist[0] . '"/>';
-    echo '<button class="np_button_link" type="submit">' . $text_article["back_to_group"] . '</button>';
-    echo '</form>';
-    echo '</td>';
+if (isset($search_group)) {
+    echo '<h1 class="np_thread_headline">';
+    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+    echo 'search results for: ' . $_POST['terms'] . '</h1>';
     // Newsgroups button (hidden)
     echo '<td>';
     echo '<form action="' . $file_index . '">';
@@ -161,9 +157,6 @@ if (isset($_COOKIE['tzo'])) {
     $offset = $CONFIG['timezone'];
 }
 $overview = array();
-if (trim($search_group = '')) {
-    $search_group = null;
-}
 if ($_POST['searchpoint'] == 'body') {
     $overview = get_body_search($search_group, $_POST['terms']);
 } else {

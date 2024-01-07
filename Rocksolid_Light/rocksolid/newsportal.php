@@ -668,7 +668,7 @@ function groups_show($gruppen)
                 $new_style_off = '</i></b>';
                 $new = true;
             }
-            $groupdisplay .= 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
+            $groupdisplay .= 'href="' . $file_thread . '?group=' . urlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
             if ($new) {
                 echo '</i></b>';
             }
@@ -678,9 +678,9 @@ function groups_show($gruppen)
             $overview_dbh = null;
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_user_tools">';
-                $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . _rawurlencode($g->name) . '">(unsubscribe)</a>';
+                $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
-                    $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
+                    $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . urlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
                 }
                 $groupdisplay .= '</p';
             }

@@ -355,26 +355,20 @@ if ($show == 1) {
 
         if (isset($error))
             echo "<p>$error</p>";
-        ?>
 
-<form action="<?php echo $file_post?>" method="post" name="postform"
-	enctype="multipart/form-data">
+        echo '<form action="' . $file_post . '" method="post" name="postform"';
+        echo 'enctype="multipart/form-data">';
 
-	<div class="np_post_header">
-		<table>
-			<tr>
-				<td align="right"><b><?php echo $text_header["subject"] ?></b></td>
-				<td><input class="post" type="text"
-					name="<?php echo md5($fieldencrypt."subject")?>"
-					value="<?php
-        echo htmlspecialchars($subject);
-        ?>"
-					size="40" maxlength="80"></td>
-			</tr>
-			<tr>
-				<td align="right"><b><?php echo $text_post["name"]?></b></td>
-				<td align="left">
- <?php
+        echo '<div class="np_post_header">';
+        echo '<table><tr>';
+        echo '<td align="right"><b>' . $text_header["subject"] . '</b></td>';
+        echo '<td><input class="post" type="text" ';
+        echo 'name="' . md5($fieldencrypt . "subject") . '" ';
+        echo 'value="' . htmlspecialchars($subject) . '" ';
+        echo 'size="40" maxlength="' . $thread_maxSubject . '"></td>';
+        echo '</tr><tr>';
+        echo '<td align="right"><b>' . $text_post["name"] . '</b></td>';
+        echo '<td align="left">';
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
         if (isset($form_noname) && $form_noname === true) {
@@ -391,13 +385,9 @@ if ($show == 1) {
             if ($CONFIG['anonuser'])
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
         }
-        ?>
- </td>
-			</tr>
-			<tr>
-				<td align="right"><b><?php echo $text_post["password"]?></b></td>
-				<td align="left">
- <?php
+        echo '</td></tr><tr>';
+        echo '<td align="right"><b><?php echo $text_post["password"]?></b></td>';
+        echo '<td align="left">';
         // if (strcmp($user, $CONFIG['anonusername']) === 0) {
         // $logged_in = false;
         // }
@@ -409,49 +399,37 @@ if ($show == 1) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
             echo 'size="40" maxlength="40">';
         }
-        ?>
- </td
-			
-			</tr>
-
-<?php
+        echo '</td></tr>';
         // May we post encrypted messages to this group?
         if (check_encryption_groups($newsgroups)) {
-            ?>
- <tr>
-				<td align="left"><input type="checkbox" name="encryptthis"
-					value="encrypt"> <b>Encrypt to:</b></td>
-				<td><input type="text" name="encryptto"
-					value="<?php echo $fromname;?>"></td>
-			</tr>
-<?php
+            echo '<tr>';
+            echo '<td align="left"><input type="checkbox" name="encryptthis"';
+            echo 'value="encrypt"> <b>Encrypt to:</b></td>';
+            echo '<td><input type="text" name="encryptto" value="'.$fromname.'"></td>';
+            echo '</tr>';
         }
-        ?>
-</table>
-	</div>
+        echo '</table></div>';
 
-	<div class="np_post_body">
-		<table>
-			<tr>
-				<td><b><?php echo $text_post["message"];?></b><br> <textarea
-						class="postbody" id="postbody"
-						name="<?php echo md5($fieldencrypt."body")?>" wrap="soft"><?php
+        echo '<div class="np_post_body">';
+        echo '<table><tr>';
+        echo '<td><b>'.$text_post["message"].'</b><br> <textarea ';
+        echo 'class="postbody" id="postbody" ';
+        echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
+
         if ((isset($bodyzeile)) && ($post_autoquote))
             echo htmlspecialchars($bodyzeile);
         if (is_string($body))
             echo htmlspecialchars($body);
-        ?>
-</textarea></td>
-			</tr>
-			<tr>
-				<td>
-
-<?php if(!$post_autoquote) { ?>
-<input type="hidden" id="hidebody"
-					value="<?php
+        echo '</textarea></td></tr><tr><td>';
+        if (! $post_autoquote) {
+            echo '<input type="hidden" id="hidebody"';
+            echo 'value="';
             if (isset($bodyzeile))
                 echo htmlspecialchars($bodyzeile);
-            ?>"> <script language="JavaScript">
+            echo '">';
+            
+            ?>
+<script language="JavaScript">
 <!--
 function quoten() {
   document.getElementById("postbody").value=document.getElementById("hidebody").value;
@@ -464,16 +442,19 @@ function quoten() {
 
 <input type="submit" value="<?php echo $text_post["button_post"];?>">
 <?php if ($setcookies==true) { ?>
-&nbsp;<input tabindex="100" type="Button" name="quote"
-					value="<?php echo $text_post["quote"]?>"
-					onclick="quoten(); this.style.visibility= 'hidden';"> &nbsp;<input
-					type="checkbox" name="abspeichern" value="ja" checked>
+&nbsp;
+<input tabindex="100" type="Button" name="quote"
+	value="<?php echo $text_post["quote"]?>"
+	onclick="quoten(); this.style.visibility= 'hidden';">
+&nbsp;
+<input type="checkbox" name="abspeichern" value="ja" checked>
 <?php echo $text_post["remember"];?>
 <?php } ?>
-&nbsp;<input type="file" name="photo" id="fileSelect" value="fileSelect"
-					accept="image/*,audio/*,text/*,application/pdf">
-				</td>
-			</tr>
+&nbsp;
+<input type="file" name="photo" id="fileSelect" value="fileSelect"
+	accept="image/*,audio/*,text/*,application/pdf">
+</td>
+</tr>
 
 <?php
 
@@ -483,19 +464,21 @@ function quoten() {
             echo '</td></tr>';
         }
         ?>
- 
-  
+
+
 </table>
-	</div>
-	<input type="hidden" name="type" value="post"> <input type="hidden"
-		name="newsgroups" value="<?php echo htmlspecialchars($newsgroups); ?>">
-	<input type="hidden" name="references"
-		value="<?php echo htmlentities($references); ?>"> <input type="hidden"
-		name="group" value="<?php echo htmlspecialchars($newsgroups); ?>"> <input
-		type="hidden" name="returngroup"
-		value="<?php echo htmlspecialchars($head->followup); ?>"> <input
-		type="hidden" name="fielddecrypt"
-		value="<?php echo htmlspecialchars($fieldencrypt);?>">
+</div>
+<input type="hidden" name="type" value="post">
+<input type="hidden" name="newsgroups"
+	value="<?php echo htmlspecialchars($newsgroups); ?>">
+<input type="hidden" name="references"
+	value="<?php echo htmlentities($references); ?>">
+<input type="hidden" name="group"
+	value="<?php echo htmlspecialchars($newsgroups); ?>">
+<input type="hidden" name="returngroup"
+	value="<?php echo htmlspecialchars($head->followup); ?>">
+<input type="hidden" name="fielddecrypt"
+	value="<?php echo htmlspecialchars($fieldencrypt);?>">
 </form>
 
 <?php } } ?>
