@@ -121,10 +121,6 @@ if ($message) {
         $date_window = 86400;
         $msg_log_file = $spooldir . '/admin_msg_log.dat';
         echo '<center>Group is rebuilding... Please try again later</center>';
-        $msg_from = 'admin';
-        $msg_to = 'admin';
-        $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . " may need repair";
-        $msg_body_2 = "\n\nRun maintenance.php -import " . $group;
         if (file_exists($msg_log_file)) {
             $admin_msg_log = unserialize(file_get_contents($msg_log_file));
         } else {
@@ -134,9 +130,17 @@ if ($message) {
             $admin_msg_log[$group] = 0;
         }
         if ($admin_msg_log[$group] < (time() - $date_window)) {
-            $msg_subject = "ERROR in $group";
-            send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
-            $admin_msg_log[$group] = time();
+            if ($admin_msg_log[$group] != 0) {
+                $msg_from = 'admin';
+                $msg_to = 'admin';
+                $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . " may need repair";
+                $msg_body_2 = "\n\nRun maintenance.php -import " . $group;
+                $msg_subject = "ERROR in $group";
+                send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                $admin_msg_log[$group] = 0;
+            } else {
+                $admin_msg_log[$group] = time();
+            }
         }
         file_put_contents($msg_log_file, serialize($admin_msg_log));
         file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
