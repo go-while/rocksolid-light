@@ -386,7 +386,7 @@ if ($show == 1) {
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
         }
         echo '</td></tr><tr>';
-        echo '<td align="right"><b><?php echo $text_post["password"]?></b></td>';
+        echo '<td align="right"><b>'.$text_post["password"].'</b></td>';
         echo '<td align="left">';
         // if (strcmp($user, $CONFIG['anonusername']) === 0) {
         // $logged_in = false;
