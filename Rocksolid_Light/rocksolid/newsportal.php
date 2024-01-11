@@ -810,6 +810,9 @@ function groups_show_frames($gruppen)
  */
 function headerDecode($value)
 {
+    $value = preg_replace_callback('/(=\?[^\?]+\?Q\?)([^\?]+)(\?=)/i', function($matches) {
+        return $matches[1] . str_replace('_', '=20', $matches[2]) . $matches[3];
+    }, $value);
     return mb_decode_mimeheader($value);
 }
 
