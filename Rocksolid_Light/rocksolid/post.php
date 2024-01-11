@@ -99,7 +99,7 @@ if ($testgroup) {
 } else {
     $newsgroups = $thisgroup;
 }
-$returngroup = preg_split("/( |\,)/", $newsgroups, 2);
+$returngroup = $thisgroup;
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
 echo '<a href="' . $file_thread . '?group=' . rawurlencode($thisgroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($thisgroup)) . '</a>';
@@ -234,7 +234,7 @@ if ($type == "post") {
                 if ($postsremaining < 1) {
                     $wait = check_rate_limit($name, 0, 1);
                     echo 'You have reached the limit of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />Please wait ' . round($wait) . ' minutes before posting again.';
-                    echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup[0]) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup[0]) . '</p>';
+                    echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
                     return;
                 }
             }
@@ -250,7 +250,7 @@ if ($type == "post") {
                 echo '<h1 class="np_post_headline"><' . $text_post["message_posted"] . '></h1>';
                 echo '<p>' . $text_post["message_posted2"] . '</p>';
                 if (isset($CONFIG['auto_return']) && ($CONFIG['auto_return'] == true)) {
-                    echo '<meta http-equiv="refresh" content="0;url=' . $file_thread . '?group=' . urlencode($returngroup[0]) . '"';
+                    echo '<meta http-equiv="refresh" content="0;url=' . $file_thread . '?group=' . urlencode($returngroup) . '"';
                 }
                 if ($CONFIG['rate_limit'] == true) {
                     $postsremaining = check_rate_limit($name, 1);
@@ -262,17 +262,20 @@ if ($type == "post") {
                 }
                 // Post logging
                 if ($enable_post_log) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $returngroup[0] . " by " . $name, FILE_APPEND);
+                    file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $returngroup . " by " . $name, FILE_APPEND);
                 }
-                // echo '<p><a href="'.$file_thread.'?group='.urlencode($returngroup[0]).'">'.$text_post["button_back"].'</a> '.$text_post["button_back2"].' '.group_display_name($returngroup[0]).'</p>';
+                echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                /*
                 if (isset($_REQUEST['returngroup']) && $_REQUEST['returngroup'] !== '') {
                     echo '<p><a href="' . $file_thread . '?group=' . $_REQUEST['returngroup'] . '">Your post will appear in ' . group_display_name($_REQUEST['returngroup']) . '</a></p>';
                 }
                 if (isset($_SESSION['return_page'])) {
-                    echo '<p><a href="' . $_SESSION['return_page'] . '">Back to Previous Page</a></p>';
+                    echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                    //echo '<p><a href="' . $_SESSION['return_page'] . '">Back to Previous Page</a></p>';
                 } else {
-                    echo '<p><a href="' . $file_thread . '?group=' . $_REQUEST['returngroup'] . '">Back</a></p>';
+                    echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
                 }
+                */
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";
