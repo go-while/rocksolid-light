@@ -191,7 +191,7 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
     for ($i = 0; $i < count($overviewfmt) - 1; $i ++) {
         if ($overviewfmt[$i] == "Subject:") {
             $subject = preg_replace('/\[doctalk\]/i', '', headerDecode($over[$i + 1]));
-            $article->isReply = splitSubject($subject);
+         //   $article->isReply = splitSubject($subject);
             $article->subject = $subject;
         }
         if ($overviewfmt[$i] == "Date:") {
@@ -214,6 +214,7 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
         if ($overviewfmt[$i] == "Message-ID:")
             $article->id = $over[$i + 1];
         if (($overviewfmt[$i] == "References:") && ($over[$i + 1] != "")) {
+            $article->isReply = true;
             $article->references = explode(" ", $over[$i + 1]);
         }
     }
@@ -690,11 +691,14 @@ function thread_format_subject($c, $group, $highlightids = false)
     } else {
         $offset = $CONFIG['timezone'] * 60;
     }
+    /*
     if ($c->isReply) {
         $re = "Re: ";
     } else {
         $re = "";
     }
+    */
+    $re = "";
     // is the current article to be highlighted?
     if ((is_array($highlightids))) {
         if ((in_array($c->id, $highlightids)) || (in_array($c->number, $highlightids))) {
