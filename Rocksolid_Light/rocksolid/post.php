@@ -185,6 +185,13 @@ if ($type == "post") {
             }
         }
     }
+    // Check that user has not been recently banned
+    if(!is_file($config_dir.'/users/'.strtolower(trim($name)))) {
+        $type = "retry";
+        $error = $text_error["auth_error"];
+        $_SESSION['pass'] = false;
+        $logged_in = false;
+    }
     // error handling
     if (trim($body) == "") {
         $type = "retry";
