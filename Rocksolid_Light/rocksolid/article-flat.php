@@ -12,6 +12,7 @@ include "config.inc.php";
 include "$file_newsportal";
 
 $logfile = $logdir . '/newsportal.log';
+$debuglog = $logdir . '/debug.log';
 if (isset($_COOKIE['mail_name'])) {
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
@@ -136,14 +137,14 @@ if ($message) {
                 $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . " may need repair";
                 $msg_body_2 = "\n\nRun maintenance.php -import " . $group;
                 $msg_subject = "ERROR in $group";
-                send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                // send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
                 $admin_msg_log[$group] = 0;
             } else {
                 $admin_msg_log[$group] = time();
             }
         }
         file_put_contents($msg_log_file, serialize($admin_msg_log));
-        file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
         exit();
     }
     if ($thread_articles == false) {
