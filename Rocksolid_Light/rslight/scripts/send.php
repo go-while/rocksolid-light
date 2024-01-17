@@ -84,6 +84,10 @@ function post_articles($ns, $spooldir)
         fputs($ns, ".\r\n");
         fclose($message_fp);
         $response = line_read($ns);
+        if (strcmp(substr($response, 0, 7), "441 435") == 0) {
+            $removed = unlink($outgoing_dir . $message);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response: " . $response, FILE_APPEND);
+        }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Posted: " . $message . ": " . $response . " Removed: " . $removed, FILE_APPEND);
