@@ -220,7 +220,7 @@ foreach ($overview as $overviewline) {
     }
 
     echo '<p class=np_ob_subject>';
-    echo '<b><a href="' . $url . '">' . htmlspecialchars(mb_decode_mimeheader($overviewline['subject'])) . "</a></b>\r\n";
+    echo '<b><a href="' . $url . '">' . htmlspecialchars(headerDecode($overviewline['subject'])) . "</a></b>\r\n";
     echo '</p><p class=np_ob_group>';
     echo '<a href="' . $groupurl . '">' . $overviewline['newsgroup'] . '</a>';
     echo '</p>';
