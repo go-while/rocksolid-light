@@ -301,7 +301,7 @@ function prepare_post($filename)
     foreach ($allgroups as $agroup) {
         $agroup = trim($agroup);
         if (testGroup($agroup)) {
-      //  if ((testGroup($agroup)) || $agroup == '') {
+            // if ((testGroup($agroup)) || $agroup == '') {
             $response = process_post($message, $agroup);
             if (substr($response, 0, 3) == "240") {
                 $ok = 1;
@@ -323,7 +323,7 @@ function prepare_post($filename)
         }
         $response = "240 Article received OK\r\n";
     } else {
-      //  $response = "441 Posting failed (group not found)\r\n";
+        // $response = "441 Posting failed (group not found)\r\n";
     }
     return $response;
 }
@@ -1097,8 +1097,18 @@ function get_list($mode, $ngroup, $msgsock)
  */
 function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $article_date, $date_i, $mid_i, $references_i, $bytes_i, $lines_i, $xref_i, $body)
 {
-    global $enable_rslight, $spooldir, $CONFIG, $logdir, $lockdir, $logfile;
+    global $enable_rslight, $spooldir, $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile;
 
+    if (isset($OVERRIDES['insert_disable']) && $OVERRIDES['insert_disable'] != '') {
+        $insert_disable = explode(',', $OVERRIDES['insert_disable']);
+        foreach ($insert_disable as $disable) {
+            if ($section == trim($disable)) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Insert Disabled... Queuing local post: " . $nntp_group, FILE_APPEND);
+                $return_val = "240 Article received OK (queued)\r\n";
+                return ($return_val);
+            }
+        }
+    }
     $return_val = "441 Posting failed\r\n";
     if ($CONFIG['remote_server'] !== '') {
         $sn_lockfile = $lockdir . '/' . $section . '-spoolnews.lock';
