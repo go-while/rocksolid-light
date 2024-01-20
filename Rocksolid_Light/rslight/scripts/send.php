@@ -90,7 +90,7 @@ function post_articles($ns, $spooldir)
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Posted: " . $message . ": " . $response . " Removed: " . $removed, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Posted: " . $message . ": " . $response, FILE_APPEND);
         } else {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to POST: " . $message . ": " . $response, FILE_APPEND);
             continue;
