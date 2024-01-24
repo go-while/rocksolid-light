@@ -8,13 +8,15 @@ Requirements:
 You will need a web server: rslight has been tested with apache2, lighttpd, nginx
 and synchronet web servers
 
-php is required, and your web server must be configured to serve .php. 
+php is required, and your web server must be configured to serve .php.
+
+php 8.2 or greater is required. Development and testing on Debian.
 
 php-mbstring (to support other character sets)
 sharutils (for uudecode)
 openssl
 php-gnupg
-php7.x-sqlite3 (or later version).
+php8.x-sqlite3 (or later version).
 phpmailer is required if email confirmation is to be used.
 php-xml to work with RSS feeds
 compface and php-gd for X-Face support
@@ -22,17 +24,6 @@ These are the names for Debian packages. Other distributions should
 also provide these in some way.
 
 If you get errors, check your log files to see what packages I've failed to mention.
-
-For FreeBSD12: 
-php72, 
-php72-extensions, 
-php72-pdo_sqlite-7.2, 
-sharutils, 
-php72-pcntl, 
-php72-sockets, 
-php72-mbstring, p
-php72-openssl
-Optional: phpmailer, gnupg
 
 Installation: 
 
