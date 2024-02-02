@@ -63,7 +63,7 @@ function nntp_open($nserver = 0, $nport = 0)
         echo '<p>Please wait a few moments and try again. If you see the same error, notify the owner that their Message Server is offline.</p>';
         echo '</center>';
         return false;
-       // exit(0);
+        // exit(0);
     }
 
     $weg = line_read($ns); // kill the first line
@@ -812,7 +812,7 @@ function groups_show_frames($gruppen)
  */
 function headerDecode($value)
 {
-    $value = preg_replace_callback('/(=\?[^\?]+\?Q\?)([^\?]+)(\?=)/i', function($matches) {
+    $value = preg_replace_callback('/(=\?[^\?]+\?Q\?)([^\?]+)(\?=)/i', function ($matches) {
         return $matches[1] . str_replace('_', '=20', $matches[2]) . $matches[3];
     }, $value);
     return mb_decode_mimeheader($value);
@@ -1768,7 +1768,8 @@ function get_poster_name($name)
     return ($thisposter);
 }
 
-function save_config_value($configfile, $name, $value) {
+function save_config_value($configfile, $name, $value)
+{
     $list = file($configfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $saveconfig = fopen($configfile, 'w+');
     foreach ($list as $save) {
@@ -1800,7 +1801,7 @@ function get_config_file_value($configfile, $request)
     }
 }
 
-// This function is specific to $config_dir configuration values 
+// This function is specific to $config_dir configuration values
 function get_config_value($configfile, $request)
 {
     global $config_dir;
@@ -1978,7 +1979,7 @@ function check_duplicate_msgid($msgid, $group)
     $stmt->bindParam(':newsgroup', $group);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-        if($row['msgid'] == $msgid) {
+        if ($row['msgid'] == $msgid) {
             $found = true;
         }
     }
@@ -1992,7 +1993,7 @@ function check_duplicate_msgid($msgid, $group)
     $stmt->bindParam(':newsgroup', $group);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-        if($row['msgid'] == $msgid) {
+        if ($row['msgid'] == $msgid) {
             $found = true;
         }
     }
@@ -2149,15 +2150,23 @@ function get_db_data_from_msgid($msgid, $group)
     }
 }
 
-function get_data_from_msgid($msgid)
+function get_data_from_msgid($msgid, $thisgroup = null)
 {
     global $spooldir;
     $database = $spooldir . '/articles-overview.db3';
     $articles_dbh = overview_db_open($database);
-    $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
-    $articles_query->execute([
-        'messageid' => $msgid
-    ]);
+    if ($thisgroup != null) {
+        $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid AND newsgroup=:newsgroup');
+        $articles_query->execute([
+            'messageid' => $msgid,
+            'newsgroup' => $thisgroup
+        ]);
+    } else {
+        $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
+        $articles_query->execute([
+            'messageid' => $msgid
+        ]);
+    }
     $found = 0;
     while ($row = $articles_query->fetch()) {
         $found = 1;
@@ -2229,6 +2238,7 @@ function send_admin_message($admin, $from, $subject, $message)
     $dbh = null;
     return true;
 }
+
 function delete_message($messageid, $group, $overview_dbh)
 {
     global $logfile, $config_dir, $spooldir, $CONFIG, $webserver_group;
@@ -2250,7 +2260,7 @@ function delete_message($messageid, $group, $overview_dbh)
             }
         }
     }
-    
+
     if ($CONFIG['article_database'] == '1') {
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (is_file($database)) {

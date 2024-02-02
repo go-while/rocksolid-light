@@ -57,6 +57,7 @@ if (isset($frames_on) && $frames_on === true) {
 }
 if (isset($_GET['thisgroup'])) {
     $title .= " - " . _rawurldecode(_rawurldecode($_GET['thisgroup'])) . " - latest messages";
+    $activegroup = urldecode($_GET['thisgroup']);
 } else {
     $title .= " - " . $config_name . " - overboard";
 }
@@ -249,7 +250,7 @@ foreach ($files as $article) {
     } else {
         $threadref = false;
     }
-    $target = get_data_from_msgid($thismsgid);
+    $target = get_data_from_msgid($thismsgid, $activegroup);
     if ($target['date'] > time()) {
         continue;
     }
