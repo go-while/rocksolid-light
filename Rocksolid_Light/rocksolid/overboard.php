@@ -342,10 +342,15 @@ function display_threads($threads, $oldest)
         $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
         echo '<p class=np_ob_subject>';
         echo '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
+
+        // link for (thread), if possible
         if (isset($this_overboard['threadlink'][$value])) {
             $thread = get_data_from_msgid($this_overboard['threadlink'][$value], $target['newsgroup']);
-            echo '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (thread)</a></font>';
+            if ($thread !== false) {
+                echo '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (thread)</a></font>';
+            }
         }
+
         echo '</p>';
         echo '</p><p class=np_ob_group>';
         echo '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
