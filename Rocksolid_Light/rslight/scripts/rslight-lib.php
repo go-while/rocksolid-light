@@ -1284,7 +1284,7 @@ function get_article_list($thisgroup)
 
 function create_node_ssl_cert($pemfile)
 {
-    global $CONFIG, $ssldir, $webtmp, $logdir, $config_dir;
+    global $CONFIG, $ssldir, $webtmp, $logdir, $config_dir, $spooldir;
     include $config_dir . '/letsencrypt.inc.php';
     $logfile = $logdir . '/nntp.log';
     $uinfo = posix_getpwnam($CONFIG['webserver_user']);
@@ -1295,17 +1295,17 @@ function create_node_ssl_cert($pemfile)
         file_put_contents($logfile, "\n" . format_log_date() . " Checking " . $letsencrypt['path'] . "fullchain.pem time", FILE_APPEND);
         if ($ssltime > filectime($pemfile)) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $letsencrypt['path'] . "fullchain.pem newer. Reloading cert.", FILE_APPEND);
-            touch($config_dir . '/ssl.reload');
+            touch($spooldir . '/ssl.reload');
         }
     }
-    if (! file_exists($config_dir . '/ssl.reload')) {
+    if (! file_exists($spooldir . '/ssl.reload')) {
         if ((is_file($pemfile)) && (is_file($pubkeyfile)) && (is_file($pubkeytxtfile))) {
             if (md5_file($pubkeyfile) == md5_file($pubkeytxtfile)) {
                 return;
             }
         }
     }
-    @unlink($config_dir . '/ssl.reload');
+    @unlink($spooldir . '/ssl.reload');
     unlink($pemfile);
     unlink($pubkeyfile);
     unlink($pubkeytxtfile);
