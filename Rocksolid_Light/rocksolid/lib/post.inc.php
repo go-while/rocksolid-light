@@ -414,11 +414,12 @@ function check_rate_limit($name, $set = 0, $gettime = 0)
  * $ref: The references of the article
  * $body: The article itself
  */
-function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = null, $encryptto = null, $authname = null, $followupto = null, $do_attach = null)
+function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = null, $encryptto = null, $authname = null, $fromname, $followupto = null, $do_attach = null)
 {
     global $server, $port, $send_poster_host, $text_error, $CONFIG;
     global $www_charset, $config_dir, $spooldir;
     global $msgid_generate, $msgid_fqdn, $rslight_version;
+    
     flush();
     $attachment_temp_dir = $spooldir . "/tmp/";
     if (! is_dir($attachment_temp_dir)) {
@@ -475,10 +476,12 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
 
         fputs($ns, 'Subject: ' . encode_subject($subject) . "\r\n");
         // For Synchronet use
-        if (isset($fromname) && (isset($CONFIG['synchronet']) && ($CONFIG['synchronet'] == true))) {
-            // if ( isset($fromname) && isset($CONFIG['synchronet']) ) {
+        if (isset($CONFIG['synchronet']) && ($CONFIG['synchronet'] == true)) {
+            if(!isset($fromname) || trim($fromname) == '') {
+                $fromname = 'ALL';
+            }
             fputs($ns, 'To: ' . $fromname . "\r\n");
-            $fromname = "";
+            fputs($ns, 'X-Comment-To: ' . $fromname . "\r\n");
         }
 
         // X-Rslight headers

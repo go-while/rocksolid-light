@@ -1237,8 +1237,8 @@ function check_bbs_auth($username, $password)
 
 function check_encryption_groups($request)
 {
-    global $config_path;
-    $groupsFilename = $config_path . "encryption_ok.txt";
+    global $config_dir;
+    $groupsFilename = $config_dir . "encryption_ok.txt";
     if ($groupsFileHandle = @fopen($groupsFilename, 'r')) {
         while (! feof($groupsFileHandle)) {
             $buffer = fgets($groupsFileHandle);

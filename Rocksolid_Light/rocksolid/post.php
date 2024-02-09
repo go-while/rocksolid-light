@@ -26,7 +26,6 @@ session_start();
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
 }
-
 include "config.inc.php";
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/post.log';
@@ -248,9 +247,9 @@ if ($type == "post") {
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), null, true);
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
             } else {
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name));
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
@@ -409,6 +408,7 @@ if ($show == 1) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
             echo 'size="40" maxlength="40">';
         }
+        echo '<input class="post" type="hidden" name="fromname" value="'.$fromname.'">';
         echo '</td></tr>';
         // May we post encrypted messages to this group?
         if (check_encryption_groups($newsgroups)) {
