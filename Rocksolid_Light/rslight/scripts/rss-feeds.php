@@ -94,7 +94,7 @@ foreach ($rssfiles as $rssfile) {
         print_r($xml);
         echo $body;
     } else {
-        echo message_post($RSS['message_subject'], $RSS['postfrom'], $RSS['newsgroup'], null, $body, null, null, null, $followupto) . "\n";
+        echo message_post($RSS['message_subject'], $RSS['postfrom'], $RSS['newsgroup'], null, $body, null, null, null, null, $followupto) . "\n";
         touch($spooldir . '/' . $rssfile . '-rss-timer');
     }
 }
