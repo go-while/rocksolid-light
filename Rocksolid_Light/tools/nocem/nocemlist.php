@@ -40,7 +40,6 @@ $scope = "The scope of these messages is the <my_hier>.* hierarchy";
 $spamdir = $workpath."incoming";
 $nocem = $workpath."nocem.out";
 $headerdat = $workpath."header.out";
-$localeol = PHP_EOL.PHP_EOL;
 
 $newspam = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($spamdir));
 $count = 0;
@@ -49,29 +48,39 @@ $nocem_head = array();
 
 foreach($newspam as $spam) {
     if(is_dir($spam)) { 
-	continue;
+	    continue;
     }
-    $articledata = file_get_contents($spam);
-    $bodystart = strpos($articledata, $localeol);
-    $header = substr($articledata, 0, $bodystart);
-
-    preg_match('/Message-ID:.*/i', $header, $result);
-    $id = explode(": ", $result[0]);
-
-    preg_match('/Newsgroups:.*/', $header, $result);
-    $newsgroups = explode("Newsgroups: ", $result[0]);
-    $newsgroups = preg_replace('/,/', ' ', $newsgroups);
-
-    preg_match('/From:.*/', $header, $result);
-    $sender = explode("From: ", $result[0]);
-
-    preg_match('/Date:.*/', $header, $result);
-    $date = explode("Date: ", $result[0]);
-
-    preg_match('/Subject:.*/', $header, $result);
-    $subject = explode("Subject: ", $result[0]);
-
-    $nocem_list[] = "#    Sender: ".$sender[1]."\n#    Date: ".$date[1]."\n#    Subject: ".$subject[1]."\n".$id[1]." ".$newsgroups[1]."\n";;
+    $spam_lines = file($spam);
+    $lines = 0;
+    $is_header = 1;
+    foreach($spam_lines as $response) {
+      if (trim($response) == "" && $lines > 0) {
+                $is_header = 0;
+            }
+            if ($is_header == 1) {
+              $lines ++;
+                $response = str_replace("\t", " ", $response);
+                // Find article date
+                if (stripos($response, "Date: ") === 0) {
+                    $date = explode(': ', $response);
+                }
+                // Get overview data
+                if (stripos($response, "Message-ID: ") === 0) {
+                    $id = explode(': ', $response);
+                }
+                if (stripos($response, "From: ") === 0) {
+                    $sender = explode(': ', $response, 2);
+                }
+                if (stripos($response, "Subject: ") === 0) {
+                    $subject = explode('Subject: ', $response, 2);
+                }
+                if (stripos($response, "Newsgroups: ") === 0) {
+                    $newsgroups = explode('Newsgroups: ', $response);
+                }
+            }
+    }
+    
+    $nocem_list[] = "#    Sender: ".trim($sender[1])."\n#    Date: ".trim($date[1])."\n#    Subject: ".trim($subject[1])."\n".trim($id[1])." ".trim($newsgroups[1])."\n";;
     $count++;
 }
 $nocem_file = fopen($nocem, "w+");
