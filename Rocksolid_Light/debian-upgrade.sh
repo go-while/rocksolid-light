@@ -6,13 +6,6 @@ spoolpath="/var/spool/rslight"
 configpath="/etc/rslight"
 username="www-data"
 
-randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9{} | head -c${1:-16};echo;}
-site_key=$(randpw)
-anonymous_password=$(randpw)
-local_password=$(randpw)
-admin_password=$(randpw)
-admin_key=$(randpw)
-
 echo
 echo "This is the main installation script for Rocksolid Light"
 echo "and must be run as root from the root directory of the extracted files"
@@ -108,20 +101,11 @@ sed -i '' -e "s|<version>|$version|" $webroot/common/config.inc.php
 sed -i '' -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
 sed -i '' -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
 sed -i '' -e "s|<webserver_user>|$username|" $configpath/upgrade/rslight.inc.php
-sed -i '' -e "s|<site_key>|$site_key|" $configpath/upgrade/rslight.inc.php
-sed -i '' -e "s|<anonymous_password>|$anonymous_password|" $configpath/upgrade/rslight.inc.php
-sed -i '' -e "s|<local_password>|$local_password|" $configpath/upgrade/rslight.inc.php
-sed -i '' -e "s|<admin_password>|$admin_password|" $configpath/upgrade/admin.inc.php 
-sed -i '' -e "s|<admin_key>|$admin_key|" $configpath/upgrade/admin.inc.php
 echo "done"
 echo
-echo "***************************************************"
-echo "******** YOUR ADMIN PASSWORD IS: '$admin_password'"
-echo "***************************************************"
-echo
-echo "Admin password can be changed in $configpath/upgrade/admin.inc.php"
-echo
 echo "All new configuration files have been placed in $configpath/upgrade."
+echo "If you choose to use these files, you may need to copy passwords and keys"
+echo "from your original files in $configpath."
 echo
 echo "Please review these files and make changes to existing files as may be necessary"
 echo
