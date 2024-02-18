@@ -355,6 +355,14 @@ function process_post($message, $group)
                 $ref = 0;
                 $sub = 0;
             }
+            if (stripos($line, "Path: ") === 0) {
+                $response = "441 Posting failed (Header preloading denied)\r\n";
+                return $response;
+            }
+            if (stripos($line, "Injection-Info: ") === 0) {
+                $response = "441 Posting failed (Header preloading denied)\r\n";
+                return $response;
+            }
             if (stripos($line, "Date: ") === 0) {
                 $finddate = explode(': ', $line);
                 $article_date = strtotime($finddate[1]);
