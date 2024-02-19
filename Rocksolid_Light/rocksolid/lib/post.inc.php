@@ -419,7 +419,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     global $server, $port, $send_poster_host, $text_error, $CONFIG;
     global $www_charset, $config_dir, $spooldir;
     global $msgid_generate, $msgid_fqdn, $rslight_version;
-    
+
     flush();
     $attachment_temp_dir = $spooldir . "/tmp/";
     if (! is_dir($attachment_temp_dir)) {
@@ -477,7 +477,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
         fputs($ns, 'Subject: ' . encode_subject($subject) . "\r\n");
         // For Synchronet use
         if (isset($CONFIG['synchronet']) && ($CONFIG['synchronet'] == true)) {
-            if(!isset($fromname) || trim($fromname) == '') {
+            if (! isset($fromname) || trim($fromname) == '') {
                 $fromname = 'ALL';
             }
             fputs($ns, 'To: ' . $fromname . "\r\n");
@@ -497,8 +497,21 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
                 }
             }
         }
-
-        fputs($ns, 'From: ' . $from . "\r\n");
+        
+        // Check for custom name/email from user configuration
+        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $authname . '.config'));
+        if(trim($user_config['display_name']) == '') {
+            unset($user_config['display_name']);
+        }
+        if(trim($user_config['display_email']) == '') {
+            unset($user_config['display_email']);
+        }
+        if (isset($user_config['display_name']) && isset($user_config['display_email'])) {
+            fputs($ns, 'From: ' . $user_config['display_name'] .' <' .$user_config['display_email'] . ">\r\n");
+        } else {
+            fputs($ns, 'From: ' . $from . "\r\n");
+        }
+        
         if ($followupto !== null) {
             fputs($ns, 'Followup-To: ' . $followupto . "\r\n");
         }

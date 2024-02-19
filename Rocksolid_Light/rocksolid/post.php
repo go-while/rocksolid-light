@@ -185,7 +185,7 @@ if ($type == "post") {
         }
     }
     // Check that user has not been recently banned
-    if(!is_file($config_dir.'/users/'.strtolower(trim($name)))) {
+    if (! is_file($config_dir . '/users/' . strtolower(trim($name)))) {
         $type = "retry";
         $error = $text_error["auth_error"];
         $_SESSION['pass'] = false;
@@ -272,16 +272,16 @@ if ($type == "post") {
                 }
                 echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
                 /*
-                if (isset($_REQUEST['returngroup']) && $_REQUEST['returngroup'] !== '') {
-                    echo '<p><a href="' . $file_thread . '?group=' . $_REQUEST['returngroup'] . '">Your post will appear in ' . group_display_name($_REQUEST['returngroup']) . '</a></p>';
-                }
-                if (isset($_SESSION['return_page'])) {
-                    echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
-                    //echo '<p><a href="' . $_SESSION['return_page'] . '">Back to Previous Page</a></p>';
-                } else {
-                    echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
-                }
-                */
+                 * if (isset($_REQUEST['returngroup']) && $_REQUEST['returngroup'] !== '') {
+                 * echo '<p><a href="' . $file_thread . '?group=' . $_REQUEST['returngroup'] . '">Your post will appear in ' . group_display_name($_REQUEST['returngroup']) . '</a></p>';
+                 * }
+                 * if (isset($_SESSION['return_page'])) {
+                 * echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                 * //echo '<p><a href="' . $_SESSION['return_page'] . '">Back to Previous Page</a></p>';
+                 * } else {
+                 * echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                 * }
+                 */
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";
@@ -395,7 +395,7 @@ if ($show == 1) {
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
         }
         echo '</td></tr><tr>';
-        echo '<td align="right"><b>'.$text_post["password"].'</b></td>';
+        echo '<td align="right"><b>' . $text_post["password"] . '</b></td>';
         echo '<td align="left">';
         // if (strcmp($user, $CONFIG['anonusername']) === 0) {
         // $logged_in = false;
@@ -408,21 +408,33 @@ if ($show == 1) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
             echo 'size="40" maxlength="40">';
         }
-        echo '<input class="post" type="hidden" name="fromname" value="'.$fromname.'">';
+        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
+        if (isset($user_config['display_name']) && trim($user_config['display_name']) != '') {
+            if (isset($user_config['display_email']) && trim($user_config['display_email']) != '') {
+                echo '<tr><td align="right">';
+                echo '<b>From: </b></td>';
+                $showemail = '<' . $user_config['display_email'] . '>';
+                echo '<td align="left">';
+                echo '<input class="post" type="text" value="' . $user_config['display_name'] . ' ' . htmlspecialchars($showemail) . '" size="40" maxlength="40" readonly>';
+//                echo $user_config['display_name'] . ' ' . htmlspecialchars($showemail);
+                echo '</td></tr>';
+            }
+        }
+        echo '<input class="post" type="hidden" name="fromname" value="' . $fromname . '">';
         echo '</td></tr>';
         // May we post encrypted messages to this group?
         if (check_encryption_groups($newsgroups)) {
             echo '<tr>';
             echo '<td align="left"><input type="checkbox" name="encryptthis"';
             echo 'value="encrypt"> <b>Encrypt to:</b></td>';
-            echo '<td><input type="text" name="encryptto" value="'.$fromname.'"></td>';
+            echo '<td><input type="text" name="encryptto" value="' . $fromname . '"></td>';
             echo '</tr>';
         }
         echo '</table></div>';
 
         echo '<div class="np_post_body">';
         echo '<table><tr>';
-        echo '<td><b>'.$text_post["message"].'</b><br> <textarea ';
+        echo '<td><b>' . $text_post["message"] . '</b><br> <textarea ';
         echo 'class="postbody" id="postbody" ';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
@@ -437,7 +449,7 @@ if ($show == 1) {
             if (isset($bodyzeile))
                 echo htmlspecialchars($bodyzeile);
             echo '">';
-            
+
             ?>
 <script language="JavaScript">
 <!--
