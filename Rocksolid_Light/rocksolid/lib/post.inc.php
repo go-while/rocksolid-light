@@ -416,7 +416,7 @@ function check_rate_limit($name, $set = 0, $gettime = 0)
  */
 function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = null, $encryptto = null, $authname = null, $fromname, $followupto = null, $do_attach = null)
 {
-    global $server, $port, $send_poster_host, $text_error, $CONFIG;
+    global $server, $port, $send_poster_host, $text_error, $CONFIG, $OVERRIDES;
     global $www_charset, $config_dir, $spooldir;
     global $msgid_generate, $msgid_fqdn, $rslight_version;
 
@@ -497,21 +497,24 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
                 }
             }
         }
-        
         // Check for custom name/email from user configuration
-        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $authname . '.config'));
-        if(trim($user_config['display_name']) == '') {
-            unset($user_config['display_name']);
-        }
-        if(trim($user_config['display_email']) == '') {
-            unset($user_config['display_email']);
-        }
-        if (isset($user_config['display_name']) && isset($user_config['display_email'])) {
-            fputs($ns, 'From: ' . $user_config['display_name'] .' <' .$user_config['display_email'] . ">\r\n");
+        if ($OVERRIDES['disable_change_name'] != true) {
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $authname . '.config'));
+            if (trim($user_config['display_name']) == '') {
+                unset($user_config['display_name']);
+            }
+            if (trim($user_config['display_email']) == '') {
+                unset($user_config['display_email']);
+            }
+            if (isset($user_config['display_name']) && isset($user_config['display_email'])) {
+                fputs($ns, 'From: ' . $user_config['display_name'] . ' <' . $user_config['display_email'] . ">\r\n");
+            } else {
+                fputs($ns, 'From: ' . $from . "\r\n");
+            }
         } else {
             fputs($ns, 'From: ' . $from . "\r\n");
         }
-        
+
         if ($followupto !== null) {
             fputs($ns, 'Followup-To: ' . $followupto . "\r\n");
         }

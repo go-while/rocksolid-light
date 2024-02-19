@@ -408,16 +408,19 @@ if ($show == 1) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
             echo 'size="40" maxlength="40">';
         }
-        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
-        if (isset($user_config['display_name']) && trim($user_config['display_name']) != '') {
-            if (isset($user_config['display_email']) && trim($user_config['display_email']) != '') {
-                echo '<tr><td align="right">';
-                echo '<b>From: </b></td>';
-                $showemail = '<' . $user_config['display_email'] . '>';
-                echo '<td align="left">';
-                echo '<input class="post" type="text" value="' . $user_config['display_name'] . ' ' . htmlspecialchars($showemail) . '" size="40" maxlength="40" readonly>';
-//                echo $user_config['display_name'] . ' ' . htmlspecialchars($showemail);
-                echo '</td></tr>';
+        // Check for custom name/email from user configuration
+        if ($OVERRIDES['disable_change_name'] != true) {
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
+            if (isset($user_config['display_name']) && trim($user_config['display_name']) != '') {
+                if (isset($user_config['display_email']) && trim($user_config['display_email']) != '') {
+                    echo '<tr><td align="right">';
+                    echo '<b>From: </b></td>';
+                    $showemail = '<' . $user_config['display_email'] . '>';
+                    echo '<td align="left">';
+                    echo '<input class="post" type="text" value="' . $user_config['display_name'] . ' ' . htmlspecialchars($showemail) . '" size="40" maxlength="40" readonly>';
+                    // echo $user_config['display_name'] . ' ' . htmlspecialchars($showemail);
+                    echo '</td></tr>';
+                }
             }
         }
         echo '<input class="post" type="hidden" name="fromname" value="' . $fromname . '">';

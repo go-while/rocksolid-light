@@ -204,8 +204,10 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
 }
 // Apply Config
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
-    $user_config['display_name'] = $_POST['display_name'];
-    $user_config['display_email'] = $_POST['display_email'];
+    if ($OVERRIDES['disable_change_name'] != true) {
+        $user_config['display_name'] = $_POST['display_name'];
+        $user_config['display_email'] = $_POST['display_email'];
+    }
     $user_config['signature'] = $_POST['signature'];
     $user_config['xface'] = $_POST['xface'];
     $user_config['timezone'] = $_POST['timezone'];
@@ -247,16 +249,18 @@ if (is_dir($themedir)) {
 }
 
 // Get settings for name and email
-if (isset($user_config['display_name'])) {
-    $display_name = $user_config['display_name'];
-} else {
-    $display_name = $_POST['username'];
-}
-if (isset($user_config['display_email'])) {
-    $display_email = $user_config['display_email'];
-} else {
-    if (($display_email = get_user_config($_POST['username'], 'email')) == false) {
-        $display_email = $_POST['username'] . '@' . $CONFIG['email_tail'];
+if ($OVERRIDES['disable_change_name'] != true) {
+    if (isset($user_config['display_name'])) {
+        $display_name = $user_config['display_name'];
+    } else {
+        $display_name = $_POST['username'];
+    }
+    if (isset($user_config['display_email'])) {
+        $display_email = $user_config['display_email'];
+    } else {
+        if (($display_email = get_user_config($_POST['username'], 'email')) == false) {
+            $display_email = $_POST['username'] . '@' . $CONFIG['email_tail'];
+        }
     }
 }
 sort($themes);
@@ -267,14 +271,16 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '<tr class="np_thread_head"><td class="np_thread_head"><h2>Settings for ' . $_POST['username'] . ':</h2></td></tr>';
     echo '<form method="post" action="user.php">';
     echo '<tr class="np_result_line1">';
-    // User Display Name
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Name for posts: </h3>';
-    echo '<input name="display_name" type="text" id="username"value="' . $display_name . '" maxlength="40"></td>';
-    echo '</tr>';
-    // User Display Email
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
-    echo '<input name="display_email" type="text" id="username"value="' . $display_email . '" maxlength="40"></td>';
-    echo '</tr>';
+    if ($OVERRIDES['disable_change_name'] != true) {
+        // User Display Name
+        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Name for posts: </h3>';
+        echo '<input name="display_name" type="text" id="username"value="' . $display_name . '" maxlength="40"></td>';
+        echo '</tr>';
+        // User Display Email
+        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
+        echo '<input name="display_email" type="text" id="username"value="' . $display_email . '" maxlength="40"></td>';
+        echo '</tr>';
+    }
     // Signature
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Signature:</h3></td>';
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="signature" name="signature" rows="6" cols="70">' . $user_config['signature'];
