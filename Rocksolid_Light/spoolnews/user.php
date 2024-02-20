@@ -205,6 +205,20 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
 // Apply Config
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     if ($OVERRIDES['disable_change_name'] != true) {
+        // Check if email already exists in user database
+        if($founduser = check_registered_email_addresses(trim($_POST['display_email']))) {
+            // Email exists in database
+            $myemail = get_user_config($user, 'email');
+            if (strtolower($user) != strtolower($founduser)) {
+                // It's someone else's email
+                echo '<b>'.$_POST['display_email']."</b> is unavailable.<br />Please try again";
+                echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+                echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+                echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+                echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
+                exit;
+            }
+        }
         $user_config['display_name'] = $_POST['display_name'];
         $user_config['display_email'] = $_POST['display_email'];
     }

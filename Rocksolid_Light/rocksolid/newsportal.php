@@ -2200,6 +2200,18 @@ function prune_dir_by_days($path, $days)
     return true;
 }
 
+function check_registered_email_addresses($email)
+{
+    global $config_dir;
+    $users = scandir($config_dir . "/userconfig");
+    foreach ($users as $user) {
+        if (strcmp(get_user_config($user, 'email'), $email) == 0) {
+            return $user;
+        }
+    }
+    return false;
+}
+
 function send_admin_message($admin, $from, $subject, $message)
 {
     global $config_dir, $spooldir;
