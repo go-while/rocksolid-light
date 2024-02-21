@@ -205,18 +205,52 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
 // Apply Config
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     if ($OVERRIDES['disable_change_name'] != true) {
+        if (trim($_POST['display_name']) == '') {
+            $_POST['display_name'] = $user;
+        }
+        if (trim($_POST['display_email']) == '') {
+            $_POST['display_email'] = get_user_config($user, 'email');
+        }
+        // Don't allow using already existing username or alias
+        $value = get_user_config($_POST['display_name'], 'encryptionkey');
+        if (! $value) {
+            $value = get_config_file_value($config_dir . '/aliases.conf', strtolower($_POST['display_name']));
+            // Alias exists if $value is true
+            if (strtolower($value) == $user) {
+                // But it's our alias so it's ok to use
+                $value = false;
+            }
+        }
+        if ($value && (strtolower($_POST['display_name']) != $user)) {
+            // It's someone else's username or alias
+            echo '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+            echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+            echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+            echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+            echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
+            exit();
+        }
+        // Validate email format
+        if (filter_var($_POST['display_email'], FILTER_VALIDATE_EMAIL) == false) {
+            // Email address format invalid. Format is important but does not need to be a real address
+            echo '</b> Display email format appears incorrect:<br><b>' . $_POST['display_email'] . '</b><br />Please try again';
+            echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+            echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+            echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+            echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
+            exit();
+        }
         // Check if email already exists in user database
-        if($founduser = check_registered_email_addresses(trim($_POST['display_email']))) {
+        if ($founduser = check_registered_email_addresses(trim($_POST['display_email']))) {
             // Email exists in database
-            $myemail = get_user_config($user, 'email');
             if (strtolower($user) != strtolower($founduser)) {
                 // It's someone else's email
-                echo '<b>'.$_POST['display_email']."</b> is unavailable.<br />Please try again";
+                echo '<b>' . $_POST['display_email'] . "</b> is unavailable.<br />Please try again";
                 echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
                 echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
                 echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
                 echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
-                exit;
+                exit();
             }
         }
         $user_config['display_name'] = $_POST['display_name'];
