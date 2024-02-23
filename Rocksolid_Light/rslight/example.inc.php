@@ -22,6 +22,7 @@ return [
   'rslight_title' => $CONFIG['rslight_title'],
   'title_full' => $CONFIG['title_full'],
   'hide_email' => $CONFIG['hide_email'],
+  'server_path' => $CONFIG['server_path'],
   'email_tail' => $CONFIG['email_tail'],
   'readonly' => $CONFIG['readonly'],
   'anonuser' => $CONFIG['anonuser'],

@@ -27,6 +27,7 @@ return [
 'rslight_title' => 'The tagline at the top of the web page',
 'title_full' => 'The site title in the client browser bar', 
 'hide_email' => 'Truncate email addresses in From header (1=true, blank=false)',
+'server_path' => 'What to add to as the domain for Message-ID header (include @)',
 'email_tail' => 'What to add to a username if not in the form of an email address (include @)',
 'anonusername' => 'The username to use for anonymous posting (auto-created)',
 'anonuserpass' => 'The password for the anonymous username',

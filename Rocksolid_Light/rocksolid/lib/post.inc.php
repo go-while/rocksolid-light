@@ -342,10 +342,10 @@ function generate_msgid($identity)
             return false;
             break;
         case "md5":
-            if ($CONFIG['email_tail'][0] !== '@') {
-                $mymsgid = '@' . $CONFIG['email_tail'];
+            if ($CONFIG['server_path'][0] !== '@') {
+                $mymsgid = '@' . $CONFIG['server_path'];
             } else {
-                $mymsgid = $CONFIG['email_tail'];
+                $mymsgid = $CONFIG['server_path'];
             }
             return '<' . md5($identity) . $mymsgid . '>';
             break;
