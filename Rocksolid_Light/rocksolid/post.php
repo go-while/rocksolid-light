@@ -93,12 +93,8 @@ if (disable_page_by_user_agent($client_device, "bot", "Post")) {
 global $synchro_user, $synchro_pass;
 // check to which groups the user is allowed to post to
 $thisgroup = _rawurldecode($_REQUEST['group']);
-if ($testgroup) {
-    $newsgroups = testgroups($thisgroup);
-} else {
-    $newsgroups = $thisgroup;
-}
-if($_REQUEST['returngroup']) {
+$newsgroups = $thisgroup;
+if ($_REQUEST['returngroup']) {
     $returngroup = $_REQUEST['returngroup'];
 } else {
     $returngroup = $thisgroup;
@@ -331,11 +327,7 @@ if ($type == "reply") {
     if (isset($head->followup) && ($head->followup != "")) {
         $newsgroups = $head->followup;
     } else {
-        if ($testgroup) {
-            $newsgroups = testgroups($head->newsgroups);
-        } else {
-            $newsgroups = $head->newsgroups;
-        }
+        $newsgroups = $head->newsgroups;
     }
     splitSubject($subject);
     $subject = "Re: " . $subject;
