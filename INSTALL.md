@@ -1,5 +1,15 @@
 Installing Rocksolid Light (rslight) - a web based Usenet news client
 
+IMPORTANT 0.9.6 UPGRADE INFORMATION:
+There has been a new config option added to rslight.inc.php:
+    'server_path' => '@example.com',
+You need to add this to the file. It's best to add it just above email_tail.
+This is the domain that is added to the Message-ID.
+
+If you have custom SECTION.inc.php files, you will need to manually add it to
+those files as well:
+    'server_path' => $CONFIG['server_path'],
+
 IMPORTANT 0.9.0 UPGRADE INFORMATION:
 The articles-overview.db3 database has changed in this version. It is required to update it before running the site. SEE INFORMATION BELOW.
 

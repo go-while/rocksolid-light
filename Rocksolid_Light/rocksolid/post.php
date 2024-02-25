@@ -98,10 +98,15 @@ if ($testgroup) {
 } else {
     $newsgroups = $thisgroup;
 }
-$returngroup = $thisgroup;
+if($_REQUEST['returngroup']) {
+    $returngroup = $_REQUEST['returngroup'];
+} else {
+    $returngroup = $thisgroup;
+}
+
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-echo '<a href="' . $file_thread . '?group=' . rawurlencode($thisgroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($thisgroup)) . '</a>';
+echo '<a href="' . $file_thread . '?group=' . rawurlencode($thisgroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
 if (isset($type) && $type == 'post') {
     echo ' / ' . $subject . '</h1>';
 } else {
@@ -490,7 +495,6 @@ function quoten() {
         }
         ?>
 
-
 </table>
 </div>
 <input type="hidden" name="type" value="post">
@@ -501,7 +505,7 @@ function quoten() {
 <input type="hidden" name="group"
 	value="<?php echo htmlspecialchars($newsgroups); ?>">
 <input type="hidden" name="returngroup"
-	value="<?php echo htmlspecialchars($head->followup); ?>">
+	value="<?php echo htmlspecialchars($thisgroup); ?>">
 <input type="hidden" name="fielddecrypt"
 	value="<?php echo htmlspecialchars($fieldencrypt);?>">
 </form>
