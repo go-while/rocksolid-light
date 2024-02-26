@@ -90,11 +90,8 @@ if (isset($user)) {
     echo 'login';
 }
 echo '</a>';
-?>
-		</td>
-		</tr>
-	</table>
-<?php
+echo '</td></tr>';
+echo '</table>';
 
 include($config_dir.'/fortunes.conf');
 
@@ -122,6 +119,18 @@ foreach ($menulist as $menu) {
     echo '</td>';
 }
 echo '</tr></table></p><p>';
+
+if($OVERRIDES['disable_msgid_search'] != true) {
+    echo '<table align="right">';
+    echo '<form name="form1" method="get" action="article-flat.php">';
+    echo '<tr>';
+    echo '<td>Message-ID: ';
+    echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
+    echo '<input type="submit" name="Submit" value="Lookup"></form></td>';
+    echo '</tr>';
+    echo '</table><br />';
+}
+
 echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_small"><tr>';
 if ($unread) {
     $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';

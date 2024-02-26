@@ -22,22 +22,9 @@ if (isset($_COOKIE['mail_name'])) {
 $id = $_REQUEST["id"];
 $group = _rawurldecode($_REQUEST["group"]);
 
-// Switch to correct section in case group has been moved and link is to old section
-$findsection = get_section_by_group($group);
-if (trim($findsection) !== $config_name) {
-    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
-        $link = "https";
-    else
-        $link = "http";
-    $link .= "://";
-    $link .= $_SERVER['HTTP_HOST'];
-    $link .= $_SERVER['REQUEST_URI'];
-    $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
-    header("Location:$newurl");
-    die();
-}
 if (strpos($id, '@') !== false) {
     if ($CONFIG['article_database'] == '1') {
+        $id = '<'.trim($id, '<> ').'>';
         $database = $spooldir . '/articles-overview.db3';
         $articles_dbh = overview_db_open($database);
         $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
@@ -53,11 +40,26 @@ if (strpos($id, '@') !== false) {
         }
         $dbh = null;
         if ($found) {
-            $newurl = 'article-flat.php?id=' . $id . '&group=' . $group . '#' . $id;
+            $newurl = 'article-flat.php?id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
             header("Location: $newurl");
             die();
         }
     }
+}
+
+// Switch to correct section in case group has been moved and link is to old section
+$findsection = get_section_by_group($group);
+if (($findsection) && trim($findsection) !== $config_name) {
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+        $link = "https";
+    else
+        $link = "http";
+    $link .= "://";
+    $link .= $_SERVER['HTTP_HOST'];
+    $link .= $_SERVER['REQUEST_URI'];
+    $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
+    header("Location:$newurl");
+    die();
 }
 
 if (isset($_REQUEST["first"]))

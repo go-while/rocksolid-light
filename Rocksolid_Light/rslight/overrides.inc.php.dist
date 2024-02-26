@@ -7,8 +7,23 @@ return [
     'maxarticles_per_run' => 100,
     'maxfirstrequest' => 100,
     
+    // Disable spoolnews if less than this num in Gb free for spool
+    'min_spool_disk_space' => 5,
+    
+    // If your remote_server is already filtered, enable this
+    'disable_spamassassin_spooling' => true,
+    
     // Display short view of headers (only subject, name, date)
-    'short_headers' => false,
+    'short_headers' => true,
+
+    // Log posts?
+    'enable_post_log' => false,
+    
+    // Disable name/email spoof option in Configuration
+    'disable_change_name' => false,
+    
+    // Disable Message-ID search in header
+    'disable_msgid_search' => false,
 
     // Just leave this here to avoid comma errors
     'comma' => true
