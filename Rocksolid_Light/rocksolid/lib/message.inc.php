@@ -23,6 +23,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+ ?>
+ 
+ <script>
+function CopyToClipboard(id)
+{
+var r = document.createRange();
+r.selectNode(document.getElementById(id));
+window.getSelection().removeAllRanges();
+window.getSelection().addRange(r);
+document.execCommand('copy');
+window.getSelection().removeAllRanges();
+}
+</script>
+
+<?php
+ 
 function message_parse($rawmessage)
 {
     global $attachment_delete_alternative, $attachment_uudecode, $www_charset;
@@ -512,6 +528,12 @@ function show_header_short($head, $group, $local_poster = false)
     }
     unset($ts);
     echo '<div class=np_ob_posted_date>';
+    
+    // Copy MID to clipboard (requires js)
+    ?>
+    <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
+    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"><i>copy mid</i></a>
+    <?php
 
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
@@ -526,9 +548,10 @@ function show_header_short($head, $group, $local_poster = false)
     echo "<br />";
     
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers">';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" />';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
     }
+
     if ($local_poster) {
         echo "&nbsp;by: <i>" . $displayname . "</i> - " . $displaydate;
     } else {
@@ -553,6 +576,11 @@ function show_header_short($head, $group, $local_poster = false)
     }
     echo '</p>';
     echo '</div>';
+}
+
+function copy_messageid() {
+    $messageid = "THIS IS THE MSGID";
+    return $messageid;
 }
 
 function display_full_headers($article, $group, $name, $from, $getface = false)
