@@ -532,7 +532,7 @@ function show_header_short($head, $group, $local_poster = false)
     // Copy MID to clipboard (requires js)
     ?>
     <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
-    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"><i>copy mid</i></a>
+    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
     <?php
 
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
