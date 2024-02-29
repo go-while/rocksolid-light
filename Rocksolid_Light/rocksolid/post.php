@@ -108,7 +108,7 @@ if ($_REQUEST['returngroup']) {
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-echo '<a href="' . $file_thread . '?group=' . rawurlencode($thisgroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
+echo '<a href="' . $file_thread . '?group=' . rawurlencode($returngroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
 if (isset($type) && $type == 'post') {
     echo ' / ' . $subject . '</h1>';
 } else {
