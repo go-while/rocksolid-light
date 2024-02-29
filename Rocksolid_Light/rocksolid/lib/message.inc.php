@@ -497,7 +497,7 @@ function show_header($head, $group, $local_poster = false)
 function show_header_short($head, $group, $local_poster = false)
 {
     global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
-    global $file_attachment, $anonym_address, $CONFIG;
+    global $file_attachment, $anonym_address, $CONFIG, $config_name;
     if (isset($_COOKIE['tzo'])) {
         $offset = $_COOKIE['tzo'];
     } else {
@@ -535,18 +535,22 @@ function show_header_short($head, $group, $local_poster = false)
     &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
     <?php
 
+    echo '&nbsp;&nbsp;Newsgroups: ';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
-    echo "&nbsp;";
+ //   echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
         if ($s = get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '"> ' . $onegroup . " </a>";
+            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
         } else {
             echo " ".$onegroup." ";
         }
     }
     echo "<br />";
     
+    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
+    }
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" />';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';

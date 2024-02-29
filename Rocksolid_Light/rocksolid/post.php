@@ -93,6 +93,12 @@ if (disable_page_by_user_agent($client_device, "bot", "Post")) {
 global $synchro_user, $synchro_pass;
 // check to which groups the user is allowed to post to
 $thisgroup = _rawurldecode($_REQUEST['group']);
+
+// Is this a reply to an article containing Followup-To?
+if(isset($_REQUEST['fgroups'])) {
+    $thisgroup = $_REQUEST['fgroups'];
+}
+
 $newsgroups = $thisgroup;
 if ($_REQUEST['returngroup']) {
     $returngroup = $_REQUEST['returngroup'];
@@ -324,8 +330,11 @@ if ($type == "reply") {
         }
     }
     $subject = $head->subject;
+    // Offer choice of whether to use Followup-To
+    $has_followup = false;
     if (isset($head->followup) && ($head->followup != "")) {
         $newsgroups = $head->followup;
+        $has_followup = $head->newsgroups;
     } else {
         $newsgroups = $head->newsgroups;
     }
@@ -373,6 +382,20 @@ if ($show == 1) {
         echo 'value="' . htmlspecialchars($subject) . '" ';
         echo 'size="40" maxlength="' . $thread_maxSubject . '"></td>';
         echo '</tr><tr>';
+        
+        if($has_followup) {
+            echo '<td align="right">';
+            echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
+            echo '</td><td>';
+            echo '<label for="followup">' . $head->followup . ' (followup-to is set)</label></td>';
+            echo '</tr><tr>';
+            echo '<tr><td align="right">';
+            echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
+            echo '</td><td>';
+            echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
+            echo '</tr><tr>';
+        }
+        
         echo '<td align="right"><b>' . $text_post["name"] . '</b></td>';
         echo '<td align="left">';
         if (! isset($name) && $CONFIG['anonuser'])
