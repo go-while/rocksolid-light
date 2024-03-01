@@ -135,9 +135,9 @@ echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_small"><tr>';
 if ($unread) {
     $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';
 }
-if (strlen($motd) > 0) {
+//if (strlen($motd) > 0) {
     echo '<div class="np_last_posted_date"><h1 class="np_thread_headline">' . $motd . '</h1></div>';
-}
+//}
 echo '</tr></table>';
 echo '</p>';
 
