@@ -2251,11 +2251,20 @@ function send_admin_message($admin, $from, $subject, $message)
     return true;
 }
 
-function delete_message($messageid, $group, $overview_dbh)
+function delete_message($messageid, $group=null, $overview_dbh=null)
 {
     global $logfile, $config_dir, $spooldir, $CONFIG, $webserver_group;
+    if($group == null) {
+        $message = get_data_from_msgid($messageid);
+        $groups = $message['newsgroup'];
+        $grouplist = preg_split("/( |\,)/", $groups);
+    } else {
+        $grouplist[0] = $group;
+    }
+    
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+  foreach($grouplist as $group) {
     foreach ($menulist as $menu) {
         if ($menu[0] == '#') {
             continue;
@@ -2266,13 +2275,12 @@ function delete_message($messageid, $group, $overview_dbh)
             $group_name = preg_split("/( |\t)/", $gl, 2);
             if (strtolower(trim($group)) == strtolower(trim($group_name[0]))) {
                 $config_name = $menuitem[0];
-                echo "\nFOUND: " . $group . " IN: " . $config_name;
+          //      echo "\nFOUND: " . $group . " IN: " . $config_name;
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $group . " IN: " . $config_name, FILE_APPEND);
                 break 2;
             }
         }
     }
-
     if ($CONFIG['article_database'] == '1') {
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (is_file($database)) {
@@ -2285,6 +2293,15 @@ function delete_message($messageid, $group, $overview_dbh)
         }
     }
     // Handle overview and history
+    if($overview_dbh == null) {
+        $database = $spooldir . '/articles-overview.db3';
+        $overview_dbh = overview_db_open($database);
+        if(!$overview_dbh) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
+            return;
+        }
+        $close_ovdb = true;
+    } 
     $overview_stmt_del = $overview_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
     $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
     $overview_query->execute([
@@ -2298,7 +2315,7 @@ function delete_message($messageid, $group, $overview_dbh)
     $statusnotes = null;
     while ($row = $overview_query->fetch()) {
         if (isset($row['number'])) {
-            echo "\nFOUND: " . $messageid . " IN: " . $group;
+      //      echo "\nFOUND: " . $messageid . " IN: " . $group;
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
         }
         if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
@@ -2312,7 +2329,44 @@ function delete_message($messageid, $group, $overview_dbh)
             ':msgid' => $messageid
         ]);
     }
+  }
+  if($close_ovdb) {
+      $overview_dbh = null;
+  }
     return;
+}
+
+// This function returns FALSE if article is OK
+// Else returns a string with reason for failure
+function check_article_integrity($rawmessage) {
+    global $CONFIG, $logfile;
+    $returnval = false;
+    $count_rawmessage = count($rawmessage);
+    $message = new messageType();
+    $rawheader = array();
+    $i = 0;
+    while ($rawmessage[$i] != "") {
+        $rawheader[] = $rawmessage[$i];
+        $i ++;
+    }
+    // Parse the Header:
+    $message->header = parse_header($rawheader);
+    // Now we know if the message is a mime-multipart message:
+    $content_type = explode("/", $message->header->content_type[0]);
+    if ($content_type[0] == "multipart") {
+        $message->header->content_type = array();
+        // We have multible bodies, so we split the message into its parts
+        $boundary = "--" . $message->header->content_type_boundary;
+        // lets find the first part
+        while ($rawmessage[$i] != $boundary) {
+            $i ++;
+            if($i > $count_rawmessage) {
+                $returnval = " Skipping malformed message: " . $message->header->id;
+                return $returnval;
+            }
+        }
+    }
+    return $returnval;
 }
 
 function delete_message_from_overboard($config_name, $group, $messageid)

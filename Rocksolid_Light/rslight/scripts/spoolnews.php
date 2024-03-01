@@ -85,7 +85,7 @@ $sem = $spooldir . "/" . $config_name . ".reload";
 if (is_file($sem)) {
     unlink($remote_groupfile);
     unlink($sem);
-    $maxfirstrequest = 500;
+    $maxfirstrequest = 200;
 }
 
 # Check for groups file, create if necessary
@@ -288,6 +288,7 @@ function get_articles($ns, $group)
         $ref = 0;
         $sub = 0;
         $banned = false;
+        $integrity = false;
         $is_header = 1;
         $body = "";
         while (strcmp($response, ".") != 0) {
@@ -400,11 +401,15 @@ function get_articles($ns, $group)
         file_put_contents($articleHandle, $response . "\n", FILE_APPEND);
         $lines = $lines - 1;
         $bytes = $bytes + ($lines * 2);
-        // Don't spool article if $banned != 0
-        if ($banned !== false) {
+        // Don't spool article if $banned or fails integrity test
+        $integrity = check_article_integrity(file($articleHandle));
+        if (($banned !== false) || ($integrity !== false)) {
             unlink($articleHandle);
-            file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
-            // file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " banned in " . $banned, FILE_APPEND);
+            if($integrity) {
+                file_put_contents($logfile, "\n" . format_log_date() . $integrity, FILE_APPEND);
+            } elseif ($banned) {
+                file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
+            }
             $article ++;
         } else {
             if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
