@@ -531,6 +531,17 @@ function show_header_short($head, $group, $local_poster = false)
     
     // Copy MID to clipboard (requires js)
     ?>
+    <script>
+    function CopyToClipboard(id)
+        {
+        var r = document.createRange();
+        r.selectNode(document.getElementById(id));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(r);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        }
+    </script>    
     <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
     &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
     <?php
