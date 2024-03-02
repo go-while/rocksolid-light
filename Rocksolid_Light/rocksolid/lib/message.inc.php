@@ -24,18 +24,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
  ?>
- 
- <script>
-function CopyToClipboard(id)
-{
-var r = document.createRange();
-r.selectNode(document.getElementById(id));
-window.getSelection().removeAllRanges();
-window.getSelection().addRange(r);
-document.execCommand('copy');
-window.getSelection().removeAllRanges();
-}
-</script>
 
 <?php
  
@@ -530,18 +518,18 @@ function show_header_short($head, $group, $local_poster = false)
     echo '<div class=np_ob_posted_date>';
     
     // Copy MID to clipboard (requires js)
+    echo '<script>';
+    echo 'function CopyToClipboard(id)';
+        echo '{';
+        echo 'var r = document.createRange();';
+        echo 'r.selectNode(document.getElementById(id));';
+        echo 'window.getSelection().removeAllRanges();';
+        echo 'window.getSelection().addRange(r);';
+        echo "document.execCommand('copy');";
+        echo 'window.getSelection().removeAllRanges();';
+        echo '}';
+    echo '</script> ';   
     ?>
-    <script>
-    function CopyToClipboard(id)
-        {
-        var r = document.createRange();
-        r.selectNode(document.getElementById(id));
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(r);
-        document.execCommand('copy');
-        window.getSelection().removeAllRanges();
-        }
-    </script>    
     <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
     &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
     <?php

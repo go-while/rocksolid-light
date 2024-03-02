@@ -9,17 +9,13 @@ if (isset($_COOKIE['tzo'])) {
 } else {
     $offset = $CONFIG['timezone'];
 }
-
 if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_verify($CONFIG['thissitekey'], $_REQUEST['key'])) {
     $getfilename = $spooldir . '/upload/' . $_REQUEST['showfile'];
-    $getfh = fopen($getfilename, "rb");
-    $getfile = fread($getfh, filesize($getfilename));
-    fclose($getfh);
+    ob_clean();
     header('Content-type: ' . $_REQUEST['contenttype']);
     header('Content-disposition: filename="' . $_REQUEST['showfilename'] . '"');
     file_put_contents($logfile, "\n" . format_log_date() . " Requesting: " . $_REQUEST['showfile'], FILE_APPEND);
-    echo file_get_contents($getfilename);
-    //echo $getfile;
+    readfile($getfilename);
     exit(0);
 }
 $title .= ' - Browse files';
@@ -141,4 +137,3 @@ function display_user_files($user, $offset)
     }
     echo '</table>';
 }
-?>

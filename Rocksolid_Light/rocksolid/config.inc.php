@@ -253,4 +253,3 @@ if ((isset($group)) && (isset($group_config))) {
 // definitions are incomplete
 include ("lang/english.lang");
 include ($file_language);
-?>
