@@ -221,6 +221,27 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
                 $value = false;
             }
         }
+        if(isset($OVERRIDES['reserved_names'])) {
+            $reserved_names = $OVERRIDES['reserved_names']; 
+        } else {
+            $reserved_names = array("admin", "sysop");
+        }
+        if(isset($OVERRIDES['duplicate_aliases'])) {
+            $dupe_ok = $OVERRIDES['duplicate_aliases'];
+        } else {
+            $dupe_ok = false;
+        }    
+        foreach($reserved_names as $name) {
+            if(strtolower($_POST['display_name']) == strtolower($name)) {
+                // It's a reserved alias
+                echo '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+                echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+                echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+                echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+                echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
+                exit();
+            }
+        }
         if ($value && (strtolower($_POST['display_name']) != $user)) {
             // It's someone else's username or alias
             echo '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
@@ -253,8 +274,21 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
                 exit();
             }
         }
-        $user_config['display_name'] = $_POST['display_name'];
-        $user_config['display_email'] = $_POST['display_email'];
+        $user_config['display_name'] = trim($_POST['display_name']);
+        $user_config['display_email'] = trim($_POST['display_email']);
+        // Apply alias into $config_dir/aliases_conf
+        if(strtolower($user_config['display_name'] != strtolower($_POST['username']))) {
+            $value_unique = true;
+            if($dupe_ok) {
+                foreach($dupe_ok as $dupe) {
+                    if($dupe == strtolower($_POST['username'])) {
+                        $value_unique = false;
+                        break;
+                    }
+                }
+            }
+            save_config_value($config_dir . '/aliases.conf', strtolower($user_config['display_name']), strtolower($_POST['username']), $value_unique);
+        }
     }
     $user_config['signature'] = $_POST['signature'];
     $user_config['xface'] = $_POST['xface'];

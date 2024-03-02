@@ -25,6 +25,12 @@ return [
     // Disable Message-ID search in header
     'disable_msgid_search' => false,
 
+    // Reserved aliases
+    'reserved_names' => array("admin", "sysop", "rslight"),
+    
+    // Users who may have duplicate aliases in aliases.conf
+    'duplicate_aliases' => array("admins user name here"),
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];

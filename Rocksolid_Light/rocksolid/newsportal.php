@@ -1768,18 +1768,47 @@ function get_poster_name($name)
     return ($thisposter);
 }
 
-function save_config_value($configfile, $name, $value)
+/*
+ * This function returns false on success
+ * or return value contains error info
+ * 'added' etc.
+ */ 
+function save_config_value($configfile, $name, $value, $value_unique = false)
 {
-    $list = file($configfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $saveconfig = fopen($configfile, 'w+');
-    foreach ($list as $save) {
-        $name = explode(':', $save);
-        if (strcmp($name[0], $group) == 0) {
-            fputs($saveconfig, $group . ":" . $article . "\n");
+    global $spooldir;
+    $return_val = false;
+    $tempfile = tempnam($spooldir, 'rslight-');
+    if(file_exists($tempfile)) {
+        unlink($tempfile);
+    }
+    $lines = file($configfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $found = false;
+    foreach ($lines as $line) {
+        $current = explode(':', $line);
+        if ($value_unique && (strcmp($current[1], $value) == 0)) {
+            // Found value. Write once
+            if(!$found) {
+                file_put_contents($tempfile, $name . ":" . $value . "\n", FILE_APPEND);
+            }
+            $found = true;
+            continue;
+        }
+        if (strcmp($current[0], $name) == 0) {
+            // $name matches option. Overwrite
+            file_put_contents($tempfile, $name . ":" . $value . "\n", FILE_APPEND);
+            $found = true;
         } else {
-            fputs($saveconfig, $save . "\n");
+            // $name does not match option. Keep current line
+            file_put_contents($tempfile, $line . "\n", FILE_APPEND);
         }
     }
+    if(!$found) {
+        // $name not found in options. Add to file.
+        file_put_contents($tempfile, $name . ":" . $value . "\n", FILE_APPEND);
+    }
+    copy($tempfile, $configfile);
+    unlink($tempfile);
+    return $return_val;
 }
 
 function get_config_file_value($configfile, $request)
