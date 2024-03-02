@@ -18,8 +18,8 @@ if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_
     header('Content-type: ' . $_REQUEST['contenttype']);
     header('Content-disposition: filename="' . $_REQUEST['showfilename'] . '"');
     file_put_contents($logfile, "\n" . format_log_date() . " Requesting: " . $_REQUEST['showfile'], FILE_APPEND);
-
-    echo $getfile;
+    echo file_get_contents($getfilename);
+    //echo $getfile;
     exit(0);
 }
 $title .= ' - Browse files';
@@ -33,7 +33,10 @@ if (disable_page_by_user_agent($client_device, "bot", "Files")) {
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
-echo htmlspecialchars($_COOKIE['mail_name']) . '</h1>';
+if(isset($_COOKIE['mail_name'])) {
+    echo htmlspecialchars($_COOKIE['mail_name']);
+}
+echo '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Browse button
 echo '<td>';
