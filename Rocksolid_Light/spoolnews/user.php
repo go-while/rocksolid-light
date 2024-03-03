@@ -298,10 +298,10 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     $_SESSION['theme'] = $user_config['theme'];
     $mysubs = explode("\n", $_POST['subscribed']);
     foreach ($mysubs as $sub) {
-        if (trim($sub) == '') {
+        $sub = trim($sub);
+        if ($sub == '') {
             continue;
         }
-        $sub = trim($sub);
         if (! isset($userdata[$sub])) {
             $userdata[$sub] = 0;
         }
@@ -395,6 +395,9 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed:</h3></td>';
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
     foreach ($userdata as $key => $value) {
+        if($key == "DO.NOT.DELETE") {
+            continue;
+        }
         echo $key . "\n";
     }
     echo '</textarea></td>';

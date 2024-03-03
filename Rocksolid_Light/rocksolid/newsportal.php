@@ -1949,6 +1949,11 @@ function get_user_mail_auth_data($user)
         $userfile = $spooldir . '/' . $user . '-articleviews.dat';
         if (is_file($userfile)) {
             $userdata = unserialize(file_get_contents($userfile));
+            if(!is_array($userdata)) {
+                $userdata['DO.NOT.DELETE'] = time();
+            }
+        } else {
+            $userdata['DO.NOT.DELETE'] = time();
         }
         return $userdata;
     }
