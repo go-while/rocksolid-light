@@ -1,45 +1,6 @@
 #!/usr/bin/php
 <?php
-
-/*
- * First, configure this file, and nocempost.sh to match
- * your system and needs.
- *
- * Copy messages to add to NoCeM list to $workpath/incoming
- * One message per file. (Move or delete these files when all
- * is complete)
- *
- * Then run nocemlist.php to create nocem.out and header.out files
- * You may view these files before sending if you wish to confirm
- * all is working properly.
- *
- * Then run nocempost.sh to send NoCeM message to news server
-*/
-
-// Where these scripts reside and messages are created: (end with '/')
-$workpath = "/home/user/SPAM/";
-
-$domain = "<your_domain>";
-$organization = "<your_organization>";
-$from = "from_address <from@example.com>";
-$from_email = "<from@example.com";
-$contact = "your_email_address";
-
-// Your gpg signing key:
-$signing_key = "XXXX XXXX XXXX XXXX XXXX  XXXX XXXX XXXX XXXX XXXX";
-// URL to view/download key:
-$key_location = "https://<key_url>";
-
-// Comma separated list of newsgroups to send this message:
-$spamgroup = "<where to send this message>";
-// Statement about the scope of your NoCeM messages:
-$scope = "The scope of these messages is the <my_hier>.* hierarchy";
-
-/* END CONFIG */
-
-$spamdir = $workpath."incoming";
-$nocem = $workpath."nocem.out";
-$headerdat = $workpath."header.out";
+include "nocemlist.inc.php";
 
 $newspam = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($spamdir));
 $count = 0;
@@ -55,7 +16,7 @@ foreach($newspam as $spam) {
     $is_header = 1;
     foreach($spam_lines as $response) {
       if (trim($response) == "" && $lines > 0) {
-                $is_header = 0;
+                break;
             }
             if ($is_header == 1) {
               $lines ++;
@@ -115,6 +76,7 @@ fwrite($nocem_file, "The GPG key needed to verify the signature of cancels\n");
 fwrite($nocem_file, "issued by $from_email is available at:\n");
 fwrite($nocem_file, "$key_location\n\n");
 
+fwrite($nocem_file, $statement."\n\n");
 fwrite($nocem_file, "For information contact $contact.\n\n");
 
 fwrite($nocem_file, "@@BEGIN NCM HEADERS\n");
@@ -133,4 +95,10 @@ foreach($nocem_list as $list) {
 
 fwrite($nocem_file, "@@END NCM BODY");
 fclose($nocem_file);
+
+// Create nocempost.sh if it is older than config
+if($create_post) {
+    file_put_contents($nocempost_filename, $nocempost);
+    chmod($nocempost_filename, 0700);
+}
 ?>
