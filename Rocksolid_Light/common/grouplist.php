@@ -4,7 +4,7 @@ $title .= ' - Available Newsgroups';
 include "head.inc";
 
 $cache_filename = $spooldir . '/grouplist-cache.txt';
-
+echo '<center>';
 echo '<h3>List of Available Newsgroups:</h3>';
 // Use cache if new enough
 if (filemtime($cache_filename) > (time() - 3600)) {
@@ -61,8 +61,8 @@ foreach ($groups_array as $thisgroup) {
 }
 
 echo '</table>';
-// echo ob_get_contents();
+echo '</center>';
+include "tail.inc";
+echo '</body></html>';
 file_put_contents($cache_filename, ob_get_contents());
 ob_end_flush();
-echo '</body></html>';
-?>

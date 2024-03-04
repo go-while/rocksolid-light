@@ -25,6 +25,11 @@ return [
     // Disable Message-ID search in header
     'disable_msgid_search' => false,
 
+    // Set default for new registered users to 'show' or 'hide'
+    // Unsubscribed groups (else default is 'hide')
+    // Must be 'show' or 'hide'  
+    'hide_unsub' => 'hide',
+
     // Reserved aliases
     'reserved_names' => array("admin", "sysop", "rslight"),
     

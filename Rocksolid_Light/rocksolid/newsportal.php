@@ -595,7 +595,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
 
 function groups_show($gruppen)
 {
-    global $gl_age, $frame, $spooldir, $logdir, $CONFIG, $spoolnews;
+    global $gl_age, $frame, $spooldir, $config_dir, $logdir, $CONFIG, $OVERRIDES, $spoolnews;
     if ($gruppen == false)
         return;
     global $file_thread, $text_groups;
@@ -607,9 +607,19 @@ function groups_show($gruppen)
     $subs = array();
     $nonsubs = array();
     $user = null;
+    // Get registered user settings
     if (isset($_COOKIE['mail_name'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+        }
+
+        if (! isset($user_config['hide_unsub'])) {
+            if (isset($OVERRIDES['hide_unsub'])) {
+                $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];
+            } else {
+                $user_config['hide_unsub'] = 'hide';
+            }
         }
     }
     for ($i = 0; $i < $c; $i ++) {
@@ -683,6 +693,10 @@ function groups_show($gruppen)
                     $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . urlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
                 }
                 $groupdisplay .= '</p';
+            } else {
+                if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                    continue;
+                }
             }
             /* Display article count */
             $groupdisplay .= '</td><td class="' . $lineclass . '">';
@@ -733,6 +747,10 @@ function groups_show($gruppen)
         echo $nonsub;
     }
     echo "</td></div></table>\n";
+    if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+        echo '<font class="np_last_posted_date">&nbsp;Unsubscribed groups are HIDDEN. Visit <a href="/spoolnews/user.php">User/Configuration</a> to change<br />';
+        echo '&nbsp;or select groups from <a href="/common/grouplist.php">Grouplist</a> to add groups</font>';
+    }
 }
 
 /*
@@ -1772,13 +1790,13 @@ function get_poster_name($name)
  * This function returns false on success
  * or return value contains error info
  * 'added' etc.
- */ 
+ */
 function save_config_value($configfile, $name, $value, $value_unique = false)
 {
     global $spooldir;
     $return_val = false;
     $tempfile = tempnam($spooldir, 'rslight-');
-    if(file_exists($tempfile)) {
+    if (file_exists($tempfile)) {
         unlink($tempfile);
     }
     $lines = file($configfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -1787,7 +1805,7 @@ function save_config_value($configfile, $name, $value, $value_unique = false)
         $current = explode(':', $line);
         if ($value_unique && (strcmp($current[1], $value) == 0)) {
             // Found value. Write once
-            if(!$found) {
+            if (! $found) {
                 file_put_contents($tempfile, $name . ":" . $value . "\n", FILE_APPEND);
             }
             $found = true;
@@ -1802,7 +1820,7 @@ function save_config_value($configfile, $name, $value, $value_unique = false)
             file_put_contents($tempfile, $line . "\n", FILE_APPEND);
         }
     }
-    if(!$found) {
+    if (! $found) {
         // $name not found in options. Add to file.
         file_put_contents($tempfile, $name . ":" . $value . "\n", FILE_APPEND);
     }
@@ -1949,7 +1967,7 @@ function get_user_mail_auth_data($user)
         $userfile = $spooldir . '/' . $user . '-articleviews.dat';
         if (is_file($userfile)) {
             $userdata = unserialize(file_get_contents($userfile));
-            if(!is_array($userdata)) {
+            if (! $userdata['DO.NOT.DELETE']) {
                 $userdata['DO.NOT.DELETE'] = time();
             }
         } else {
@@ -2285,94 +2303,95 @@ function send_admin_message($admin, $from, $subject, $message)
     return true;
 }
 
-function delete_message($messageid, $group=null, $overview_dbh=null)
+function delete_message($messageid, $group = null, $overview_dbh = null)
 {
     global $logfile, $config_dir, $spooldir, $CONFIG, $webserver_group;
-    if($group == null) {
+    if ($group == null) {
         $message = get_data_from_msgid($messageid);
         $groups = $message['newsgroup'];
         $grouplist = preg_split("/( |\,)/", $groups);
     } else {
         $grouplist[0] = $group;
     }
-    
+
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-  foreach($grouplist as $group) {
-    foreach ($menulist as $menu) {
-        if ($menu[0] == '#') {
-            continue;
-        }
-        $menuitem = explode(':', $menu);
-        $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
-        while ($gl = fgets($glfp)) {
-            $group_name = preg_split("/( |\t)/", $gl, 2);
-            if (strtolower(trim($group)) == strtolower(trim($group_name[0]))) {
-                $config_name = $menuitem[0];
-          //      echo "\nFOUND: " . $group . " IN: " . $config_name;
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $group . " IN: " . $config_name, FILE_APPEND);
-                break 2;
+    foreach ($grouplist as $group) {
+        foreach ($menulist as $menu) {
+            if ($menu[0] == '#') {
+                continue;
+            }
+            $menuitem = explode(':', $menu);
+            $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
+            while ($gl = fgets($glfp)) {
+                $group_name = preg_split("/( |\t)/", $gl, 2);
+                if (strtolower(trim($group)) == strtolower(trim($group_name[0]))) {
+                    $config_name = $menuitem[0];
+                    // echo "\nFOUND: " . $group . " IN: " . $config_name;
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $group . " IN: " . $config_name, FILE_APPEND);
+                    break 2;
+                }
             }
         }
-    }
-    if ($CONFIG['article_database'] == '1') {
-        $database = $spooldir . '/' . $group . '-articles.db3';
-        if (is_file($database)) {
-            $articles_dbh = article_db_open($database);
-            $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE msgid=:messageid');
-            $articles_stmt->execute([
-                'messageid' => $messageid
-            ]);
-            $articles_dbh = null;
+        if ($CONFIG['article_database'] == '1') {
+            $database = $spooldir . '/' . $group . '-articles.db3';
+            if (is_file($database)) {
+                $articles_dbh = article_db_open($database);
+                $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE msgid=:messageid');
+                $articles_stmt->execute([
+                    'messageid' => $messageid
+                ]);
+                $articles_dbh = null;
+            }
         }
-    }
-    // Handle overview and history
-    if($overview_dbh == null) {
-        $database = $spooldir . '/articles-overview.db3';
-        $overview_dbh = overview_db_open($database);
-        if(!$overview_dbh) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
-            return;
+        // Handle overview and history
+        if ($overview_dbh == null) {
+            $database = $spooldir . '/articles-overview.db3';
+            $overview_dbh = overview_db_open($database);
+            if (! $overview_dbh) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
+                return;
+            }
+            $close_ovdb = true;
         }
-        $close_ovdb = true;
-    } 
-    $overview_stmt_del = $overview_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
-    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
-    $overview_query->execute([
-        ':newsgroup' => $group,
-        ':msgid' => $messageid
-    ]);
-    $grouppath = preg_replace('/\./', '/', $group);
-    $status = "deleted";
-    $statusdate = time();
-    $statusreason = "nocem";
-    $statusnotes = null;
-    while ($row = $overview_query->fetch()) {
-        if (isset($row['number'])) {
-      //      echo "\nFOUND: " . $messageid . " IN: " . $group;
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
-        }
-        if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
-            unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
-        }
-        delete_message_from_overboard($config_name, $group, $messageid);
-        add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
-        thread_cache_removearticle($group, $row['number']);
-        $overview_stmt_del->execute([
+        $overview_stmt_del = $overview_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+        $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup AND msgid=:msgid');
+        $overview_query->execute([
             ':newsgroup' => $group,
             ':msgid' => $messageid
         ]);
+        $grouppath = preg_replace('/\./', '/', $group);
+        $status = "deleted";
+        $statusdate = time();
+        $statusreason = "nocem";
+        $statusnotes = null;
+        while ($row = $overview_query->fetch()) {
+            if (isset($row['number'])) {
+                // echo "\nFOUND: " . $messageid . " IN: " . $group;
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
+            }
+            if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
+                unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
+            }
+            delete_message_from_overboard($config_name, $group, $messageid);
+            add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
+            thread_cache_removearticle($group, $row['number']);
+            $overview_stmt_del->execute([
+                ':newsgroup' => $group,
+                ':msgid' => $messageid
+            ]);
+        }
     }
-  }
-  if($close_ovdb) {
-      $overview_dbh = null;
-  }
+    if ($close_ovdb) {
+        $overview_dbh = null;
+    }
     return;
 }
 
 // This function returns FALSE if article is OK
 // Else returns a string with reason for failure
-function check_article_integrity($rawmessage) {
+function check_article_integrity($rawmessage)
+{
     global $CONFIG, $logfile;
     $returnval = false;
     $count_rawmessage = count($rawmessage);
@@ -2394,7 +2413,7 @@ function check_article_integrity($rawmessage) {
         // lets find the first part
         while ($rawmessage[$i] != $boundary) {
             $i ++;
-            if($i > $count_rawmessage) {
+            if ($i > $count_rawmessage) {
                 $returnval = " Skipping malformed message: " . $message->header->id;
                 return $returnval;
             }

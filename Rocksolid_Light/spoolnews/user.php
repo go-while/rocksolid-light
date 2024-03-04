@@ -294,6 +294,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     $user_config['xface'] = $_POST['xface'];
     $user_config['timezone'] = $_POST['timezone'];
     $user_config['theme'] = $_POST['listbox'];
+    $user_config['hide_unsub'] = $_POST['hide_unsub'];
     file_put_contents($config_dir . '/userconfig/' . $user . '.config', serialize($user_config));
     $_SESSION['theme'] = $user_config['theme'];
     $mysubs = explode("\n", $_POST['subscribed']);
@@ -392,7 +393,27 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '</td>';
     echo '</tr>';
     // Subscriptions
+    if(!isset($user_config['hide_unsub'])) {
+        $user_config['hide_unsub'] = 'show';
+    }
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed:</h3></td>';
+    echo '<tr><td class="np_result_line1" style="word-wrap:break-word";>';
+    
+    if($user_config['hide_unsub'] == 'hide') {
+        echo '<input type="radio" name="hide_unsub" id="hide" value="hide" checked="checked">';
+    } else {
+        echo '<input type="radio" name="hide_unsub" id="hide" value="hide">';
+    }
+    echo '<label for="hide_unsub"> Hide Unsubscribed Groups</label><br />';
+    
+    if($user_config['hide_unsub'] == 'show') {
+        echo '<input type="radio" name="hide_unsub" id="show" value="show" checked="checked">';
+    } else {
+        echo '<input type="radio" name="hide_unsub" id="show" value="show">';
+    }
+    echo '<label for="hide_unsub"> Show All Groups</label>';
+    echo '</td></tr>';
+
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
     foreach ($userdata as $key => $value) {
         if($key == "DO.NOT.DELETE") {
