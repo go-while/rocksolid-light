@@ -492,8 +492,7 @@ function quoten() {
 	value="<?php echo $text_post["quote"]?>"
 	onclick="quoten(); this.style.visibility= 'hidden';">
 &nbsp;
-<input type="checkbox" name="abspeichern" value="ja" checked>
-<?php echo $text_post["remember"];?>
+
 <?php } ?>
 &nbsp;
 <input type="file" name="photo" id="fileSelect" value="fileSelect"
