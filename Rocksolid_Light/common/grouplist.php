@@ -1,5 +1,7 @@
 <?php
 include "config.inc.php";
+include "../spoolnews/config.inc.php";
+include "../spoolnews/newsportal.php";
 $title .= ' - Available Newsgroups';
 include "head.inc";
 
@@ -7,9 +9,10 @@ $cache_filename = $spooldir . '/grouplist-cache.txt';
 echo '<center>';
 echo '<h3>List of Available Newsgroups:</h3>';
 // Use cache if new enough
-if (filemtime($cache_filename) > (time() - 3600)) {
-    // echo file_get_contents($cache_filename);
-    // exit();
+// 14400 = 4 hours
+if (filemtime($cache_filename) > (time() - 14400)) {
+    echo file_get_contents($cache_filename);
+    exit();
 }
 
 ob_start();
@@ -17,7 +20,7 @@ echo '<table border="1">';
 echo '<tr>';
 echo '<th>Group</th>';
 echo '<th>Description</th>';
-// echo '<th>Messages</th>';
+echo '<th>Messages</th>';
 echo '</tr>';
 
 $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -42,8 +45,9 @@ foreach ($menulist as $menu) {
         }
     }
 }
-
 ksort($groups_array);
+
+$ns = nntp_open();
 foreach ($groups_array as $thisgroup) {
     echo '<tr>';
     echo '<td>';
@@ -57,12 +61,22 @@ foreach ($groups_array as $thisgroup) {
     echo '<font size=5><a href="/' . $thisgroup . '">' . urldecode($group[1]) . "</a></font><br />\r\n";
     echo '</td>';
     echo '<td>' . $title . '</td>';
+    echo '<td>';
+    # Check if group exists. Open it if it does
+    fputs($ns, "group " . $group[1] . "\r\n");
+    $response = line_read($ns);
+    $messages = explode(' ', $response);
+    if (strcmp(substr($response, 0, 3), "211") == 0) {
+        echo "\n" . $messages[1];
+    }
+    echo '</td>';
     echo '</tr>';
 }
-
+nntp_close($ns);
 echo '</table>';
+echo '<br />';
+include "../spoolnews/tail.inc";
 echo '</center>';
-include "tail.inc";
 echo '</body></html>';
 file_put_contents($cache_filename, ob_get_contents());
 ob_end_flush();
