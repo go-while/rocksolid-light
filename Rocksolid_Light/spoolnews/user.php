@@ -11,6 +11,8 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     }
     $_SESSION = array();
     session_destroy();
+    unset($_COOKIE['mail_name']);
+    setcookie('mail_name', '', -1, '/');
     $logmeout = true;
 } else {
     $logmeout = false;
