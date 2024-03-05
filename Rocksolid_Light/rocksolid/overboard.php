@@ -29,9 +29,6 @@ header("Pragma: cache");
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-?>
-
-<?php
 include "config.inc.php";
 include "auth.inc";
 include "$file_newsportal";
@@ -309,18 +306,40 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $thissite, $logfile, $config_name, $snippetlength, $maxdisplay, $prune, $this_overboard;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $snippetlength, $maxdisplay, $prune, $this_overboard;
     echo '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
         $threads = (object) [];
     } else {
         krsort($threads);
     }
+    // Get registered user settings
+    if (isset($_COOKIE['mail_name'])) {
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+        }
+        
+        if (! isset($user_config['hide_unsub'])) {
+            if (isset($OVERRIDES['hide_unsub'])) {
+                $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];
+            } else {
+                $user_config['hide_unsub'] = 'hide';
+            }
+        }
+    }
+    
     $results = 0;
     foreach ($threads as $key => $value) {
         $target = $this_overboard['msgids'][$value];
+        $checkgroup = $target['newsgroup'];
         if (! isset($target['msgid'])) {
             $target = get_data_from_msgid($value);
+        }
+        if (!isset($userdata[$checkgroup])) {
+            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                continue;
+            }
         }
         if ($target['date'] < $oldest) {
             continue;
