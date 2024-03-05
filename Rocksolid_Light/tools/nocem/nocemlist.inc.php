@@ -17,7 +17,7 @@
 
 // Where these scripts reside and messages are created: (end with '/')
 // You must have write access to this directory
-$workpath = "/home/paris/BBS/nocem/";
+$workpath = "/home/user/nocem/";
 
 $domain = "your_domain";
 $organization = "your_organization";
@@ -42,6 +42,9 @@ $spamgroup = "alt.test,misc.test";
 // Example: de.* or ALL
 $hierarchies = "the alt.* and de.* hierarchies";
 // $hierarchies = "ALL hierarchies";
+
+// Add group to Followup-To header. Leave blank for no header
+$followup_to = "news.admin.net-abuse.usenet";
 
 // EDIT THE BELOW LINES to reflect your specific needs
 // NOTE: You may comment out any lines below you do not want

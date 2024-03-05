@@ -57,6 +57,9 @@ if($count < 2) {
 }
 
 fwrite($header_file, "Message-ID: <$thishash@$domain>\n");
+if(isset($followup_to)) {
+    fwrite($header_file, "Followup-To: $followup_to\n");
+}
 fwrite($header_file, "From: $from\n");
 fwrite($header_file, "Newsgroups: $spamgroup\n");
 fwrite($header_file, "Subject: @@NCM NoCeM notice $thishash spam/hide ($count $article)\n");
