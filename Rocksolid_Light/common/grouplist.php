@@ -52,8 +52,8 @@ foreach ($groups_array as $thisgroup) {
     echo '<tr>';
     echo '<td>';
     $group = explode("group=", $thisgroup);
-    if (is_file($spooldir . '/' . $group[1] . '-title')) {
-        $title = file_get_contents($spooldir . '/' . $group[1] . '-title');
+    if (is_file($spooldir . '/' . urldecode($group[1]) . '-title')) {
+        $title = file_get_contents($spooldir . '/' . urldecode($group[1]) . '-title');
         $title = strrchr($title, "\t");
     } else {
         $title = '';
@@ -63,7 +63,7 @@ foreach ($groups_array as $thisgroup) {
     echo '<td>' . $title . '</td>';
     echo '<td>';
     # Check if group exists. Open it if it does
-    fputs($ns, "group " . $group[1] . "\r\n");
+    fputs($ns, "group " . urldecode($group[1]) . "\r\n");
     $response = line_read($ns);
     $messages = explode(' ', $response);
     if (strcmp(substr($response, 0, 3), "211") == 0) {
