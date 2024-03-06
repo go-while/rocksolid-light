@@ -105,7 +105,7 @@ if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['use
 <?php
         $logged_in = true;
     } else {
-        echo 'Login failed.';
+        echo 'Authentication Required';
     }
 }
 
