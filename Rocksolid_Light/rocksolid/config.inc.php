@@ -48,6 +48,9 @@ $lockdir = $spooldir . '/lock';
 $ssldir = $spooldir . '/ssl/';
 $user_ban_file = $config_dir . '/banned_names.conf';
 
+$grouplist_cache_filename = $spooldir . '/grouplist-cache.txt';
+$grouplist_cache_time = 14400;
+
 /* Permanent configuration changes */
 @mkdir($logdir, 0755, 'recursive');
 @mkdir($spooldir . '/upload', 0755, 'recursive');

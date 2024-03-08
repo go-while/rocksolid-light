@@ -5,19 +5,22 @@ include "../spoolnews/newsportal.php";
 $title .= ' - Available Newsgroups';
 include "head.inc";
 
-$cache_filename = $spooldir . '/grouplist-cache.txt';
 echo '<center>';
 echo '<h3>List of Available Newsgroups:</h3>';
+
 // Use cache if new enough
-// 14400 = 4 hours
-if (filemtime($cache_filename) > (time() - 14400)) {
-    echo file_get_contents($cache_filename);
-    exit();
+if (filemtime($grouplist_cache_filename) > (time() - $grouplist_cache_time)) {
+    // Allow refresh from cron.php
+    if($argv[1] != '.RELOAD') {
+        echo file_get_contents($grouplist_cache_filename);
+        exit();
+    }
 }
 
 ob_start();
 echo '<table border="1">';
 echo '<tr>';
+echo '<th>Section</th>';
 echo '<th>Group</th>';
 echo '<th>Description</th>';
 echo '<th>Messages</th>';
@@ -45,12 +48,11 @@ foreach ($menulist as $menu) {
         }
     }
 }
-ksort($groups_array);
+//ksort($groups_array);
 
 $ns = nntp_open();
 foreach ($groups_array as $thisgroup) {
-    echo '<tr>';
-    echo '<td>';
+    $section = explode("/", $thisgroup);
     $group = explode("group=", $thisgroup);
     if (is_file($spooldir . '/' . urldecode($group[1]) . '-title')) {
         $title = file_get_contents($spooldir . '/' . urldecode($group[1]) . '-title');
@@ -58,6 +60,9 @@ foreach ($groups_array as $thisgroup) {
     } else {
         $title = '';
     }
+    echo '<tr><td style="text-align: center">';
+    echo '&nbsp;<font size=4>' . $section[0] . '</font>&nbsp;';
+    echo '</td><td>';
     echo '<font size=5><a href="/' . $thisgroup . '">' . urldecode($group[1]) . "</a></font><br />\r\n";
     echo '</td>';
     echo '<td>' . $title . '</td>';
@@ -78,5 +83,5 @@ echo '<br />';
 include "../spoolnews/tail.inc";
 echo '</center>';
 echo '</body></html>';
-file_put_contents($cache_filename, ob_get_contents());
+file_put_contents($grouplist_cache_filename, ob_get_contents());
 ob_end_flush();

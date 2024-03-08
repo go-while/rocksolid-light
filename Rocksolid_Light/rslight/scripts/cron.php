@@ -59,6 +59,8 @@ echo "Updated user count\n";
 
 $uinfo = posix_getpwnam($CONFIG['webserver_user']);
 $cwd = getcwd();
+
+// Check permissions on some files
 $webtmp = preg_replace('/spoolnews/', 'tmp/', $cwd);
 $keydir = preg_replace('/spoolnews/', 'pubkey/', $cwd);
 
@@ -71,6 +73,13 @@ $keydir = preg_replace('/spoolnews/', 'pubkey/', $cwd);
 @mkdir($ssldir, 0755);
 @chown($ssldir, $uinfo["uid"]);
 @chgrp($ssldir, $uinfo["gid"]);
+
+$alias_file = $config_dir . '/aliases.conf';
+if(!file_exists($alias_file)) {
+    touch($alias_file);
+}
+@chown($alias_file, $uinfo["uid"]);
+@chgrp($alias_file, $uinfo["gid"]);
 
 $pemfile = $ssldir . '/server.pem';
 create_node_ssl_cert($pemfile);
@@ -136,6 +145,11 @@ foreach ($menulist as $menu) {
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
+# Reload grouplist
+if ((filemtime($grouplist_cache_filename) < (time() - ($grouplist_cache_time - 600)) || !file_exists($grouplist_cache_filename))) {
+    exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
+    echo "Refreshed grouplist\n";
+}
 # Rotate log files
 log_rotate();
 echo "Log files rotated\n";
