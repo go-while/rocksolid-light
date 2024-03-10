@@ -398,8 +398,9 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     if(!isset($user_config['hide_unsub'])) {
         $user_config['hide_unsub'] = 'show';
     }
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed:</h3></td>';
+    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscriptions:</h3></td>';
     echo '<tr><td class="np_result_line1" style="word-wrap:break-word";>';
+    echo '&nbsp;While viewing section pages:<br />';
     
     if($user_config['hide_unsub'] == 'hide') {
         echo '<input type="radio" name="hide_unsub" id="hide" value="hide" checked="checked">';
@@ -416,6 +417,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '<label for="hide_unsub"> Show All Groups</label>';
     echo '</td></tr>';
 
+    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed groups:</h3></td>';
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
     foreach ($userdata as $key => $value) {
         if($key == "DO.NOT.DELETE") {
