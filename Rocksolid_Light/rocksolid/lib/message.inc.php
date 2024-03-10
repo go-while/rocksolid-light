@@ -640,6 +640,7 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
     }
     if ($getface) {
         if (isset($sendface)) {
+            $sendface = mb_decode_mimeheader($sendface);
             return ($sendface);
         } else {
             return FALSE;
