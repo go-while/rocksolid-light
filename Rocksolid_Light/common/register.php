@@ -49,16 +49,16 @@ if (! isset($_POST['command'])) {
         echo '<td><tr>';
         echo '<td><strong>Register Username </strong></td>';
         echo '</tr><tr>';
-        echo '<td>Username:</td>';
+        echo '<td>Username: </td>';
         echo '<td><input name="username" type="text" id="username"value="' . $_POST['username'] . '" maxlength="30"></td>';
         echo '</tr><tr>';
-        echo '<td>Email:</td>';
+        echo '<td>Email: </td>';
         echo '<td><input name="user_email" type="text" id="user_email" value="' . $_POST['user_email'] . '"></td>';
         echo '</tr><tr>';
-        echo '<td>Password:</td>';
+        echo '<td>Password: </td>';
         echo '<td><input name="password" type="password" id="password"></td>';
         echo '</tr><tr>';
-        echo '<td>Re-enter Password:</td>';
+        echo '<td>Re-enter Password: </td>';
         echo '<td><input name="password2" type="password" id="password2"></td>';
         echo '</tr><tr>';
         echo '<td><img src="' . $captchaImage . '" /></td>';
@@ -72,7 +72,6 @@ if (! isset($_POST['command'])) {
         echo '<td>&nbsp;</td>';
         echo '<td><input type="submit" name="Submit" value="Create"></td>';
         echo '</tr>';
-        echo '<tr><td><a href="changepw.php">Change current password</a></td></tr>';
         echo '<tr><td>';
         echo '<td></td><td></td>';
         echo '</td></tr>';

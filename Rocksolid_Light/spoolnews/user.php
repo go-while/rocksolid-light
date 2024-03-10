@@ -12,7 +12,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $_SESSION = array();
     session_destroy();
     unset($_COOKIE['mail_name']);
-    setcookie('mail_name', '', -1, '/');
+    setcookie('mail_name', '', - 1, '/');
     $logmeout = true;
 } else {
     $logmeout = false;
@@ -204,8 +204,14 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
     echo "<p>" . $golink . "</p>";
     echo '</center>';
 }
+
 // Apply Config
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
+    // Confirm password
+    if (! check_bbs_auth($user, $_POST['confirm_password'])) {
+        $message = '<b>Password Incorrect</b><br />Please try again';
+        retry_configuration($message);
+    }
     if ($OVERRIDES['disable_change_name'] != true) {
         if (trim($_POST['display_name']) == '') {
             $_POST['display_name'] = $user;
@@ -223,67 +229,59 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
                 $value = false;
             }
         }
-        if(isset($OVERRIDES['reserved_names'])) {
-            $reserved_names = $OVERRIDES['reserved_names']; 
+        if (isset($OVERRIDES['reserved_names'])) {
+            $reserved_names = $OVERRIDES['reserved_names'];
         } else {
-            $reserved_names = array("admin", "sysop");
+            $reserved_names = array(
+                "admin",
+                "sysop"
+            );
         }
-        if(isset($OVERRIDES['duplicate_aliases'])) {
+        if (isset($OVERRIDES['duplicate_aliases'])) {
             $dupe_ok = $OVERRIDES['duplicate_aliases'];
         } else {
             $dupe_ok = false;
-        }    
-        foreach($reserved_names as $name) {
-            if(strtolower($_POST['display_name']) == strtolower($name)) {
+        }
+        foreach ($reserved_names as $name) {
+            if (strtolower($_POST['display_name']) == strtolower($name)) {
                 // It's a reserved alias
-                echo '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
-                echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
-                echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-                echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-                echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
-                exit();
+                $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+                retry_configuration($message);
             }
         }
         if ($value && (strtolower($_POST['display_name']) != $user)) {
             // It's someone else's username or alias
-            echo '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
-            echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
-            echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-            echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-            echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
-            exit();
+            $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+            retry_configuration($message);
         }
         // Validate email format
         if (filter_var($_POST['display_email'], FILTER_VALIDATE_EMAIL) == false) {
             // Email address format invalid. Format is important but does not need to be a real address
-            echo '</b> Display email format appears incorrect:<br><b>' . $_POST['display_email'] . '</b><br />Please try again';
-            echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
-            echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-            echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-            echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
-            exit();
+            $message = '</b> Display email format appears incorrect:<br><b>' . $_POST['display_email'] . '</b><br />Please try again';
+            retry_configuration($message);
         }
         // Check if email already exists in user database
         if ($founduser = check_registered_email_addresses(trim($_POST['display_email']))) {
             // Email exists in database
             if (strtolower($user) != strtolower($founduser)) {
                 // It's someone else's email
-                echo '<b>' . $_POST['display_email'] . "</b> is unavailable.<br />Please try again";
-                echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
-                echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-                echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-                echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
-                exit();
+                $message = '<b>' . $_POST['display_email'] . "</b> is unavailable.<br />Please try again";
+                retry_configuration($message);
             }
+        }
+        // New passwords do not match
+        if ($_POST['password'] !== $_POST['password2']) {
+            $message = '<b> New password entries do not match</b><br />Please try again';
+            retry_configuration($message);
         }
         $user_config['display_name'] = trim($_POST['display_name']);
         $user_config['display_email'] = trim($_POST['display_email']);
         // Apply alias into $config_dir/aliases_conf
-        if(strtolower($user_config['display_name'] != strtolower($_POST['username']))) {
+        if (strtolower($user_config['display_name'] != strtolower($_POST['username']))) {
             $value_unique = true;
-            if($dupe_ok) {
-                foreach($dupe_ok as $dupe) {
-                    if($dupe == strtolower($_POST['username'])) {
+            if ($dupe_ok) {
+                foreach ($dupe_ok as $dupe) {
+                    if ($dupe == strtolower($_POST['username'])) {
                         $value_unique = false;
                         break;
                     }
@@ -295,7 +293,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     $user_config['signature'] = $_POST['signature'];
     $user_config['xface'] = $_POST['xface'];
     $user_config['timezone'] = $_POST['timezone'];
-    $user_config['theme'] = $_POST['listbox'];
+    $user_config['theme'] = $_POST['theme'];
     $user_config['hide_unsub'] = $_POST['hide_unsub'];
     file_put_contents($config_dir . '/userconfig/' . $user . '.config', serialize($user_config));
     $_SESSION['theme'] = $user_config['theme'];
@@ -315,7 +313,13 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     if ($userdata) {
         ksort($userdata);
     }
-    echo 'Configuration Saved for ' . $_POST['username'];
+    // Save new password
+    if ((trim($_POST['password']) != '') && ($_POST['password'] == $_POST['password2'])) {
+        $userFilename = $config_dir . '/users/' . strtolower($user);
+        file_put_contents($userFilename, password_hash($_POST['password'], PASSWORD_DEFAULT));
+    }
+
+    echo '<center>Configuration Saved for ' . $_POST['username'] . '</center>';
 } else {
     $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $user . '.config'));
 }
@@ -350,6 +354,16 @@ if ($OVERRIDES['disable_change_name'] != true) {
 }
 sort($themes);
 if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
+    // Use modifications from retry configuration
+    if ($_POST['retry'] == "retry") {
+        $display_name = $_POST['display_name'];
+        $display_email = $_POST['display_email'];
+        $user_config['signature'] = $_POST['signature'];
+        $user_config['xface'] = urldecode($_POST['xface']);
+        $user_config['hide_unsub'] = $_POST['hide_unsub'];
+        $user_config['subscribed'] = $_POST['subscribed'];
+        $user_config['theme'] = $_POST['theme'];
+    }
     // Show Config
     echo '<hr><h1 class="np_thread_headline"></h1>';
     echo '<table cellspacing="0" width="100%" class="np_results_table">';
@@ -377,13 +391,13 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '</textarea></td>';
     echo '</tr>';
     // Theme
-    if (isset($user_config['theme'])) {
+    if (isset($user_config['theme']) && trim($user_config['theme']) != '') {
         echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Theme: (' . $user_config['theme'] . ')</h3></td>';
     } else {
         echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Theme:</h3></td>';
     }
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word">';
-    echo '<select name="listbox" class="theme_listbox" size="10">';
+    echo '<select name="theme" class="theme_listbox" size="10">';
     foreach ($themes as $theme) {
         if ($theme == $user_config['theme']) {
             echo '<option value="' . $theme . '" selected="selected">' . $theme . '</option>';
@@ -395,21 +409,21 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '</td>';
     echo '</tr>';
     // Subscriptions
-    if(!isset($user_config['hide_unsub'])) {
+    if (! isset($user_config['hide_unsub'])) {
         $user_config['hide_unsub'] = 'show';
     }
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscriptions:</h3></td>';
     echo '<tr><td class="np_result_line1" style="word-wrap:break-word";>';
     echo '&nbsp;While viewing section pages:<br />';
-    
-    if($user_config['hide_unsub'] == 'hide') {
+
+    if ($user_config['hide_unsub'] == 'hide') {
         echo '<input type="radio" name="hide_unsub" id="hide" value="hide" checked="checked">';
     } else {
         echo '<input type="radio" name="hide_unsub" id="hide" value="hide">';
     }
     echo '<label for="hide_unsub"> Hide Unsubscribed Groups</label><br />';
-    
-    if($user_config['hide_unsub'] == 'show') {
+
+    if ($user_config['hide_unsub'] == 'show') {
         echo '<input type="radio" name="hide_unsub" id="show" value="show" checked="checked">';
     } else {
         echo '<input type="radio" name="hide_unsub" id="show" value="show">';
@@ -419,20 +433,45 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
 
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed groups:</h3></td>';
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
-    foreach ($userdata as $key => $value) {
-        if($key == "DO.NOT.DELETE") {
-            continue;
+    // print_r($user_config['subscribed']);
+
+    if (isset($user_config['subscribed'])) {
+        $userdata = $user_config['subscribed'];
+        print_r($user_config['subscribed']);
+    } else {
+        foreach ($userdata as $key => $value) {
+            if ($key == "DO.NOT.DELETE") {
+                continue;
+            }
+            echo $key . "\n";
         }
-        echo $key . "\n";
     }
     echo '</textarea></td>';
     echo '</tr>';
+
+    // User Display Name
+    echo '<tr>';
+    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>New password: </h3>';
+    echo '<input name="password" type="password" id="password" maxlength="40"></td>';
+    echo '</tr>';
+    // User Display Email
+    echo '<tr>';
+    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Re-enter new password: </h3>';
+    echo '<input name="password2" type="password" id="password2" maxlength="40"></td>';
+    echo '</tr>';
+
     /*
      * // Timezone
      * echo '<td class="np_result_line1" style="word-wrap:break-word";>Timezone offset (+/- hours from UTC):</td>';
      * echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><input type="text" name="timezone" value="'.$user_config[timezone].'"></td>';
      * echo '</tr>';
      */
+    // Password confirmation
+    echo '<tr>';
+    echo '<td class="np_result_line2" style="word-wrap:break-word";><h3>Current password: </h3><h4>(required)</h4>';
+    echo '<input name="confirm_password" type="password" id="confirm_password" maxlength="40"></td>';
+    echo '</tr>';
+
     echo '<td class="np_result_line2" style="word-wrap:break-word";>';
     echo '<button class="np_button_link" type="submit">Save Configuration</button>';
     echo '<a href="' . $_SERVER['PHP_SELF'] . '">Cancel</a>';
@@ -444,4 +483,23 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '<br />';
 }
 include "tail.inc";
-?>
+
+function retry_configuration($message)
+{
+    echo '<center>';
+    echo $message;
+    echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+    echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
+    echo "<input type='hidden' name='retry' value='retry' />";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo "<input type='hidden' name='display_name' value='" . $_POST['display_name'] . "' />";
+    echo "<input type='hidden' name='display_email' value='" . $_POST['display_email'] . "' />";
+    echo "<input type='hidden' name='signature' value='" . $_POST['signature'] . "' />";
+    echo "<input type='hidden' name='xface' value='" . urlencode($_POST['xface']) . "' />";
+    echo "<input type='hidden' name='hide_unsub' value='" . $_POST['hide_unsub'] . "' />";
+    echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' />";
+    echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' />";
+    echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
+    echo '</center>';
+    exit();
+}
