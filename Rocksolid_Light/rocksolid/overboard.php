@@ -30,7 +30,6 @@ header("Pragma: cache");
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 include "config.inc.php";
-include "auth.inc";
 include "$file_newsportal";
 
 if (isset($_COOKIE['mail_name'])) {
@@ -75,13 +74,13 @@ if (isset($_GET['thisgroup'])) {
     $article_age = 30;
 }
 
-$version = 1.1;
+$version = 1.2;
 
 # How long in seconds to cache results
 $cachetime = 60;
 
 # Maximum number of articles to show
-$maxdisplay = 1000;
+$maxdisplay = 1000; // default 1000
 
 # How many characters of the body to display per article
 $snippetlength = 240;
@@ -152,8 +151,6 @@ $database = $spooldir . '/articles-overview.db3';
 $table = 'overview';
 $dbh = overview_db_open($database, $table);
 $query = $dbh->prepare('SELECT * FROM ' . $table . ' WHERE newsgroup=:findgroup AND date >= ' . $cachedate . ' ORDER BY date DESC LIMIT ' . $maxdisplay);
-$articles = array();
-$db_articles = array();
 foreach ($grouplist as $findgroup) {
     $groups = preg_split("/(\ |\t)/", $findgroup, 2);
     $findgroup = $groups[0];
@@ -169,102 +166,31 @@ foreach ($grouplist as $findgroup) {
         $query->execute([
             'findgroup' => $findgroup
         ]);
-        $i = 0;
+        $results = 0;
         while (($overviewline = $query->fetch()) !== false) {
-            $articles[] = $spoolpath . $thisgroup . '/' . $overviewline['number'];
-            $db_articles[] = $findgroup . ':' . $overviewline['number'] . ':' . $overviewline['date'] . ':' . $overviewline['name'];
-            $i ++;
-            if ($i > $maxdisplay) {
-                break;
+            $thismsgid = $overviewline['msgid'];
+            $target = get_data_from_msgid($thismsgid, $findgroup);
+            if ($target['date'] > time()) {
+                continue;
             }
-        }
-    }
-}
-$dbh = null;
-
-$files = array();
-if ($CONFIG['article_database'] == '1') {
-    foreach ($db_articles as $article) {
-        $order = explode(':', $article);
-        $files[$order[2]] = $article;
-    }
-} else {
-    foreach ($articles as $article) {
-        if (is_dir($article)) {
-            continue;
-        }
-        $files[filemtime($article)] = $article;
-    }
-}
-krsort($files);
-
-foreach ($files as $article) {
-    if ($CONFIG['article_database'] == '1') {
-        $data = explode(':', $article);
-        $articledata = np_get_db_article($data[1], $data[0], 0);
-    } else {
-        $articledata = file_get_contents($article);
-    }
-    $bodystart = strpos($articledata, $localeol);
-    $header = substr($articledata, 0, $bodystart);
-
-    # Find group name and article number
-    if ($CONFIG['article_database'] == '1') {
-        $group = $data[0];
-        $articlenumber = $data[1];
-        $groupname = $group;
-    } else {
-        $group = preg_replace($spoolpath_regexp, '', $article);
-        $group = preg_replace('/\//', '.', $group);
-        $findme = strrpos($group, '.');
-        $groupname = substr($group, 0, $findme);
-        $articlenumber = substr($group, $findme + 1);
-    }
-
-    preg_match('/Message-ID:.*/i', $header, $articleid);
-    $getid = explode(": ", $articleid[0]);
-    $thismsgid = $getid[1];
-    if (isset($this_overboard['msgids'][$thismsgid])) {
-        continue;
-    }
-
-    $isref = preg_match('/References:.*/i', $header, $ref);
-    if ($isref) {
-        $getrefs = explode(': ', $ref[0]);
-        $ref = preg_split("/[\s]+/", $getrefs[1]);
-        if ($getrefs[1] && $refid = get_data_from_msgid($ref[0])) {
-            // Check that article to link is new enough for newsportal to display
-            $groupinfo = file($spooldir . '/' . $refid["newsgroup"] . '-info.txt');
-            $range = explode(' ', $groupinfo[1]);
-            if ($refid['number'] > (intval($range[0]) - 1)) {
-                $threadref = $ref[0];
-            } else {
-                $threadref = false;
+            if (! isset($this_overboard['lastmessage'])) {
+                $this_overboard['lastmessage'] = 0;
             }
-        } else {
-            $threadref = false;
-        }
-    } else {
-        $threadref = false;
-    }
-    $target = get_data_from_msgid($thismsgid, $activegroup);
-    if ($target['date'] > time()) {
-        continue;
-    }
-    if (! isset($this_overboard['lastmessage'])) {
-        $this_overboard['lastmessage'] = 0;
-    }
-    if ($target['date'] > $this_overboard['lastmessage']) {
-        $this_overboard['lastmessage'] = $target['date'];
-    }
-    if (! isset($this_overboard['threads'][$target['date']])) {
-        $this_overboard['threads'][$target['date']] = $thismsgid;
-        $this_overboard['msgids'][$thismsgid] = $target;
-        if ($threadref) {
-            $this_overboard['threadlink'][$thismsgid] = $threadref;
-        }
-        if ($results ++ > ($maxdisplay - 2)) {
-            break;
+            if ($target['date'] > $this_overboard['lastmessage']) {
+                $this_overboard['lastmessage'] = $target['date'];
+            }
+            
+            if (! isset($this_overboard['threads'][$target['date']])) {
+                $this_overboard['threads'][$target['date']] = $thismsgid;
+                $this_overboard['msgids'][$thismsgid] = $target;
+                if (trim($overviewline['refs']) != '') {
+                    $ref = preg_split("/[\s]+/", $overviewline['refs']);
+                    $this_overboard['threadlink'][$thismsgid] = $ref[0];
+                }
+                if ($results ++ > ($maxdisplay - 2)) {
+                    break;
+                }
+            }
         }
     }
 }
@@ -275,6 +201,7 @@ if (isset($user_time)) {
 } else {
     $oldest = (time() - (86400 * $article_age));
 }
+
 $results = display_threads($this_overboard['threads'], $oldest);
 show_overboard_footer(null, $results, null);
 echo '</body></html>';
@@ -307,7 +234,7 @@ function expire_overboard($cachefile)
 function display_threads($threads, $oldest)
 {
     global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $snippetlength, $maxdisplay, $prune, $this_overboard;
-    echo '<table cellspacing="0" width="100%" class="np_results_table">';
+    $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
         $threads = (object) [];
     } else {
@@ -319,7 +246,7 @@ function display_threads($threads, $oldest)
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
         }
-        
+
         if (! isset($user_config['hide_unsub'])) {
             if (isset($OVERRIDES['hide_unsub'])) {
                 $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];
@@ -328,7 +255,6 @@ function display_threads($threads, $oldest)
             }
         }
     }
-    
     $results = 0;
     foreach ($threads as $key => $value) {
         $target = $this_overboard['msgids'][$value];
@@ -336,7 +262,7 @@ function display_threads($threads, $oldest)
         if (! isset($target['msgid'])) {
             $target = get_data_from_msgid($value);
         }
-        if (!isset($userdata[$checkgroup])) {
+        if (! isset($userdata[$checkgroup])) {
             if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
                 continue;
             }
@@ -350,37 +276,38 @@ function display_threads($threads, $oldest)
             unset($this_overboard['threadlink'][$value]);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
         }
-        $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
         $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
         if (($results % 2) == 0) {
-            echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+            $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
         } else {
-            echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+            $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
         }
         $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
-        echo '<p class=np_ob_subject>';
-        echo '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
+        $display .= '<p class=np_ob_subject>';
+        $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
 
         // link for (thread), if possible
         if (isset($this_overboard['threadlink'][$value])) {
             $thread = get_data_from_msgid($this_overboard['threadlink'][$value], $target['newsgroup']);
             if ($thread !== false) {
-                echo '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (thread)</a></font>';
+                $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (thread)</a></font>';
             }
         }
 
-        echo '</p>';
-        echo '</p><p class=np_ob_group>';
-        echo '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
-        echo '</p>';
-        echo '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+        $display .= '</p>';
+        $display .= '</p><p class=np_ob_group>';
+        $display .= '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
+        $display .= '</p>';
+        $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
         if ($CONFIG['article_database'] == '1') {
-            echo htmlentities(substr($article['search_snippet'], 0, $snippetlength));
+            $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
+            $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
         }
         $results ++;
     }
-    echo "</table>";
+    $display .= "</table>";
+    echo $display;
     return ($results);
 }
 
