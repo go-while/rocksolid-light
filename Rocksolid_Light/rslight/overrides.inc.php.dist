@@ -19,6 +19,9 @@ return [
     // Log posts?
     'enable_post_log' => false,
     
+    // Require authentication for all commands to nntp server
+    'nntp_full_auth_required' => false,
+
     // Disable name/email spoof option in Configuration
     'disable_change_name' => false,
     

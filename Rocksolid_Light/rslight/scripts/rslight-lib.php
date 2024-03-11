@@ -2,11 +2,17 @@
 
 function interact($msgsock, $use_crypto = false)
 {
-    global $CONFIG, $logdir, $lockdir, $logfile, $installed_path, $config_path, $config_dir, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $nntp_article, $auth_ok, $user, $pass;
+    global $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile, $installed_path, $config_path, $config_dir, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $nntp_article, $auth_ok, $user, $pass;
     $workpath = $spooldir . "/";
     $path = $workpath . "articles/";
     $groupconfig = $spooldir . "/spoolnews/groups.txt";
 
+    if(isset($OVERRIDES['nntp_full_auth_required']) && $OVERRIDES['nntp_full_auth_required'] == true) {
+        $nntp_full_auth_required = true;
+    } else {
+        $nntp_full_auth_required = false;
+    }
+    
     $logfile = $logdir . '/nntp.log';
     $nntp_group = "";
     $nntp_article = "";
@@ -49,6 +55,18 @@ function interact($msgsock, $use_crypto = false)
         }
         $command = explode(' ', $buf);
         $command[0] = strtolower($command[0]);
+        // Check if auth required for everything or only posting
+        if($nntp_full_auth_required == true && $auth_ok == 0) {
+            if($command[0] == 'authinfo' || $command[0] == 'quit' || $command[0] == 'mode') {
+                // Ok to continue
+            } else {
+                // Auth is required. Try again
+                $msg = "480 Authentication Required\r\n";
+                fwrite($msgsock, $msg, strlen($msg));
+                continue;
+            }
+        }
+        
         if (isset($command[1])) {}
         if ($command[0] == 'date') {
             $msg = '111 ' . date('YmdHis') . "\r\n";
