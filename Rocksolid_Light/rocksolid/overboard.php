@@ -195,6 +195,7 @@ foreach ($grouplist as $findgroup) {
     }
 }
 
+$this_overboard['version'] = $version;
 file_put_contents($cachefile, serialize($this_overboard));
 if (isset($user_time)) {
     $oldest = ($user_time - 900);
