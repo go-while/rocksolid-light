@@ -198,6 +198,8 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
     if (isset($_POST['source'])) {
         $link = explode(':', $_POST['source']);
         $golink = '<a href="' . $link[1] . '">Continue to ' . $link[0] . '</a>';
+    } else {
+        $golink = '';
     }
     echo "<center>";
     echo "<hr><p>You are logged in as " . $_POST['username'] . "</p>";

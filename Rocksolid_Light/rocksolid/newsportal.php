@@ -1589,7 +1589,7 @@ function threads_db_open($database, $table = "threads")
         echo 'Connection failed: ' . $e->getMessage();
         exit();
     }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+    $dbh->exec("CREATE TABLE IF NOT EXISTS threads(
 			id INTEGER PRIMARY KEY,
 			headers TEXT,
             unique (headers))");
@@ -1604,9 +1604,9 @@ function history_db_open($database, $table = 'history')
         echo 'Connection failed: ' . $e->getMessage();
         exit();
     }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
-			id INTEGER PRIMARY KEY,
-			newsgroup TEXT,
+    $dbh->exec("CREATE TABLE IF NOT EXISTS history(
+            id INTEGER PRIMARY KEY,
+            newsgroup TEXT,
 			number TEXT,
 			msgid TEXT,
 			status TEXT,
@@ -1636,7 +1636,7 @@ function overview_db_open($database, $table = 'overview')
         echo 'Connection failed: ' . $e->getMessage();
         exit();
     }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+    $dbh->exec("CREATE TABLE IF NOT EXISTS overview(
      id INTEGER PRIMARY KEY,
      newsgroup TEXT,
      number TEXT,
@@ -1672,7 +1672,7 @@ function article_db_open($database, $table = 'articles')
         echo 'Connection failed: ' . $e->getMessage();
         exit();
     }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
+    $dbh->exec("CREATE TABLE IF NOT EXISTS articles(
      id INTEGER PRIMARY KEY,
      newsgroup TEXT,
      number TEXT UNIQUE,
@@ -1967,7 +1967,7 @@ function get_user_mail_auth_data($user)
         $userfile = $spooldir . '/' . $user . '-articleviews.dat';
         if (is_file($userfile)) {
             $userdata = unserialize(file_get_contents($userfile));
-            if (! $userdata['DO.NOT.DELETE']) {
+            if (isset($userdata['DO.NOT.DELETE'])) {
                 $userdata['DO.NOT.DELETE'] = time();
             }
         } else {

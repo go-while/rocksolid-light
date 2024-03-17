@@ -291,6 +291,9 @@ if (isset($_POST['sendMessage'])) {
     }
 }
 if (isset($_POST['command']) && $_POST['command'] == 'Send') {
+    $mail_to = '';
+    $subject = '';
+    $message = '';
     if (isset($_POST['id'])) {
         $database = $spooldir . '/mail.db3';
         $dbh = mail_db_open($database);
@@ -336,7 +339,7 @@ view_mailbox($user);
 // Show My Messages
 function view_mailbox($user)
 {
-    global $spooldir, $offset;
+    global $spooldir, $offset, $rslight_version;
     $database = $spooldir . '/mail.db3';
     $dbh = mail_db_open($database);
     echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
