@@ -239,6 +239,15 @@ $iconv_enable = true;
 // '^de\.' => "german.inc"
 // );
 
+// Get server protocol etc. into string
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    $sitelink = "https";
+} else {
+    $sitelink = "http";
+}
+$sitelink .= "://";
+$sitelink .= $_SERVER['HTTP_HOST'];
+
 /*
  * Do not edit anything below this line
  */

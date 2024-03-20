@@ -485,7 +485,7 @@ function show_header($head, $group, $local_poster = false)
 function show_header_short($head, $group, $local_poster = false)
 {
     global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
-    global $file_attachment, $anonym_address, $CONFIG, $config_name;
+    global $file_attachment, $anonym_address, $CONFIG, $config_name, $sitelink;
     if (isset($_COOKIE['tzo'])) {
         $offset = $_COOKIE['tzo'];
     } else {
@@ -532,6 +532,10 @@ function show_header_short($head, $group, $local_poster = false)
     ?>
     <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
     &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
+
+    <p id="<?php echo $head->number . 'copy'; ?>" style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>        
+    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;" style="text-decoration: none" title="Copy article link to clipboard"><i>copy link</i></a>
+    
     <?php
 
     echo '&nbsp;&nbsp;Newsgroups: ';
