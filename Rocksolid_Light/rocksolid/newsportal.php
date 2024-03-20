@@ -1039,7 +1039,7 @@ function html_parse($text)
 
 function display_links_in_body($text)
 {
-    preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\#&_\/]+/', $text, $matches);
+    preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
     $found = array();
     $isquote = false;
     if (strpos($text, ">") == 0) {
