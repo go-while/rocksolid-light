@@ -93,7 +93,7 @@ echo '</a>';
 echo '</td></tr>';
 echo '</table>';
 
-include($config_dir.'/fortunes.conf');
+include ($config_dir . '/fortunes.conf');
 
 // If $config_dir/motd.txt is not blank, show it
 if (file_exists($config_dir . '/motd.txt')) {
@@ -120,22 +120,26 @@ foreach ($menulist as $menu) {
 }
 echo '</tr></table></p><p>';
 
-if($OVERRIDES['disable_msgid_search'] != true) {
-    echo '<table align="right">';
-    echo '<form name="form1" method="get" action="article-flat.php">';
-    echo '<tr>';
-    echo '<td>Message-ID: ';
-    echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
-    echo '<input type="submit" name="Submit" value="Lookup"></form></td>';
-    echo '</tr>';
-    echo '</table><br />';
+$config_name = basename(getcwd());
+
+if (!$OVERRIDES['disable_msgid_search']) {
+    if ($config_name != "common" && $config_name != 'spoolnews') {
+        echo '<table align="right">';
+        echo '<form name="form1" method="get" action="article-flat.php">';
+        echo '<tr>';
+        echo '<td>Message-ID: ';
+        echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
+        echo '<input type="submit" name="Submit" value="Lookup"></form></td>';
+        echo '</tr>';
+        echo '</table><br />';
+    }
 }
 
 echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_small"><tr>';
 if ($unread) {
     $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';
 }
-    echo '<div class="np_last_posted_date"><h1 class="np_thread_headline">' . $motd . '</h1></div>';
+echo '<div class="np_last_posted_date"><h1 class="np_thread_headline">' . $motd . '</h1></div>';
 echo '</tr></table>';
 echo '</p>';
 
@@ -189,5 +193,7 @@ function head_mail_db_open($database, $table = 'messages')
     return ($dbh);
 }
 ?>
+
+
 </body>
 </html>
