@@ -318,8 +318,8 @@ function get_header_search($group, $terms)
     GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
-    if (isset($search_group) && $_POST['searchpoint'] != 'msgid') {
-        $grouplist[0] = $search_group;
+    if (isset($group) && $_POST['searchpoint'] != 'msgid') {
+        $grouplist[0] = $group;
     } elseif ($_POST['searchpoint'] != 'msgid') {
         $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
