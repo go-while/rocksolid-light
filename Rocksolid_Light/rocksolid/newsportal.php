@@ -658,7 +658,7 @@ function groups_show($gruppen)
             $database = $spooldir . '/articles-overview.db3';
             $table = 'overview';
             $overview_dbh = overview_db_open($database);
-            $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY date DESC LIMIT 2');
+            $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 2');
             $overview_query->execute([
                 'newsgroup' => $g->name
             ]);
