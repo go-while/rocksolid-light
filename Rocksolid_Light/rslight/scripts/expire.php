@@ -65,7 +65,7 @@ foreach ($grouplist as $groupline) {
 
     $database = $spooldir . '/articles-overview.db3';
     $dbh = overview_db_open($database);
-    $query = $dbh->prepare('SELECT number FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+    $query = $dbh->prepare('SELECT number FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
     $query->execute([
         ':newsgroup' => $group,
         ':expireme' => $expireme
@@ -74,7 +74,7 @@ foreach ($grouplist as $groupline) {
     while ($query_row = $query->fetch()) {
         $get_row[] = $query_row;
     }
-    $stmt = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND date<:expireme');
+    $stmt = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
     $grouppath = preg_replace('/\./', '/', $group);
     $status = "deleted";
     $statusdate = time();
@@ -107,7 +107,7 @@ foreach ($grouplist as $groupline) {
     $dbh = null;
     if ($articles_dbh) {
         // Delete any extraneous articles from group-articles database
-        $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND date<:expireme');
+        $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
         $articles_stmt->execute([
             ':newsgroup' => $group,
             ':expireme' => $expireme
@@ -163,7 +163,7 @@ function convert_max_articles_to_days($group)
     }
     $database = $spooldir . '/articles-overview.db3';
     $overview_dbh = overview_db_open($database);
-    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY date DESC LIMIT :count');
+    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT :count');
     $overview_query->execute([
         ':newsgroup' => $group,
         ':count' => $count
