@@ -388,9 +388,11 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
     echo '</textarea></td>';
     echo '</tr>';
     // X-Face
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>X-Face:</h3></td>';
-    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="xface" name="xface" rows="4" cols="80">' . $user_config['xface'];
-    echo '</textarea></td>';
+    if ($OVERRIDES['disable_xface'] != true) {
+        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>X-Face:</h3></td>';
+        echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="xface" name="xface" rows="4" cols="80">' . $user_config['xface'];
+        echo '</textarea></td>';
+    }
     echo '</tr>';
     // Theme
     if (isset($user_config['theme']) && trim($user_config['theme']) != '') {

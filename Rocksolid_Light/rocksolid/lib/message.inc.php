@@ -750,7 +750,7 @@ function nl2p($string, $line_breaks = true, $xml = true)
  */
 function message_show($group, $id, $attachment = 0, $article_data = false, $maxlen = false)
 {
-    global $file_article, $file_article_full;
+    global $file_article, $file_article_full, $OVERRIDES;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG;
@@ -771,7 +771,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         } else if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face
-            if ($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) {
+            if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
                 if (file_exists($pngfile)) {
                     echo '<img align="right" src="' . $pngfile . '">';

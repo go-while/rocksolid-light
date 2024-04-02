@@ -39,6 +39,9 @@ return [
     // Users who may have duplicate aliases in aliases.conf
     'duplicate_aliases' => array("admins user name here"),
 
+    // Disable display of X-Face
+    'disable_xface' => false,
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];
