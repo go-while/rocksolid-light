@@ -23,10 +23,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
- ?>
+?>
 
 <?php
- 
+
 function message_parse($rawmessage)
 {
     global $attachment_delete_alternative, $attachment_uudecode, $www_charset;
@@ -516,41 +516,51 @@ function show_header_short($head, $group, $local_poster = false)
     }
     unset($ts);
     echo '<div class=np_ob_posted_date>';
-    
+
     // Copy MID to clipboard (requires js)
     echo '<script>';
     echo 'function CopyToClipboard(id)';
-        echo '{';
-        echo 'var r = document.createRange();';
-        echo 'r.selectNode(document.getElementById(id));';
-        echo 'window.getSelection().removeAllRanges();';
-        echo 'window.getSelection().addRange(r);';
-        echo "document.execCommand('copy');";
-        echo 'window.getSelection().removeAllRanges();';
-        echo '}';
-    echo '</script> ';   
+    echo '{';
+    echo 'var r = document.createRange();';
+    echo 'r.selectNode(document.getElementById(id));';
+    echo 'window.getSelection().removeAllRanges();';
+    echo 'window.getSelection().addRange(r);';
+    echo "document.execCommand('copy');";
+    echo 'window.getSelection().removeAllRanges();';
+    echo '}';
+    echo '</script> ';
     ?>
-    <p id="<?php echo $head->id; ?>" style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>        
-    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;" style="text-decoration: none" title="Copy message-id to clipboard"><i>copy mid</i></a>
+<p id="<?php echo $head->id; ?>"
+	style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
+&nbsp;
+<a href="#"
+	onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
+	style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
+		mid</i></a>
 
-    <p id="<?php echo $head->number . 'copy'; ?>" style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>        
-    &nbsp;<a href="#" onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;" style="text-decoration: none" title="Copy article link to clipboard"><i>copy link</i></a>
-    
-    <?php
+<p id="<?php echo $head->number . 'copy'; ?>"
+	style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
+&nbsp;
+<a href="#"
+	onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
+	style="text-decoration: none" title="Copy article link to clipboard"><i>copy
+		link</i></a>
+
+<?php
 
     echo '&nbsp;&nbsp;Newsgroups: ';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
- //   echo "&nbsp;";
+    // echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
         if ($s = get_section_by_group($onegroup)) {
             echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
         } else {
-            echo " ".$onegroup." ";
+            echo " " . $onegroup . " ";
         }
     }
     echo "<br />";
-    
+
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
         echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
     }
@@ -585,7 +595,8 @@ function show_header_short($head, $group, $local_poster = false)
     echo '</div>';
 }
 
-function copy_messageid() {
+function copy_messageid()
+{
     $messageid = "THIS IS THE MSGID";
     return $messageid;
 }
@@ -781,10 +792,12 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                     $xbmfile = $facefile . '.xbm';
                     $uncompface = 'uncompface -X ' . $facefile . ' ' . $xbmfile;
                     shell_exec($uncompface);
-                    if (($xbm = imagecreatefromxbm($xbmfile)) !== false) {
-                        imagepng($xbm, $pngfile);
-                        imagedestroy($xbm);
-                        echo '<img align="right" src="' . $pngfile . '">';
+                    if (function_exists('imagecreatefromxbm')) {
+                        if (($xbm = imagecreatefromxbm($xbmfile)) !== false) {
+                            imagepng($xbm, $pngfile);
+                            imagedestroy($xbm);
+                            echo '<img align="right" src="' . $pngfile . '">';
+                        }
                     }
                     unlink($facefile);
                     unlink($xbmfile);
