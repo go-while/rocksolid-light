@@ -545,9 +545,7 @@ function show_header_short($head, $group, $local_poster = false)
 	onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
 	style="text-decoration: none" title="Copy article link to clipboard"><i>copy
 		link</i></a>
-
 <?php
-
     echo '&nbsp;&nbsp;Newsgroups: ';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
@@ -568,12 +566,12 @@ function show_header_short($head, $group, $local_poster = false)
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" />';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
     }
-
     if ($local_poster) {
-        echo "&nbsp;by: <i>" . $displayname . "</i> - " . $displaydate;
+        echo "&nbsp;by: <i>" . $displayname . "</i>";
     } else {
-        echo "&nbsp;by: " . $displayname . " - " . $displaydate;
+        echo "&nbsp;by: " . $displayname . " ";
     }
+    echo '- ' . $displaydate;
     echo '</div>';
 
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
@@ -761,7 +759,7 @@ function nl2p($string, $line_breaks = true, $xml = true)
  */
 function message_show($group, $id, $attachment = 0, $article_data = false, $maxlen = false)
 {
-    global $file_article, $file_article_full, $OVERRIDES;
+    global $file_article, $file_article_full, $OVERRIDES, $spooldir;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG;
@@ -777,6 +775,29 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     }
     $body = $article_data->body[$attachment];
     if ($head) {
+        // User blocklist
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+            if (file_exists($userfile)) {
+                $blocked_user_config = unserialize(file_get_contents($userfile));
+            } else {
+                $blocked_user_config = null;
+            }
+        }
+        $block = false;
+        foreach($blocked_user_config as $key => $value) {
+            $blockme = '/'.addslashes($key).'/';
+            if (preg_match($blockme, $head->from)) {
+                $block = true;
+                break;
+            }
+        }
+        
+        if ($block == true) {
+            echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
+            return "blocked";
+        }
+
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
             echo $text_article["block-xnoarchive"];
         } else if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {

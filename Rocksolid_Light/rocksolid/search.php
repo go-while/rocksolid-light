@@ -51,7 +51,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '<tr>';
     echo '<td colspan="3">Searching <strong>' . $searching . '</strong></td>';
     echo '</tr>';
-    echo '<tr></tr>';
     echo '<tr>';
     if (! isset($_REQUEST['data'])) {
         echo '<td>Search Terms:&nbsp';
@@ -63,7 +62,7 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     } else {
         echo '<input name="terms" type="text" id="terms"></td>';
     }
-    echo '</tr><tr></tr><tr><td>';
+    echo '</tr><tr><td>';
     if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
         if ($CONFIG['article_database'] == '1') {
             echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
@@ -89,9 +88,39 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     if (isset($_GET['data'])) {
         echo '<input type="hidden" name="data" value="' . $_GET['data'] . '">';
     }
-    echo '</tr><tr></tr><tr>';
+    echo '</tr><tr>';
     echo '<td><input type="submit" name="Submit" value="Search"></td>';
-    echo '</tr><tr><td><td></td><td></td></table></td></form></tr></table></body></html>';
+    echo '</tr></table></td></form></tr></table>';
+
+    // Block poster
+    if (isset($_COOKIE['mail_name'])) {
+        if (isset($_REQUEST['data'])) {
+            echo '<br><table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
+            echo '<tr>';
+            echo '<td colspan="3">Hide posts by <strong>' . $_GET['terms'] . '</strong></td>';
+            echo '</tr>';
+            echo '<tr>';
+            echo '<form name="blockform" method="post" action="search.php">';
+            echo '<td>';
+            echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
+            echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
+            if (isset($_GET['data'])) {
+                echo '<input type="hidden" name="data" value="' . $_GET['data'] . '">';
+            }
+            echo '<input type="hidden" name="username" value="' . $_COOKIE['mail_name'] . '">';
+            echo '</tr>';
+            // Password confirmation
+            echo '<tr>';
+            echo '<td style="word-wrap:break-word";>Enter your password: ';
+            echo '<input name="password" type="password" id="password" maxlength="40"></td>';
+            echo '<input name="block_poster" type="hidden" id="block_poster" value="' . $_GET['terms'] . '"></td>';
+            echo '</tr>';
+            echo '<td><input type="submit" name="Submit" value="Add poster to my block list"></td>';
+            echo '</tr></table></td></form>';
+        }
+    }
+    // END Block poster
+
     exit(0);
 }
 
@@ -119,6 +148,40 @@ $groupconfig = $config_path . "/groups.txt";
 
 $title .= ' - search results for: ' . $_POST['terms'];
 include "head.inc";
+
+// Handle Block poster
+if (isset($_POST['block_poster'])) {
+    if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+        $logged_in = true;
+    } else {
+        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
+            if ($ip_pass) {
+                $_SESSION['pass'] = true;
+            }
+            $authkey = password_hash($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), PASSWORD_DEFAULT);
+            $pkey = hash('crc32', get_user_config($_POST['username'], 'encryptionkey'));
+            set_user_config(strtolower($_POST['username']), "pkey", $pkey);
+            $logged_in = true;
+        }
+    }
+    if ($logged_in == true) {
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+            if (file_exists($blockfile)) {
+                $blocked_user_config = unserialize(file_get_contents($blockfile));
+            } else {
+                $blocked_user_config = array();
+            }
+            $blocked_user_config[base64_decode(urldecode($_REQUEST['data']))] = $_POST['block_poster'];
+            file_put_contents($blockfile, serialize($blocked_user_config));
+        }
+        echo "<center><b>'".$_POST['block_poster']."'</b> successfully added to your blocklist";
+        echo '<br>You may edit your blocklist on your <a href="/spoolnews/user.php?command=Configuration">Configuration Page</a></center>';
+    } else {
+        echo '<center>Password Incorrect.<br>Click Back to try again</center>';
+    }
+    exit(0);
+}
 
 ob_start();
 if (isset($search_group)) {

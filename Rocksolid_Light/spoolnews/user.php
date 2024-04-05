@@ -80,7 +80,6 @@ if (! isset($_COOKIE['mail_auth'])) {
     $_COOKIE['mail_auth'] = null;
 }
 if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
-    // if (((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
     $logged_in = true;
 } else {
     if (check_bbs_auth($_POST['username'], $_POST['password'])) {
@@ -109,7 +108,7 @@ if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['use
     }
 }
 
-if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
+if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="user.php" target=' . $frame['menu'] . '>Configuration</a> / ';
     echo htmlspecialchars($_POST['username']) . '</h1>';
@@ -311,10 +310,31 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         $newsubs[$sub] = $userdata[$sub];
     }
     file_put_contents($spooldir . '/' . $user . '-articleviews.dat', serialize($newsubs));
+
+    // Block posters
+    $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+    if (file_exists($blockfile)) {
+        $blocked_saved_config = unserialize(file_get_contents($blockfile));
+    } else {
+        $blocked_saved_config = null;
+    }
+    $block = preg_split("/\r\n|\n|\r/", $_POST['blocked_users_config']);
+    foreach ($block as $blocked_user) {
+        foreach($blocked_saved_config as $key => $value) {
+            if($key == $blocked_user) {
+                $newblocks[$key] = $value;
+                break;
+            }
+        }
+    }
+    file_put_contents($blockfile, serialize($newblocks));
+    // End Block posters
+
     $userdata = unserialize(file_get_contents($userfile));
     if ($userdata) {
         ksort($userdata);
     }
+    
     // Save new password
     if ((trim($_POST['password']) != '') && ($_POST['password'] == $_POST['password2'])) {
         $userFilename = $config_dir . '/users/' . strtolower($user);
@@ -355,7 +375,7 @@ if ($OVERRIDES['disable_change_name'] != true) {
     }
 }
 sort($themes);
-if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
+if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     // Use modifications from retry configuration
     if ($_POST['retry'] == "retry") {
         $display_name = $_POST['display_name'];
@@ -365,6 +385,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
         $user_config['hide_unsub'] = $_POST['hide_unsub'];
         $user_config['subscribed'] = $_POST['subscribed'];
         $user_config['theme'] = $_POST['theme'];
+        $user_config['blocked_users_config'] = $_POST['blocked_users_config'];
     }
     // Show Config
     echo '<hr><h1 class="np_thread_headline"></h1>';
@@ -437,7 +458,6 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
 
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed groups:</h3></td>';
     echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
-    // print_r($user_config['subscribed']);
 
     if (isset($user_config['subscribed'])) {
         $userdata = $user_config['subscribed'];
@@ -448,6 +468,28 @@ if (isset($_POST['command']) && $_POST['command'] == 'Configuration') {
                 continue;
             }
             echo $key . "\n";
+        }
+    }
+    echo '</textarea></td>';
+    echo '</tr>';
+    echo '</td></tr>';
+
+    // Blocklist
+    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+        $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+        if (file_exists($blockfile)) {
+            $blocked_users_config = unserialize(file_get_contents($blockfile));
+        } else {
+            $blocked_users_config = null;
+        }
+    }
+    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Blocklist:</h3> (you may only remove from this list)</td>';
+    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="blocked_users_config" name="blocked_users_config" rows="10" cols="40">';
+    if (isset($blocked_users_config)) {
+        $blockdata = $user_config['blocked_users_config'];
+        foreach ($blocked_users_config as $key => $value) {
+            echo $key . "\n";
+//            echo $value . "\n";
         }
     }
     echo '</textarea></td>';
@@ -503,6 +545,7 @@ function retry_configuration($message)
     echo "<input type='hidden' name='hide_unsub' value='" . $_POST['hide_unsub'] . "' />";
     echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' />";
     echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' />";
+    echo "<input type='hidden' name='blocked_users_config' value'" . $_POST['blocked_users_config'] . "' />";
     echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
     echo '</center>';
     exit();
