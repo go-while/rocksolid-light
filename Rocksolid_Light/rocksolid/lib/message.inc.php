@@ -567,7 +567,7 @@ function show_header_short($head, $group, $local_poster = false)
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
     }
     if ($local_poster) {
-        echo "&nbsp;by: <i>" . $displayname . "</i>";
+        echo "&nbsp;by: <i>" . $displayname . "</i> ";
     } else {
         echo "&nbsp;by: " . $displayname . " ";
     }
