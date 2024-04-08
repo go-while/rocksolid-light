@@ -30,6 +30,10 @@ $nntpserver = "news.example.com";
 $nntpuser = "nntpusername";
 $nntppassword = "nntppassword";
 
+// They 'type' for your nocem (spam, abuse, etc.)
+// Comma separated
+$type = "spam";
+
 // Your gpg signing key:
 $signing_key = "XXXX XXXX XXXX XXXX XXXX  XXXX XXXX XXXX XXXX XXXX";
 // URL to view/download key:

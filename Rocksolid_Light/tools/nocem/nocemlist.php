@@ -62,7 +62,7 @@ if(isset($followup_to)) {
 }
 fwrite($header_file, "From: $from\n");
 fwrite($header_file, "Newsgroups: $spamgroup\n");
-fwrite($header_file, "Subject: @@NCM NoCeM notice $thishash spam/hide ($count $article)\n");
+fwrite($header_file, "Subject: @@NCM NoCeM notice $thishash $type ($count $article)\n");
 fwrite($header_file, "Content-Type: text/plain; charset=utf-8; format=flowed\n");
 fwrite($header_file, "Content-Transfer-Encoding: 8bit\n");
 fwrite($header_file, "Organization: $organization\n");
@@ -85,7 +85,7 @@ fwrite($nocem_file, "For information contact $contact.\n\n");
 fwrite($nocem_file, "@@BEGIN NCM HEADERS\n");
 fwrite($nocem_file, "Version: 0.93\n");
 fwrite($nocem_file, "Issuer: $from_email\n");
-fwrite($nocem_file, "Type: spam\n");
+fwrite($nocem_file, "Type: $type\n");
 fwrite($nocem_file, "Action: hide\n");
 fwrite($nocem_file, "Count: ".$count."\n");
 fwrite($nocem_file, "Notice-ID: ".$thishash."\n");
