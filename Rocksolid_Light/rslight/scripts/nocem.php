@@ -35,6 +35,13 @@ foreach ($messages as $message) {
     if (! is_file($nocem_file)) {
         continue;
     }
+    if (check_nocem_config($nocem_file) == true) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Good Issuer and Type for: " . $message, FILE_APPEND);
+    } else {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Bad Issuer or Type for: " . $message, FILE_APPEND);
+        rename($nocem_file, $nocem_path . "failed/" . $message);
+        continue;
+    }
     $signed_text = file_get_contents($nocem_file);
     if (verify_gpg_signature($res, $signed_text) == 1) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Good signature in: " . $message, FILE_APPEND);
@@ -64,11 +71,11 @@ foreach ($messages as $message) {
         }
         if (($nocem_line[0] == '<') && $start == 1) {
             $found = preg_split("/\ |\,/", $nocem_line);
-//            $found = explode(' ', $nocem_line);
+            // $found = explode(' ', $nocem_line);
             $i = 0;
             foreach ($found as $group_item) {
                 if ($i == 0) {
-                    $i++;
+                    $i ++;
                     continue;
                 }
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TRYING: " . $found[0] . " IN: " . $group_item, FILE_APPEND);
@@ -83,5 +90,50 @@ foreach ($messages as $message) {
     prune_dir_by_days($nocem_path . "failed/", 30);
 }
 unlink($lockfile);
-exit();
-?>
+
+function check_nocem_config($nocem_file)
+{
+    global $config_dir;
+    $nocem_config = $config_dir . '/nocem.conf';
+    $name_ok = false;
+    $type_ok = false;
+    $ncmhead = '@@BEGIN NCM HEADERS';
+    $nocem_list = file($nocem_file, FILE_IGNORE_NEW_LINES);
+    $headers = 0;
+    foreach ($nocem_list as $nocem_line) {
+        if (stripos($nocem_line, $ncmhead) == 0){
+            $headers = 1;
+        }
+        if ($headers != 1) {
+            continue;
+        }
+        if (stripos($nocem_line, "Issuer: ") === 0) {
+            $issuer = explode(': ', $nocem_line);
+            $issuer = $issuer[1];
+        }
+        if (stripos($nocem_line, "Type: ") === 0) {
+            $type = explode(': ', $nocem_line);
+            $type = $type[1];
+        }
+    }
+    $config_val = get_config_file_value($nocem_config, $issuer);
+    if ($config_val === false) {
+        return false;
+    } else {
+        $name_ok = true;
+    }
+    $all_types = explode(',', $config_val);
+    foreach ($all_types as $one_type) {
+        if (trim($type) == trim($one_type)) {
+            echo $issuer . ':'.$type . " Good Type \n";
+            $type_ok = true;
+        } else {
+            echo $issuer . ':'.$type . ' : ' . $one_type . " Bad Type \n";
+        }
+    }
+    if ($type_ok && $name_ok) {
+        return true;
+    } else {
+        return false;
+    }
+}
