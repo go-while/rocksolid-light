@@ -381,15 +381,14 @@ function get_header_search($group, $terms)
     GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
-    if (isset($group) && $_POST['searchpoint'] != 'msgid') {
+    
+    if (isset($group)) {
         $grouplist[0] = $group;
-    } elseif ($_POST['searchpoint'] != 'msgid') {
+    } else {
         $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    } else {
-        $local_groupfile = $spooldir . "/spoolnews/groups.txt";
-        $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     }
+
     # Prepare search database
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
