@@ -1186,8 +1186,9 @@ function group_display_name($gname)
 
 function check_bbs_auth($username, $password)
 {
-    global $config_dir, $CONFIG;
+    global $config_dir, $spooldir, $CONFIG;
 
+    $logfile = $spooldir . '/log/auth.log';
     if ($username == '' && $password == '') {
         return false;
     }
@@ -1195,7 +1196,17 @@ function check_bbs_auth($username, $password)
     $workpath = $config_dir . "users/";
     $username = trim(strtolower($username));
     $userFilename = $workpath . $username;
+    $banned_list = file($config_dir . '/banned_users.conf');
     $keyFilename = $config_dir . "/userconfig/" . $username;
+
+    foreach ($banned_list as $banned) {
+        if($banned[0] == '#')
+            continue;
+        if (strtolower(trim($username)) == strtolower(trim($banned))) {
+            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
+            return false;
+        }
+    }
 
     // Create accounts for $anonymous and $CONFIG['server_auth_user'] if not exist
     if ($username == strtolower($CONFIG['anonusername'])) {
@@ -1216,6 +1227,7 @@ function check_bbs_auth($username, $password)
     }
 
     if (trim($username) == strtolower($CONFIG['anonusername']) && $CONFIG['anonuser'] != true) {
+        file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (' . $CONFIG["anonusername"] . ' is disabled)', FILE_APPEND);
         return FALSE;
     }
 
@@ -1226,12 +1238,16 @@ function check_bbs_auth($username, $password)
             touch($userFilename);
             $ok = TRUE;
         } else {
+            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
             return FALSE;
         }
     } else {
         $ok = FALSE;
     }
     if ($ok) {
+        if ($username != 'localuser') {
+            file_put_contents($logfile, "\n" . format_log_date() . " AUTH OK for: " . $username, FILE_APPEND);
+        }
         return TRUE;
     } else {
         if (isset($CONFIG['auto_create']) && $CONFIG['auto_create'] == true) {
@@ -1246,8 +1262,10 @@ function check_bbs_auth($username, $password)
                 fclose($userFileHandle);
                 chmod($userFilename, 0666);
             }
+            file_put_contents($logfile, "\n" . format_log_date() . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
             return TRUE;
         } else {
+            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username, FILE_APPEND);
             return FALSE;
         }
     }
