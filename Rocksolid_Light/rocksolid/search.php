@@ -116,6 +116,7 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
             echo '<input name="block_poster" type="hidden" id="block_poster" value="' . $_GET['terms'] . '"></td>';
             echo '</tr>';
             echo '<td><input type="submit" name="Submit" value="Add poster to my block list"></td>';
+            echo '<tr><td>(refresh pages if articles still appear)</td></tr>';
             echo '</tr></table></td></form>';
         }
     }
