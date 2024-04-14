@@ -1549,9 +1549,14 @@ function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
     return ($xref);
 }
 
-function get_search_snippet($body, $content_type = '')
+function get_search_snippet($body, $content_type = '', $content_transfer_encoding = null)
 {
-    $body = quoted_printable_decode($body);
+    if($content_transfer_encoding == 'base64') {
+        $body = base64_decode($body);
+    }
+    if($content_transfer_encoding == 'quoted-printable') {
+        $body = quoted_printable_decode($body);
+    }
     if ($content_type !== '') {
         $mysnippet = recode_charset($body, $content_type, "utf8");
     } else {

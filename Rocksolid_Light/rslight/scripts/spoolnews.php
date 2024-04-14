@@ -291,6 +291,7 @@ function get_articles($ns, $group)
         $integrity = false;
         $is_header = 1;
         $body = "";
+        $content_transfer_encoding = null;
         while (strcmp($response, ".") != 0) {
             $is_xref = false;
             $bytes = $bytes + mb_strlen($response, '8bit');
@@ -338,6 +339,12 @@ function get_articles($ns, $group)
                         $banned = "subject_filter";
                     }
                 }
+                // Transfer encoding
+                if (stripos($response, "Content-Transfer-Encoding: ") === 0) {
+                    $enco = explode(': ', $response, 2);
+                    $content_transfer_encoding = $enco[1];
+                }
+                
                 if (stripos($response, "Newsgroups: ") === 0) {
                     $response = str_ireplace($group, $group, $response);
                     // Identify each group name for xref
@@ -435,7 +442,7 @@ function get_articles($ns, $group)
             if ($CONFIG['article_database'] == '1') {
                 unlink($articleHandle);
                 // CREATE SEARCH SNIPPET
-                $this_snippet = get_search_snippet($body, $content_type[1]);
+                $this_snippet = get_search_snippet($body, $content_type[1], $content_transfer_encoding);
             } else {
                 if ($article_date > time()) {
                     $article_date = time();
