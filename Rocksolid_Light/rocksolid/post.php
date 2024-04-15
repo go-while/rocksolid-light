@@ -95,7 +95,7 @@ global $synchro_user, $synchro_pass;
 $thisgroup = _rawurldecode($_REQUEST['group']);
 
 // Is this a reply to an article containing Followup-To?
-if(isset($_REQUEST['fgroups'])) {
+if (isset($_REQUEST['fgroups'])) {
     $thisgroup = $_REQUEST['fgroups'];
 }
 
@@ -382,8 +382,8 @@ if ($show == 1) {
         echo 'value="' . htmlspecialchars($subject) . '" ';
         echo 'size="40" maxlength="' . $thread_maxSubject . '"></td>';
         echo '</tr><tr>';
-        
-        if($has_followup) {
+
+        if ($has_followup) {
             echo '<td align="right">';
             echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
             echo '</td><td>';
@@ -395,7 +395,7 @@ if ($show == 1) {
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
             echo '</tr><tr>';
         }
-        
+
         echo '<td align="right"><b>' . $text_post["name"] . '</b></td>';
         echo '<td align="left">';
         if (! isset($name) && $CONFIG['anonuser'])
@@ -493,15 +493,13 @@ function quoten() {
 	onclick="quoten(); this.style.visibility= 'hidden';">
 &nbsp;
 
-<?php } ?>
-&nbsp;
-<input type="file" name="photo" id="fileSelect" value="fileSelect"
-	accept="image/*,audio/*,text/*,application/pdf">
-</td>
-</tr>
-
 <?php
-
+        }
+        if (! in_array($config_name, $OVERRIDES['disable_attach'], true)) {
+            echo '&nbsp;';
+            echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
+            echo '</td></tr>';
+        }
         if ($post_captcha) {
             echo '<tr><td>';
             echo captcha::form($text_post["captchainfo1"], $text_post["captchainfo2"]);

@@ -42,6 +42,11 @@ return [
     // Disable display of X-Face
     'disable_xface' => false,
 
+    // Disable posting attachments by section
+    // List section names to disable:
+    // array("sectionONE", "sectionTWO", "sectionETC"),
+    'disable_attach' => array("section"),
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];
