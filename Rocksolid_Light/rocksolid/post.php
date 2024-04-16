@@ -260,8 +260,13 @@ if ($type == "post") {
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
-                echo '<h1 class="np_post_headline"><' . $text_post["message_posted"] . '></h1>';
-                echo '<p>' . $text_post["message_posted2"] . '</p>';
+                // Is there a moderated group in Newsgroups: ?
+                if(is_moderated($newsgroups)) {
+                    echo '<p>** <i>Moderated Newsgroup **</p>';
+                    echo '<p>** <i>Message Queued for Moderation **</p>';
+                } else {
+                    echo '<p>' . $text_post["message_posted2"] . '</p>';
+                }
                 if (isset($CONFIG['auto_return']) && ($CONFIG['auto_return'] == true)) {
                     echo '<meta http-equiv="refresh" content="0;url=' . $file_thread . '?group=' . urlencode($returngroup) . '"';
                 }
@@ -278,17 +283,6 @@ if ($type == "post") {
                     file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $returngroup . " by " . $name, FILE_APPEND);
                 }
                 echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
-                /*
-                 * if (isset($_REQUEST['returngroup']) && $_REQUEST['returngroup'] !== '') {
-                 * echo '<p><a href="' . $file_thread . '?group=' . $_REQUEST['returngroup'] . '">Your post will appear in ' . group_display_name($_REQUEST['returngroup']) . '</a></p>';
-                 * }
-                 * if (isset($_SESSION['return_page'])) {
-                 * echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
-                 * //echo '<p><a href="' . $_SESSION['return_page'] . '">Back to Previous Page</a></p>';
-                 * } else {
-                 * echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
-                 * }
-                 */
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";

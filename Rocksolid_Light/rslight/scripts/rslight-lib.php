@@ -7,12 +7,12 @@ function interact($msgsock, $use_crypto = false)
     $path = $workpath . "articles/";
     $groupconfig = $spooldir . "/spoolnews/groups.txt";
 
-    if(isset($OVERRIDES['nntp_full_auth_required']) && $OVERRIDES['nntp_full_auth_required'] == true) {
+    if (isset($OVERRIDES['nntp_full_auth_required']) && $OVERRIDES['nntp_full_auth_required'] == true) {
         $nntp_full_auth_required = true;
     } else {
         $nntp_full_auth_required = false;
     }
-    
+
     $logfile = $logdir . '/nntp.log';
     $nntp_group = "";
     $nntp_article = "";
@@ -56,8 +56,8 @@ function interact($msgsock, $use_crypto = false)
         $command = explode(' ', $buf);
         $command[0] = strtolower($command[0]);
         // Check if auth required for everything or only posting
-        if($nntp_full_auth_required == true && $auth_ok == 0) {
-            if($command[0] == 'authinfo' || $command[0] == 'quit' || $command[0] == 'mode') {
+        if ($nntp_full_auth_required == true && $auth_ok == 0) {
+            if ($command[0] == 'authinfo' || $command[0] == 'quit' || $command[0] == 'mode') {
                 // Ok to continue
             } else {
                 // Auth is required. Try again
@@ -66,7 +66,7 @@ function interact($msgsock, $use_crypto = false)
                 continue;
             }
         }
-        
+
         if (isset($command[1])) {}
         if ($command[0] == 'date') {
             $msg = '111 ' . date('YmdHis') . "\r\n";
@@ -339,7 +339,7 @@ function prepare_post($filename)
             $nocem_file = tempnam($spooldir . "/nocem", "nocem-" . $group . "-");
             copy($filename, $nocem_file);
         }
-        $response = "240 Article received OK\r\n";
+        $response = "240 Article received OK (posted)\r\n";
     } else {
         // $response = "441 Posting failed (group not found)\r\n";
     }
@@ -1125,6 +1125,11 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
 {
     global $enable_rslight, $spooldir, $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile;
 
+    if(is_moderated($nntp_group)) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Moderated group... Queuing local post: " . $nntp_group, FILE_APPEND);
+        $return_val = "240 Article received OK (queued for moderation)\r\n";
+        return ($return_val);
+    }
     if (isset($OVERRIDES['insert_disable']) && $OVERRIDES['insert_disable'] != '') {
         $insert_disable = explode(',', $OVERRIDES['insert_disable']);
         foreach ($insert_disable as $disable) {

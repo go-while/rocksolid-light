@@ -1200,7 +1200,7 @@ function check_bbs_auth($username, $password)
     $keyFilename = $config_dir . "/userconfig/" . $username;
 
     foreach ($banned_list as $banned) {
-        if($banned[0] == '#')
+        if ($banned[0] == '#')
             continue;
         if (strtolower(trim($username)) == strtolower(trim($banned))) {
             file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
@@ -1551,10 +1551,10 @@ function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
 
 function get_search_snippet($body, $content_type = '', $content_transfer_encoding = null)
 {
-    if($content_transfer_encoding == 'base64') {
+    if ($content_transfer_encoding == 'base64') {
         $body = base64_decode($body);
     }
-    if($content_transfer_encoding == 'quoted-printable') {
+    if ($content_transfer_encoding == 'quoted-printable') {
         $body = quoted_printable_decode($body);
     }
     if ($content_type !== '') {
@@ -2024,6 +2024,62 @@ function verify_gpg_signature($res, $signed_text)
     } else {
         return true; // Good signature
     }
+}
+
+function is_moderated($newsgroups)
+{
+    global $CONFIG, $OVERRIDES, $spooldir;
+    $moderated_groups_file = $spooldir . '/moderated_groups.dat';
+    $unmoderated_groups_file = $spooldir . '/unmoderated_groups.dat';
+    $moderated_groups = array();
+    $unmoderated_groups = array();
+
+    $ngroups = preg_split("/[\s,]+/", $newsgroups);
+    foreach ($ngroups as $group) {
+        if (file_exists($moderated_groups_file)) {
+            $moderated_groups = file($moderated_groups_file, FILE_IGNORE_NEW_LINES);
+            if (in_array($group, $moderated_groups)) {
+                return true;
+            }
+        }
+        if (file_exists($unmoderated_groups_file)) {
+            $unmoderated_groups = file($unmoderated_groups_file, FILE_IGNORE_NEW_LINES);
+            if (in_array($group, $unmoderated_groups)) {
+                return false;
+            }
+        }
+    }
+    $ns = nntp2_open();
+    if (! $ns) {
+        return false;
+    }
+
+    foreach ($ngroups as $group) {
+        fputs($ns, "list active $group\r\n");
+        while ($weg = line_read($ns)) {
+            if (strcmp($weg, ".") == 0) {
+                nntp_close($ns);
+                return false;
+            }
+            if (strpos($weg, $group . ' ') !== false) {
+                if (str_ends_with($weg, 'm')) {
+                    nntp_close($ns);
+                    if (! in_array($newsgroups, $moderated_groups)) {
+                        file_put_contents($moderated_groups_file, $group . "\n", FILE_APPEND);
+                    }
+                    return true;
+                } else {
+                    nntp_close($ns);
+                    if (! in_array($newsgroups, $unmoderated_groups)) {
+                        file_put_contents($unmoderated_groups_file, $group . "\n", FILE_APPEND);
+                    }
+                    return false;
+                }
+            }
+        }
+    }
+    nntp_close($ns);
+    return false;
 }
 
 function get_next_article_number($group)
