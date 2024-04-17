@@ -83,8 +83,8 @@ if (isset($_FILES['photo'])) {
 }
 
 echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
-echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-// echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
+//echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
+echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
 
 if (! isset($_POST['username'])) {
     $_POST['username'] = '';
