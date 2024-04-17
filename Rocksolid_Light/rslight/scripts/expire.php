@@ -151,6 +151,9 @@ function vacuum_group_database($group)
         $data_stmt->execute();
         $data_dbh = null;
     }
+    // Check for moderation flag here. Yes, in vacuum.
+    is_moderated($group);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Checked for moderation flag", FILE_APPEND);
 }
 
 function convert_max_articles_to_days($group)

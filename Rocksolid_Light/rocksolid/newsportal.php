@@ -2049,6 +2049,9 @@ function is_moderated($newsgroups)
             }
         }
     }
+    if($CONFIG['remote_server'] == '') {
+        return false;
+    }
     $ns = nntp2_open();
     if (! $ns) {
         return false;
