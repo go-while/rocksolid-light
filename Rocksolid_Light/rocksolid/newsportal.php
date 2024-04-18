@@ -102,7 +102,7 @@ function nntp_open($nserver = 0, $nport = 0)
 function nntp2_open($nserver = 0, $nport = 0)
 {
     global $text_error, $CONFIG;
-    // echo "<br>NNTP OPEN<br>";
+
     $authorize = ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != ""));
     if ($nserver == 0)
         $nserver = $CONFIG['remote_server'];
@@ -112,10 +112,10 @@ function nntp2_open($nserver = 0, $nport = 0)
         if ($nport == $CONFIG['remote_port']) {
             $nport = $CONFIG['remote_ssl'];
         }
-        var_dump($ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30));
-        var_dump($errorString);
-        var_dump($error);
-        // $ns=@fsockopen('ssl://'.$nserver.":".$nport);
+        $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
+        if(!$ns) {
+            return false;
+        }
     } else {
         if (isset($CONFIG['socks_host']) && $CONFIG['socks_host'] !== '') {
             $ns = fsocks4asockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $nserver, $nport);

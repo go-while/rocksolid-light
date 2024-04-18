@@ -57,8 +57,8 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 }
 
 @$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
-// @$newsgroups=$_REQUEST["newsgroups"];
-// @$group=$_REQUEST["group"];
+@$newsgroups = $_REQUEST["newsgroups"];
+@$group = $_REQUEST["group"];
 @$type = $_REQUEST["type"];
 @$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
 @$name = $_POST[md5($fieldnamedecrypt . "name")];
@@ -261,7 +261,7 @@ if ($type == "post") {
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
                 // Is there a moderated group in Newsgroups: ?
-                if(is_moderated($newsgroups)) {
+                if (is_moderated($newsgroups)) {
                     echo '<p>** <i>Moderated Newsgroup **</p>';
                     echo '<p>** <i>Message Queued for Moderation **</p>';
                 } else {
@@ -489,7 +489,10 @@ function quoten() {
 
 <?php
         }
-        if (! in_array($config_name, $OVERRIDES['disable_attach'], true)) {
+        if (! isset($OVERRIDES['disable_attach'])) {
+            $OVERRIDES['disable_attach'] = array();
+        }
+        if (! in_array($config_name, $OVERRIDES['disable_attach'])) {
             echo '&nbsp;';
             echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
             echo '</td></tr>';
