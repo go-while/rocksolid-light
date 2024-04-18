@@ -103,16 +103,16 @@ echo "done"
 
 echo
 echo -n "Applying configuration..."
-sed -i '' -e "s|<version>|$version|" $webroot/common/config.inc.php
-sed -i '' -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
-sed -i '' -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
-sed -i '' -e "s|<webserver_user>|$username|" $configpath/rslight.inc.php
-sed -i '' -e "s|<site_key>|$site_key|" $configpath/rslight.inc.php
-sed -i '' -e "s|<anonymous_password>|$anonymous_password|" $configpath/rslight.inc.php
-sed -i '' -e "s|<local_password>|$local_password|" $configpath/rslight.inc.php
-sed -i '' -e "s|<admin_password>|$admin_password|" $configpath/admin.inc.php 
-sed -i '' -e "s|<admin_key>|$admin_key|" $configpath/admin.inc.php
-sed -i '' -e "s|<sessions_path>|/var/lib/php/sessions|" $configpath/rslight.inc.php
+sed -i -e "s|<version>|$version|" $webroot/common/config.inc.php
+sed -i -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
+sed -i -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
+sed -i -e "s|<webserver_user>|$username|" $configpath/rslight.inc.php
+sed -i -e "s|<site_key>|$site_key|" $configpath/rslight.inc.php
+sed -i -e "s|<anonymous_password>|$anonymous_password|" $configpath/rslight.inc.php
+sed -i -e "s|<local_password>|$local_password|" $configpath/rslight.inc.php
+sed -i -e "s|<admin_password>|$admin_password|" $configpath/admin.inc.php 
+sed -i -e "s|<admin_key>|$admin_key|" $configpath/admin.inc.php
+sed -i -e "s|<sessions_path>|/var/lib/php/sessions|" $configpath/rslight.inc.php
 echo "done"
 echo
 echo "***************************************************"

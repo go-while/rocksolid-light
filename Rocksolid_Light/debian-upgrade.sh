@@ -97,10 +97,10 @@ echo "done"
 
 echo
 echo -n "Applying configuration..."
-sed -i '' -e "s|<version>|$version|" $webroot/common/config.inc.php
-sed -i '' -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
-sed -i '' -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
-sed -i '' -e "s|<webserver_user>|$username|" $configpath/upgrade/rslight.inc.php
+sed -i -e "s|<version>|$version|" $webroot/common/config.inc.php
+sed -i -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
+sed -i -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
+sed -i -e "s|<webserver_user>|$username|" $configpath/upgrade/rslight.inc.php
 echo "done"
 echo
 echo "All new configuration files have been placed in $configpath/upgrade."
