@@ -352,14 +352,16 @@ function display_threads($threads, $oldest)
                 $poster = get_poster_name(mb_decode_mimeheader($target['name']));
                 $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
                 $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
+                $display .= '<br /><br />';
                 $display .= '<p class=np_ob_subject>';
                 $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
 
                 $display .= '</p>';
-                $display .= '</p><p class=np_ob_group>';
-                $display .= '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
+                $display .= '<p class=np_ob_body>';
+                $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
+                
                 $display .= '</p>';
-                $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+                $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a></p>';
                 if ($CONFIG['article_database'] == '1') {
                     $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                     $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
