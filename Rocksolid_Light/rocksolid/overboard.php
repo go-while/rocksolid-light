@@ -354,8 +354,8 @@ function display_threads($threads, $oldest)
                 if ($result_count > 1 && isset($target_head['date'])) {
                     $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
                     $block = false;
-                    foreach ($blocked_user_config as $key => $value) {
-                        $blockme = '/' . addslashes($key) . '/';
+                    foreach ($blocked_user_config as $bkey => $bvalue) {
+                        $blockme = '/' . addslashes($bkey) . '/';
                         if (preg_match($blockme, $target_head['name'])) {
                             $block = true;
                             break;
@@ -484,34 +484,33 @@ function display_flat($threads, $oldest)
             $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
         }
         $block = false;
-        foreach ($blocked_user_config as $key => $value) {
-            $blockme = '/' . addslashes($key) . '/';
+        foreach ($blocked_user_config as $bkey => $bvalue) {
+            $blockme = '/' . addslashes($bkey) . '/';
             if (preg_match($blockme, $target['name'])) {
                 $block = true;
                 break;
             }
         }
         if ($block) {
-            // $display .= '<br /><br />';
             $display .= '<p class=np_ob_subject>';
             $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b>';
         } else {
             $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
             $display .= '<p class=np_ob_subject>';
             $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
-
+            $display .= '<p class=np_ob_body>';
+            $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
+            
+            $display .= '</p>';
             // link for (thread), if possible
             if (isset($this_overboard['threadlink'][$value])) {
                 $thread = get_data_from_msgid($this_overboard['threadlink'][$value], $target['newsgroup']);
                 if ($thread !== false) {
-                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (thread)</a></font>';
+                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (full thread)</a></font>';
                 }
             }
             $display .= '</p>';
-            $display .= '</p><p class=np_ob_group>';
-            $display .= '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
-            $display .= '</p>';
-            $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+            $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</p>';
             if ($CONFIG['article_database'] == '1') {
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
