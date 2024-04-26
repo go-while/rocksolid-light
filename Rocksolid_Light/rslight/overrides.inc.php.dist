@@ -54,6 +54,10 @@ return [
     // array("sectionONE", "sectionTWO", "sectionETC"),
     'disable_attach' => array("section"),
 
+    // Default view for overboard ('threads' or 'articles')
+    // If unset, default is 'articles'
+    'overboard_default_view' => 'articles',
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];

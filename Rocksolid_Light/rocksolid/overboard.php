@@ -32,11 +32,6 @@ header("Pragma: cache");
 include "config.inc.php";
 include "$file_newsportal";
 
-if (isset($_COOKIE['mail_name'])) {
-    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-    }
-}
 if (isset($frames_on) && $frames_on === true) {
     ?>
 <script>
@@ -91,7 +86,6 @@ $thissite = '.';
 $groupconfig = $file_groups;
 $cachefile = $spooldir . "/" . $config_name . "-overboard.dat";
 $oldest = (time() - (86400 * $article_age));
-$prune = false;
 
 if (isset($_GET['time'])) {
     $user_time = $_GET['time'];
@@ -113,15 +107,40 @@ if (isset($_GET['thisgroup'])) {
     $grouplist = array();
     $grouplist[0] = _rawurldecode(_rawurldecode($_GET['thisgroup']));
     $cachefile = $spooldir . "/" . $grouplist[0] . "-overboard.dat";
-    if ($userdata) {
-        $userdata[$grouplist[0]] = time();
-        file_put_contents($userfile, serialize($userdata));
+    if (isset($_COOKIE['mail_name'])) {
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+            $userdata[$grouplist[0]] = time();
+            file_put_contents($userfile, serialize($userdata));
+        }
     }
 } else {
     $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES);
 }
 
 show_overboard_header($grouplist);
+
+// Determine default view style
+if (isset($_COOKIE['mail_name'])) {
+    if ($user_obstyle = get_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle')) {
+        $_SESSION['obstyle'] = $user_obstyle;
+    }
+}
+if (isset($_POST['obstyle'])) {
+    $_SESSION['obstyle'] = $_POST['obstyle'];
+}
+if (! isset($_SESSION['obstyle'])) {
+    if (isset($OVERRIDES['overboard_default_view'])) {
+        $_SESSION['obstyle'] = $OVERRIDES['overboard_default_view'];
+    } else {
+        $_SESSION['obstyle'] = 'articles';
+    }
+}
+if (isset($_COOKIE['mail_name'])) {
+    save_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle', $_SESSION['obstyle'], true);
+}
+show_overboard_style_toggle();
 
 $results = 0;
 
@@ -179,7 +198,7 @@ foreach ($grouplist as $findgroup) {
             if ($target['date'] > $this_overboard['lastmessage']) {
                 $this_overboard['lastmessage'] = $target['date'];
             }
-            
+
             if (! isset($this_overboard['threads'][$target['date']])) {
                 $this_overboard['threads'][$target['date']] = $thismsgid;
                 $this_overboard['msgids'][$thismsgid] = $target;
@@ -203,17 +222,23 @@ if (isset($user_time)) {
     $oldest = (time() - (86400 * $article_age));
 }
 
-$results = display_threads($this_overboard['threads'], $oldest);
+if ($_SESSION['obstyle'] == 'threads') {
+    $results = display_threads($this_overboard['threads'], $oldest);
+} else {
+    $results = display_flat($this_overboard['threads'], $oldest);
+}
+
 show_overboard_footer(null, $results, null);
 echo '</body></html>';
 expire_overboard($cachefile);
 
 function expire_overboard($cachefile)
 {
-    global $article_age, $logfile, $config_name, $prune, $this_overboard;
+    global $article_age, $logfile, $config_name, $this_overboard;
     if (! isset($this_overboard['expire'])) {
         $this_overboard['expire'] = time();
     }
+    $prune = false;
     if ($this_overboard['expire'] < (time() - 86400)) {
         $prune = true;
         foreach ($this_overboard['msgids'] as $key => $value) {
@@ -234,7 +259,130 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $snippetlength, $maxdisplay, $prune, $this_overboard;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age;
+    $expireme = time() - ($article_age * 86400);
+    $display = '<table cellspacing="0" width="100%" class="np_results_table">';
+    if (! isset($threads)) {
+        $threads = (object) [];
+    } else {
+        krsort($threads);
+    }
+    // Get registered user settings
+    if (isset($_COOKIE['mail_name'])) {
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+        }
+
+        if (! isset($user_config['hide_unsub'])) {
+            if (isset($OVERRIDES['hide_unsub'])) {
+                $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];
+            } else {
+                $user_config['hide_unsub'] = 'hide';
+            }
+        }
+    }
+
+    // Build display array
+    $nicole = array();
+    foreach ($threads as $key => $value) {
+        if ($key < $oldest) {
+            continue;
+        }
+        if (! isset($this_overboard['threadlink'][$value])) {
+            // Add article with no available top reference to array
+            $nicole[$value][$value] = $value;
+        } else {
+            $nicole[$this_overboard['threadlink'][$value]][$value] = $value;
+        }
+    }
+
+    $style = 0;
+    $results = 0;
+    foreach ($nicole as $key => $value) {
+        $target_head = $this_overboard['msgids'][$key];
+        if (! isset($target_head['msgid'])) {
+            $target_head = get_data_from_msgid($key);
+        }
+        // Skip if not in registered users sub list
+        $checkgroup = $target_head['newsgroup'];
+        if (! isset($userdata[$checkgroup])) {
+            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                continue;
+            }
+        }
+        $nohead = true;
+        $result_count = count($value);
+        foreach ($value as $new) {
+            $target = $this_overboard['msgids'][$new];
+            if (! isset($target['msgid'])) {
+                $target = get_data_from_msgid($new);
+            }
+            if ($target['date'] < $oldest) {
+                continue;
+            }
+            $results ++;
+            $lone == '';
+            $skip = '';
+            if ($nohead) {
+                if (($style % 2) == 0) {
+                    $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+                } else {
+                    $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+                }
+                $display .= '<center>';
+                $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
+                $display .= '<p class=np_ob_subject>';
+                $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
+                $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
+                if ($result_count > 1 && isset($target_head['date'])) {
+                    $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
+                    $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+                    if ($CONFIG['article_database'] == '1') {
+                        $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
+                        $display .= wordwrap(substr($article['search_snippet'], 0, $snippetlength), ($snippetlength / 2), "<br />\n", true);
+                    }
+                    $skip = $target_head['number'];
+                }
+                $display .= '</center>';
+                $style ++;
+                $nohead = false;
+            }
+            if ($skip != $target['number']) {
+                $poster = get_poster_name(mb_decode_mimeheader($target['name']));
+                $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
+                $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
+                $display .= '<p class=np_ob_subject>';
+                $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
+
+                $display .= '</p>';
+                $display .= '</p><p class=np_ob_group>';
+                $display .= '<a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a>';
+                $display .= '</p>';
+                $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+                if ($CONFIG['article_database'] == '1') {
+                    $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
+                    $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
+                }
+                if ($target['date'] < $expireme) {
+                    unset($this_overboard['threads'][$target['date']]);
+                    unset($this_overboard['threadlink'][$new]);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
+                }
+            }
+        }
+        $display .= '</td></tr>';
+    }
+
+    $display .= "</table>";
+    echo $display;
+    return ($results);
+}
+
+function display_flat($threads, $oldest)
+{
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age;
+    $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
         $threads = (object) [];
@@ -271,10 +419,9 @@ function display_threads($threads, $oldest)
         if ($target['date'] < $oldest) {
             continue;
         }
-        if ($results > $maxdisplay) {
-            $prune = true;
+        if ($target['date'] < $expireme) {
             unset($this_overboard['threads'][$target['date']]);
-            unset($this_overboard['threadlink'][$value]);
+            unset($this_overboard['threadlink'][$new]);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
         }
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
@@ -377,6 +524,27 @@ function show_overboard_header($grouplist)
     }
 }
 
+function show_overboard_style_toggle()
+{
+    echo '<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">';
+    echo '<p class="np_ob_posted_date" style="text-align: right;">';
+    echo 'Display as: ';
+    if ($_SESSION['obstyle'] == 'threads') {
+        echo '<input type="radio" name="obstyle" value="threads" checked>Threads';
+        echo '&nbsp;';
+        echo '<input type="radio" name="obstyle" value="articles">Articles';
+        echo '&nbsp;';
+    } else {
+        echo '<input type="radio" name="obstyle" value="threads">Threads';
+        echo '&nbsp;';
+        echo '<input type="radio" name="obstyle" value="articles" checked>Articles';
+        echo '&nbsp;';
+    }
+    echo '<input class="np_button_link" type="submit" value="Reload" name="reload">';
+    echo '</form >';
+    echo '</p>';
+}
+
 function show_overboard_footer($stats, $results, $iscached)
 {
     global $user_time, $rslight_version;
@@ -398,4 +566,3 @@ function show_overboard_footer($stats, $results, $iscached)
         echo "<p class=np_ob_tail><font size='1em'>cached copy: " . date("D M j G:i:s T Y", $stats[9]) . "</font></p>\r\n";
     }
 }
-?>
