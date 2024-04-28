@@ -119,11 +119,9 @@ if (isset($_GET['thisgroup'])) {
     $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES);
 }
 
-show_overboard_header($grouplist);
-
 // Determine default view style
 if (isset($_COOKIE['mail_name'])) {
-    if ($user_obstyle = get_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle')) {
+    if ($user_obstyle = get_config_file_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle')) {
         $_SESSION['obstyle'] = $user_obstyle;
     }
 }
@@ -140,7 +138,7 @@ if (! isset($_SESSION['obstyle'])) {
 if (isset($_COOKIE['mail_name'])) {
     save_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle', $_SESSION['obstyle'], true);
 }
-show_overboard_style_toggle();
+show_overboard_header($grouplist);
 
 $results = 0;
 
@@ -259,7 +257,7 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $spooldir, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $spooldir, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
@@ -268,9 +266,9 @@ function display_threads($threads, $oldest)
         krsort($threads);
     }
     // Get registered user settings
+    $newonly = false;
     if (isset($_COOKIE['mail_name'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($userfile)) {
@@ -287,6 +285,10 @@ function display_threads($threads, $oldest)
                 $user_config['hide_unsub'] = 'hide';
             }
         }
+        // Show NEW in Section only
+        if (isset($_REQUEST['new']) && $_REQUEST['new'] == true) {
+            $newonly = true;
+        }
     }
 
     // Build display array
@@ -302,7 +304,6 @@ function display_threads($threads, $oldest)
             $nicole[$this_overboard['threadlink'][$value]][$value] = $value;
         }
     }
-
     $style = 0;
     $results = 0;
     foreach ($nicole as $key => $value) {
@@ -310,11 +311,26 @@ function display_threads($threads, $oldest)
         if (! isset($target_head['msgid'])) {
             $target_head = get_data_from_msgid($key);
         }
+
         // Skip if not in registered users sub list
         $checkgroup = $target_head['newsgroup'];
         if (! isset($userdata[$checkgroup])) {
             if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
                 continue;
+            }
+        }
+
+        // Check if only displaying new posts in section
+        if ($newonly) {
+            $allgroups = get_group_array_from_msgid($key);
+            foreach ($allgroups as $onegroup) {
+                if (isset($userdata[$onegroup])) {
+                    $infofilename = $spooldir . "/" . $onegroup . "-lastarticleinfo.dat";
+                    $lastarticleinfo = unserialize(file_get_contents($infofilename));
+                    if ($userdata[$onegroup] > $lastarticleinfo['date']) {
+                        continue 2;
+                    }
+                }
             }
         }
         $nohead = true;
@@ -327,6 +343,24 @@ function display_threads($threads, $oldest)
             if ($target['date'] < $oldest) {
                 continue;
             }
+            // Skip if not in registered users sub list
+            $checkgroup = $target['newsgroup'];
+            if (! isset($userdata[$checkgroup])) {
+                if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                    continue;
+                }
+            }
+            // Check if only displaying new posts in section
+            if ($newonly) {
+                $allgroups = get_group_array_from_msgid($new);
+                foreach ($allgroups as $onegroup) {
+                    if (isset($userdata[$onegroup])) {
+                        if ($userdata[$onegroup] > $target['date']) {
+                            continue 2;
+                        }
+                    }
+                }
+            }
             $results ++;
             $lone == '';
             $skip = '';
@@ -337,20 +371,12 @@ function display_threads($threads, $oldest)
                     $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
                 }
                 $display .= '<center>';
-                // Check user blocklist
-                $block = false;
-                foreach ($blocked_user_config as $key => $value) {
-                    $blockme = '/' . addslashes($key) . '/';
-                    if (preg_match($blockme, $target_head['name'])) {
-                        $block = true;
-                        break;
-                    }
-                }
-                if ($block) {}
                 $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
                 $display .= '<p class=np_ob_subject>';
                 $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
                 $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
+                // RETRO - Determining whether to show snippet in each head may still have bugs 
+                // meaning, it might show when it shouldn't or not when it should. Not sure yet.
                 if ($result_count > 1 && isset($target_head['date'])) {
                     $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
                     $block = false;
@@ -427,7 +453,7 @@ function display_threads($threads, $oldest)
 
 function display_flat($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
@@ -436,6 +462,7 @@ function display_flat($threads, $oldest)
         krsort($threads);
     }
     // Get registered user settings
+    $newonly = false;
     if (isset($_COOKIE['mail_name'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
@@ -455,6 +482,10 @@ function display_flat($threads, $oldest)
                 $user_config['hide_unsub'] = 'hide';
             }
         }
+        // Show NEW in Section only
+        if (isset($_REQUEST['new']) && $_REQUEST['new'] == true) {
+            $newonly = true;
+        }
     }
     $results = 0;
     foreach ($threads as $key => $value) {
@@ -470,6 +501,17 @@ function display_flat($threads, $oldest)
         }
         if ($target['date'] < $oldest) {
             continue;
+        }
+        // Check if only displaying new posts in section
+        if ($newonly) {
+            $allgroups = get_group_array_from_msgid($value);
+            foreach ($allgroups as $onegroup) {
+                if (isset($userdata[$onegroup])) {
+                    if ($userdata[$onegroup] > $target['date']) {
+                        continue 2;
+                    }
+                }
+            }
         }
         if ($target['date'] < $expireme) {
             unset($this_overboard['threads'][$target['date']]);
@@ -500,7 +542,7 @@ function display_flat($threads, $oldest)
             $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
             $display .= '<p class=np_ob_body>';
             $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
-            
+
             $display .= '</p>';
             // link for (thread), if possible
             if (isset($this_overboard['threadlink'][$value])) {
@@ -539,6 +581,7 @@ function show_overboard_header($grouplist)
         echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
         // Refresh button
         echo '<td>';
+        echo '<div style="float:left;">';
         echo '<form action="overboard.php">';
         echo '<input type="hidden" name="thisgroup" value="' . $_GET['thisgroup'] . '"/>';
         if (isset($user_time)) {
@@ -548,9 +591,8 @@ function show_overboard_header($grouplist)
         }
 
         echo '</form>';
-        echo '</td>';
+        echo '</div>';
         // Article List button
-        echo '<td>';
         echo '<form action="' . $file_thread . '">';
         echo '<input type="hidden" name="group" value="' . $grouplist[0] . '"/>';
         echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($grouplist[0])) . '</button>';
@@ -564,7 +606,6 @@ function show_overboard_header($grouplist)
             echo '</form>';
             echo '</td>';
         }
-        echo '<td width=100%></td></tr></table>';
     } else {
         echo '<h1 class="np_thread_headline">';
         echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
@@ -573,7 +614,7 @@ function show_overboard_header($grouplist)
         // Refresh button
         echo '<td>';
         echo '<form action="overboard.php">';
-        echo '<button class="np_button_link" type="submit">' . $text_article["refresh"] . '</button>';
+        echo '<button class="np_button_link" type="submit">overboard</button>';
         echo '</form>';
         echo '</td>';
         // Newsgroups button (hidden)
@@ -584,14 +625,21 @@ function show_overboard_header($grouplist)
             echo '</form>';
             echo '</td>';
         }
-        echo '<td width=100%></td></tr></table>';
     }
+    echo '</div><td></td>';
+    echo '<td class="np_ob_style_toggle">';
+    
+    echo '<div style="float:right;">';
+    
+    show_overboard_style_toggle();
+    echo '</div>';
+    echo '</td>';
+    echo '</tr></table>';
 }
 
 function show_overboard_style_toggle()
 {
     echo '<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">';
-    echo '<p class="np_ob_posted_date" style="text-align: right;">';
     echo 'Display as: ';
     if ($_SESSION['obstyle'] == 'threads') {
         echo '<input type="radio" name="obstyle" value="threads" checked>Threads';
@@ -606,13 +654,12 @@ function show_overboard_style_toggle()
     }
     echo '<input class="np_button_link" type="submit" value="Reload" name="reload">';
     echo '</form >';
-    echo '</p>';
 }
 
 function show_overboard_footer($stats, $results, $iscached)
 {
-    global $user_time, $rslight_version;
-    if (isset($user_time)) {
+    global $user_time, $rslight_version, $newonly;
+    if (isset($user_time) || $newonly) {
         $recent = 'new';
     } else {
         $recent = 'recent';

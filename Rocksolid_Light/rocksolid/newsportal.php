@@ -113,7 +113,7 @@ function nntp2_open($nserver = 0, $nport = 0)
             $nport = $CONFIG['remote_ssl'];
         }
         $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
-        if(!$ns) {
+        if (! $ns) {
             return false;
         }
     } else {
@@ -2049,7 +2049,7 @@ function is_moderated($newsgroups)
             }
         }
     }
-    if($CONFIG['remote_server'] == '') {
+    if ($CONFIG['remote_server'] == '') {
         return false;
     }
     $ns = nntp2_open();
@@ -2283,6 +2283,29 @@ function get_db_data_from_msgid($msgid, $group)
     $dbh = null;
     if ($found) {
         return $row;
+    } else {
+        return false;
+    }
+}
+
+function get_group_array_from_msgid($msgid)
+{
+    global $spooldir;
+    $database = $spooldir . '/articles-overview.db3';
+    $overview_dbh = overview_db_open($database);
+    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
+    $overview_query->execute([
+        'messageid' => $msgid
+    ]);
+    $newsgroups = array();
+    $found = false;
+    while ($row = $overview_query->fetch()) {
+        $newsgroups[] = $row['newsgroup'];
+        $found = true;
+    }
+    $dbh = null;
+    if ($found) {
+        return $newsgroups;
     } else {
         return false;
     }

@@ -26,6 +26,19 @@ include "head.inc";
 
 echo '<h1 class="np_thread_headline">' . basename(getcwd()) . '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+// If logged in: button for new only
+if (isset($_COOKIE['mail_name'])) {
+    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+        if (isset($overboard) && ($overboard == true)) {
+            echo '<td>';
+            echo '<form target="' . $frame['content'] . '" action="overboard.php">';
+            echo '<button class="np_button_link" type="submit">new articles</button>';
+            echo '<input name="new" type="hidden" id="new" value="true">';
+            echo '</form>';
+            echo '</td>';
+        }
+    }
+}
 // View Latest button
 if (isset($overboard) && ($overboard == true)) {
     echo '<td>';
