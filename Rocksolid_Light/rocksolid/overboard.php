@@ -375,9 +375,7 @@ function display_threads($threads, $oldest)
                 $display .= '<p class=np_ob_subject>';
                 $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
                 $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
-                // RETRO - Determining whether to show snippet in each head may still have bugs 
-                // meaning, it might show when it shouldn't or not when it should. Not sure yet.
-                if ($result_count > 1 && isset($target_head['date'])) {
+                if((!isset($value[$target_head['msgid']]) || $result_count > 10) && isset($target_head['date'])) {
                     $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
                     $block = false;
                     foreach ($blocked_user_config as $bkey => $bvalue) {
