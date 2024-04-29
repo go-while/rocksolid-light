@@ -691,6 +691,7 @@ function groups_show($gruppen)
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
                     $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . urlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
+                    $groupdisplay .= '&nbsp;<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
                 }
                 $groupdisplay .= '</p';
             } else {

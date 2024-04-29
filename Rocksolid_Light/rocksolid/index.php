@@ -58,6 +58,8 @@ echo '</td>';
 echo '<td width=100%></td></tr></table>';
 
 flush();
+
+// Unsubscribe from group
 if (isset($_GET['unsub'])) {
     if (isset($_COOKIE['mail_name'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
@@ -71,6 +73,17 @@ if (isset($_GET['unsub'])) {
             }
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
             file_put_contents($userfile, serialize($newsubs));
+        }
+    }
+}
+// Mark group as read
+if (isset($_GET['mark_read'])) {
+    if (isset($_COOKIE['mail_name'])) {
+        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+            $userdata[$_GET['mark_read']] = time();
+            file_put_contents($userfile, serialize($userdata));
         }
     }
 }
