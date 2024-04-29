@@ -532,7 +532,13 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
             fputs($ns, "Content-Type: text/plain; charset=" . $www_charset . "; format=flowed\r\n");
             fputs($ns, "Content-Transfer-Encoding: 8bit\r\n");
         }
-        fputs($ns, "User-Agent: Rocksolid Light\r\n");
+        if (isset($OVERRIDES['user_agent'])) {
+            if ($OVERRIDES['user_agent'] != '') {
+                fputs($ns, "User-Agent: " . $OVERRIDES['user_agent'] . "\r\n");
+            }
+        } else {
+            fputs($ns, "User-Agent: Rocksolid Light\r\n");
+        }
         if ($send_poster_host)
             @fputs($ns, 'X-HTTP-Posting-Host: ' . gethostbyaddr(getenv("REMOTE_ADDR")) . "\r\n");
         if (($ref != false) && (count($ref) > 0)) {

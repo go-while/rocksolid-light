@@ -58,6 +58,10 @@ return [
     // If unset, default is 'articles'
     'overboard_default_view' => 'articles',
 
+    // Set User-Agent: string (default = 'Rocksolid Light')
+    // Set to '' for no User-Agent: header
+    'user_agent' => 'Rocksolid Light',
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];
