@@ -375,7 +375,12 @@ function display_threads($threads, $oldest)
                 $display .= '<p class=np_ob_subject>';
                 $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
                 $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
-                if((!isset($value[$target_head['msgid']]) || $result_count > 10) && isset($target_head['date'])) {
+                // Do better than !isset($value[$target_head['msgid']])
+                $timetest = $oldest;
+                if($newonly) {
+                    $timetest = $userdata[$target_head['newsgroup']];
+                }
+                if((($target_head['date'] < $timetest) || $result_count > 10) && isset($target_head['date'])) {
                     $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
                     $block = false;
                     foreach ($blocked_user_config as $bkey => $bvalue) {
