@@ -633,27 +633,6 @@ function groups_show($gruppen)
             if ($acttype != "group") {
                 $acttype = "group";
             }
-            /* Display group name and description */
-            if (isset($userdata[$g->name])) {
-                $lineclass = "np_thread_line2";
-            } else {
-                $lineclass = "np_thread_line1";
-            }
-            $groupdisplay = '<tr class="' . $lineclass . '"><td style="text-align: center;" class="' . $lineclass . '">';
-            $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . '">';
-            if ((isset($_SESSION['theme'])) && file_exists('../common/themes/' . $_SESSION['theme'] . '/images/latest.png')) {
-                $latest_image = '../common/themes/' . $_SESSION['theme'] . '/images/latest.png';
-            } else {
-                $latest_image = '../common/images/latest.png';
-            }
-            $groupdisplay .= '<img src="' . $latest_image . '">';
-            $groupdisplay .= '</a>';
-            $groupdisplay .= '</td>';
-
-            $groupdisplay .= '<td class="' . $lineclass . '">';
-            $groupdisplay .= '<span class="np_group_line_text">';
-            $groupdisplay .= '<a ';
-            $groupdisplay .= 'target="' . $frame['content'] . '" ';
             // Get last article info from overview
             $database = $spooldir . '/articles-overview.db3';
             $table = 'overview';
@@ -667,6 +646,7 @@ function groups_show($gruppen)
                 $found = 1;
                 break;
             }
+            $overview_dbh = null;
             if ($found == 1) {
                 $lastarticleinfo['date'] = $row['date'];
             }
@@ -678,6 +658,37 @@ function groups_show($gruppen)
                 $new_style_off = '</i></b>';
                 $new = true;
             }
+            /* Display group name and description */
+            if (isset($userdata[$g->name])) {
+                $lineclass = "np_thread_line2";
+            } else {
+                $lineclass = "np_thread_line1";
+            }
+            if($new) {
+                $latest_link = '&time=' . $userdata[$g->name];
+            } else {
+                $latest_link = '';
+            }
+            $groupdisplay = '<tr class="' . $lineclass . '"><td style="text-align: center;" class="' . $lineclass . '">';
+            $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . $latest_link . '">';
+            if ((isset($_SESSION['theme'])) && file_exists('../common/themes/' . $_SESSION['theme'] . '/images/latest.png')) {
+                $latest_image = '../common/themes/' . $_SESSION['theme'] . '/images/latest.png';
+            } else {
+                $latest_image = '../common/images/latest.png';
+            }
+            if ($new) {
+                $latest_image = '../common/images/new-articles.png';
+                $groupdisplay .= '<img src="' . $latest_image . '" title="New articles">';
+            } else {
+                $groupdisplay .= '<img src="' . $latest_image . '" title="Recent articles">';
+            }
+            $groupdisplay .= '</a>';
+            $groupdisplay .= '</td>';
+
+            $groupdisplay .= '<td class="' . $lineclass . '">';
+            $groupdisplay .= '<span class="np_group_line_text">';
+            $groupdisplay .= '<a ';
+            $groupdisplay .= 'target="' . $frame['content'] . '" ';
             $groupdisplay .= 'href="' . $file_thread . '?group=' . urlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
             if ($new) {
                 echo '</i></b>';
@@ -685,13 +696,11 @@ function groups_show($gruppen)
             if ($g->description != "-") {
                 $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
             }
-            $overview_dbh = null;
             if (isset($userdata[$g->name])) {
                 $groupdisplay .= '</span><p class="np_group_user_tools">';
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
-                    $groupdisplay .= '&nbsp;<a href="overboard.php?thisgroup=' . urlencode($g->name) . '&time=' . $userdata[$g->name] . '"><b>(new)</b></a> ';
-                    $groupdisplay .= '&nbsp;<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
+                    $groupdisplay .= '<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
                 }
                 $groupdisplay .= '</p';
             } else {
