@@ -664,7 +664,7 @@ function groups_show($gruppen)
             } else {
                 $lineclass = "np_thread_line1";
             }
-            if($new) {
+            if ($new) {
                 $latest_link = '&time=' . $userdata[$g->name];
             } else {
                 $latest_link = '';
@@ -677,7 +677,11 @@ function groups_show($gruppen)
                 $latest_image = '../common/images/latest.png';
             }
             if ($new) {
-                $latest_image = '../common/images/new-articles.png';
+                if ((isset($_SESSION['theme'])) && file_exists('../common/themes/' . $_SESSION['theme'] . '/images/new-articles.png')) {
+                    $latest_image = '../common/themes/' . $_SESSION['theme'] . '/images/new-articles.png';
+                } else {
+                    $latest_image = '../common/images/new-articles.png';
+                }
                 $groupdisplay .= '<img src="' . $latest_image . '" title="New articles">';
             } else {
                 $groupdisplay .= '<img src="' . $latest_image . '" title="Recent articles">';
