@@ -313,11 +313,8 @@ function display_threads($threads, $oldest)
         }
 
         // Skip if not in registered users sub list
-        $checkgroup = $target_head['newsgroup'];
-        if (! isset($userdata[$checkgroup])) {
-            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
-                continue;
-            }
+        if (! check_group_for_user($target_head['newsgroup'], $userdata, $user_config)) {
+            continue;
         }
 
         // Check if only displaying new posts in section
@@ -344,11 +341,8 @@ function display_threads($threads, $oldest)
                 continue;
             }
             // Skip if not in registered users sub list
-            $checkgroup = $target['newsgroup'];
-            if (! isset($userdata[$checkgroup])) {
-                if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
-                    continue;
-                }
+            if (! check_group_for_user($target['newsgroup'], $userdata, $user_config)) {
+                continue;
             }
             // Check if only displaying new posts in section
             if ($newonly) {
@@ -377,10 +371,10 @@ function display_threads($threads, $oldest)
                 $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
                 // Do better than !isset($value[$target_head['msgid']])
                 $timetest = $oldest;
-                if($newonly) {
+                if ($newonly) {
                     $timetest = $userdata[$target_head['newsgroup']];
                 }
-                if((($target_head['date'] < $timetest) || $result_count > 10) && isset($target_head['date'])) {
+                if ((($target_head['date'] < $timetest) || $result_count > 10) && isset($target_head['date'])) {
                     $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
                     $block = false;
                     foreach ($blocked_user_config as $bkey => $bvalue) {
@@ -493,14 +487,11 @@ function display_flat($threads, $oldest)
     $results = 0;
     foreach ($threads as $key => $value) {
         $target = $this_overboard['msgids'][$value];
-        $checkgroup = $target['newsgroup'];
         if (! isset($target['msgid'])) {
             $target = get_data_from_msgid($value);
         }
-        if (! isset($userdata[$checkgroup])) {
-            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
-                continue;
-            }
+        if (! check_group_for_user($target['newsgroup'], $userdata, $user_config)) {
+            continue;
         }
         if ($target['date'] < $oldest) {
             continue;
@@ -631,13 +622,39 @@ function show_overboard_header($grouplist)
     }
     echo '</div><td></td>';
     echo '<td class="np_ob_style_toggle">';
-    
+
     echo '<div style="float:right;">';
-    
+
     show_overboard_style_toggle();
     echo '</div>';
     echo '</td>';
     echo '</tr></table>';
+}
+
+// Return TRUE unless group is not subscribed by user
+// It is assumed $newsgroups to check are verified to be in SECTION
+function check_group_for_user($newsgroups, $userdata, $user_config)
+{
+    if(!is_array($userdata)) {
+        // No logged in user
+        return true;
+    }
+    $testgroup = preg_split("/\ |\,/", $newsgroups);
+    $ok = true;
+    foreach ($testgroup as $checkgroup) {
+        if (! isset($userdata[$checkgroup])) {
+            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                $ok = false;
+            } else {
+                $ok = true;
+                break;
+            }
+        } else {
+            $ok = true;
+            break;
+        }
+    }
+    return $ok;
 }
 
 function show_overboard_style_toggle()
