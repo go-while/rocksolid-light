@@ -69,7 +69,7 @@ if (isset($_GET['thisgroup'])) {
     $article_age = 30;
 }
 
-$version = 1.2;
+$version = 1.25;
 
 # How long in seconds to cache results
 $cachetime = 60;
@@ -197,17 +197,19 @@ foreach ($grouplist as $findgroup) {
                 $this_overboard['lastmessage'] = $target['date'];
             }
 
-            if (! isset($this_overboard['threads'][$target['date']])) {
-                $this_overboard['threads'][$target['date']] = $thismsgid;
-                $this_overboard['msgids'][$thismsgid] = $target;
-                if (trim($overviewline['refs']) != '') {
-                    $ref = preg_split("/[\s]+/", $overviewline['refs']);
-                    $this_overboard['threadlink'][$thismsgid] = $ref[0];
-                }
-                if ($results ++ > ($maxdisplay - 2)) {
-                    break;
-                }
+            // Must handle crossposted articles (time is equal)
+            $unique_date = $target['date'] . "." . rand(0, 4) . rand(0, 40);
+            // if (! isset($this_overboard['threads'][$unique_date])) {
+            $this_overboard['threads'][$unique_date] = $thismsgid;
+            $this_overboard['msgids'][$thismsgid] = $target;
+            if (trim($overviewline['refs']) != '') {
+                $ref = preg_split("/[\s]+/", $overviewline['refs']);
+                $this_overboard['threadlink'][$thismsgid] = $ref[0];
             }
+            if ($results ++ > ($maxdisplay - 2)) {
+                break;
+            }
+            // }
         }
     }
 }
@@ -239,13 +241,12 @@ function expire_overboard($cachefile)
     $prune = false;
     if ($this_overboard['expire'] < (time() - 86400)) {
         $prune = true;
-        foreach ($this_overboard['msgids'] as $key => $value) {
-            $target = $this_overboard['msgids'][$key];
-            if ($target['date'] < (time() - (86400 * $article_age))) {
+        foreach ($this_overboard['threads'] as $key => $value) {
+            if ($key < (time() - (86400 * $article_age))) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Expiring: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
-                unset($this_overboard['threads'][$target['date']]);
-                unset($this_overboard['msgids'][$key]);
-                unset($this_overboard['threadlink'][$key]);
+                unset($this_overboard['threads'][$key]);
+                unset($this_overboard['msgids'][$value]);
+                unset($this_overboard['threadlink'][$value]);
             }
         }
         $this_overboard['expire'] = time();
@@ -485,10 +486,16 @@ function display_flat($threads, $oldest)
         }
     }
     $results = 0;
+    $shown = array();
     foreach ($threads as $key => $value) {
         $target = $this_overboard['msgids'][$value];
         if (! isset($target['msgid'])) {
             $target = get_data_from_msgid($value);
+        }
+        if(isset($shown[$value.$target['newsgroup']])) {
+            continue;
+        } else {
+            $shown[$value.$target['newsgroup']] = $value;
         }
         if (! check_group_for_user($target['newsgroup'], $userdata, $user_config)) {
             continue;
@@ -633,26 +640,23 @@ function show_overboard_header($grouplist)
 
 // Return TRUE unless group is not subscribed by user
 // It is assumed $newsgroups to check are verified to be in SECTION
-function check_group_for_user($newsgroups, $userdata, $user_config)
+function check_group_for_user($newsgroup, $userdata, $user_config)
 {
-    if(!is_array($userdata)) {
+    global $logdir, $config_name;
+    $logfile = $logdir . '/overboard.log';
+    if (! is_array($userdata)) {
         // No logged in user
         return true;
     }
-    $testgroup = preg_split("/\ |\,/", $newsgroups);
     $ok = true;
-    foreach ($testgroup as $checkgroup) {
-        if (! isset($userdata[$checkgroup])) {
-            if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
-                $ok = false;
-            } else {
-                $ok = true;
-                break;
-            }
+    if (! isset($userdata[$newsgroup])) {
+        if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+            $ok = false;
         } else {
             $ok = true;
-            break;
         }
+    } else {
+        $ok = true;
     }
     return $ok;
 }
