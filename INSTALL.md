@@ -33,6 +33,9 @@ compface, php-gd and libgd3 for X-Face support
 These are the names for Debian packages. Other distributions should 
 also provide these in some way.
 
+If you wish to display UNIX fortunes in the header, install:
+fortunes, fortune-mod and fortunes-min
+
 If you get errors, check your log files to see what packages I've failed to mention.
 
 Installation: 
