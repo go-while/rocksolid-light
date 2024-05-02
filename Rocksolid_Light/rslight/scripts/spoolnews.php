@@ -493,6 +493,8 @@ function get_articles($ns, $group)
                     $tmp = insert_article_from_array($current_article, false);
                     if ($tmp[0] != "4") {
                         $pass = true;
+                    } else {
+                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $tmp, FILE_APPEND);
                     }
                 }
                 if (! $pass) {
