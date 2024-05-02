@@ -1707,6 +1707,16 @@ function overview_db_open($database, $table = 'overview')
 
 function article_db_open($database, $table = 'articles')
 {
+    global $spooldir, $logdir, $config_name;
+    $logfile = $logdir . '/debug.log';
+    $spoolpath = "/" . preg_replace("/\//", "\/", $spooldir) . "/";
+    $group = preg_replace("/\-articles\.db3/", "", $database);
+    $group = preg_replace($spoolpath, "", $group);
+    $group = preg_replace("/\//", "", $group);
+    if(!get_section_by_group($group)) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
+        return false;
+    }
     try {
         $dbh = new PDO('sqlite:' . $database);
     } catch (PDOException $e) {
