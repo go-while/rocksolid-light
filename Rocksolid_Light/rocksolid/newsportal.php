@@ -369,7 +369,7 @@ function testGroup($groupname)
     }
 }
 
-function get_section_by_group($groupname)
+function get_section_by_group($groupname, $all_sections = false)
 {
     global $CONFIG, $config_dir;
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -382,7 +382,9 @@ function get_section_by_group($groupname)
         }
         $menuitem = explode(':', $menu);
         if ($menuitem[1] == '0') {
-            continue;
+            if (! $all_sections) {
+                continue;
+            }
         }
         $section = "";
         $gldata = file($config_dir . $menuitem[0] . "/groups.txt");
@@ -1538,6 +1540,29 @@ function get_date_interval($value)
     return $variance;
 }
 
+function get_newsgroups_by_msgid($msgid)
+{
+    global $spooldir, $CONFIG;
+    $database = $spooldir . '/articles-overview.db3';
+    $table = 'overview';
+    $overview_dbh = overview_db_open($database, $table);
+    $overview_stmt = $overview_dbh->prepare("SELECT newsgroup FROM overview WHERE msgid=:msgid");
+    $overview_stmt->bindParam(':msgid', $msgid);
+    $overview_stmt->execute();
+
+    $found = false;
+    $groups = array();
+    while ($row = $overview_stmt->fetch()) {
+        $groups[] = $row['newsgroup'];
+        $found = true;
+    }
+    if (! $found) {
+        $groups = null;
+    }
+    $overview_dbh = null;
+    return ($groups);
+}
+
 function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
 {
     global $spooldir, $CONFIG;
@@ -1713,7 +1738,7 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\-articles\.db3/", "", $database);
     $group = preg_replace($spoolpath, "", $group);
     $group = preg_replace("/\//", "", $group);
-    if(!get_section_by_group($group)) {
+    if (! get_section_by_group($group, true)) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
         return false;
     }
@@ -2050,7 +2075,8 @@ function verify_gpg_signature($res, $signed_text)
     }
 }
 
-function mb_wordwrap($string, $width = 75, $break = "\n", $cut = false) {
+function mb_wordwrap($string, $width = 75, $break = "\n", $cut = false)
+{
     $string = (string) $string;
     if ($string === '') {
         return '';
@@ -2070,7 +2096,7 @@ function mb_wordwrap($string, $width = 75, $break = "\n", $cut = false) {
     $breakWidth = mb_strlen($break);
     $result = '';
     $lastStart = $lastSpace = 0;
-    for ($current = 0; $current < $stringWidth; $current++) {
+    for ($current = 0; $current < $stringWidth; $current ++) {
         $char = mb_substr($string, $current, 1);
         $possibleBreak = $char;
         if ($breakWidth !== 1) {
@@ -2239,7 +2265,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {
         $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
-        if(!$article_dbh) {
+        if (! $article_dbh) {
             return "441 Cannot open " . $spooldir . '/' . $group . "-articles.db3\r\n";
         }
         $article_sql = 'INSERT OR IGNORE INTO articles(newsgroup, number, msgid, date, name, subject, article, search_snippet) VALUES(?,?,?,?,?,?,?,?)';
@@ -2249,7 +2275,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $overview_dbh = overview_db_open($database, $table);
-    if(!$overview_dbh) {
+    if (! $overview_dbh) {
         $article_dbh = null;
         return "441 Cannot open " . $database . "\r\n";
     }
