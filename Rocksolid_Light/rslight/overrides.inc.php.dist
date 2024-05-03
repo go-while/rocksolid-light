@@ -58,6 +58,9 @@ return [
     // If unset, default is 'articles'
     'overboard_default_view' => 'articles',
 
+    // Disable New Articles link on groups page
+    'overboard_disable_new_link' => false,
+
     // Set User-Agent: string (default = 'Rocksolid Light')
     // Set to '' for no User-Agent: header
     'user_agent' => 'Rocksolid Light',
