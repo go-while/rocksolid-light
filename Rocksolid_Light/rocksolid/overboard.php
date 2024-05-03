@@ -309,32 +309,17 @@ function display_threads($threads, $oldest)
     $results = 0;
     foreach ($nicole as $key => $value) {
         // Skip if not in registered users sub list
-        if (! check_group_for_user($key, $userdata, $user_config)) {
+        if (! $foundgroup_head = check_group_for_user($key, $userdata, $user_config, true)) {
             continue;
         }
         $target_head = $this_overboard['msgids'][$key];
         if (! isset($target_head['msgid'])) {
             $target_head = get_data_from_msgid($key);
         }
-
-        // Check if only displaying new posts in section
-        if ($newonly) {
-            $allgroups = get_group_array_from_msgid($key);
-            foreach ($allgroups as $onegroup) {
-                if (isset($userdata[$onegroup])) {
-                    $infofilename = $spooldir . "/" . $onegroup . "-lastarticleinfo.dat";
-                    $lastarticleinfo = unserialize(file_get_contents($infofilename));
-                    if ($userdata[$onegroup] > $lastarticleinfo['date']) {
-                        continue 2;
-                    }
-                }
-            }
-        }
         $nohead = true;
         $result_count = count($value);
         foreach ($value as $new) {
-            // Skip if not in registered users sub list
-            if (! check_group_for_user($new, $userdata, $user_config)) {
+            if (! $foundgroup = check_group_for_user($new, $userdata, $user_config, true)) {
                 continue;
             }
             $target = $this_overboard['msgids'][$new];
@@ -344,15 +329,10 @@ function display_threads($threads, $oldest)
             if ($target['date'] < $oldest) {
                 continue;
             }
-
-            // Check if only displaying new posts in section
             if ($newonly) {
-                $allgroups = get_group_array_from_msgid($new);
-                foreach ($allgroups as $onegroup) {
-                    if (isset($userdata[$onegroup])) {
-                        if ($userdata[$onegroup] > $target['date']) {
-                            continue 2;
-                        }
+                if ($foundgroup && $foundgroup != '') {
+                    if ($target['date'] < $userdata[$foundgroup]) {
+                        continue;
                     }
                 }
             }
@@ -421,7 +401,6 @@ function display_threads($threads, $oldest)
                     $display .= '<br /><br />';
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
-
                     $display .= '</p>';
                     $display .= '<p class=np_ob_body>';
                     $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
@@ -487,7 +466,8 @@ function display_flat($threads, $oldest)
     $results = 0;
     $shown = array();
     foreach ($threads as $key => $value) {
-        if (! check_group_for_user($value, $userdata, $user_config)) {
+        // Skip if not in registered users sub list
+        if (! $foundgroup = check_group_for_user($value, $userdata, $user_config, true)) {
             continue;
         }
         $target = $this_overboard['msgids'][$value];
@@ -499,18 +479,13 @@ function display_flat($threads, $oldest)
         } else {
             $shown[$value . $target['newsgroup']] = $value;
         }
-
         if ($target['date'] < $oldest) {
             continue;
         }
-        // Check if only displaying new posts in section
         if ($newonly) {
-            $allgroups = get_group_array_from_msgid($value);
-            foreach ($allgroups as $onegroup) {
-                if (isset($userdata[$onegroup])) {
-                    if ($userdata[$onegroup] > $target['date']) {
-                        continue 2;
-                    }
+            if ($foundgroup && $foundgroup != '') {
+                if ($target['date'] < $userdata[$foundgroup]) {
+                    continue;
                 }
             }
         }
@@ -640,24 +615,32 @@ function show_overboard_header($grouplist)
 
 // Return TRUE unless group is not subscribed by user
 // It is assumed $newsgroups to check are verified to be in SECTION
-function check_group_for_user($msgid, $userdata, $user_config)
+function check_group_for_user($msgid, $userdata, $user_config, $check_section = false)
 {
     global $logdir, $config_name;
     $logfile = $logdir . '/overboard.log';
     if (! is_array($userdata)) {
         // No logged in user
-        return true;
+        return '';
     }
     if (! isset($user_config['hide_unsub']) || $user_config['hide_unsub'] != 'hide') {
-        return true;
+        return '';
     }
     $newsgroups = get_newsgroups_by_msgid($msgid);
     if ($newsgroups == false) {
         return false;
     }
     foreach ($newsgroups as $newsgroup) {
-        if (isset($userdata[$newsgroup])) {
-            return true;
+        if ($check_section) {
+            if ($config_name == get_section_by_group($newsgroup)) {
+                if (isset($userdata[$newsgroup])) {
+                    return $newsgroup;
+                }
+            }
+        } else {
+            if (isset($userdata[$newsgroup])) {
+                return $newsgroup;
+            }
         }
     }
     return false;
