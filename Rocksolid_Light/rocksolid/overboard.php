@@ -370,7 +370,6 @@ function display_threads($threads, $oldest)
                 $display .= '<p class=np_ob_subject>';
                 $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
                 $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
-                // Do better than !isset($value[$target_head['msgid']])
                 $timetest = $oldest;
                 if ($newonly) {
                     $timetest = $userdata[$target_head['newsgroup']];
@@ -393,7 +392,7 @@ function display_threads($threads, $oldest)
                         $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
                         if ($CONFIG['article_database'] == '1') {
                             $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
-                            $display .= wordwrap(substr($article['search_snippet'], 0, $snippetlength), ($snippetlength / 2), "<br />\n", true);
+                            $display .= strip_tags(wordwrap(substr($article['search_snippet'], 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
                         }
                     }
                     $skip = $target_head['number'];
@@ -431,7 +430,7 @@ function display_threads($threads, $oldest)
                     $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a></p>';
                     if ($CONFIG['article_database'] == '1') {
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
-                        $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
+                        $display .= strip_tags(htmlentities(substr($article['search_snippet'], 0, $snippetlength)));
                     }
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
