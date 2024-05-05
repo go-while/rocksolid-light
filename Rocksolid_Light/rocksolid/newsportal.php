@@ -1055,6 +1055,7 @@ function html_parse($text)
 
 function display_links_in_body($text)
 {
+    global $config_dir;
     preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
     $found = array();
     $isquote = false;
@@ -1076,6 +1077,10 @@ function display_links_in_body($text)
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
+    if(file_exists($config_dir . '/rewrite_body.inc.php')) {
+        include ($config_dir . '/rewrite_body.inc.php');
+    }
+    
     echo $text;
     if ($isquote) {
         echo '</blockquote>';
@@ -1540,7 +1545,7 @@ function get_date_interval($value)
     return $variance;
 }
 
-function get_newsgroups_by_msgid($msgid)
+function get_newsgroups_by_msgid($msgid, $noarray = false)
 {
     global $spooldir, $CONFIG;
     $database = $spooldir . '/articles-overview.db3';
@@ -1560,7 +1565,12 @@ function get_newsgroups_by_msgid($msgid)
         $groups = null;
     }
     $overview_dbh = null;
-    return ($groups);
+    if ($noarray) {
+        return(implode(",", $groups));
+        
+    } else {
+        return ($groups);
+    }
 }
 
 function create_xref_from_msgid($msgid, $thisgroup = null, $thisnumber = null)
