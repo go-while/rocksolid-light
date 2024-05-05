@@ -169,6 +169,7 @@ $table = 'overview';
 $dbh = overview_db_open($database, $table);
 $query = $dbh->prepare('SELECT * FROM ' . $table . ' WHERE newsgroup=:findgroup AND date >= ' . $cachedate . ' ORDER BY date DESC LIMIT ' . $maxdisplay);
 foreach ($grouplist as $findgroup) {
+    // Remove any group description info from group name
     $groups = preg_split("/(\ |\t)/", $findgroup, 2);
     $findgroup = $groups[0];
 
