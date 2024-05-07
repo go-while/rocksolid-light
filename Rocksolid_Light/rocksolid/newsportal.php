@@ -615,14 +615,6 @@ function groups_show($gruppen)
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
         }
-
-        if (! isset($user_config['hide_unsub'])) {
-            if (isset($OVERRIDES['hide_unsub'])) {
-                $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];
-            } else {
-                $user_config['hide_unsub'] = 'hide';
-            }
-        }
     }
     for ($i = 0; $i < $c; $i ++) {
         unset($groupdisplay);
@@ -762,11 +754,37 @@ function groups_show($gruppen)
     foreach ($nonsubs as $nonsub) {
         echo $nonsub;
     }
-    echo "</td></div></table>\n";
+    echo "</table><table>";
+    echo '<tr><td class="np_show_hide_toggle">';
     if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
-        echo '<font class="np_last_posted_date">&nbsp;Unsubscribed groups are HIDDEN. Visit <a href="/spoolnews/user.php">User/Configuration</a> to change<br />';
-        echo '&nbsp;or select groups from <a href="/common/grouplist.php">Grouplist</a> to add groups</font>';
+        echo '&nbsp;Unsubscribed groups are HIDDEN.';
+        echo '&nbsp;Select groups from <a href="/common/grouplist.php">Grouplist</a> to add groups';
     }
+    if (isset($userdata)) {
+        show_groups_hide_toggle();
+    }
+    echo '</td></tr>';
+    echo '</table>';
+}
+
+function show_groups_hide_toggle()
+{
+    global $user_config;
+    echo '<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">';
+    echo '&nbsp;Unsubscribed Groups: ';
+    if ($user_config['hide_unsub'] == 'hide') {
+        echo '<input type="radio" name="hide_unsub" value="show">Show';
+        echo '&nbsp;';
+        echo '<input type="radio" name="hide_unsub" value="hide" checked>Hide';
+        echo '&nbsp;';
+    } else {
+        echo '<input type="radio" name="hide_unsub" value="show" checked>Show';
+        echo '&nbsp;';
+        echo '<input type="radio" name="hide_unsub" value="hide">Hide';
+        echo '&nbsp;';
+    }
+    echo '<input class="np_button_link" type="submit" value="Reload" name="reload">';
+    echo '</form >';
 }
 
 /*
@@ -1077,10 +1095,10 @@ function display_links_in_body($text)
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
-    if(file_exists($config_dir . '/rewrite_body.inc.php')) {
+    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
         include ($config_dir . '/rewrite_body.inc.php');
     }
-    
+
     echo $text;
     if ($isquote) {
         echo '</blockquote>';
@@ -1566,8 +1584,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
     }
     $overview_dbh = null;
     if ($noarray) {
-        return(implode(",", $groups));
-        
+        return (implode(",", $groups));
     } else {
         return ($groups);
     }

@@ -4,6 +4,10 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
     $_SESSION['last_access'] = time();
 }
 
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (30)) . " GMT");
+header("Cache-Control: max-age=30");
+header("Pragma: cache");
+
 $_SESSION['isframed'] = 1;
 
 include "config.inc.php";
@@ -26,8 +30,8 @@ include "head.inc";
 
 echo '<h1 class="np_thread_headline">' . basename(getcwd()) . '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-// If logged in: button for new only
 
+// If logged in: button for new only
 if (isset($_COOKIE['mail_name'])) {
     if (isset($OVERRIDES['overboard_disable_new_link']) && $OVERRIDES['overboard_disable_new_link'] === true) {
         $newlink = false;
@@ -44,6 +48,14 @@ if (isset($_COOKIE['mail_name'])) {
                 echo '</form>';
                 echo '</td>';
             }
+        }
+    }
+    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+        if (isset($_POST['hide_unsub'])) {
+            $user_config['hide_unsub'] = $_POST['hide_unsub'];
+            file_put_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config', serialize($user_config));
         }
     }
 }

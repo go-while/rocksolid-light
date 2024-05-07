@@ -631,6 +631,17 @@ h1.np_post_headline {
 	margin-top: 10px;
 }
 
+/* show or hide groups toggle */
+.np_show_hide_toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-decoration: none;
+    text-align: center;
+    color: var(--color-highlight);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
+}
+
 /* =========== specifically for rocksolid overboard =========== */
 
 /* results table */
