@@ -292,7 +292,6 @@ function display_threads($threads, $oldest)
             $newonly = true;
         }
     }
-
     // Build display array
     $nicole = array();
     foreach ($threads as $key => $value) {
@@ -311,7 +310,9 @@ function display_threads($threads, $oldest)
     foreach ($nicole as $key => $value) {
         // Skip if not in registered users sub list
         if (! $foundgroup_head = check_group_for_user($key, $userdata, $user_config, true)) {
-            continue;
+            // testing: continuing here may break newsgroup identification
+            // and not display articles that should be displayed
+ //           continue;
         }
         $target_head = $this_overboard['msgids'][$key];
         if (! isset($target_head['msgid'])) {
@@ -321,6 +322,7 @@ function display_threads($threads, $oldest)
         $result_count = count($value);
         foreach ($value as $new) {
             if (! $foundgroup = check_group_for_user($new, $userdata, $user_config, true)) {
+                echo "FAIL";
                 continue;
             }
             $target = $this_overboard['msgids'][$new];
@@ -622,10 +624,10 @@ function check_group_for_user($msgid, $userdata, $user_config, $check_section = 
     $logfile = $logdir . '/overboard.log';
     if (! is_array($userdata)) {
         // No logged in user
-        return '';
+        return true;
     }
     if (! isset($user_config['hide_unsub']) || $user_config['hide_unsub'] != 'hide') {
-        return '';
+        return true;
     }
     $newsgroups = get_newsgroups_by_msgid($msgid);
     if ($newsgroups == false) {
