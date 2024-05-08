@@ -627,20 +627,18 @@ function groups_show($gruppen)
             if ($acttype != "group") {
                 $acttype = "group";
             }
-            // Get last article info from overview
-            $database = $spooldir . '/articles-overview.db3';
-            $table = 'overview';
-            $overview_dbh = overview_db_open($database);
-            $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 2');
-            $overview_query->execute([
-                'newsgroup' => $g->name
-            ]);
+            // Get last article info from article database
+            $database = $spooldir . '/' . $g->name . '-articles.db3';
+            $articles_dbh = article_db_open($database);
+            $articles_query = $articles_dbh->prepare('SELECT * FROM articles ORDER BY CAST(date AS int) DESC LIMIT 2');
+            $articles_query->execute();
             $found = 0;
-            while ($row = $overview_query->fetch()) {
+            while ($row = $articles_query->fetch()) {
                 $found = 1;
                 break;
             }
-            $overview_dbh = null;
+            $articles_dbh = null;
+
             if ($found == 1) {
                 $lastarticleinfo['date'] = $row['date'];
             }
@@ -1829,7 +1827,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         $article_key = 'article.db3-' . $group . $article;
         if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
-            $memcache_ttl = 3600;
+            $memcache_ttl = 14400;
             //file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
         }
     }
