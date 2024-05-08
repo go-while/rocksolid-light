@@ -99,6 +99,11 @@ include ($config_dir . '/fortunes.conf');
 if (file_exists($config_dir . '/motd.txt')) {
     $motd = file_get_contents($config_dir . '/motd.txt');
 }
+// If specific <section>-motd.txt exists, use it
+if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
+    $motd = file_get_contents($config_dir . '/' . $config_name . '-motd.txt');
+}
+
 echo '<p align="center" class="np_header_button_bar">';
 echo '<table cellpadding="0" cellspacing="0"><tr>';
 foreach ($menulist as $menu) {
