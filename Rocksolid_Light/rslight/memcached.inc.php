@@ -10,6 +10,12 @@ if(!$enable_memcache) {
 $server = '127.0.0.1';
 $port = 11211;
 
+// Log all hits
+$enable_memcache_logging = false;
+
+// Time in seconds to cache data
+$memcache_ttl = 14400;
+
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
 // Initiate a new object of memcache

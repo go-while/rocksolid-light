@@ -663,7 +663,6 @@ function groups_show($gruppen)
                 if ($found == 1) {
                     $lastarticleinfo['date'] = $row['date'];
                     if ($memcacheD) {
-                        $memcache_ttl = 3600;
                         $memcacheD->add($lar_memcache = 'lastarticleinfo-' . $g->name, $lastarticleinfo['date'], $memcache_ttl);
                     }
                 }
@@ -1888,7 +1887,6 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
             }
         }
         if ($ok_article == 1 && $memcacheD) {
-            $memcache_ttl = 14400;
             $memcacheD->add($article_key, $msg2, $memcache_ttl);
         }
     }
