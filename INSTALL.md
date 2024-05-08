@@ -30,6 +30,7 @@ php8.x-sqlite3 (or later version).
 phpmailer is required if email confirmation is to be used.
 php-xml to work with RSS feeds
 compface, php-gd and libgd3 for X-Face support
+memcached, php-memcached for memcached support
 These are the names for Debian packages. Other distributions should 
 also provide these in some way.
 

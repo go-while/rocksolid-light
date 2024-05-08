@@ -1816,35 +1816,54 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
 {
     global $config_dir, $path, $groupconfig, $config_name, $logdir, $spooldir;
     $logfile = $logdir . '/newsportal.log';
+
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
+    
     $msg2 = "";
     $closeme = 0;
-    $database = $spooldir . '/' . $group . '-articles.db3';
-    if (! $dbh) {
-        if (! is_file($database)) {
-            return FALSE;
-        }
-        $dbh = article_db_open($database);
-        $closeme = 1;
-    }
     $ok_article = 0;
-    // By Message-ID
-    if (! is_numeric($article)) {
-        $stmt = $dbh->prepare("SELECT * FROM articles WHERE msgid like :terms");
-        $stmt->bindParam(':terms', $article);
-        $stmt->execute();
-        while ($found = $stmt->fetch()) {
-            $msg2 = $found['article'];
+    // Check memcache
+    if ($memcacheD) {
+        $article_key = 'article.db3-' . $group . $article;
+        if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
-            break;
+            $memcache_ttl = 3600;
+            file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
         }
-    } else {
-        $stmt = $dbh->prepare("SELECT * FROM articles WHERE number = :terms");
-        $stmt->bindParam(':terms', $article);
-        $stmt->execute();
-        while ($found = $stmt->fetch()) {
-            $msg2 = $found['article'];
-            $ok_article = 1;
-            break;
+    }
+    if (! $ok_article) {
+        $database = $spooldir . '/' . $group . '-articles.db3';
+        if (! $dbh) {
+            if (! is_file($database)) {
+                return FALSE;
+            }
+            $dbh = article_db_open($database);
+            $closeme = 1;
+        }
+        // By Message-ID
+        if (! is_numeric($article)) {
+            $stmt = $dbh->prepare("SELECT * FROM articles WHERE msgid like :terms");
+            $stmt->bindParam(':terms', $article);
+            $stmt->execute();
+            while ($found = $stmt->fetch()) {
+                $msg2 = $found['article'];
+                $ok_article = 1;
+                break;
+            }
+        } else {
+            $stmt = $dbh->prepare("SELECT * FROM articles WHERE number = :terms");
+            $stmt->bindParam(':terms', $article);
+            $stmt->execute();
+            while ($found = $stmt->fetch()) {
+                $msg2 = $found['article'];
+                $ok_article = 1;
+                break;
+            }
+        }
+        if ($ok_article == 1 && $memcacheD) {
+            $memcacheD->add($article_key, $msg2, $memcache_ttl);
         }
     }
     if ($closeme == 1) {
