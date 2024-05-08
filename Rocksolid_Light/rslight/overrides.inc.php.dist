@@ -61,6 +61,10 @@ return [
     // Disable New Articles link on groups page
     'overboard_disable_new_link' => false,
 
+    // Disable adding 'X-Rslight-*' headers to
+    // outgoing messages
+    'disable_rslight_headers' => false,
+
     // Set User-Agent: string (default = 'Rocksolid Light')
     // Set to '' for no User-Agent: header
     'user_agent' => 'Rocksolid Light',
