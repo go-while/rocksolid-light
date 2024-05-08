@@ -1830,7 +1830,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
             $memcache_ttl = 3600;
-            file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
+            //file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
         }
     }
     if (! $ok_article) {
