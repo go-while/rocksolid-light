@@ -602,6 +602,9 @@ function groups_show($gruppen)
         return;
     global $file_thread, $text_groups;
     $logfile = $logdir . '/debug.log';
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
     $c = count($gruppen);
     $acttype = "keins";
     echo '<table class="np_groups_table" cellspacing="0"><tr class="np_thread_head"><td width="45px" class="np_thread_head">';
@@ -628,19 +631,42 @@ function groups_show($gruppen)
                 $acttype = "group";
             }
             // Get last article info from article database
-            $database = $spooldir . '/' . $g->name . '-articles.db3';
-            $articles_dbh = article_db_open($database);
-            $articles_query = $articles_dbh->prepare('SELECT * FROM articles ORDER BY CAST(date AS int) DESC LIMIT 2');
-            $articles_query->execute();
-            $found = 0;
-            while ($row = $articles_query->fetch()) {
-                $found = 1;
-                break;
+            // First check memcache
+            if ($memcacheD) {
+                unset($lastarticleinfo);
+                $lar_memcache = 'lastarticleinfo-' . $g->name;
+                $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $g->name);
+                if ($lar_cachetime = $memcacheD->get($lar_memcache)) {
+                    if (filemtime($grouppath) < $lar_cachetime) {
+                        $lastarticleinfo['date'] = $lar_cachetime;
+                        if ($enable_memcache_logging) {
+                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Found lastarticleinfo for ' . $g->name . ' in memcache', FILE_APPEND);
+                        }
+                    }
+                }
             }
-            $articles_dbh = null;
+            if (! isset($lastarticleinfo['date'])) {
+                $database = $spooldir . '/articles-overview.db3';
+                $table = 'overview';
+                $overview_dbh = overview_db_open($database);
+                $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 2');
+                $overview_query->execute([
+                    'newsgroup' => $g->name
+                ]);
+                $found = 0;
+                while ($row = $overview_query->fetch()) {
+                    $found = 1;
+                    break;
+                }
+                $overview_dbh = null;
 
-            if ($found == 1) {
-                $lastarticleinfo['date'] = $row['date'];
+                if ($found == 1) {
+                    $lastarticleinfo['date'] = $row['date'];
+                    if ($memcacheD) {
+                        $memcache_ttl = 3600;
+                        $memcacheD->add($lar_memcache = 'lastarticleinfo-' . $g->name, $lastarticleinfo['date'], $memcache_ttl);
+                    }
+                }
             }
             $new = false;
             $new_style_on = '';
@@ -1818,7 +1844,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
     if (file_exists($config_dir . '/memcache.inc.php')) {
         include $config_dir . '/memcache.inc.php';
     }
-    
+
     $msg2 = "";
     $closeme = 0;
     $ok_article = 0;
@@ -1827,8 +1853,9 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         $article_key = 'article.db3-' . $group . $article;
         if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
-            $memcache_ttl = 14400;
-            //file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
+            if ($enable_memcache_logging) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
+            }
         }
     }
     if (! $ok_article) {
@@ -1861,6 +1888,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
             }
         }
         if ($ok_article == 1 && $memcacheD) {
+            $memcache_ttl = 14400;
             $memcacheD->add($article_key, $msg2, $memcache_ttl);
         }
     }
