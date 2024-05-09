@@ -663,7 +663,7 @@ function groups_show($gruppen)
                 if ($found == 1) {
                     $lastarticleinfo['date'] = $row['date'];
                     if ($memcacheD) {
-                        $memcacheD->add($lar_memcache = 'lastarticleinfo-' . $g->name, $lastarticleinfo['date'], $memcache_ttl);
+                        $memcacheD->add($lar_memcache, $lastarticleinfo['date'], $memcache_ttl);
                     }
                 }
             }
@@ -2497,7 +2497,19 @@ function get_group_array_from_msgid($msgid)
 
 function get_data_from_msgid($msgid, $thisgroup = null)
 {
-    global $spooldir;
+    global $spooldir, $config_dir, $logdir;
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
+
+    if ($memcacheD) {
+        $row_cache = 'get_data_from_msgid-' . $msgid;
+        if ($row = $memcacheD->get($row_cache)) {
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Found $row_cache in memcache", FILE_APPEND);
+            return $row;
+        }
+    }
+
     $database = $spooldir . '/articles-overview.db3';
     $articles_dbh = overview_db_open($database);
     if ($thisgroup != null) {
@@ -2519,6 +2531,9 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     }
     $dbh = null;
     if ($found) {
+        if ($memcacheD) {
+            $memcacheD->add($row_cache, $row, $memcache_ttl);
+        }
         return $row;
     } else {
         return false;
