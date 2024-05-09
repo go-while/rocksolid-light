@@ -1,4 +1,5 @@
 <?php
+/* memcached and php-memcached must be installed */
 
 $enable_memcache = false;
 

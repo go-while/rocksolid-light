@@ -2613,7 +2613,10 @@ function send_admin_message($admin, $from, $subject, $message)
 
 function delete_message($messageid, $group = null, $overview_dbh = null)
 {
-    global $logfile, $config_dir, $spooldir, $CONFIG, $webserver_group;
+    global $logfile, $logdir, $config_dir, $spooldir, $CONFIG, $webserver_group;
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
     if ($group == null) {
         $message = get_data_from_msgid($messageid);
         $groups = $message['newsgroup'];
@@ -2688,6 +2691,18 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                 ':newsgroup' => $group,
                 ':msgid' => $messageid
             ]);
+            // Delete article from memcache
+            if ($memcacheD) {
+                $article_key = 'article.db3-' . $group . $row['number'];
+                $result = $memcacheD->delete($article_key);
+                if($enable_memcache_logging) {
+                    if($result) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $article_key from memcache", FILE_APPEND);
+                    } else {
+                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $article_key from memcache", FILE_APPEND);
+                    }
+                }
+            }
         }
     }
     if ($close_ovdb) {
