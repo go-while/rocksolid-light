@@ -635,13 +635,23 @@ function groups_show($gruppen)
             if ($memcacheD) {
                 unset($lastarticleinfo);
                 $lar_memcache = 'lastarticleinfo-' . $g->name;
-                $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $g->name);
-                if ($lar_cachetime = $memcacheD->get($lar_memcache)) {
-                    if (filemtime($grouppath) < $lar_cachetime) {
-                        $lastarticleinfo['date'] = $lar_cachetime;
+                $groupfile = $spooldir . '/' . $g->name . '-lastupdate.dat';
+                if ($lastarticleinfo = unserialize($memcacheD->get($lar_memcache))) {
+                    if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
                         if ($enable_memcache_logging) {
                             file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Found lastarticleinfo for ' . $g->name . ' in memcache', FILE_APPEND);
+                            $found = 1;
                         }
+                    } else {
+                        $result = $memcacheD->delete($lar_memcache);
+                        if ($enable_memcache_logging) {
+                            if ($result) {
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $lar_memcache from memcache", FILE_APPEND);
+                            } else {
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $lar_memcache from memcache", FILE_APPEND);
+                            }
+                        }
+                        unset($lastarticleinfo);
                     }
                 }
             }
@@ -661,9 +671,12 @@ function groups_show($gruppen)
                 $overview_dbh = null;
 
                 if ($found == 1) {
-                    $lastarticleinfo['date'] = $row['date'];
+                    $lastarticleinfo = $row;
                     if ($memcacheD) {
-                        $memcacheD->add($lar_memcache, $lastarticleinfo['date'], $memcache_ttl);
+                        touch($groupfile, $lastarticleinfo['date']);
+                        $memcacheD->delete($lar_memcache);
+                        $memcacheD->add($lar_memcache, serialize($row), $memcache_ttl);
+                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache to memcache", FILE_APPEND);
                     }
                 }
             }
@@ -744,7 +757,7 @@ function groups_show($gruppen)
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
 
             if ($found == 1) {
-                $poster = address_decode($row['name'], "nowhere");
+                $poster = address_decode($lastarticleinfo['name'], "nowhere");
                 $lastarticleinfo['from'] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
                 if (isset($poster[0]['personal'])) {
                     $lastarticleinfo['name'] = $poster[0]['personal'];
@@ -2394,6 +2407,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $statusdate = time();
     $statusreason = "imported";
     add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
+    touch($spooldir . '/' . $group . '-lastupdate.dat', $this_article['epochdate']);
 }
 
 function is_deleted_post($group, $number)
@@ -2695,9 +2709,9 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             if ($memcacheD) {
                 $article_key = 'article.db3-' . $group . $row['number'];
                 $result = $memcacheD->delete($article_key);
-                if($enable_memcache_logging) {
-                    if($result) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $article_key from memcache", FILE_APPEND);
+                if ($enable_memcache_logging) {
+                    if ($result) {
+                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $article_key from memcache", FILE_APPEND);
                     } else {
                         file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $article_key from memcache", FILE_APPEND);
                     }
