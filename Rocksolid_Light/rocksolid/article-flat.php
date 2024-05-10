@@ -24,7 +24,7 @@ $group = _rawurldecode($_REQUEST["group"]);
 
 if (strpos($id, '@') !== false) {
     if ($CONFIG['article_database'] == '1') {
-        $id = '<'.trim($id, '<> ').'>';
+        $id = '<' . trim($id, '<> ') . '>';
         $database = $spooldir . '/articles-overview.db3';
         $articles_dbh = overview_db_open($database);
         $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
@@ -57,7 +57,10 @@ if (($findsection) && trim($findsection) !== $config_name) {
     $link .= "://";
     $link .= $_SERVER['HTTP_HOST'];
     $link .= $_SERVER['REQUEST_URI'];
-    $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
+
+    // May need to add more characters to escape for regex here
+    $configregex = '|/' . preg_replace('/\+/', '\+', addslashes($config_name)) . '/|';
+    $newurl = preg_replace($configregex, "/$findsection/", $link);
     header("Location:$newurl");
     die();
 }

@@ -19,9 +19,10 @@ if (isset($_REQUEST["first"]))
     $first = intval($_REQUEST["first"]);
 if (isset($_REQUEST["last"]))
     $last = intval($_REQUEST["last"]);
+
 // Switch to correct section in case group has been moved and link is to old section
 $findsection = get_section_by_group($group);
-if (trim($findsection) !== $config_name) {
+if (($findsection) && trim($findsection) !== $config_name) {
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
         $link = "https";
     else
@@ -29,10 +30,14 @@ if (trim($findsection) !== $config_name) {
     $link .= "://";
     $link .= $_SERVER['HTTP_HOST'];
     $link .= $_SERVER['REQUEST_URI'];
-    $newurl = preg_replace("|/$config_name/|", "/$findsection/", $link);
+
+    // May need to add more characters to escape for regex here
+    $configregex = '|/' . preg_replace('/\+/', '\+', addslashes($config_name)) . '/|';
+    $newurl = preg_replace($configregex, "/$findsection/", $link);
     header("Location:$newurl");
     die();
 }
+
 if (isset($_COOKIE['mail_name'])) {
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
