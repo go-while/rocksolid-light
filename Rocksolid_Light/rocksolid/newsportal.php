@@ -643,14 +643,6 @@ function groups_show($gruppen)
                             $found = 1;
                         }
                     } else {
-                        $result = $memcacheD->delete($lar_memcache);
-                        if ($enable_memcache_logging) {
-                            if ($result) {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $lar_memcache from memcache", FILE_APPEND);
-                            } else {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $lar_memcache from memcache", FILE_APPEND);
-                            }
-                        }
                         unset($lastarticleinfo);
                     }
                 }
@@ -659,12 +651,15 @@ function groups_show($gruppen)
                 $database = $spooldir . '/articles-overview.db3';
                 $table = 'overview';
                 $overview_dbh = overview_db_open($database);
-                $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 2');
+                $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 5');
                 $overview_query->execute([
                     'newsgroup' => $g->name
                 ]);
                 $found = 0;
                 while ($row = $overview_query->fetch()) {
+                    if($row['date'] > time()) {
+                        continue;
+                    }
                     $found = 1;
                     break;
                 }
@@ -674,9 +669,13 @@ function groups_show($gruppen)
                     $lastarticleinfo = $row;
                     if ($memcacheD) {
                         touch($groupfile, $lastarticleinfo['date']);
-                        $memcacheD->delete($lar_memcache);
+                        $nicole = $memcacheD->delete($lar_memcache);
                         $memcacheD->add($lar_memcache, serialize($row), $memcache_ttl);
-                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache to memcache", FILE_APPEND);
+                        if ($nicole) {
+                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $lar_memcache in memcache", FILE_APPEND);
+                        } else {
+                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache to memcache", FILE_APPEND);
+                        }
                     }
                 }
             }
@@ -2345,6 +2344,12 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         }
     }
 
+    if($this_article['epochdate'] > time()) {
+        echo "\n(newsportal)Article date in future. Skipping: " . $group . ":" . $this_article['mid'];
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Article date in future. Skipping: " . $group . ":" . $this_article['mid'], FILE_APPEND);
+        return "441 Insert failed (article date in future)\r\n";
+    }
+    
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {
         $article_dbh = article_db_open($spooldir . '/' . $group . '-articles.db3');
@@ -2407,7 +2412,11 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $statusdate = time();
     $statusreason = "imported";
     add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
-    touch($spooldir . '/' . $group . '-lastupdate.dat', $this_article['epochdate']);
+    if ($this_article['epochdate'] < time()) {
+        touch($spooldir . '/' . $group . '-lastupdate.dat', $this_article['epochdate']);
+    } else {
+        touch($spooldir . '/' . $group . '-lastupdate.dat', time());
+    }
 }
 
 function is_deleted_post($group, $number)

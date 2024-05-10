@@ -67,7 +67,22 @@ function thread_pageselect($group, $article_count, $first)
  */
 function thread_cache_load($group)
 {
-    global $spooldir, $compress_spoolfiles;
+    global $spooldir, $config_dir, $logdir, $compress_spoolfiles;
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
+    // Check memcache
+    if ($memcacheD) {
+        $key = 'thread_cache_load-' . $group;
+        if ($headers = unserialize($memcacheD->get($key))) {
+            if ($headers['memcache_time'] >= filemtime($spooldir . '/' . $group . '-lastupdate.dat')) {
+                if ($enable_memcache_logging) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Using $key from memcache", FILE_APPEND);
+                }
+                return $headers;
+            }
+        }
+    }
     $database = $spooldir . '/' . $group . '-data.db3';
     $table = "threads";
     if ($dbh = threads_db_open($database, $table)) {
@@ -78,6 +93,18 @@ function thread_cache_load($group)
             break;
         }
         $dbh = null;
+    }
+    if ($memcacheD) {
+        $nicole = $memcacheD->delete($key);
+        $headers['memcache_time'] = time();
+        $memcacheD->add($key, serialize($headers), $memcache_ttl);
+        if ($enable_memcache_logging) {
+            if ($nicole) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $key in memcache", FILE_APPEND);
+            } else {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key to memcache", FILE_APPEND);
+            }
+        }
     }
     return ($headers);
 }
@@ -191,7 +218,7 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
     for ($i = 0; $i < count($overviewfmt) - 1; $i ++) {
         if ($overviewfmt[$i] == "Subject:") {
             $subject = preg_replace('/\[doctalk\]/i', '', headerDecode($over[$i + 1]));
-         //   $article->isReply = splitSubject($subject);
+            // $article->isReply = splitSubject($subject);
             $article->subject = $subject;
         }
         if ($overviewfmt[$i] == "Date:") {
@@ -692,12 +719,12 @@ function thread_format_subject($c, $group, $highlightids = false)
         $offset = $CONFIG['timezone'] * 60;
     }
     /*
-    if ($c->isReply) {
-        $re = "Re: ";
-    } else {
-        $re = "";
-    }
-    */
+     * if ($c->isReply) {
+     * $re = "Re: ";
+     * } else {
+     * $re = "";
+     * }
+     */
     $re = "";
     // is the current article to be highlighted?
     if ((is_array($highlightids))) {

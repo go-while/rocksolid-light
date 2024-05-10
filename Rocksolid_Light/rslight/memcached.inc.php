@@ -11,7 +11,7 @@ if(!$enable_memcache) {
 $server = '127.0.0.1';
 $port = 11211;
 
-// Log all hits
+// Log all hits (log file may be large)
 $enable_memcache_logging = false;
 
 // Time in seconds to cache data
