@@ -73,16 +73,15 @@ function thread_cache_load($group)
     }
     // Check memcache
     if ($memcacheD) {
-        $key = 'thread_cache_load-' . $group;
+        $key = 'thread_cache-' . $group;
         if ($headers = unserialize($memcacheD->get($key))) {
-            if ($headers['memcache_time'] >= filemtime($spooldir . '/' . $group . '-lastupdate.dat')) {
-                if ($enable_memcache_logging) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Using $key from memcache", FILE_APPEND);
-                }
-                return $headers;
+            if ($enable_memcache_logging) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
             }
+            return $headers;
         }
     }
+
     $database = $spooldir . '/' . $group . '-data.db3';
     $table = "threads";
     if ($dbh = threads_db_open($database, $table)) {
@@ -95,15 +94,10 @@ function thread_cache_load($group)
         $dbh = null;
     }
     if ($memcacheD) {
-        $nicole = $memcacheD->delete($key);
-        $headers['memcache_time'] = time();
-        $memcacheD->add($key, serialize($headers), $memcache_ttl);
-        if ($enable_memcache_logging) {
-            if ($nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $key in memcache", FILE_APPEND);
-            } else {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key to memcache", FILE_APPEND);
-            }
+        $key = 'thread_cache-' . $group;
+        $nicole = $memcacheD->add($key, serialize($headers), $memcache_ttl);
+        if ($nicole && $enable_memcache_logging) {
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache miss) Wrote $key", FILE_APPEND);
         }
     }
     return ($headers);
@@ -117,8 +111,13 @@ function thread_cache_load($group)
  */
 function thread_cache_save($headers, $group)
 {
-    global $spooldir, $compress_spoolfiles, $logdir, $config_name;
+    global $spooldir, $compress_spoolfiles, $config_dir, $logdir, $config_name;
     $logfile = $logdir . '/newsportal.log';
+
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
+
     $database = $spooldir . '/' . $group . '-data.db3';
     $table = "threads";
     if ($dbh = threads_db_open($database, $table)) {
@@ -138,6 +137,19 @@ function thread_cache_save($headers, $group)
         ]);
         $dbh->commit();
         $dbh = null;
+        if ($memcacheD) {
+            $key = 'thread_cache-' . $group;
+            $del = $memcacheD->delete($key);
+            $nicole = $memcacheD->add($key, serialize($headers), $memcache_ttl);
+            if ($enable_memcache_logging) {
+                if ($del) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $key", FILE_APPEND);
+                }
+                if ($nicole) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key", FILE_APPEND);
+                }
+            }
+        }
     }
 }
 

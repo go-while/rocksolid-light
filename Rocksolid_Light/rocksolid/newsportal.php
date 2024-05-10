@@ -635,11 +635,11 @@ function groups_show($gruppen)
             if ($memcacheD) {
                 unset($lastarticleinfo);
                 $lar_memcache = 'lastarticleinfo-' . $g->name;
-                $groupfile = $spooldir . '/' . $g->name . '-lastupdate.dat';
+                $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
                 if ($lastarticleinfo = unserialize($memcacheD->get($lar_memcache))) {
                     if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
                         if ($enable_memcache_logging) {
-                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Found lastarticleinfo for ' . $g->name . ' in memcache', FILE_APPEND);
+                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' (cache hit) lastarticleinfo for ' . $g->name, FILE_APPEND);
                         }
                         $found = 1;
                     } else {
@@ -673,9 +673,9 @@ function groups_show($gruppen)
                         $memcacheD->add($lar_memcache, serialize($row), $memcache_ttl);
                         if ($enable_memcache_logging) {
                             if ($nicole) {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $lar_memcache in memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $lar_memcache", FILE_APPEND);
                             } else {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache to memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache", FILE_APPEND);
                             }
                         }
                     }
@@ -1863,11 +1863,11 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
     $ok_article = 0;
     // Check memcache
     if ($memcacheD) {
-        $article_key = 'article.db3-' . $group . $article;
+        $article_key = 'article.db3-' . $group . ':' . $article;
         if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
             if ($enable_memcache_logging) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Found $article_key in memcache", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $article_key", FILE_APPEND);
             }
         }
     }
@@ -1901,7 +1901,10 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
             }
         }
         if ($ok_article == 1 && $memcacheD) {
-            $memcacheD->add($article_key, $msg2, $memcache_ttl);
+            $nicole = $memcacheD->add($article_key, $msg2, $memcache_ttl);
+            if ($enable_memcache_logging && $nicole) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $article_key", FILE_APPEND);
+            }
         }
     }
     if ($closeme == 1) {
@@ -2333,7 +2336,7 @@ function check_duplicate_msgid($msgid, $group)
 
 function insert_article_from_array($this_article, $check_duplicates = true)
 {
-    global $CONFIG, $config_name, $spooldir, $logdir;
+    global $CONFIG, $config_name, $config_dir, $spooldir, $logdir;
     $logfile = $logdir . '/spoolnews.log';
     $group = $this_article['group'];
     $grouppath = $path . preg_replace('/\./', '/', $group);
@@ -2407,7 +2410,6 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             $article_date = time();
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
-
     echo "\nSpooling: " . $group . " " . $this_article['local'];
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
     $status = "spooled";
@@ -2526,7 +2528,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
         $row_cache = 'get_data_from_msgid-' . $msgid;
         if ($row = $memcacheD->get($row_cache)) {
             if ($enable_memcache_logging) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Found $row_cache in memcache", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
             }
             return $row;
         }
@@ -2715,13 +2717,13 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             ]);
             // Delete article from memcache
             if ($memcacheD) {
-                $article_key = 'article.db3-' . $group . $row['number'];
+                $article_key = 'article.db3-' . $group . ':' . $row['number'];
                 $result = $memcacheD->delete($article_key);
                 if ($enable_memcache_logging) {
                     if ($result) {
-                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $article_key from memcache", FILE_APPEND);
+                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $article_key", FILE_APPEND);
                     } else {
-                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $article_key from memcache", FILE_APPEND);
+                        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Failed to delete (or not found) $article_key", FILE_APPEND);
                     }
                 }
             }
