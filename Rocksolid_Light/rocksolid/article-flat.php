@@ -188,7 +188,7 @@ if ($message) {
     echo '</form>';
     echo '</td>';
     // Pages
-    echo '<td class="np_pages" width="100%" align="right">';
+    echo '<td class="np_pages" width="100%" align="center">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
     foreach ($pageids as $subid) {
@@ -200,6 +200,10 @@ if ($message) {
             echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
         }
     }
+    // Display section/group/subject
+    echo '<hr><h1 class="np_thread_headline">';
+    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
     // navigation line
     echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
     // Article List button
@@ -210,7 +214,7 @@ if ($message) {
     echo '</form>';
     echo '</td>';
     // Pages
-    echo '<td class="np_pages" width="100%" align="right">';
+    echo '<td class="np_pages" width="100%" align="center">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
 }
