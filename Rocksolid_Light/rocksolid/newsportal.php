@@ -630,10 +630,10 @@ function groups_show($gruppen)
             if ($acttype != "group") {
                 $acttype = "group";
             }
+            unset($lastarticleinfo);
             // Get last article info from article database
             // First check memcache
             if ($memcacheD) {
-                unset($lastarticleinfo);
                 $lar_memcache = 'lastarticleinfo-' . $g->name;
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
                 if ($lastarticleinfo = unserialize($memcacheD->get($lar_memcache))) {
