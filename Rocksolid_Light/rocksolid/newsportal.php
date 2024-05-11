@@ -1802,9 +1802,11 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\-articles\.db3/", "", $database);
     $group = preg_replace($spoolpath, "", $group);
     $group = preg_replace("/\//", "", $group);
-    if (! get_section_by_group($group, true)) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
-        return false;
+    if (! preg_match('/\-articles\.db3\-new/', $database)) {
+        if (! get_section_by_group($group, true)) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
+            return false;
+        }
     }
     try {
         $dbh = new PDO('sqlite:' . $database);
@@ -2751,6 +2753,11 @@ function check_article_integrity($rawmessage)
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
+    // Check if date is in future
+    if ($message->header->date > time()) {
+        $returnval = " Skipping message (date in future): " . $message->header->id;
+        return $returnval;
+    }
     // Now we know if the message is a mime-multipart message:
     $content_type = explode("/", $message->header->content_type[0]);
     if ($content_type[0] == "multipart") {
