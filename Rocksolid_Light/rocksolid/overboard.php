@@ -322,7 +322,6 @@ function display_threads($threads, $oldest)
         $result_count = count($value);
         foreach ($value as $new) {
             if (! $foundgroup = check_group_for_user($new, $userdata, $user_config, true)) {
-                echo "FAIL";
                 continue;
             }
             $target = $this_overboard['msgids'][$new];
