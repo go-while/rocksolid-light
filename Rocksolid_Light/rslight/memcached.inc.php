@@ -16,8 +16,6 @@ $memcache_ttl = 14400;
 
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
-/* PLEASE DO NOT EDIT BELOW THIS LINE */
-
 if ($enable_memcache) {
     $memcacheD = new Memcached('memcacheD');
     $memcacheD->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
@@ -37,3 +35,4 @@ if ($enable_memcache) {
         }
     }
 }
+

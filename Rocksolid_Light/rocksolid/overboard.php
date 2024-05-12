@@ -537,6 +537,9 @@ function display_flat($threads, $oldest)
             }
         }
         $results ++;
+        if($results > $maxdisplay) {
+            break;
+        }
     }
     $display .= "</table>";
     echo $display;
