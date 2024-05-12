@@ -524,9 +524,8 @@ function display_flat($threads, $oldest)
             $display .= '</p>';
             // link for (thread), if possible
             if (isset($this_overboard['threadlink'][$value])) {
-                $thread = get_data_from_msgid($this_overboard['threadlink'][$value], $target['newsgroup']);
-                if ($thread !== false) {
-                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $thread['number'] . '&group=' . rawurlencode($thread['newsgroup']) . '#' . $thread['number'] . '"> (full thread)</a></font>';
+                if ($target !== false) {
+                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target['number'] . '&group=' . rawurlencode($target['newsgroup']) . '#' . $target['number'] . '"> (full thread)</a></font>';
                 }
             }
             $display .= '</p>';
