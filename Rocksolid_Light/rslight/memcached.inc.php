@@ -15,17 +15,25 @@ $enable_memcache_logging = false;
 $memcache_ttl = 14400;
 
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
+
+/* PLEASE DO NOT EDIT BELOW THIS LINE */
+
 if ($enable_memcache) {
-
-    // Initiate a new object of memcache
-    $memcacheD = new Memcached();
-
-    // Add server
-    if ($memcacheD->addServer($memcache_server, $memcache_port)) {
-        if ($enable_memcache_logging) {
-            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Connected memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
+    $memcacheD = new Memcached('memcacheD');
+    $memcacheD->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+    $memcacheD->setOption(Memcached::OPT_CONNECT_TIMEOUT, 1000);
+    if (! count($memcacheD->getServerList())) {
+        if (! $memcacheD->addServers(array(
+            array(
+                $memcache_server,
+                $memcache_port
+            )
+        ))) {
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Failed to connect memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
+        } else {
+            if ($enable_memcache_logging) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Connected memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
+            }
         }
-    } else {
-        file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Failed to connect memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
     }
 }
