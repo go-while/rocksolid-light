@@ -1602,24 +1602,43 @@ function get_date_interval($value)
 
 function get_newsgroups_by_msgid($msgid, $noarray = false)
 {
-    global $spooldir, $CONFIG;
-    $database = $spooldir . '/articles-overview.db3';
-    $table = 'overview';
-    $overview_dbh = overview_db_open($database, $table);
-    $overview_stmt = $overview_dbh->prepare("SELECT newsgroup FROM overview WHERE msgid=:msgid");
-    $overview_stmt->bindParam(':msgid', $msgid);
-    $overview_stmt->execute();
+    global $spooldir, $config_dir, $logdir, $CONFIG;
+    if (file_exists($config_dir . '/memcache.inc.php')) {
+        include $config_dir . '/memcache.inc.php';
+    }
+    if ($memcacheD) {
+        $key = 'get_newsgroups_by_msgid-' . $msgid;
+        if ($groups = $memcacheD->get($key)) {
+            if ($enable_memcache_logging) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
+            }
+        }
+    }
+    if (! $groups) {
+        $database = $spooldir . '/articles-overview.db3';
+        $table = 'overview';
+        $overview_dbh = overview_db_open($database, $table);
+        $overview_stmt = $overview_dbh->prepare("SELECT newsgroup FROM overview WHERE msgid=:msgid");
+        $overview_stmt->bindParam(':msgid', $msgid);
+        $overview_stmt->execute();
 
-    $found = false;
-    $groups = array();
-    while ($row = $overview_stmt->fetch()) {
-        $groups[] = $row['newsgroup'];
-        $found = true;
+        $found = false;
+        $groups = array();
+        while ($row = $overview_stmt->fetch()) {
+            $groups[] = $row['newsgroup'];
+            $found = true;
+        }
+        if (! $found) {
+            $groups = null;
+        }
+        $overview_dbh = null;
+        if ($groups && $memcacheD) {
+            $nicole = $memcacheD->add($key, $groups, $memcache_ttl);
+            if ($enable_memcache_logging && $nicole) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key", FILE_APPEND);
+            }
+        }
     }
-    if (! $found) {
-        $groups = null;
-    }
-    $overview_dbh = null;
     if ($noarray) {
         return (implode(",", $groups));
     } else {
@@ -2479,7 +2498,7 @@ function get_db_data_from_msgid($msgid, $group)
     if (file_exists($config_dir . '/memcache.inc.php')) {
         include $config_dir . '/memcache.inc.php';
     }
-    
+
     if ($memcacheD) {
         $row_cache = 'get_db_data_from_msgid-' . $msgid;
         if ($row = $memcacheD->get($row_cache)) {
@@ -2489,7 +2508,7 @@ function get_db_data_from_msgid($msgid, $group)
             return $row;
         }
     }
-    
+
     $database = $spooldir . '/' . $group . '-articles.db3';
     if (! is_file($database)) {
         return false;
@@ -2553,7 +2572,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     if ($CONFIG['article_database'] == '1' && isset($thisgroup)) {
         return get_db_data_from_msgid($msgid, $thisgroup);
     }
-    
+
     if ($memcacheD) {
         $row_cache = 'get_data_from_msgid-' . $msgid;
         if ($row = $memcacheD->get($row_cache)) {
