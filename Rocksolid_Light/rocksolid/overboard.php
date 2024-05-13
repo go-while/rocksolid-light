@@ -540,7 +540,7 @@ function display_flat($threads, $oldest)
             }
         }
         $results ++;
-        if ($results > $maxdisplay) {
+        if ($results > ($maxdisplay - 1)) {
             break;
         }
     }
