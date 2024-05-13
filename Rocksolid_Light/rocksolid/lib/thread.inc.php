@@ -95,10 +95,22 @@ function thread_cache_load($group)
     }
     if ($memcacheD) {
         $key = 'thread_cache-' . $group;
+        
         $add_thread = gzcompress(serialize($headers), 9);
-        $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
+        $thread_bytes = strlen($add_thread);
+        $too_big = false;
+        if($thread_bytes < 1024000) {
+            $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
+        } else {
+            $nicole = false;
+            $too_big = true;
+        }
+        
         if ($nicole && $enable_memcache_logging) {
             file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache miss) Wrote $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
+        }
+        if ($too_big) {
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " $key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
         }
     }
     return ($headers);
@@ -142,13 +154,23 @@ function thread_cache_save($headers, $group)
             $key = 'thread_cache-' . $group;
             $del = $memcacheD->delete($key);
             $add_thread = gzcompress(serialize($headers), 9);
-            $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
+            $thread_bytes = strlen($add_thread);
+            $too_big = false;
+            if($thread_bytes < 1024000) {
+                $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
+            } else {
+                $too_big = true;
+                $nicole = false;
+            }
             if ($enable_memcache_logging) {
                 if ($del) {
                     file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $key", FILE_APPEND);
                 }
                 if ($nicole) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key (" . $thread_bytes . " bytes)", FILE_APPEND);
+                }
+                if ($too_big) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " $key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
                 }
             }
         }
