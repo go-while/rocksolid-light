@@ -74,7 +74,7 @@ function thread_cache_load($group)
     // Check memcache
     if ($memcacheD) {
         $key = 'thread_cache-' . $group;
-        if ($headers = unserialize($memcacheD->get($key))) {
+        if ($headers = unserialize(gzuncompress($memcacheD->get($key)))) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
             }
@@ -95,9 +95,10 @@ function thread_cache_load($group)
     }
     if ($memcacheD) {
         $key = 'thread_cache-' . $group;
-        $nicole = $memcacheD->add($key, serialize($headers), $memcache_ttl);
+        $add_thread = gzcompress(serialize($headers), 9);
+        $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
         if ($nicole && $enable_memcache_logging) {
-            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache miss) Wrote $key", FILE_APPEND);
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache miss) Wrote $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
         }
     }
     return ($headers);
@@ -140,13 +141,14 @@ function thread_cache_save($headers, $group)
         if ($memcacheD) {
             $key = 'thread_cache-' . $group;
             $del = $memcacheD->delete($key);
-            $nicole = $memcacheD->add($key, serialize($headers), $memcache_ttl);
+            $add_thread = gzcompress(serialize($headers), 9);
+            $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
             if ($enable_memcache_logging) {
                 if ($del) {
                     file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $key", FILE_APPEND);
                 }
                 if ($nicole) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key", FILE_APPEND);
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
                 }
             }
         }
