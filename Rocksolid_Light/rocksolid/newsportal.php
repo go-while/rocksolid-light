@@ -631,6 +631,7 @@ function groups_show($gruppen)
                 $acttype = "group";
             }
             unset($lastarticleinfo);
+            $found = 0;
             // Get last article info from article database
             // First check memcache
             if ($memcacheD) {
@@ -648,23 +649,35 @@ function groups_show($gruppen)
                 }
             }
             if (! isset($lastarticleinfo['date'])) {
-                $database = $spooldir . '/articles-overview.db3';
-                $table = 'overview';
-                $overview_dbh = overview_db_open($database);
-                $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 5');
-                $overview_query->execute([
-                    'newsgroup' => $g->name
-                ]);
-                $found = 0;
-                while ($row = $overview_query->fetch()) {
-                    if ($row['date'] > time()) {
-                        continue;
+                if ($CONFIG['article_database'] == '1') {
+                    $database = $spooldir . '/' . $g->name . '-articles.db3';
+                    $article_dbh = article_db_open($database);
+                    $article_query = $article_dbh->prepare('SELECT * FROM articles ORDER BY CAST(date AS int) DESC LIMIT 5');
+                    $article_query->execute();
+                    while ($row = $article_query->fetch()) {
+                        if ($row['date'] > time()) {
+                            continue;
+                        }
+                        $found = 1;
+                        break;
                     }
-                    $found = 1;
-                    break;
+                    $article_dbh = null;
+                } else {
+                    $database = $spooldir . '/articles-overview.db3';
+                    $overview_dbh = overview_db_open($database);
+                    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 5');
+                    $overview_query->execute([
+                        'newsgroup' => $g->name
+                    ]);
+                    while ($row = $overview_query->fetch()) {
+                        if ($row['date'] > time()) {
+                            continue;
+                        }
+                        $found = 1;
+                        break;
+                    }
+                    $overview_dbh = null;
                 }
-                $overview_dbh = null;
-
                 if ($found == 1) {
                     $lastarticleinfo = $row;
                     if ($memcacheD) {
