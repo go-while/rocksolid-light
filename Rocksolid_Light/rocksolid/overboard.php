@@ -75,7 +75,7 @@ $version = 1.25;
 $cachetime = 60;
 
 # Maximum number of articles to show
-$maxdisplay = 1000; // default 1000
+$maxdisplay = 300; // default 1000
 
 # How many characters of the body to display per article
 $snippetlength = 240;
@@ -312,7 +312,7 @@ function display_threads($threads, $oldest)
         if (! $foundgroup_head = check_group_for_user($key, $userdata, $user_config, true)) {
             // testing: continuing here may break newsgroup identification
             // and not display articles that should be displayed
- //           continue;
+            // continue;
         }
         $target_head = $this_overboard['msgids'][$key];
         if (! isset($target_head['msgid'])) {
@@ -482,7 +482,11 @@ function display_flat($threads, $oldest)
             $shown[$value . $target['newsgroup']] = $value;
         }
         if ($target['date'] < $oldest) {
-            continue;
+            if ($oldest - $target['date'] > 300) {
+                break;
+            } else {
+                continue;
+            }
         }
         if ($newonly) {
             if ($foundgroup && $foundgroup != '') {
@@ -536,7 +540,7 @@ function display_flat($threads, $oldest)
             }
         }
         $results ++;
-        if($results > $maxdisplay) {
+        if ($results > $maxdisplay) {
             break;
         }
     }
