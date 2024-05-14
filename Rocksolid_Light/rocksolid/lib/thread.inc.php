@@ -99,7 +99,7 @@ function thread_cache_load($group)
         $add_thread = gzcompress(serialize($headers), 9);
         $thread_bytes = strlen($add_thread);
         $too_big = false;
-        if($thread_bytes < 1024000) {
+        if($thread_bytes < $memcache_maxitemsize) {
             $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
         } else {
             $nicole = false;
@@ -156,7 +156,7 @@ function thread_cache_save($headers, $group)
             $add_thread = gzcompress(serialize($headers), 9);
             $thread_bytes = strlen($add_thread);
             $too_big = false;
-            if($thread_bytes < 1024000) {
+            if($thread_bytes < $memcache_maxitemsize) {
                 $nicole = $memcacheD->add($key, $add_thread, $memcache_ttl);
             } else {
                 $too_big = true;

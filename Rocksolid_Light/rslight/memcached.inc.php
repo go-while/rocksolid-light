@@ -14,6 +14,16 @@ $enable_memcache_logging = false;
 // Time in seconds to cache data
 $memcache_ttl = 14400;
 
+/*
+ * Maximum size of data (in bytes) to save per key in memcache
+ * This must be less than or equal to
+ * MAXITEMSIZE in memcached, which is 1MiB by default
+ * Increasing this here will not work unless it is also
+ * increased in memcached configuration
+ * You probably do not need to change this
+ */
+$memcache_maxitemsize = 1024000;
+
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
 if ($enable_memcache) {
