@@ -2439,6 +2439,17 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         ]);
         unlink($grouppath . "/" . $this_article['local']);
         $article_dbh = null;
+        // Add to memcache
+        if (file_exists($config_dir . '/memcache.inc.php')) {
+            include $config_dir . '/memcache.inc.php';
+        }
+        if ($memcacheD) {
+            $article_key = 'article.db3-' . $group . ':' . $this_article['local'];
+            $nicole = $memcacheD->add($article_key, $this_article['article'], $memcache_ttl);
+            if ($enable_memcache_logging && $nicole) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote (new) $article_key", FILE_APPEND);
+            }
+        }
     } else {
         if ($article_date > time())
             $article_date = time();
