@@ -11,28 +11,25 @@ $id = $_REQUEST["id"];
 $group = _rawurldecode($_REQUEST["group"]);
 
 if (strpos($id, '@') !== false) {
-    if ($CONFIG['article_database'] == '1') {
-        $id = '<'.trim($id, '<> ').'>';
-        $database = $spooldir . '/articles-overview.db3';
-        $articles_dbh = overview_db_open($database);
-        $articles_query = $articles_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
-        $articles_query->execute([
-            'messageid' => $id
-        ]);
-        $found = 0;
-        while ($row = $articles_query->fetch()) {
-            $id = $row['number'];
-            $group = $row['newsgroup'];
-            $found = 1;
-            break;
-        }
-        $dbh = null;
-        if ($found) {
-            $findsection = get_section_by_group($row['newsgroup']);
-            $newurl = '/' . $findsection . '/article.php?id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
-            header("Location: $newurl");
-            die();
-        }
+    $id = '<' . trim($id, '<> ') . '>';
+    $database = $spooldir . '/articles-overview.db3';
+    $overview_dbh = overview_db_open($database);
+    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE msgid=:messageid');
+    $overview_query->execute([
+        'messageid' => $id
+    ]);
+    $found = 0;
+    while ($row = $overview_query->fetch()) {
+        $id = $row['number'];
+        $group = $row['newsgroup'];
+        $found = 1;
+        break;
+    }
+    $overview_dbh = null;
+    if ($found) {
+        $newurl = 'article-flat.php?id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
+        header("Location: $newurl");
+        die();
     }
 }
 
