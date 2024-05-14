@@ -8,7 +8,7 @@ $enable_memcache = false;
 $memcache_server = '127.0.0.1';
 $memcache_port = 11211;
  
-// Log all hits (log file may be large)
+// Enable logging to file (log file may be large)
 $enable_memcache_logging = false;
 
 // Time in seconds to cache data
