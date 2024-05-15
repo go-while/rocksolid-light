@@ -630,6 +630,11 @@ function groups_show($gruppen)
             if ($acttype != "group") {
                 $acttype = "group";
             }
+            if (! isset($userdata[$g->name])) {
+                if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
+                    continue;
+                }
+            }
             unset($lastarticleinfo);
             $found = 0;
             // Get last article info from article database
