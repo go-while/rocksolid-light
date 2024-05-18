@@ -2092,16 +2092,16 @@ function throttle_hits($client_device)
     global $CONFIG, $OVERRIDES, $logdir, $config_name;
     $client_device = get_client_user_agent_info();
     $_SESSION['rsactive'] = true;
-    
+
     // $loadrate = allowed article request per second
     $loadrate = .15;
     if ($client_device == "bot") {
         $_SESSION['bot'] = 'true';
-        if(isset($OVERRIDES['throttle_hits_bot_loadrate']) && trim($OVERRIDES['throttle_hits_bot_loadrate']) != '') {
+        if (isset($OVERRIDES['throttle_hits_bot_loadrate']) && trim($OVERRIDES['throttle_hits_bot_loadrate']) != '') {
             $loadrate = $OVERRIDES['throttle_hits_bot_loadrate'];
         }
     }
-    
+
     $logfile = $logdir . '/newsportal.log';
     if (! isset($_SESSION['starttime'])) {
         $_SESSION['starttime'] = time();
@@ -2861,6 +2861,51 @@ function check_article_integrity($rawmessage)
         }
     }
     return $returnval;
+}
+
+function wrap_post($body)
+{
+    $line_length = 72;
+    $lines = preg_split("/\n/", $body);
+    $wrapped = '';
+    foreach ($lines as $line) {
+        if (trim($line) == '') {
+            $wrapped .= "\n";
+            continue;
+        }
+        if ($line[0] == '>') {
+            $depth = 0;
+            while ($line[$depth] == '>') {
+                $depth ++;
+            }
+            if (strlen($line) > $line_length) {
+                // HERE is where we wrap quoted lines (not so easy)
+                $line_wrapped = mb_wordwrap($line, $line_length);
+                $line_wrapped = preg_split("/\n/", $line_wrapped);
+                foreach ($line_wrapped as $lw) {
+                    if ($lw[0] != '>') {
+                        $i = 0;
+                        while ($i < $depth) {
+                            $wrapped .= '>';
+                            $i ++;
+                        }
+                        $wrapped .= ' ';
+                    }
+                    $wrapped .= $lw . "\n";
+                }
+            } else {
+                $wrapped .= $line . "\n";
+            }
+        } else {
+            if (strlen($line) > $line_length) {
+                // HERE is where we wrap NON quoted lines (easy)
+                $wrapped .= mb_wordwrap($line, $line_length) . "\n";
+            } else {
+                $wrapped .= $line . "\n";
+            }
+        }
+    }
+    return $wrapped;
 }
 
 function delete_message_from_overboard($config_name, $group, $messageid)

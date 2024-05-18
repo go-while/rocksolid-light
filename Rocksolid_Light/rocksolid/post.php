@@ -251,6 +251,10 @@ if ($type == "post") {
                     return;
                 }
             }
+            
+            // Wrap long lines in message body
+            $body = wrap_post($body);
+            
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
