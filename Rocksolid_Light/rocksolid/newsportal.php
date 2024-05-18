@@ -2089,25 +2089,33 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
 
 function throttle_hits($client_device)
 {
-    global $CONFIG, $logdir;
+    global $CONFIG, $OVERRIDES, $logdir, $config_name;
     $client_device = get_client_user_agent_info();
     $_SESSION['rsactive'] = true;
+    
+    // $loadrate = allowed article request per second
+    $loadrate = .15;
     if ($client_device == "bot") {
         $_SESSION['bot'] = 'true';
+        if(isset($OVERRIDES['throttle_hits_bot_loadrate']) && trim($OVERRIDES['throttle_hits_bot_loadrate']) != '') {
+            $loadrate = $OVERRIDES['throttle_hits_bot_loadrate'];
+        }
     }
+    
     $logfile = $logdir . '/newsportal.log';
     if (! isset($_SESSION['starttime'])) {
         $_SESSION['starttime'] = time();
         $_SESSION['views'] = 0;
     }
     $_SESSION['views'] ++;
-    // $loadrate = allowed article request per second
-    $loadrate = .15;
+    // $rate = current hits / seconds since start of session
     $rate = fdiv($_SESSION['views'], (time() - $_SESSION['starttime']));
+    // if $rate > greater than $loadrate, throttle hits
+    // but allow 50 hits at start of session to allow loading everything
     if (($rate > $loadrate) && ($_SESSION['views'] > 50)) {
         header("HTTP/1.0 429 Too Many Requests");
         if (! isset($_SESSION['throttled'])) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Too many requests from " . $_SERVER['REMOTE_ADDR'] . " throttling", FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Too many requests from " . $_SERVER['REMOTE_ADDR'] . " throttling" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
             $_SESSION['throttled'] = true;
         }
         exit(0);
