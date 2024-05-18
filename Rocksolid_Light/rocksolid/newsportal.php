@@ -2880,7 +2880,9 @@ function wrap_post($body)
             }
             if (strlen($line) > $line_length) {
                 // HERE is where we wrap quoted lines (not so easy)
-                $line_wrapped = mb_wordwrap($line, $line_length);
+                $start = substr($line, 0, $depth + 1);
+                $end = substr($line, $depth +1);
+                $line_wrapped = $start . mb_wordwrap($end, $line_length);
                 $line_wrapped = preg_split("/\n/", $line_wrapped);
                 foreach ($line_wrapped as $lw) {
                     if ($lw[0] != '>') {
