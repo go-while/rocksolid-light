@@ -39,7 +39,7 @@ if (strpos($id, '@') !== false) {
     }
     $overview_dbh = null;
     if ($found) {
-        $newurl = 'article-flat.php?id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
+        $newurl = 'article-flat.php?id=' . $id . '&group=' . urlencode($row['newsgroup']) . '#' . $id;
         header("Location: $newurl");
         die();
     }
