@@ -2877,6 +2877,9 @@ function wrap_post($body)
             $depth = 0;
             while ($line[$depth] == '>') {
                 $depth ++;
+                if($depth > 30) {
+                    break;
+                }
             }
             if (strlen($line) > $line_length) {
                 // HERE is where we wrap quoted lines (not so easy)
