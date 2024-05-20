@@ -691,9 +691,9 @@ function groups_show($gruppen)
                         $memcacheD->add($lar_memcache, serialize($row), $memcache_ttl);
                         if ($enable_memcache_logging) {
                             if ($nicole) {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Updated $lar_memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache update) $lar_memcache", FILE_APPEND);
                             } else {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $lar_memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $lar_memcache", FILE_APPEND);
                             }
                         }
                     }
@@ -1653,7 +1653,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         if ($groups && $memcacheD) {
             $nicole = $memcacheD->add($key, $groups, $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $key", FILE_APPEND);
             }
         }
     }
@@ -1942,7 +1942,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         if ($ok_article == 1 && $memcacheD) {
             $nicole = $memcacheD->add($article_key, $msg2, $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $article_key", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $article_key", FILE_APPEND);
             }
         }
     }
@@ -2460,7 +2460,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             $article_key = $memcache_key_prefix . '_' . 'article.db3-' . $group . ':' . $this_article['local'];
             $nicole = $memcacheD->add($article_key, $this_article['article'], $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote (new) $article_key", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) (new) $article_key", FILE_APPEND);
             }
         }
     } else {
@@ -2565,7 +2565,7 @@ function get_db_data_from_msgid($msgid, $group)
         if ($memcacheD) {
             $nicole = $memcacheD->add($row_cache, $row, $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $row_cache", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }
         }
         return $row;
@@ -2644,7 +2644,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
         if ($memcacheD) {
             $nicole = $memcacheD->add($row_cache, $row, $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $row_cache", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }
         }
         return $row;
