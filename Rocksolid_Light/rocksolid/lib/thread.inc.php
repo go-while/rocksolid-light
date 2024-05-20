@@ -73,7 +73,7 @@ function thread_cache_load($group)
     }
     // Check memcache
     if ($memcacheD) {
-        $key = 'thread_cache-' . $group;
+        $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
         if ($headers = unserialize(gzuncompress($memcacheD->get($key)))) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
@@ -94,7 +94,7 @@ function thread_cache_load($group)
         $dbh = null;
     }
     if ($memcacheD) {
-        $key = 'thread_cache-' . $group;
+        $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
         
         $add_thread = gzcompress(serialize($headers), 9);
         $thread_bytes = strlen($add_thread);
@@ -151,7 +151,7 @@ function thread_cache_save($headers, $group)
         $dbh->commit();
         $dbh = null;
         if ($memcacheD) {
-            $key = 'thread_cache-' . $group;
+            $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
             $del = $memcacheD->delete($key);
             $add_thread = gzcompress(serialize($headers), 9);
             $thread_bytes = strlen($add_thread);

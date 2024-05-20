@@ -24,6 +24,13 @@ $memcache_ttl = 14400;
  */
 $memcache_maxitemsize = 1024000;
 
+/* 
+ * A string to prepend to cached key names
+ * Required if using more than one rslight instance
+ * with one memcache instance
+ */
+$memcache_key_prefix = 'rsl';
+
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
 if ($enable_memcache) {

@@ -640,7 +640,7 @@ function groups_show($gruppen)
             // Get last article info from article database
             // First check memcache
             if ($memcacheD) {
-                $lar_memcache = 'lastarticleinfo-' . $g->name;
+                $lar_memcache = $memcache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
                 if ($lastarticleinfo = unserialize($memcacheD->get($lar_memcache))) {
                     if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
@@ -1625,7 +1625,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         include $config_dir . '/memcache.inc.php';
     }
     if ($memcacheD) {
-        $key = 'get_newsgroups_by_msgid-' . $msgid;
+        $key = $memcache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
         if ($groups = $memcacheD->get($key)) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
@@ -1902,7 +1902,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
     $ok_article = 0;
     // Check memcache
     if ($memcacheD) {
-        $article_key = 'article.db3-' . $group . ':' . $article;
+        $article_key = $memcache_key_prefix . '_' . 'article.db3-' . $group . ':' . $article;
         if ($msg2 = $memcacheD->get($article_key)) {
             $ok_article = 1;
             if ($enable_memcache_logging) {
@@ -1968,24 +1968,24 @@ function get_poster_name($name)
     $fromline = address_decode($name, "nowhere");
     if (! isset($fromline[0]["host"]))
         $fromline[0]["host"] = "";
-    $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
-    $name_username = $fromline[0]["mailbox"];
-    if (! isset($fromline[0]["personal"])) {
-        $poster_name = $fromline[0]["mailbox"];
-    } else {
-        $poster_name = $fromline[0]["personal"];
-    }
-    if (trim($poster_name) == '') {
-        $fromoutput = explode("<", html_entity_decode($name));
-        if (strlen($fromoutput[0]) < 1) {
-            $poster_name = $fromoutput[1];
+        $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+        $name_username = $fromline[0]["mailbox"];
+        if (! isset($fromline[0]["personal"])) {
+            $poster_name = $fromline[0]["mailbox"];
         } else {
-            $poster_name = $fromoutput[0];
+            $poster_name = $fromline[0]["personal"];
         }
-    }
-    $thisposter['name'] = $poster_name;
-    $thisposter['from'] = $name_from;
-    return ($thisposter);
+        if (trim($poster_name) == '') {
+            $fromoutput = explode("<", html_entity_decode($name));
+            if (strlen($fromoutput[0]) < 1) {
+                $poster_name = $fromoutput[1];
+            } else {
+                $poster_name = $fromoutput[0];
+            }
+        }
+        $thisposter['name'] = $poster_name;
+        $thisposter['from'] = $name_from;
+        return ($thisposter);
 }
 
 /*
@@ -2457,7 +2457,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             include $config_dir . '/memcache.inc.php';
         }
         if ($memcacheD) {
-            $article_key = 'article.db3-' . $group . ':' . $this_article['local'];
+            $article_key = $memcache_key_prefix . '_' . 'article.db3-' . $group . ':' . $this_article['local'];
             $nicole = $memcacheD->add($article_key, $this_article['article'], $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote (new) $article_key", FILE_APPEND);
@@ -2537,7 +2537,7 @@ function get_db_data_from_msgid($msgid, $group)
     }
 
     if ($memcacheD) {
-        $row_cache = 'get_db_data_from_msgid-' . $msgid;
+        $row_cache = $memcache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
         if ($row = $memcacheD->get($row_cache)) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
@@ -2611,7 +2611,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     }
 
     if ($memcacheD) {
-        $row_cache = 'get_data_from_msgid-' . $msgid;
+        $row_cache = $memcache_key_prefix . '_' . 'get_data_from_msgid-' . $msgid;
         if ($row = $memcacheD->get($row_cache)) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
@@ -2806,7 +2806,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             ]);
             // Delete article from memcache
             if ($memcacheD) {
-                $article_key = 'article.db3-' . $group . ':' . $row['number'];
+                $article_key = $memcache_key_prefix . '_' . 'article.db3-' . $group . ':' . $row['number'];
                 $result = $memcacheD->delete($article_key);
                 if ($enable_memcache_logging) {
                     if ($result) {
@@ -2877,11 +2877,14 @@ function wrap_post($body)
             $depth = 0;
             while ($line[$depth] == '>') {
                 $depth ++;
+                if ($depth > 30) {
+                    break;
+                }
             }
             if (strlen($line) > $line_length) {
                 // HERE is where we wrap quoted lines (not so easy)
                 $start = substr($line, 0, $depth + 1);
-                $end = substr($line, $depth +1);
+                $end = substr($line, $depth + 1);
                 $line_wrapped = $start . mb_wordwrap($end, $line_length);
                 $line_wrapped = preg_split("/\n/", $line_wrapped);
                 foreach ($line_wrapped as $lw) {
