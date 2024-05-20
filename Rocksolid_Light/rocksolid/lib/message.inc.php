@@ -185,7 +185,7 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
-    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns, $current_article;
+    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
@@ -227,7 +227,6 @@ function message_read($id, $bodynum = 0, $group = "")
         unset($rawmessage);
         if ($CONFIG['article_database'] == '1') {
             $rawmessage = np_get_db_article($id, $group, 1);
-            $current_article = $rawmessage;
         } else {
             $articlepath = $spoolpath . preg_replace('/\./', '/', $group) . "/" . $id;
             if (file_exists($articlepath)) {
@@ -768,9 +767,8 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG, $current_message;
-    if (! isset($current_message)) {
-        $current_message = np_get_db_article($id, $group, 1);
-    }
+    $current_message = np_get_db_article($id, $group, 1);
+
     if ($article_data == false)
         $article_data = message_read($id, $attachment, $group);
     $head = $article_data->header;
