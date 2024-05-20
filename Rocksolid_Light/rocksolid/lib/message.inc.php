@@ -185,7 +185,7 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
-    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
+    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns, $current_article;
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
@@ -227,6 +227,7 @@ function message_read($id, $bodynum = 0, $group = "")
         unset($rawmessage);
         if ($CONFIG['article_database'] == '1') {
             $rawmessage = np_get_db_article($id, $group, 1);
+            $current_article = $rawmessage;
         } else {
             $articlepath = $spoolpath . preg_replace('/\./', '/', $group) . "/" . $id;
             if (file_exists($articlepath)) {
@@ -601,15 +602,19 @@ function copy_messageid()
 
 function display_full_headers($article, $group, $name, $from, $getface = false)
 {
-    global $spoolpath, $CONFIG;
-    if ($CONFIG['article_database'] == '1') {
-        $message = np_get_db_article($article, $group, 1);
-    } else {
-        $thisgroup = $spoolpath . "/" . preg_replace('/\./', '/', $group);
-        if (! file_exists($group . "/" . $article)) {
-            // Return something useful
+    global $spoolpath, $CONFIG, $current_message;
+    if (! isset($current_message)) {
+        if ($CONFIG['article_database'] == '1') {
+            $message = np_get_db_article($article, $group, 1);
+        } else {
+            $thisgroup = $spoolpath . "/" . preg_replace('/\./', '/', $group);
+            if (! file_exists($group . "/" . $article)) {
+                // Return something useful
+            }
+            $message = file($thisgroup . "/" . $article, FILE_IGNORE_NEW_LINES);
         }
-        $message = file($thisgroup . "/" . $article, FILE_IGNORE_NEW_LINES);
+    } else {
+        $message = $current_message;
     }
     if (isset($sendface)) {
         unlink($sendface);
@@ -762,7 +767,10 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     global $file_article, $file_article_full, $OVERRIDES, $spooldir;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
-    global $CONFIG;
+    global $CONFIG, $current_message;
+    if (! isset($current_message)) {
+        $current_message = np_get_db_article($id, $group, 1);
+    }
     if ($article_data == false)
         $article_data = message_read($id, $attachment, $group);
     $head = $article_data->header;
@@ -785,14 +793,14 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             }
         }
         $block = false;
-        foreach($blocked_user_config as $key => $value) {
-            $blockme = '/'.addslashes($key).'/';
+        foreach ($blocked_user_config as $key => $value) {
+            $blockme = '/' . addslashes($key) . '/';
             if (preg_match($blockme, $head->from)) {
                 $block = true;
                 break;
             }
         }
-        
+
         if ($block == true) {
             echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
             return "blocked";
