@@ -2090,9 +2090,25 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
 function throttle_hits($client_device)
 {
     global $CONFIG, $OVERRIDES, $logdir, $config_name;
+    $logfile = $logdir . '/newsportal.log';
+
     $client_device = get_client_user_agent_info();
+    $client_device = strtolower($client_device);
+    $useragent = strtolower($useragent);
+
     $_SESSION['rsactive'] = true;
 
+    if (isset($OVERRIDES['block_by_user_agent'])) {
+        $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+        foreach($OVERRIDES['block_by_user_agent'] as $user_agent) {
+             if(stripos($ua, $user_agent) !== false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' listed in block list", FILE_APPEND);
+                $_SESSION['throttled'] = true;
+                header("HTTP/1.0 403 Forbidden");
+                exit;
+            }
+        }
+    }
     // $loadrate = allowed article request per second
     $loadrate = .15;
     if ($client_device == "bot") {
@@ -2102,7 +2118,6 @@ function throttle_hits($client_device)
         }
     }
 
-    $logfile = $logdir . '/newsportal.log';
     if (! isset($_SESSION['starttime'])) {
         $_SESSION['starttime'] = time();
         $_SESSION['views'] = 0;
