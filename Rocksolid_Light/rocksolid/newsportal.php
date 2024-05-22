@@ -2410,8 +2410,8 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             return "441 Insert failed (duplicate)\r\n";
         }
     }
-
-    if ($this_article['epochdate'] > time()) {
+    // Allow a message to be approximately 2 minutes in the future, but not more.
+    if ($this_article['epochdate'] > (time() + 120)) {
         echo "\n(newsportal)Article date in future. Skipping: " . $group . ":" . $this_article['mid'];
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Article date in future. Skipping: " . $group . ":" . $this_article['mid'], FILE_APPEND);
         return "441 Insert failed (article date in future)\r\n";
