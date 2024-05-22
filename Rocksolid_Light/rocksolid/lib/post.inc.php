@@ -572,7 +572,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
             $body .= "\r\n--------------" . $boundary . "\r\n";
         }
         fputs($ns, 'Message-ID: ' . $msgid . "\r\n");
-        if ($userconfig['xface'] !== '' && $myconfig) {
+        if (trim($userconfig['xface']) !== '' && $myconfig) {
             fputs($ns, 'X-Face: ' . $userconfig['xface'] . "\r\n");
         }
         if ($do_attach) {
