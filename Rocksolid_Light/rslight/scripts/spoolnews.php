@@ -122,7 +122,7 @@ if ($CONFIG['remote_server'] == '') {
     }
 }
 if ($CONFIG['remote_server'] != '') {
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " remote_server: " . $CONFIG['remote_server'], FILE_APPEND);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Connecting: " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
     $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
     if (! $ns) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -194,6 +194,7 @@ function get_articles($ns, $group)
     fputs($ns, "group " . $group . "\r\n");
     $response = line_read($ns);
     if (strcmp(substr($response, 0, 3), "211") != 0) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response to group command for " . $group . ": " . $response, FILE_APPEND);
         echo "\n" . $response;
         return (1);
     }
@@ -234,11 +235,15 @@ function get_articles($ns, $group)
     } else {
         $getlast = $detail[3];
     }
-
-    fputs($ns, "xover " . $article . "-" . $getlast . "\r\n");
+    if ($article > $getlast || $article == $getlast) {
+        // This is probably not necessary
+        fputs($ns, "xover " . $getlast . "\r\n");
+    } else {
+        fputs($ns, "xover " . $article . "-" . $getlast . "\r\n");
+    }
     $response = line_read($ns); // and once more
     if ((substr($response, 0, 3) != "224")) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group, FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group . " (requested: xover " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
         return false;
     }
     while (trim($response = line_read($ns)) !== '.') {
@@ -292,6 +297,7 @@ function get_articles($ns, $group)
         $is_header = 1;
         $body = "";
         $content_transfer_encoding = null;
+        $response = str_replace("\n", "", str_replace("\r", "", $response));
         while (strcmp($response, ".") != 0) {
             $is_xref = false;
             $bytes = $bytes + mb_strlen($response, '8bit');
@@ -344,7 +350,7 @@ function get_articles($ns, $group)
                     $enco = explode(': ', $response, 2);
                     $content_transfer_encoding = $enco[1];
                 }
-                
+
                 if (stripos($response, "Newsgroups: ") === 0) {
                     $response = str_ireplace($group, $group, $response);
                     // Identify each group name for xref
@@ -412,7 +418,7 @@ function get_articles($ns, $group)
         $integrity = check_article_integrity(file($articleHandle));
         if (($banned !== false) || ($integrity !== false)) {
             unlink($articleHandle);
-            if($integrity) {
+            if ($integrity) {
                 file_put_contents($logfile, "\n" . format_log_date() . $integrity, FILE_APPEND);
             } elseif ($banned) {
                 file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);

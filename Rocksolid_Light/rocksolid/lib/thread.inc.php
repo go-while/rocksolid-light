@@ -368,8 +368,10 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
     $overviewformat = thread_overview_read($ns);
     $spoolfilename = $spooldir . '/' . $groupname . '-data.db3';
     fputs($ns, "GROUP $groupname\r\n"); // select a group
-    $groupinfo = explode(" ", line_read($ns));
-    if (substr($groupinfo[0], 0, 1) != 2) {
+    $response = line_read($ns);
+    $groupinfo = explode(" ", $response);
+    if (strcmp(substr($groupinfo[0], 0, 3), "211") != 0) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response to group command for " . $groupname . ": " . $response, FILE_APPEND);
         echo "<p>" . $text_error["error:"] . "</p>";
         echo "<p>" . $text_thread["no_such_group"] . "</p>";
         flush();
