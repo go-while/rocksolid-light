@@ -464,6 +464,7 @@ if ($show == 1) {
         echo 'class="postbody" id="postbody" ';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
+        $bodyzeile = wrap_post($bodyzeile);
         if ((isset($bodyzeile)) && ($post_autoquote))
             echo htmlspecialchars($bodyzeile);
         if (is_string($body))
@@ -472,8 +473,9 @@ if ($show == 1) {
         if (! $post_autoquote) {
             echo '<input type="hidden" id="hidebody"';
             echo 'value="';
-            if (isset($bodyzeile))
+            if (isset($bodyzeile)) {
                 echo htmlspecialchars($bodyzeile);
+            }
             echo '">';
 
             ?>

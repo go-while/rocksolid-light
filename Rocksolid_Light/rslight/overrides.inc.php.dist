@@ -72,6 +72,10 @@ return [
     // Rate per second that a 'bot' may load pages
     'throttle_hits_bot_loadrate' => '.1',
 
+    // Block connections when one of these strings is
+    // contained in user_agent string
+    // 'block_by_user_agent' => array("semrushbot", "bytespider"),
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];

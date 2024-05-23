@@ -73,7 +73,7 @@ function thread_cache_load($group)
     }
     // Check memcache
     if ($memcacheD) {
-        $key = 'thread_cache-' . $group;
+        $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
         if ($headers = unserialize(gzuncompress($memcacheD->get($key)))) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
@@ -94,7 +94,7 @@ function thread_cache_load($group)
         $dbh = null;
     }
     if ($memcacheD) {
-        $key = 'thread_cache-' . $group;
+        $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
         
         $add_thread = gzcompress(serialize($headers), 9);
         $thread_bytes = strlen($add_thread);
@@ -107,7 +107,7 @@ function thread_cache_load($group)
         }
         
         if ($nicole && $enable_memcache_logging) {
-            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache miss) Wrote $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
         }
         if ($too_big) {
             file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " $key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
@@ -151,7 +151,7 @@ function thread_cache_save($headers, $group)
         $dbh->commit();
         $dbh = null;
         if ($memcacheD) {
-            $key = 'thread_cache-' . $group;
+            $key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
             $del = $memcacheD->delete($key);
             $add_thread = gzcompress(serialize($headers), 9);
             $thread_bytes = strlen($add_thread);
@@ -164,10 +164,10 @@ function thread_cache_save($headers, $group)
             }
             if ($enable_memcache_logging) {
                 if ($del) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Deleted $key", FILE_APPEND);
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache delete) $key", FILE_APPEND);
                 }
                 if ($nicole) {
-                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " Wrote $key (" . $thread_bytes . " bytes)", FILE_APPEND);
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $key (" . $thread_bytes . " bytes)", FILE_APPEND);
                 }
                 if ($too_big) {
                     file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " $key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
@@ -368,8 +368,10 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
     $overviewformat = thread_overview_read($ns);
     $spoolfilename = $spooldir . '/' . $groupname . '-data.db3';
     fputs($ns, "GROUP $groupname\r\n"); // select a group
-    $groupinfo = explode(" ", line_read($ns));
-    if (substr($groupinfo[0], 0, 1) != 2) {
+    $response = line_read($ns);
+    $groupinfo = explode(" ", $response);
+    if (strcmp(substr($groupinfo[0], 0, 3), "211") != 0) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response to group command for " . $groupname . ": " . $response, FILE_APPEND);
         echo "<p>" . $text_error["error:"] . "</p>";
         echo "<p>" . $text_thread["no_such_group"] . "</p>";
         flush();
