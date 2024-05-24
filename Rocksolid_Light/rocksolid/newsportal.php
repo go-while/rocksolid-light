@@ -2746,9 +2746,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
         include $config_dir . '/memcache.inc.php';
     }
     if ($group == null) {
-        $message = get_data_from_msgid($messageid);
-        $groups = $message['newsgroup'];
-        $grouplist = preg_split("/( |\,)/", $groups);
+        $grouplist = get_newsgroups_by_msgid($messageid);
     } else {
         $grouplist[0] = $group;
     }
@@ -2756,31 +2754,22 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $group) {
-        foreach ($menulist as $menu) {
-            if ($menu[0] == '#') {
-                continue;
-            }
-            $menuitem = explode(':', $menu);
-            $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
-            while ($gl = fgets($glfp)) {
-                $group_name = preg_split("/( |\t)/", $gl, 2);
-                if (strtolower(trim($group)) == strtolower(trim($group_name[0]))) {
-                    $config_name = $menuitem[0];
-                    // echo "\nFOUND: " . $group . " IN: " . $config_name;
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FOUND: " . $group . " IN: " . $config_name, FILE_APPEND);
-                    break 2;
-                }
-            }
+        if(!$config_name = get_section_by_group($groupname, true)) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Group not found: " . $group, FILE_APPEND);
+            continue;
         }
         if ($CONFIG['article_database'] == '1') {
             $database = $spooldir . '/' . $group . '-articles.db3';
-            if (is_file($database)) {
-                $articles_dbh = article_db_open($database);
+            $articles_dbh = article_db_open($database);
+            if ($articles_dbh) {
                 $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE msgid=:messageid');
                 $articles_stmt->execute([
                     'messageid' => $messageid
                 ]);
                 $articles_dbh = null;
+            } else {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to access: " . $database, FILE_APPEND);
+                continue;
             }
         }
         // Handle overview and history
