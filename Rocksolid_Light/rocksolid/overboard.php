@@ -308,12 +308,6 @@ function display_threads($threads, $oldest)
     $style = 0;
     $results = 0;
     foreach ($nicole as $key => $value) {
-        // Skip if not in registered users sub list
-        if (! $foundgroup_head = check_group_for_user($key, $userdata, $user_config, true)) {
-            // testing: continuing here may break newsgroup identification
-            // and not display articles that should be displayed
-            // continue;
-        }
         $target_head = $this_overboard['msgids'][$key];
         if (! isset($target_head['msgid'])) {
             $target_head = get_data_from_msgid($key);
@@ -422,6 +416,9 @@ function display_threads($threads, $oldest)
             }
         }
         $display .= '</td></tr>';
+        if ($results > ($maxdisplay - 1)) {
+            break;
+        }
     }
 
     $display .= "</table>";
