@@ -292,6 +292,7 @@ function get_articles($ns, $group)
         $bytes = 0;
         $ref = 0;
         $sub = 0;
+        $ng = 0;
         $banned = false;
         $integrity = false;
         $is_header = 1;
@@ -312,6 +313,7 @@ function get_articles($ns, $group)
                 if (strpos($response, ': ') !== false) {
                     $ref = 0;
                     $sub = 0;
+                    $ng = 0;
                 }
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
@@ -372,6 +374,7 @@ function get_articles($ns, $group)
                             $current_article['xref'] .= ' ' . $agroup . ':' . $artnum;
                         }
                     }
+                    $ng = 1;
                 }
                 if (stripos($response, "Xref: ") === 0) {
                     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
@@ -388,6 +391,11 @@ function get_articles($ns, $group)
                     $references = $this_references[1];
                     $ref = 1;
                 }
+                if (preg_match('/^\s/', $response) && $ng == 1) {
+                    $addgroups = preg_split("/\ |\,/", trim($response));
+                    $allgroups = array_merge($allgroups, $addgroups);
+                }
+                
                 if (preg_match('/^\s/', $response) && $ref == 1) {
                     $references = $references . $response;
                 }

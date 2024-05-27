@@ -356,6 +356,7 @@ function process_post($message, $group)
     $body = "";
     $ref = 0;
     $sub = 0;
+    $ng = 0;
     $response = "";
     $bytes = 0;
     $lines = 0;
@@ -372,6 +373,7 @@ function process_post($message, $group)
             if (strpos($line, ': ') !== false) {
                 $ref = 0;
                 $sub = 0;
+                $ng = 0;
             }
             if (stripos($line, "Path: ") === 0) {
                 $response = "441 Posting failed (Header preloading denied)\r\n";
@@ -403,11 +405,15 @@ function process_post($message, $group)
             if (stripos($line, "Newsgroups: ") === 0) {
                 $ngroups = explode(': ', $line);
                 $newsgroups = $ngroups[1];
+                $ng = 1;
             }
             if (stripos($line, "References: ") === 0) {
                 $references_line = explode(': ', $line);
                 $references = $references_line[1];
                 $ref = 1;
+            }
+            if (preg_match('/^\s/', $line) && $ng == 1) {
+                $newsgroups .= $newsgroups;
             }
             if (preg_match('/^\s/', $line) && $ref == 1) {
                 $references = $references . $line;
