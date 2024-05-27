@@ -14,13 +14,21 @@ foreach($newspam as $spam) {
     $spam_lines = file($spam);
     $lines = 0;
     $is_header = 1;
-    foreach($spam_lines as $response) {
+    $ng = false;
+        foreach($spam_lines as $response) {
       if (trim($response) == "" && $lines > 0) {
                 break;
             }
             if ($is_header == 1) {
               $lines ++;
                 $response = str_replace("\t", " ", $response);
+                if (stripos($response, ": ") !== false) {
+                    $ng = false;
+                } else {
+                    if($ng) {
+                        $newsgroups[1] .= $response;
+                    }
+                }
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
                     $date = explode(': ', $response);
@@ -37,11 +45,15 @@ foreach($newspam as $spam) {
                 }
                 if (stripos($response, "Newsgroups: ") === 0) {
                     $newsgroups = explode('Newsgroups: ', $response);
+                    $ng = true;
                 }
             }
     }
+    $newsgroups = preg_replace("/\s+/", " ", $newsgroups[1]);
+    $newsgroups = preg_replace("/\,/", " ", $newsgroups);
+    $newsgroups = preg_replace("/\s+/", " ", $newsgroups);
     
-    $nocem_list[] = "#    Sender: ".trim($sender[1])."\n#    Date: ".trim($date[1])."\n#    Subject: ".trim($subject[1])."\n".trim($id[1])." ".trim($newsgroups[1])."\n";;
+    $nocem_list[] = "#    Sender: ".trim($sender[1])."\n#    Date: ".trim($date[1])."\n#    Subject: ".trim($subject[1])."\n".trim($id[1])." ".trim($newsgroups)."\n";;
     $count++;
 }
 $nocem_file = fopen($nocem, "w+");
