@@ -367,9 +367,22 @@ if ($show == 1) {
         echo $text_post["followup_not_allowed"];
         echo " " . $newsgroups;
     } else {
+        // check that we can post to the newsgroup
+        $ngroups = preg_split("/[\s,]+/", $newsgroups);
+        $found = false;
+        foreach ($ngroups as $group) {
+            if(get_section_by_group($group)) {
+                $found = true;
+                break;
+            }
+        }
         // show post form
         $fieldencrypt = md5(rand(1, 10000000));
-        echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"] . '</h1>';
+        echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        if(!$found) {
+            echo ' (posting will fail - no such group)';
+        }
+        echo '</h1>';
 
         if (isset($error))
             echo "<p>$error</p>";
@@ -390,7 +403,11 @@ if ($show == 1) {
             echo '<td align="right">';
             echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
             echo '</td><td>';
-            echo '<label for="followup">' . $head->followup . ' (followup-to is set)</label></td>';
+            echo '<label for="followup">' . $head->followup . ' (followup-to is set';
+            if(!get_section_by_group($head->followup)) {
+                echo ' but <b><i>posting will fail - no such group </i></b>';
+            }
+            echo ')</label></td>';
             echo '</tr><tr>';
             echo '<tr><td align="right">';
             echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';

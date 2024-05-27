@@ -35,7 +35,7 @@ $nntppassword = "nntppassword";
 $type = "spam";
 
 // Your gpg signing key:
-$signing_key = "XXXX XXXX XXXX XXXX XXXX  XXXX XXXX XXXX XXXX XXXX";
+$signing_key = "XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX";
 // URL to view/download key:
 $key_location = "https://<key_url>";
 
