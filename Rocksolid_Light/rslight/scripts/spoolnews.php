@@ -217,6 +217,7 @@ function get_articles($ns, $group)
         $local = get_next_article_number($group);
     }
     # Split group response line to get last article number
+    # $article is the next number we want, not the last we retrieved
     $detail = explode(" ", $response);
     if (! isset($article)) {
         $article = $detail[2];
@@ -227,6 +228,11 @@ function get_articles($ns, $group)
     if ($article < $detail[2]) {
         $article = $detail[2];
     }
+    if ($article > $detail[3]) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $CONFIG['remote_server'] . " for " . $group . " We are up to date", FILE_APPEND);
+        // Just in case we have an error and $article is too large:
+        $article = $detail[3] + 1;
+    } else {
     // Get overview from server
     $server_overview = array();
     $re = false;
@@ -524,6 +530,7 @@ function get_articles($ns, $group)
             }
         }
     }
+  }  
     // END GET INDIVIDUAL ARTICLE
     $article --;
     // $local--;
@@ -541,32 +548,8 @@ function get_articles($ns, $group)
         }
     }
     # Save config
-    $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $saveconfig = fopen($remote_groupfile, 'w+');
-    foreach ($grouplist as $savegroup) {
-        $name = explode(':', $savegroup);
-        if (strcmp($name[0], $group) == 0) {
-            fputs($saveconfig, $group . ":" . $article . "\n");
-        } else {
-            fputs($saveconfig, $savegroup . "\n");
-        }
-    }
-    fclose($saveconfig);
-    $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $saveconfig = fopen($local_groupfile, 'w+');
-    foreach ($grouplist as $savegroup) {
-        $name = explode(':', $savegroup);
-        if (strcmp($name[0], $group) == 0) {
-            fputs($saveconfig, $group . ":" . $local . "\n");
-        } else {
-            fputs($saveconfig, $savegroup . "\n");
-        }
-    }
-    fclose($saveconfig);
-    if ($CONFIG['article_database'] == '1') {
-        $article_dbh = null;
-    }
-    $dbh = null;
+    save_config_value($remote_groupfile, $group, $article, true);
+    save_config_value($local_groupfile, $group, $local, true);
 }
 
 function create_spool_groups($in_groups, $out_groups)
