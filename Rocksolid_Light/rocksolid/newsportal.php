@@ -1130,7 +1130,6 @@ function display_links_in_body($text)
 {
     global $config_dir;
     preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
-    $found = array();
     $isquote = false;
     if (strpos($text, ">") == 0) {
         $isquote = true;
@@ -1140,11 +1139,10 @@ function display_links_in_body($text)
         if (! $match) {
             continue;
         }
-        if (in_array($match, $found)) {
-            continue;
-        }
-        $found[] = $match;
-        $linkurl = preg_replace("/(<|>)/", ' ', htmlspecialchars_decode($match));
+        // Get rid of unwanted trailing characters
+        $match = rtrim(htmlspecialchars_decode($match), '/>,"');
+        $match = htmlspecialchars($match);
+        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
         $url = preg_replace("/(<|>)/", ' ', $match);
         $pattern = preg_quote($url);
         $pattern = "!$pattern!";
@@ -1968,24 +1966,24 @@ function get_poster_name($name)
     $fromline = address_decode($name, "nowhere");
     if (! isset($fromline[0]["host"]))
         $fromline[0]["host"] = "";
-        $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
-        $name_username = $fromline[0]["mailbox"];
-        if (! isset($fromline[0]["personal"])) {
-            $poster_name = $fromline[0]["mailbox"];
+    $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+    $name_username = $fromline[0]["mailbox"];
+    if (! isset($fromline[0]["personal"])) {
+        $poster_name = $fromline[0]["mailbox"];
+    } else {
+        $poster_name = $fromline[0]["personal"];
+    }
+    if (trim($poster_name) == '') {
+        $fromoutput = explode("<", html_entity_decode($name));
+        if (strlen($fromoutput[0]) < 1) {
+            $poster_name = $fromoutput[1];
         } else {
-            $poster_name = $fromline[0]["personal"];
+            $poster_name = $fromoutput[0];
         }
-        if (trim($poster_name) == '') {
-            $fromoutput = explode("<", html_entity_decode($name));
-            if (strlen($fromoutput[0]) < 1) {
-                $poster_name = $fromoutput[1];
-            } else {
-                $poster_name = $fromoutput[0];
-            }
-        }
-        $thisposter['name'] = $poster_name;
-        $thisposter['from'] = $name_from;
-        return ($thisposter);
+    }
+    $thisposter['name'] = $poster_name;
+    $thisposter['from'] = $name_from;
+    return ($thisposter);
 }
 
 /*
@@ -2036,7 +2034,7 @@ function get_config_file_value($configfile, $request)
     if ($configFileHandle = @fopen($configfile, 'r')) {
         while (! feof($configFileHandle)) {
             $buffer = fgets($configFileHandle);
-            if (strpos($buffer, $request . ':') !== FALSE) {
+            if (strpos($buffer, $request . ':') !== 0) {
                 $dataline = $buffer;
                 fclose($configFileHandle);
                 $datafound = explode(':', $dataline);
@@ -2058,7 +2056,7 @@ function get_config_value($configfile, $request)
     if ($configFileHandle = @fopen($config_dir . '/' . $configfile, 'r')) {
         while (! feof($configFileHandle)) {
             $buffer = fgets($configFileHandle);
-            if (strpos($buffer, $request . ':') !== FALSE) {
+            if (strpos($buffer, $request . ':') !== 0) {
                 $dataline = $buffer;
                 fclose($configFileHandle);
                 $datafound = explode(':', $dataline);
@@ -2100,12 +2098,12 @@ function throttle_hits($client_device)
 
     if (isset($OVERRIDES['block_by_user_agent'])) {
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
-        foreach($OVERRIDES['block_by_user_agent'] as $user_agent) {
-             if(stripos($ua, $user_agent) !== false) {
+        foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
+            if (stripos($ua, $user_agent) !== false) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' listed in block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
-                exit;
+                exit();
             }
         }
     }
@@ -2754,7 +2752,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $group) {
-        if(!$config_name = get_section_by_group($groupname, true)) {
+        if (! $config_name = get_section_by_group($groupname, true)) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Group not found: " . $group, FILE_APPEND);
             continue;
         }
