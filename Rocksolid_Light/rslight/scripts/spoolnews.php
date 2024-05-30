@@ -464,9 +464,6 @@ function get_articles($ns, $group)
                 // CREATE SEARCH SNIPPET
                 $this_snippet = get_search_snippet($body, $content_type[1], $content_transfer_encoding);
             } else {
-                if ($article_date > time()) {
-                    $article_date = time();
-                }
                 touch($articleHandle, $article_date);
             }
             $current_article['mid'] = $mid[1];

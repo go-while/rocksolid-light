@@ -2837,10 +2837,9 @@ function check_article_integrity($rawmessage)
     // Parse the Header:
     $message->header = parse_header($rawheader);
     
-    // Check if date is in future (allow up to 120 seconds in future)
-    if ($message->header->date > (time() + 120)) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping message (date in future): " . $message->header->id, FILE_APPEND);
-        $returnval = " Skipping message (date in future): " . $message->header->id;
+    // Check if date is in future (allow up to 60 seconds in future)
+    if ($message->header->date > (time() + 60)) {
+        $returnval = " Skipping message (date in future): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
         return $returnval;
     }
     // Now we know if the message is a mime-multipart message:
