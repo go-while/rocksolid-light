@@ -1,7 +1,7 @@
 <?php
 
 /* Version */
-$rslight_version = "<version>";
+$rslight_version = file_get_contents('../common/version.txt');
 
 /* Location of configuration and spool */
 $config_dir = "<config_dir>";
