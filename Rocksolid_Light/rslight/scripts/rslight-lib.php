@@ -356,6 +356,7 @@ function process_post($message, $group)
     $body = "";
     $ref = 0;
     $sub = 0;
+    $ng = 0;
     $response = "";
     $bytes = 0;
     $lines = 0;
@@ -372,6 +373,23 @@ function process_post($message, $group)
             if (strpos($line, ': ') !== false) {
                 $ref = 0;
                 $sub = 0;
+                $ng = 0;
+            } else {
+                if (preg_match('/^\s/', $line)) {
+                    if ($ng == 1) {
+                        $newsgroups = $newsgroups . ',' . trim($line);
+                        $newsgroups = preg_replace('/\,\,/', ',', $newsgroups);
+                        continue;
+                    }
+                    if ($ref == 1) {
+                        $references = $references . $line;
+                        continue;
+                    }
+                    if ($sub == 1) {
+                        $subject = $subject . $line;
+                        continue;
+                    }
+                }
             }
             if (stripos($line, "Path: ") === 0) {
                 $response = "441 Posting failed (Header preloading denied)\r\n";
@@ -403,18 +421,14 @@ function process_post($message, $group)
             if (stripos($line, "Newsgroups: ") === 0) {
                 $ngroups = explode(': ', $line);
                 $newsgroups = $ngroups[1];
+                $ng = 1;
             }
             if (stripos($line, "References: ") === 0) {
                 $references_line = explode(': ', $line);
                 $references = $references_line[1];
                 $ref = 1;
             }
-            if (preg_match('/^\s/', $line) && $ref == 1) {
-                $references = $references . $line;
-            }
-            if (preg_match('/^\s/', $line) && $sub == 1) {
-                $subject = $subject . $line;
-            }
+
             if (stripos($line, "Message-ID: ") !== false) {
                 $mid = explode(': ', $line);
                 $no_mid = 0;
@@ -470,6 +484,7 @@ function process_post($message, $group)
     }
     $is_header = 1;
     $lines = 0;
+    $ng = 0;
     foreach ($message as $line) {
         if (trim($line) == "" || $lines > 0) {
             $is_header = 0;
@@ -477,7 +492,17 @@ function process_post($message, $group)
         }
         if (stripos($line, "Newsgroups: ") === 0 && $is_header == 1) {
             fputs($postfilehandle, "Newsgroups: " . $newsgroups . "\r\n");
+            $ng = 1;
         } else {
+            if (strpos($line, ': ') !== false) {
+                $ng = 0;
+            } else {
+                if (preg_match('/^\s/', $line)) {
+                    if ($ng == 1) {
+                        continue;
+                    }
+                }
+            }
             fputs($postfilehandle, $line . "\r\n");
         }
     }
@@ -1125,7 +1150,7 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
 {
     global $enable_rslight, $spooldir, $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile;
 
-    if(is_moderated($nntp_group)) {
+    if (is_moderated($nntp_group)) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $section . " Moderated group... Queuing local post: " . $nntp_group, FILE_APPEND);
         $return_val = "240 Article received OK (queued for moderation)\r\n";
         return ($return_val);

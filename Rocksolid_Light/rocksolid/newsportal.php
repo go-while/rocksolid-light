@@ -1128,36 +1128,34 @@ function html_parse($text)
 
 function display_links_in_body($text)
 {
-    global $config_dir;
-    preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
-    $found = array();
-    $isquote = false;
-    if (strpos($text, ">") == 0) {
-        $isquote = true;
-        echo '<blockquote class="np_article_quote">';
-    }
-    foreach ($matches[0] as $match) {
-        if (! $match) {
-            continue;
-        }
-        if (in_array($match, $found)) {
-            continue;
-        }
-        $found[] = $match;
-        $linkurl = preg_replace("/(<|>)/", ' ', htmlspecialchars_decode($match));
-        $url = preg_replace("/(<|>)/", ' ', $match);
-        $pattern = preg_quote($url);
-        $pattern = "!$pattern!";
-        $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
-    }
-    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-        include ($config_dir . '/rewrite_body.inc.php');
-    }
-
-    echo $text;
-    if ($isquote) {
-        echo '</blockquote>';
-    }
+	global $config_dir;
+	preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
+	$isquote = false;
+	if (strpos($text, ">") == 0) {
+		$isquote = true;
+		echo '<blockquote class="np_article_quote">';
+	}
+	foreach ($matches[0] as $match) {
+		if (! $match) {
+			continue;
+		}
+		// Get rid of unwanted trailing characters
+		$match = rtrim(htmlspecialchars_decode($match), '/>,"');
+		$match = htmlspecialchars($match);
+		$linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
+		$url = preg_replace("/(<|>)/", ' ', $match);
+		$pattern = preg_quote($url);
+		$pattern = "!$pattern!";
+		$text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
+	}
+	if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+		include ($config_dir . '/rewrite_body.inc.php');
+	}
+	
+	echo $text;
+	if ($isquote) {
+		echo '</blockquote>';
+	}
 }
 
 /*
