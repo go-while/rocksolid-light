@@ -2408,12 +2408,6 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             return "441 Insert failed (duplicate)\r\n";
         }
     }
-    // Allow a message to be approximately 2 minutes in the future, but not more.
-    if ($this_article['epochdate'] > (time() + 120)) {
-        echo "\n(newsportal)Article date in future. Skipping: " . $group . ":" . $this_article['mid'];
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Article date in future. Skipping: " . $group . ":" . $this_article['mid'], FILE_APPEND);
-        return "441 Insert failed (article date in future)\r\n";
-    }
 
     // Open articles Database
     if ($CONFIG['article_database'] == '1') {
@@ -2830,7 +2824,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
 // Else returns a string with reason for failure
 function check_article_integrity($rawmessage)
 {
-    global $CONFIG, $logfile;
+    global $CONFIG, $logfile, $config_name;
     $returnval = false;
     $count_rawmessage = count($rawmessage);
     $message = new messageType();
@@ -2842,9 +2836,10 @@ function check_article_integrity($rawmessage)
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
-    // Check if date is in future
-    if ($message->header->date > time()) {
-        $returnval = " Skipping message (date in future): " . $message->header->id;
+    
+    // Check if date is in future (allow up to 60 seconds in future)
+    if ($message->header->date > (time() + 60)) {
+        $returnval = " Skipping message (date in future): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
         return $returnval;
     }
     // Now we know if the message is a mime-multipart message:
