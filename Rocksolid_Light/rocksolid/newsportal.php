@@ -2746,8 +2746,9 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     /* Find section */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $group) {
-        if(!$config_name = get_section_by_group($groupname, true)) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Group not found: " . $group, FILE_APPEND);
+        $config_name = get_section_by_group($group, true);
+        if(!$config_name) {
+            file_put_contents($logfile, "\n" . format_log_date() . " Group not found: " . $group, FILE_APPEND);
             continue;
         }
         if ($CONFIG['article_database'] == '1') {
