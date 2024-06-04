@@ -823,10 +823,13 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
             return "blocked";
         }
-
+        
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
-            echo $text_article["block-xnoarchive"];
-        } else if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
+            echo '<hr><p class=np_ob_posted_date>' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
+            return "no-archive";
+        }
+        
+        if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
