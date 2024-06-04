@@ -202,7 +202,7 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     if ($memcacheD) {
         $memcache_key = $memcache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
-        if ($message = unserialize($memcacheD->get($memcache_key))) {
+        if ($message = unserialize(gzuncompress($memcacheD->get($memcache_key)))) {
             if ($enable_memcache_logging) {
                 file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
             }
@@ -304,7 +304,7 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     // MEMCACHE if ($id, 0, $group)
     if ($memcacheD) {
-        $nicole = $memcacheD->add($memcache_key, serialize($message), $memcache_ttl);
+        $nicole = $memcacheD->add($memcache_key, gzcompress(serialize($message)), $memcache_ttl);
         if ($enable_memcache_logging && $nicole) {
             file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) " . $memcache_key, FILE_APPEND);
         }
@@ -637,9 +637,7 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
     } else {
         $message = $current_message;
     }
-    if (isset($sendface)) {
-        unlink($sendface);
-    }
+    $sendface = null;
     $isface = 0;
     $return = '';
     foreach ($message as $line) {
