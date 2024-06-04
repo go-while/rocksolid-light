@@ -185,7 +185,7 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
-    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
+    global $CONFIG, $config_dir, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
@@ -193,6 +193,21 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     if (! is_numeric($id)) {
         return false;
+    }
+    // MEMCACHE if ($id, 0, $group)
+    if ($bodynum == 0 && $group != "") {
+        if (file_exists($config_dir . '/memcache.inc.php')) {
+            include $config_dir . '/memcache.inc.php';
+        }
+    }
+    if ($memcacheD) {
+        $memcache_key = $memcache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
+        if ($message = unserialize($memcacheD->get($memcache_key))) {
+            if ($enable_memcache_logging) {
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+            }
+            return $message;
+        }
     }
     $message = new messageType();
     if ((isset($cache_articles)) && ($cache_articles == true)) {
@@ -285,6 +300,13 @@ function message_read($id, $bodynum = 0, $group = "")
                     fclose($cachefile);
                 }
             }
+        }
+    }
+    // MEMCACHE if ($id, 0, $group)
+    if ($memcacheD) {
+        $nicole = $memcacheD->add($memcache_key, serialize($message), $memcache_ttl);
+        if ($enable_memcache_logging && $nicole) {
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) " . $memcache_key, FILE_APPEND);
         }
     }
     return $message;

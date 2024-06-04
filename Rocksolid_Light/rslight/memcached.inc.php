@@ -34,6 +34,11 @@ $memcache_key_prefix = 'rsl';
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
 if ($enable_memcache) {
+    // Add version to prefix to avoid errors if upgrading
+    // and not restarting memcached
+    global $rslight_version;
+    $memcache_key_prefix .= trim(preg_replace('/\./', '', $rslight_version));
+
     $memcacheD = new Memcached('memcacheD');
     $memcacheD->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
     $memcacheD->setOption(Memcached::OPT_CONNECT_TIMEOUT, 1000);
