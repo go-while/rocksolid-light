@@ -202,11 +202,14 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     if ($memcacheD) {
         $memcache_key = $memcache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
-        if ($message = unserialize(gzuncompress($memcacheD->get($memcache_key)))) {
-            if ($enable_memcache_logging) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+        $message_data = $memcacheD->get($memcache_key);
+        if ($message_data) {
+            if ($message = unserialize(gzuncompress($message_data))) {
+                if ($enable_memcache_logging) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+                }
+                return $message;
             }
-            return $message;
         }
     }
     $message = new messageType();
@@ -823,12 +826,12 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
             return "blocked";
         }
-        
+
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
             echo '<hr><p class=np_ob_posted_date>' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
             return "no-archive";
         }
-        
+
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face

@@ -640,16 +640,19 @@ function groups_show($gruppen)
             // Get last article info from article database
             // First check memcache
             if ($memcacheD) {
-                $lar_memcache = $memcache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
+                $memcache_key = $memcache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
-                if ($lastarticleinfo = unserialize($memcacheD->get($lar_memcache))) {
-                    if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
-                        if ($enable_memcache_logging) {
-                            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' (cache hit) lastarticleinfo for ' . $g->name, FILE_APPEND);
+                $lar = $memcacheD->get($memcache_key);
+                if ($lar) {
+                    if ($lastarticleinfo = unserialize($lar)) {
+                        if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
+                            if ($enable_memcache_logging) {
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' (cache hit) lastarticleinfo for ' . $g->name, FILE_APPEND);
+                            }
+                            $found = 1;
+                        } else {
+                            unset($lastarticleinfo);
                         }
-                        $found = 1;
-                    } else {
-                        unset($lastarticleinfo);
                     }
                 }
             }
@@ -687,13 +690,13 @@ function groups_show($gruppen)
                     $lastarticleinfo = $row;
                     if ($memcacheD) {
                         touch($groupfile, $lastarticleinfo['date']);
-                        $nicole = $memcacheD->delete($lar_memcache);
-                        $memcacheD->add($lar_memcache, serialize($row), $memcache_ttl);
+                        $nicole = $memcacheD->delete($memcache_key);
+                        $memcacheD->add($memcache_key, serialize($row), $memcache_ttl);
                         if ($enable_memcache_logging) {
                             if ($nicole) {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache update) $lar_memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache update) $memcache_key", FILE_APPEND);
                             } else {
-                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $lar_memcache", FILE_APPEND);
+                                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
                             }
                         }
                     }
@@ -1128,34 +1131,34 @@ function html_parse($text)
 
 function display_links_in_body($text)
 {
-	global $config_dir;
-	preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
-	$isquote = false;
-	if (strpos($text, ">") == 0) {
-		$isquote = true;
-		echo '<blockquote class="np_article_quote">';
-	}
-	foreach ($matches[0] as $match) {
-		if (! $match) {
-			continue;
-		}
-		// Get rid of unwanted trailing characters
-		$match = rtrim(htmlspecialchars_decode($match), '/>,"');
-		$match = htmlspecialchars($match);
-		$linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
-		$url = preg_replace("/(<|>)/", ' ', $match);
-		$pattern = preg_quote($url);
-		$pattern = "!$pattern!";
-		$text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
-	}
-	if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-		include ($config_dir . '/rewrite_body.inc.php');
-	}
-	
-	echo $text;
-	if ($isquote) {
-		echo '</blockquote>';
-	}
+    global $config_dir;
+    preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
+    $isquote = false;
+    if (strpos($text, ">") == 0) {
+        $isquote = true;
+        echo '<blockquote class="np_article_quote">';
+    }
+    foreach ($matches[0] as $match) {
+        if (! $match) {
+            continue;
+        }
+        // Get rid of unwanted trailing characters
+        $match = rtrim(htmlspecialchars_decode($match), '/>,"');
+        $match = htmlspecialchars($match);
+        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
+        $url = preg_replace("/(<|>)/", ' ', $match);
+        $pattern = preg_quote($url);
+        $pattern = "!$pattern!";
+        $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
+    }
+    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+        include ($config_dir . '/rewrite_body.inc.php');
+    }
+
+    echo $text;
+    if ($isquote) {
+        echo '</blockquote>';
+    }
 }
 
 /*
@@ -1623,14 +1626,16 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         include $config_dir . '/memcache.inc.php';
     }
     if ($memcacheD) {
-        $key = $memcache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
-        if ($groups = $memcacheD->get($key)) {
-            if ($enable_memcache_logging) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $key", FILE_APPEND);
+        $memcache_key = $memcache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
+        if ($getgroups = $memcacheD->get($memcache_key)) {
+            if ($groups = unserialize($getgroups)) {
+                if ($enable_memcache_logging) {
+                    file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+                }
             }
         }
     }
-    if (! $groups) {
+    if (!isset($groups)) {
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
         $overview_dbh = overview_db_open($database, $table);
@@ -1649,9 +1654,9 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         }
         $overview_dbh = null;
         if ($groups && $memcacheD) {
-            $nicole = $memcacheD->add($key, $groups, $memcache_ttl);
+            $nicole = $memcacheD->add($memcache_key, serialize($groups), $memcache_ttl);
             if ($enable_memcache_logging && $nicole) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $key", FILE_APPEND);
+                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
             }
         }
     }
@@ -1975,24 +1980,24 @@ function get_poster_name($name)
     $fromline = address_decode($name, "nowhere");
     if (! isset($fromline[0]["host"]))
         $fromline[0]["host"] = "";
-        $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
-        $name_username = $fromline[0]["mailbox"];
-        if (! isset($fromline[0]["personal"])) {
-            $poster_name = $fromline[0]["mailbox"];
+    $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+    $name_username = $fromline[0]["mailbox"];
+    if (! isset($fromline[0]["personal"])) {
+        $poster_name = $fromline[0]["mailbox"];
+    } else {
+        $poster_name = $fromline[0]["personal"];
+    }
+    if (trim($poster_name) == '') {
+        $fromoutput = explode("<", html_entity_decode($name));
+        if (strlen($fromoutput[0]) < 1) {
+            $poster_name = $fromoutput[1];
         } else {
-            $poster_name = $fromline[0]["personal"];
+            $poster_name = $fromoutput[0];
         }
-        if (trim($poster_name) == '') {
-            $fromoutput = explode("<", html_entity_decode($name));
-            if (strlen($fromoutput[0]) < 1) {
-                $poster_name = $fromoutput[1];
-            } else {
-                $poster_name = $fromoutput[0];
-            }
-        }
-        $thisposter['name'] = $poster_name;
-        $thisposter['from'] = $name_from;
-        return ($thisposter);
+    }
+    $thisposter['name'] = $poster_name;
+    $thisposter['from'] = $name_from;
+    return ($thisposter);
 }
 
 /*
@@ -2094,25 +2099,26 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
     }
 }
 
-function throttle_hits($client_device)
+function throttle_hits($client_device = null)
 {
     global $CONFIG, $OVERRIDES, $logdir, $config_name;
     $logfile = $logdir . '/newsportal.log';
 
-    $client_device = get_client_user_agent_info();
+    if (! $client_device) {
+        $client_device = get_client_user_agent_info();
+    }
     $client_device = strtolower($client_device);
-    $useragent = strtolower($useragent);
 
     $_SESSION['rsactive'] = true;
 
     if (isset($OVERRIDES['block_by_user_agent'])) {
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
-        foreach($OVERRIDES['block_by_user_agent'] as $user_agent) {
-             if(stripos($ua, $user_agent) !== false) {
+        foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
+            if (stripos($ua, $user_agent) !== false) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' listed in block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
-                exit;
+                exit();
             }
         }
     }
@@ -2756,7 +2762,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $group) {
         $config_name = get_section_by_group($group, true);
-        if(!$config_name) {
+        if (! $config_name) {
             file_put_contents($logfile, "\n" . format_log_date() . " Group not found: " . $group, FILE_APPEND);
             continue;
         }
@@ -2846,7 +2852,7 @@ function check_article_integrity($rawmessage)
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
-    
+
     // Check if date is in future (allow up to 60 seconds in future)
     if ($message->header->date > (time() + 60)) {
         $returnval = " Skipping message (date in future): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
