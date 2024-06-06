@@ -51,9 +51,7 @@ if ($enable_memcache) {
         ))) {
             file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Failed to connect memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
         } else {
-            if ($enable_memcache_logging) {
-                file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Connected memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
-            }
+            file_put_contents($logdir . '/memcache.log', "\n" . format_log_date() . ' Connected memcache ' . $memcache_server . ':' . $memcache_port, FILE_APPEND);
         }
     }
 }
