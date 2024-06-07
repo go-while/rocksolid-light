@@ -1653,7 +1653,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
             $groups = null;
         }
         $overview_dbh = null;
-        if ($groups && $memcacheD) {
+        if ($groups && $enable_cache) {
             $nicole = cache_add($memcache_key, serialize($groups), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
