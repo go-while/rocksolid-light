@@ -1,5 +1,5 @@
 <?php
-global $rslight_version, $spooldir, $logdir;
+global $enable_cache, $rslight_version, $spooldir, $logdir, $cache_dir, $cache_log;
  /* 
  * Set $enable_cache to the cache type you want to use
  * memcached and php-memcached must be installed
@@ -46,9 +46,13 @@ $cache_ttl = 14400;
  */
 $cache_key_prefix = 'mysite';
 
+// Directory to cache data if using diskcache
+$cache_dir = $spooldir . '/cache/';
+
 /* PLEASE DO NOT EDIT BELOW THIS LINE */
 
 $cache_log = $logdir . '/cache.log';
+@mkdir($cache_dir);
 
 // Add version to prefix to avoid errors if upgrading
 // and not restarting memcached

@@ -642,7 +642,7 @@ function groups_show($gruppen)
             if ($enable_cache) {
                 $memcache_key = $cache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
-                $lar = cache_get($memcache_key, $enable_cache, $memcacheD);
+                $lar = cache_get($memcache_key, $memcacheD);
                 if ($lar) {
                     if ($lastarticleinfo = unserialize($lar)) {
                         if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
@@ -690,8 +690,8 @@ function groups_show($gruppen)
                     $lastarticleinfo = $row;
                     if ($enable_cache) {
                         touch($groupfile, $lastarticleinfo['date']);
-                        $nicole = cache_delete($memcache_key, $enable_cache, $memcacheD);
-                        cache_add($memcache_key, serialize($row), $cache_ttl, $enable_cache, $memcacheD);
+                        $nicole = cache_delete($memcache_key, $memcacheD);
+                        cache_add($memcache_key, serialize($row), $cache_ttl, $memcacheD);
                         if ($enable_cache_logging) {
                             if ($nicole) {
                                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache update) $memcache_key", FILE_APPEND);
@@ -1627,7 +1627,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
     }
     if ($enable_cache) {
         $memcache_key = $cache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
-        if ($getgroups = cache_get($memcache_key, $enable_cache, $memcacheD)) {
+        if ($getgroups = cache_get($memcache_key, $memcacheD)) {
             if ($groups = unserialize($getgroups)) {
                 if ($enable_cache_logging) {
                     file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
@@ -1654,7 +1654,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         }
         $overview_dbh = null;
         if ($groups && $memcacheD) {
-            $nicole = cache_add($memcache_key, serialize($groups), $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($memcache_key, serialize($groups), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
             }
@@ -1915,7 +1915,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
     // Check memcache
     if ($enable_cache) {
         $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $article;
-        if ($msg2 = cache_get($article_key, $enable_cache, $memcacheD)) {
+        if ($msg2 = cache_get($article_key, $memcacheD)) {
             $ok_article = 1;
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $article_key", FILE_APPEND);
@@ -1952,7 +1952,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
             }
         }
         if ($ok_article == 1 && $memcacheD) {
-            $nicole = cache_add($article_key, $msg2, $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($article_key, $msg2, $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $article_key", FILE_APPEND);
             }
@@ -2480,7 +2480,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         }
         if ($enable_cache) {
             $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $this_article['local'];
-            $nicole = cache_add($article_key, $this_article['article'], $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($article_key, $this_article['article'], $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) (new) $article_key", FILE_APPEND);
             }
@@ -2560,7 +2560,7 @@ function get_db_data_from_msgid($msgid, $group)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
-        if ($row = cache_get($row_cache, $enable_cache, $memcacheD)) {
+        if ($row = unserialize(cache_get($row_cache, $memcacheD))) {
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
             }
@@ -2585,7 +2585,7 @@ function get_db_data_from_msgid($msgid, $group)
     $dbh = null;
     if ($found) {
         if ($enable_cache) {
-            $nicole = cache_add($row_cache, $row, $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($row_cache, serialize($row), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }
@@ -2634,7 +2634,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_data_from_msgid-' . $msgid;
-        if ($row = cache_get($row_cache, $enable_cache, $memcacheD)) {
+        if ($row = cache_get($row_cache, $memcacheD)) {
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
             }
@@ -2664,7 +2664,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     $dbh = null;
     if ($found) {
         if ($enable_cache) {
-            $nicole = cache_add($row_cache, $row, $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($row_cache, $row, $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }
@@ -2819,7 +2819,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             // Delete article from memcache
             if ($enable_cache) {
                 $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $row['number'];
-                $result = cache_delete($article_key, $enable_cache, $memcacheD);
+                $result = cache_delete($article_key, $memcacheD);
                 if ($enable_cache_logging) {
                     if ($result) {
                         file_put_contents($cache_log, "\n" . format_log_date() . " Deleted $article_key", FILE_APPEND);
@@ -2951,35 +2951,57 @@ function delete_message_from_overboard($config_name, $group, $messageid)
     }
 }
 
-function cache_add($cache_key, $data, $cache_ttl, $enable_cache, $memcacheD = null) {
+function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null) {
+    global $enable_cache, $cache_dir, $cache_log;
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->add($cache_key, $data, $cache_ttl)) {
                 return $nicole;
             }
         }
-        return false;
    }
+   if($enable_cache == 'diskcache'){
+       if ($low_spool_disk_space) {
+           file_put_contents($cache_log, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for cache). Pausing diskcache", FILE_APPEND);
+           return false;
+       }
+       if($nicole = file_put_contents($cache_dir . '/' . $cache_key, $data)) {
+           return $nicole;
+       }
+   }
+   return false;
 }
 
-function cache_delete($cache_key, $enable_cache, $memcacheD = null) {
+function cache_delete($cache_key, $memcacheD = null) {
+    global $enable_cache, $cache_dir;
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->delete($cache_key)) {
                 return $nicole;
             }
         }
-        return false;
     }
+    if($enable_cache == 'diskcache'){
+        if(file_exists($cache_dir . '/' . $cache_key)) {
+            return unlink($cache_dir . '/' . $cache_key);
+        }
+    }
+    return false;
 }
 
-function cache_get($cache_key, $enable_cache, $memcacheD = null) {
+function cache_get($cache_key, $memcacheD = null) {
+    global $enable_cache, $cache_dir;
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->get($cache_key)) {
                 return $nicole;
             }
         }
-        return false;
     }
+    if($enable_cache == 'diskcache'){
+        if(file_exists($cache_dir . '/' . $cache_key)) {
+            return file_get_contents($cache_dir . '/' . $cache_key);
+        }
+    }
+    return false;
 }

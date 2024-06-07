@@ -74,7 +74,7 @@ function thread_cache_load($group)
     // Check memcache
     if ($enable_cache) {
         $cache_key = $cache_key_prefix . '_' . 'thread_cache-' . $group;
-        $message_data = cache_get($cache_key, $enable_cache, $memcacheD);
+        $message_data = cache_get($cache_key, $memcacheD);
         if ($message_data) {
             if ($headers = unserialize(gzuncompress($message_data))) {
                 if ($enable_cache_logging) {
@@ -101,7 +101,7 @@ function thread_cache_load($group)
         $thread_bytes = strlen($add_thread);
         $too_big = false;
         if ($thread_bytes < $cache_maxitemsize) {
-            $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $enable_cache, $memcacheD);
+            $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $memcacheD);
         } else {
             $nicole = false;
             $too_big = true;
@@ -153,12 +153,12 @@ function thread_cache_save($headers, $group)
         $dbh = null;
         if ($enable_cache) {
             $cache_key = $cache_key_prefix . '_' . 'thread_cache-' . $group;
-            $del = cache_delete($cache_key, $enable_cache, $memcacheD);
+            $del = cache_delete($cache_key, $memcacheD);
             $add_thread = gzcompress(serialize($headers), 9);
             $thread_bytes = strlen($add_thread);
             $too_big = false;
             if ($thread_bytes < $cache_maxitemsize) {
-                $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $enable_cache, $memcacheD);
+                $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $memcacheD);
             } else {
                 $too_big = true;
                 $nicole = false;

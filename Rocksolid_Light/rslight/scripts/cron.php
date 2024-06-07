@@ -142,6 +142,12 @@ foreach ($menulist as $menu) {
     echo "Expired articles\n";
 }
 
+# Expire diskcache
+if (file_exists($config_dir . '/cache.inc.php')) {
+    include $config_dir . '/cache.inc.php';
+}
+prune_dir_by_days($cache_dir, $cache_ttl / 86400);
+
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
