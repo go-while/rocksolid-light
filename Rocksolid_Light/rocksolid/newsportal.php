@@ -647,7 +647,7 @@ function groups_show($gruppen)
                     if ($lastarticleinfo = unserialize($lar)) {
                         if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
                             if ($enable_cache_logging) {
-                                file_put_contents($cache_log, "\n" . format_log_date() . ' (cache hit) lastarticleinfo for ' . $g->name, FILE_APPEND);
+                                file_put_contents($cache_log, "\n" . format_log_date() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
                             }
                             $found = 1;
                         } else {
@@ -1915,7 +1915,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
     // Check memcache
     if ($enable_cache) {
         $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $article;
-        if ($msg2 = cache_get($article_key, $memcacheD)) {
+        if ($msg2 = gzuncompress(cache_get($article_key, $memcacheD))) {
             $ok_article = 1;
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $article_key", FILE_APPEND);
@@ -1952,7 +1952,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
             }
         }
         if ($ok_article == 1 && $enable_cache) {
-            $nicole = cache_add($article_key, $msg2, $cache_ttl, $memcacheD);
+            $nicole = cache_add($article_key, gzcompress($msg2), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $article_key", FILE_APPEND);
             }
@@ -2480,7 +2480,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         }
         if ($enable_cache) {
             $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $this_article['local'];
-            $nicole = cache_add($article_key, $this_article['article'], $cache_ttl, $memcacheD);
+            $nicole = cache_add($article_key, gzcompress($this_article['article']), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) (new) $article_key", FILE_APPEND);
             }
@@ -2560,7 +2560,7 @@ function get_db_data_from_msgid($msgid, $group)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
-        if ($row = unserialize(cache_get($row_cache, $memcacheD))) {
+        if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
             }
@@ -2585,7 +2585,7 @@ function get_db_data_from_msgid($msgid, $group)
     $dbh = null;
     if ($found) {
         if ($enable_cache) {
-            $nicole = cache_add($row_cache, serialize($row), $cache_ttl, $memcacheD);
+            $nicole = cache_add($row_cache, gzcompress(serialize($row)), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }
@@ -2953,6 +2953,7 @@ function delete_message_from_overboard($config_name, $group, $messageid)
 
 function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null) {
     global $enable_cache, $cache_dir, $cache_log;
+    $cache_key = base64_encode($cache_key);
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->add($cache_key, $data, $cache_ttl)) {
@@ -2974,6 +2975,7 @@ function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null) {
 
 function cache_delete($cache_key, $memcacheD = null) {
     global $enable_cache, $cache_dir;
+    $cache_key = base64_encode($cache_key);
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->delete($cache_key)) {
@@ -2991,6 +2993,7 @@ function cache_delete($cache_key, $memcacheD = null) {
 
 function cache_get($cache_key, $memcacheD = null) {
     global $enable_cache, $cache_dir;
+    $cache_key = base64_encode($cache_key);
     if($enable_cache == 'memcached'){
         if($memcacheD) {
             if($nicole = $memcacheD->get($cache_key)) {
