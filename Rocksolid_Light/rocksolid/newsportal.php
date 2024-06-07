@@ -1951,7 +1951,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
                 break;
             }
         }
-        if ($ok_article == 1 && $memcacheD) {
+        if ($ok_article == 1 && $enable_cache) {
             $nicole = cache_add($article_key, $msg2, $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $article_key", FILE_APPEND);
