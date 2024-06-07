@@ -68,17 +68,17 @@ function thread_pageselect($group, $article_count, $first)
 function thread_cache_load($group)
 {
     global $spooldir, $config_dir, $logdir, $compress_spoolfiles;
-    if (file_exists($config_dir . '/memcache.inc.php')) {
-        include $config_dir . '/memcache.inc.php';
+    if (file_exists($config_dir . '/cache.inc.php')) {
+        include $config_dir . '/cache.inc.php';
     }
     // Check memcache
-    if ($memcacheD) {
-        $memcache_key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
-        $message_data = $memcacheD->get($memcache_key);
+    if ($enable_cache) {
+        $cache_key = $cache_key_prefix . '_' . 'thread_cache-' . $group;
+        $message_data = cache_get($cache_key, $enable_cache, $memcacheD);
         if ($message_data) {
             if ($headers = unserialize(gzuncompress($message_data))) {
-                if ($enable_memcache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+                if ($enable_cache_logging) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $cache_key", FILE_APPEND);
                 }
                 return $headers;
             }
@@ -96,22 +96,22 @@ function thread_cache_load($group)
         }
         $dbh = null;
     }
-    if ($memcacheD) {
+    if ($enable_cache) {
         $add_thread = gzcompress(serialize($headers), 9);
         $thread_bytes = strlen($add_thread);
         $too_big = false;
-        if ($thread_bytes < $memcache_maxitemsize) {
-            $nicole = $memcacheD->add($memcache_key, $add_thread, $memcache_ttl);
+        if ($thread_bytes < $cache_maxitemsize) {
+            $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $enable_cache, $memcacheD);
         } else {
             $nicole = false;
             $too_big = true;
         }
 
-        if ($nicole && $enable_memcache_logging) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
+        if ($nicole && $enable_cache_logging) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $cache_key (" . strlen($add_thread) . " bytes)", FILE_APPEND);
         }
         if ($too_big) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " $memcache_key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
+            file_put_contents($cache_log, "\n" . format_log_date() . " $cache_key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
         }
     }
     return ($headers);
@@ -128,8 +128,8 @@ function thread_cache_save($headers, $group)
     global $spooldir, $compress_spoolfiles, $config_dir, $logdir, $config_name;
     $logfile = $logdir . '/newsportal.log';
 
-    if (file_exists($config_dir . '/memcache.inc.php')) {
-        include $config_dir . '/memcache.inc.php';
+    if (file_exists($config_dir . '/cache.inc.php')) {
+        include $config_dir . '/cache.inc.php';
     }
 
     $database = $spooldir . '/' . $group . '-data.db3';
@@ -151,27 +151,27 @@ function thread_cache_save($headers, $group)
         ]);
         $dbh->commit();
         $dbh = null;
-        if ($memcacheD) {
-            $memcache_key = $memcache_key_prefix . '_' . 'thread_cache-' . $group;
-            $del = $memcacheD->delete($memcache_key);
+        if ($enable_cache) {
+            $cache_key = $cache_key_prefix . '_' . 'thread_cache-' . $group;
+            $del = cache_delete($cache_key, $enable_cache, $memcacheD);
             $add_thread = gzcompress(serialize($headers), 9);
             $thread_bytes = strlen($add_thread);
             $too_big = false;
-            if ($thread_bytes < $memcache_maxitemsize) {
-                $nicole = $memcacheD->add($memcache_key, $add_thread, $memcache_ttl);
+            if ($thread_bytes < $cache_maxitemsize) {
+                $nicole = cache_add($cache_key, $add_thread, $cache_ttl, $enable_cache, $memcacheD);
             } else {
                 $too_big = true;
                 $nicole = false;
             }
-            if ($enable_memcache_logging) {
+            if ($enable_cache_logging) {
                 if ($del) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache delete) $memcache_key", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache delete) $cache_key", FILE_APPEND);
                 }
                 if ($nicole) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key (" . $thread_bytes . " bytes)", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $cache_key (" . $thread_bytes . " bytes)", FILE_APPEND);
                 }
                 if ($too_big) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " $memcache_key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . format_log_date() . " $cache_key too large (" . $thread_bytes . " bytes)", FILE_APPEND);
                 }
             }
         }

@@ -196,17 +196,17 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     // MEMCACHE if ($id, 0, $group)
     if ($bodynum == 0 && $group != "") {
-        if (file_exists($config_dir . '/memcache.inc.php')) {
-            include $config_dir . '/memcache.inc.php';
+        if (file_exists($config_dir . '/cache.inc.php')) {
+            include $config_dir . '/cache.inc.php';
         }
     }
-    if ($memcacheD) {
-        $memcache_key = $memcache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
-        $message_data = $memcacheD->get($memcache_key);
+    if ($enable_cache) {
+        $cache_key = $cache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
+        $message_data = cache_get($cache_key, $enable_cache, $memcacheD);
         if ($message_data) {
             if ($message = unserialize(gzuncompress($message_data))) {
-                if ($enable_memcache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+                if ($enable_cache_logging) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $cache_key", FILE_APPEND);
                 }
                 return $message;
             }
@@ -306,10 +306,10 @@ function message_read($id, $bodynum = 0, $group = "")
         }
     }
     // MEMCACHE if ($id, 0, $group)
-    if ($memcacheD) {
-        $nicole = $memcacheD->add($memcache_key, gzcompress(serialize($message)), $memcache_ttl);
-        if ($enable_memcache_logging && $nicole) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) " . $memcache_key, FILE_APPEND);
+    if ($enable_cache) {
+        $nicole = cache_add($cache_key, gzcompress(serialize($message)), $cache_ttl, $enable_cache, $memcacheD);
+        if ($enable_cache_logging && $nicole) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) " . $cache_key, FILE_APPEND);
         }
     }
     return $message;
