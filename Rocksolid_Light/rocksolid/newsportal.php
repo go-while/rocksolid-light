@@ -1635,7 +1635,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
             }
         }
     }
-    if (!isset($groups)) {
+    if (! isset($groups)) {
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
         $overview_dbh = overview_db_open($database, $table);
@@ -2932,77 +2932,84 @@ function delete_message_from_overboard($config_name, $group, $messageid)
     $cachefile = $spooldir . "/" . $config_name . "-overboard.dat";
     if (is_file($cachefile)) {
         $cached_overboard = unserialize(file_get_contents($cachefile));
-        if ($target = $cached_overboard['msgids'][$messageid]) {
-            unset($cached_overboard['threads'][$target['date']]);
-            unset($cached_overboard['msgids'][$messageid]);
-            unset($cached_overboard['threadlink'][$messageid]);
-            file_put_contents($cachefile, serialize($cached_overboard));
+        if (isset($cached_overboard['msgids'][$messageid])) {
+            if ($target = $cached_overboard['msgids'][$messageid]) {
+                unset($cached_overboard['threads'][$target['date']]);
+                unset($cached_overboard['msgids'][$messageid]);
+                unset($cached_overboard['threadlink'][$messageid]);
+                file_put_contents($cachefile, serialize($cached_overboard));
+            }
         }
     }
     $cachefile = $spooldir . "/" . $group . "-overboard.dat";
     if (is_file($cachefile)) {
         $cached_overboard = unserialize(file_get_contents($cachefile));
-        if ($target = $cached_overboard['msgids'][$messageid]) {
-            unset($cached_overboard['threads'][$target['date']]);
-            unset($cached_overboard['msgids'][$messageid]);
-            unset($cached_overboard['threadlink'][$messageid]);
-            file_put_contents($cachefile, serialize($cached_overboard));
+        if (isset($cached_overboard['msgids'][$messageid])) {
+            if ($target = $cached_overboard['msgids'][$messageid]) {
+                unset($cached_overboard['threads'][$target['date']]);
+                unset($cached_overboard['msgids'][$messageid]);
+                unset($cached_overboard['threadlink'][$messageid]);
+                file_put_contents($cachefile, serialize($cached_overboard));
+            }
         }
     }
 }
 
-function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null) {
-    global $enable_cache, $cache_dir, $cache_log;
+function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null)
+{
+    global $enable_cache, $cache_dir, $cache_log, $low_spool_disk_space;
     $cache_key = base64_encode($cache_key);
-    if($enable_cache == 'memcached'){
-        if($memcacheD) {
-            if($nicole = $memcacheD->add($cache_key, $data, $cache_ttl)) {
+    if ($enable_cache == 'memcached') {
+        if ($memcacheD) {
+            if ($nicole = $memcacheD->add($cache_key, $data, $cache_ttl)) {
                 return $nicole;
             }
         }
-   }
-   if($enable_cache == 'diskcache'){
-       if ($low_spool_disk_space) {
-           file_put_contents($cache_log, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for cache). Pausing diskcache", FILE_APPEND);
-           return false;
-       }
-       if($nicole = file_put_contents($cache_dir . '/' . $cache_key, $data)) {
-           return $nicole;
-       }
-   }
-   return false;
+    }
+    if ($enable_cache == 'diskcache') {
+        if ($low_spool_disk_space) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for cache). Pausing diskcache", FILE_APPEND);
+            return false;
+        }
+        if ($nicole = file_put_contents($cache_dir . '/' . $cache_key, $data)) {
+            return $nicole;
+        }
+    }
+    return false;
 }
 
-function cache_delete($cache_key, $memcacheD = null) {
+function cache_delete($cache_key, $memcacheD = null)
+{
     global $enable_cache, $cache_dir;
     $cache_key = base64_encode($cache_key);
-    if($enable_cache == 'memcached'){
-        if($memcacheD) {
-            if($nicole = $memcacheD->delete($cache_key)) {
+    if ($enable_cache == 'memcached') {
+        if ($memcacheD) {
+            if ($nicole = $memcacheD->delete($cache_key)) {
                 return $nicole;
             }
         }
     }
-    if($enable_cache == 'diskcache'){
-        if(file_exists($cache_dir . '/' . $cache_key)) {
+    if ($enable_cache == 'diskcache') {
+        if (file_exists($cache_dir . '/' . $cache_key)) {
             return unlink($cache_dir . '/' . $cache_key);
         }
     }
     return false;
 }
 
-function cache_get($cache_key, $memcacheD = null) {
+function cache_get($cache_key, $memcacheD = null)
+{
     global $enable_cache, $cache_dir;
     $cache_key = base64_encode($cache_key);
-    if($enable_cache == 'memcached'){
-        if($memcacheD) {
-            if($nicole = $memcacheD->get($cache_key)) {
+    if ($enable_cache == 'memcached') {
+        if ($memcacheD) {
+            if ($nicole = $memcacheD->get($cache_key)) {
                 return $nicole;
             }
         }
     }
-    if($enable_cache == 'diskcache'){
-        if(file_exists($cache_dir . '/' . $cache_key)) {
+    if ($enable_cache == 'diskcache') {
+        if (file_exists($cache_dir . '/' . $cache_key)) {
             return file_get_contents($cache_dir . '/' . $cache_key);
         }
     }
