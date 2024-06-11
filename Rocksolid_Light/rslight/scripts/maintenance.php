@@ -221,6 +221,13 @@ function remove_articles($group)
         echo "Deleting " . $delme . " from " . $group . "\n";
     }
 
+    # History
+    $history_dbh = history_db_open($spooldir . '/history.db3');
+    $clear_stmt = $history_dbh->prepare("DELETE FROM history WHERE newsgroup=:group");
+    $clear_stmt->bindParam(':group', $group);
+    $clear_stmt->execute();
+    $history_dbh = null;
+    
     rename($spooldir . '/' . $group . '-articles.db3', $spooldir . '/' . $group . '-articles.db3-removed');
     unlink($spooldir . '/' . $group . '-data.db3');
     unlink($spooldir . '/' . $group . '-info.txt');
