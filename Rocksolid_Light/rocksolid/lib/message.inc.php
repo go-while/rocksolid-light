@@ -185,7 +185,7 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
-    global $CONFIG, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
+    global $CONFIG, $config_dir, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
@@ -193,6 +193,24 @@ function message_read($id, $bodynum = 0, $group = "")
     }
     if (! is_numeric($id)) {
         return false;
+    }
+    // MEMCACHE if ($id, 0, $group)
+    if ($bodynum == 0 && $group != "") {
+        if (file_exists($config_dir . '/cache.inc.php')) {
+            include $config_dir . '/cache.inc.php';
+        }
+    }
+    if ($enable_cache) {
+        $cache_key = $cache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
+        $message_data = cache_get($cache_key, $memcacheD);
+        if ($message_data) {
+            if ($message = unserialize(gzuncompress($message_data))) {
+                if ($enable_cache_logging) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $cache_key", FILE_APPEND);
+                }
+                return $message;
+            }
+        }
     }
     $message = new messageType();
     if ((isset($cache_articles)) && ($cache_articles == true)) {
@@ -285,6 +303,13 @@ function message_read($id, $bodynum = 0, $group = "")
                     fclose($cachefile);
                 }
             }
+        }
+    }
+    // MEMCACHE if ($id, 0, $group)
+    if ($enable_cache) {
+        $nicole = cache_add($cache_key, gzcompress(serialize($message)), $cache_ttl, $memcacheD);
+        if ($enable_cache_logging && $nicole) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) " . $cache_key, FILE_APPEND);
         }
     }
     return $message;
@@ -615,9 +640,7 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
     } else {
         $message = $current_message;
     }
-    if (isset($sendface)) {
-        unlink($sendface);
-    }
+    $sendface = null;
     $isface = 0;
     $return = '';
     foreach ($message as $line) {
@@ -805,8 +828,11 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
 
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
-            echo $text_article["block-xnoarchive"];
-        } else if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
+            echo '<hr><p class=np_ob_posted_date>' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
+            return "no-archive";
+        }
+
+        if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {

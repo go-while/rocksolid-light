@@ -42,7 +42,7 @@ if (! isset($_SESSION['remote_address'])) {
         $ip_pass = true;
     }
 }
-if ($ip_pass && $_SESSION['pass']) {
+if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {
     $logged_in = true;
 } else {
     $logged_in = false;
@@ -141,7 +141,7 @@ if (function_exists("npreg_get_email")) {
 if (! strcmp($name, $CONFIG['anonusername']) && (isset($CONFIG['anonuser']))) {
     $userpass = $CONFIG['anonuserpass'];
     $email = $name . $CONFIG['email_tail'];
-    $_SESSION['pass'] = '0';
+    $_SESSION['pass'] = false;
 } else {
     $userpass = $email;
     $request = "email";
@@ -251,10 +251,10 @@ if ($type == "post") {
                     return;
                 }
             }
-            
+
             // Wrap long lines in message body
             $body = wrap_post($body);
-            
+
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
@@ -262,10 +262,10 @@ if ($type == "post") {
             } else {
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
                 /*
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
-            } else {
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
-                */
+                 * $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
+                 * } else {
+                 * $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
+                 */
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
@@ -371,7 +371,7 @@ if ($show == 1) {
         $ngroups = preg_split("/[\s,]+/", $newsgroups);
         $found = false;
         foreach ($ngroups as $group) {
-            if(get_section_by_group($group)) {
+            if (get_section_by_group($group)) {
                 $found = true;
                 break;
             }
@@ -379,7 +379,7 @@ if ($show == 1) {
         // show post form
         $fieldencrypt = md5(rand(1, 10000000));
         echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
-        if(!$found) {
+        if (! $found) {
             echo ' (posting will fail - no such group)';
         }
         echo '</h1>';
@@ -404,7 +404,7 @@ if ($show == 1) {
             echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
             echo '</td><td>';
             echo '<label for="followup">' . $head->followup . ' (followup-to is set';
-            if(!get_section_by_group($head->followup)) {
+            if (! get_section_by_group($head->followup)) {
                 echo ' but <b><i>posting will fail - no such group </i></b>';
             }
             echo ')</label></td>';

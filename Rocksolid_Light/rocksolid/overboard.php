@@ -308,7 +308,9 @@ function display_threads($threads, $oldest)
     $style = 0;
     $results = 0;
     foreach ($nicole as $key => $value) {
-        $target_head = $this_overboard['msgids'][$key];
+        if (isset($this_overboard['msgids'][$key])) {
+            $target_head = $this_overboard['msgids'][$key];
+        }
         if (! isset($target_head['msgid'])) {
             $target_head = get_data_from_msgid($key);
         }
@@ -333,7 +335,6 @@ function display_threads($threads, $oldest)
                 }
             }
             $results ++;
-            $lone == '';
             $skip = '';
             if ($nohead) {
                 if (($style % 2) == 0) {

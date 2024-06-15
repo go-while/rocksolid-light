@@ -67,6 +67,9 @@ if ($argv[1][0] == '-') {
         default:
             echo "-help: This help page\n";
             echo "-version: Display version\n";
+            echo "******************* IMPORTANT **************************\n";
+            echo "*** PLEASE DISABLE cron.php WHEN RUNNING THIS SCRIPT ***\n";
+            echo "********************************************************\n";
             echo "-clean: Remove extraneous group db3 files\n";
             echo "-import: Import articles from a .db3 file (-import alt.test-articles)\n";
             echo "         You must first add group name to <config_dir>/<section>/groups.txt manually\n";
@@ -172,7 +175,8 @@ function reset_group($group, $remove = 0)
     $config_location = $spooldir . '/' . $section;
     $config_files = array_diff(scandir($config_location), array(
         '..',
-        '.'
+        '.',
+        'outgoing'
     ));
 
     foreach ($config_files as $config_file) {
@@ -200,19 +204,30 @@ function remove_articles($group)
     $group = trim($group);
 
     # Overview
-    $dbh = overview_db_open($spooldir . '/articles-overview.db3');
-    $clear_stmt = $dbh->prepare("DELETE FROM overview WHERE newsgroup=:group");
-    $clear_stmt->bindParam(':group', $group);
-    $clear_stmt->execute();
-    $dbh = null;
+    $overview_dbh = overview_db_open($spooldir . '/articles-overview.db3');
+
+    $fetch_stmt = $overview_dbh->prepare("SELECT msgid FROM overview WHERE newsgroup=:group");
+    $fetch_stmt->bindParam(':group', $group);
+    $fetch_stmt->execute();
+    $del_array = array();
+    while ($row = $fetch_stmt->fetch()) {
+        if (isset($row['msgid'])) {
+            $del_array[] = $row['msgid'];
+        }
+    }
+    $overview_dbh = null;
+    foreach($del_array as $delme) {
+        delete_message($delme, $group);
+        echo "Deleting " . $delme . " from " . $group . "\n";
+    }
 
     # History
-    $dbh = history_db_open($spooldir . '/history.db3');
-    $clear_stmt = $dbh->prepare("DELETE FROM history WHERE newsgroup=:group");
+    $history_dbh = history_db_open($spooldir . '/history.db3');
+    $clear_stmt = $history_dbh->prepare("DELETE FROM history WHERE newsgroup=:group");
     $clear_stmt->bindParam(':group', $group);
     $clear_stmt->execute();
-    $dbh = null;
-
+    $history_dbh = null;
+    
     rename($spooldir . '/' . $group . '-articles.db3', $spooldir . '/' . $group . '-articles.db3-removed');
     unlink($spooldir . '/' . $group . '-data.db3');
     unlink($spooldir . '/' . $group . '-info.txt');

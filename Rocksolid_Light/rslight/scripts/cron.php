@@ -12,7 +12,7 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
     chown($logfile, $CONFIG['webserver_user']);
     exit();
 } else {
-    file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron ".$pid." started...", FILE_APPEND);
+    file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " started...", FILE_APPEND);
     chown($logfile, $CONFIG['webserver_user']);
 }
 
@@ -40,16 +40,16 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
             }
         }
     }
-    
+
     $disabled_php = ini_get('disable_functions');
     echo $disabled_php;
-    if(strpos($disabled_php, 'pcntl_fork') !== false) {
+    if (strpos($disabled_php, 'pcntl_fork') !== false) {
         echo "\nERROR: pcntl_fork() disabled in php ini file, cannot fork (nntp server will not start).";
         file_put_contents($logfile, "\n" . format_log_date() . " ERROR: pcntl_fork() disabled in php ini file, cannot fork (nntp server will not start).", FILE_APPEND);
     } else {
         exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp.php > /dev/null 2>&1");
         if (is_numeric($CONFIG['local_ssl_port'])) {
-           exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp-ssl.php > /dev/null 2>&1");
+            exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/nntp-ssl.php > /dev/null 2>&1");
         }
     }
 }
@@ -75,7 +75,7 @@ $keydir = preg_replace('/spoolnews/', 'pubkey/', $cwd);
 @chgrp($ssldir, $uinfo["gid"]);
 
 $alias_file = $config_dir . '/aliases.conf';
-if(!file_exists($alias_file)) {
+if (! file_exists($alias_file)) {
     touch($alias_file);
 }
 @chown($alias_file, $uinfo["uid"]);
@@ -142,11 +142,19 @@ foreach ($menulist as $menu) {
     echo "Expired articles\n";
 }
 
+# Expire diskcache
+if (file_exists($config_dir . '/cache.inc.php')) {
+    include $config_dir . '/cache.inc.php';
+    if ($enable_cache == 'diskcache') {
+        prune_dir_by_days($cache_dir, $cache_ttl / 86400);
+    }
+}
+
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
 # Reload grouplist
-if ((filemtime($grouplist_cache_filename) < (time() - ($grouplist_cache_time - 600)) || !file_exists($grouplist_cache_filename))) {
+if ((filemtime($grouplist_cache_filename) < (time() - ($grouplist_cache_time - 600)) || ! file_exists($grouplist_cache_filename))) {
     exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
     echo "Refreshed grouplist\n";
 }
@@ -159,9 +167,10 @@ echo "Keys rotated\n";
 # Expire files
 expire_files();
 echo "Removed old files\n";
-file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron ".$pid." completed...", FILE_APPEND);
+file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " completed...", FILE_APPEND);
 
-function expire_files() {
+function expire_files()
+{
     global $spooldir, $logdir;
     $now = time();
     // Days to prune
@@ -171,39 +180,38 @@ function expire_files() {
     // Dirs to prune
     $nocem_processed = $spooldir . "/nocem/processed/";
     $nocem_failed = $spooldir . "/nocem/failed/";
-    if(!is_dir($nocem_processed)) {
+    if (! is_dir($nocem_processed)) {
         @mkdir($nocem_processed, 0755, 'recursive');
         @chown($nocem_processed, $uinfo["uid"]);
         @chgrp($nocem_processed, $uinfo["gid"]);
     }
-    if(!is_dir($nocem_failed)) {
+    if (! is_dir($nocem_failed)) {
         @mkdir($nocem_failed, 0755, 'recursive');
         @chown($nocem_failed, $uinfo["uid"]);
         @chgrp($nocem_failed, $uinfo["gid"]);
     }
-    
+
     // $nocem_processed
     $filenames = array_diff(scandir($nocem_processed), array(
         '..',
         '.'
     ));
-    foreach($filenames as $one) {
-        if(filemtime($nocem_processed.$one) < $nocem) {
-            unlink($nocem_processed.$one);
+    foreach ($filenames as $one) {
+        if (filemtime($nocem_processed . $one) < $nocem) {
+            unlink($nocem_processed . $one);
         }
     }
-    
+
     // $nocem_failed
     $filenames = array_diff(scandir($nocem_failed), array(
         '..',
         '.'
     ));
-    foreach($filenames as $one) {
-        if(filemtime($nocem_failed.$one) < $nocem) {
-            unlink($nocem_failed.$one);
+    foreach ($filenames as $one) {
+        if (filemtime($nocem_failed . $one) < $nocem) {
+            unlink($nocem_failed . $one);
         }
     }
-    
 }
 
 function log_rotate()
