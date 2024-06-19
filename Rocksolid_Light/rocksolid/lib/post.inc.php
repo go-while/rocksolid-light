@@ -417,10 +417,12 @@ function check_rate_limit($name, $set = 0, $gettime = 0)
 function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = null, $encryptto = null, $authname = null, $fromname, $followupto = null, $do_attach = null)
 {
     global $server, $port, $send_poster_host, $text_error, $CONFIG, $OVERRIDES;
-    global $www_charset, $config_dir, $spooldir;
+    global $www_charset, $config_dir, $spooldir, $logdir, $enable_post_log, $name;
     global $msgid_generate, $msgid_fqdn, $rslight_version;
 
     flush();
+    
+    $logfile = $logdir . '/post.log';
     $attachment_temp_dir = $spooldir . "/tmp/";
     if (! is_dir($attachment_temp_dir)) {
         mkdir($attachment_temp_dir);
@@ -614,6 +616,10 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
         if ($do_attach) {
             // clean up attachment file
             unlink($attachment_temp_dir . $_FILES["photo"]["name"]);
+        }
+        // Post logging
+        if ($enable_post_log) {
+            file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $newsgroups . "\n    by " . $name . " as " . $from  . "\n    posting-user: " . $posting_user . "\n    subject: " . $subject . "\n    message-id: " . $msgid, FILE_APPEND);
         }
     } else {
         $message = $text_error["post_failed"];

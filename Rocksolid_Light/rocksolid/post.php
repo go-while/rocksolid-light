@@ -287,10 +287,6 @@ if ($type == "post") {
                         echo 'Please wait ' . round($wait) . ' minutes before posting again.<br />';
                     }
                 }
-                // Post logging
-                if ($enable_post_log) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " Post in: " . $returngroup . " by " . $name . "\n    " . $subject, FILE_APPEND);
-                }
                 echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
             } else {
                 // article not accepted by the newsserver
