@@ -2634,11 +2634,16 @@ function get_data_from_msgid($msgid, $thisgroup = null)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_data_from_msgid-' . $msgid;
-        if ($row = cache_get($row_cache, $memcacheD)) {
+        if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
+            if(isset($row['msgid'])) {
             if ($enable_cache_logging) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
             }
             return $row;
+        }
+        } else {
+            file_put_contents($cache_log, "\n" . format_log_date() . " (cache update) $row_cache", FILE_APPEND);
+            cache_delete($row_cache, $memcacheD);
         }
     }
 
@@ -2664,7 +2669,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     $dbh = null;
     if ($found) {
         if ($enable_cache) {
-            $nicole = cache_add($row_cache, $row, $cache_ttl, $memcacheD);
+            $nicole = cache_add($row_cache, gzcompress(serialize($row)), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
             }

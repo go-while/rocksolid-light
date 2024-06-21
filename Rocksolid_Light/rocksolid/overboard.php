@@ -259,7 +259,7 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_name, $spooldir, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $config_name, $spooldir, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
@@ -369,7 +369,12 @@ function display_threads($threads, $oldest)
                         $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
                         if ($CONFIG['article_database'] == '1') {
                             $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
-                            $display .= strip_tags(wordwrap(substr($article['search_snippet'], 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
+                            
+                            $text = $article['search_snippet'];
+                            if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+                                include ($config_dir . '/rewrite_body.inc.php');
+                            }
+                            $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
                         }
                     }
                     $skip = $target_head['number'];
@@ -406,7 +411,11 @@ function display_threads($threads, $oldest)
                     $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a></p>';
                     if ($CONFIG['article_database'] == '1') {
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
-                        $display .= strip_tags(htmlentities(substr($article['search_snippet'], 0, $snippetlength)));
+                        $text = $article['search_snippet'];
+                        if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+                            include ($config_dir . '/rewrite_body.inc.php');
+                        }
+                        $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
                     }
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
@@ -534,7 +543,11 @@ function display_flat($threads, $oldest)
             $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</a></p>';
             if ($CONFIG['article_database'] == '1') {
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
-                $display .= htmlentities(substr($article['search_snippet'], 0, $snippetlength));
+                $text = $article['search_snippet'];
+                if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+                    include ($config_dir . '/rewrite_body.inc.php');
+                }
+                $display .= htmlentities(substr($text, 0, $snippetlength));
             }
         }
         $results ++;

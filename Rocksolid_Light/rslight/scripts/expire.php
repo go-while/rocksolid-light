@@ -2,12 +2,21 @@
 include "config.inc.php";
 include ("$file_newsportal");
 
-if (filemtime($spooldir . '/' . $config_name . '-expire-timer') + 86400 > time()) {
-    exit();
+// Check timer
+$tmr = $spooldir . '/' . $config_name . '-expire-timer';
+if (file_exists($tmr)) {
+    if (filemtime($tmr) + 86400 > time()) {
+        exit();
+    }
 }
+// Check if spoolnews running for section
 $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
-$pid = file_get_contents($lockfile);
-if (posix_getsid($pid) === false || ! is_file($lockfile)) {
+if (file_exists($lockfile)) {
+    $pid = posix_getsid(file_get_contents($lockfile));
+} else {
+    $pid = false;
+}
+if (!$pid) {
     print "Starting expire...\n";
     file_put_contents($lockfile, getmypid()); // create lockfile
 } else {
@@ -17,6 +26,10 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
 
 $webserver_group = $CONFIG['webserver_user'];
 $logfile = $logdir . '/expire.log';
+
+if (file_exists($config_dir . '/cache.inc.php')) {
+    include $config_dir . '/cache.inc.php';
+}
 
 $grouplist = file($config_dir . '/' . $config_name . '/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 foreach ($grouplist as $groupline) {
@@ -64,17 +77,17 @@ foreach ($grouplist as $groupline) {
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expiring articles database, overview database and writing history...", FILE_APPEND);
 
     $database = $spooldir . '/articles-overview.db3';
-    $dbh = overview_db_open($database);
-    $query = $dbh->prepare('SELECT number FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
-    $query->execute([
+    $overview_dbh = overview_db_open($database);
+    $overview_query = $overview_dbh->prepare('SELECT number,msgid FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
+    $overview_query->execute([
         ':newsgroup' => $group,
         ':expireme' => $expireme
     ]);
     $get_row = array();
-    while ($query_row = $query->fetch()) {
+    while ($query_row = $overview_query->fetch()) {
         $get_row[] = $query_row;
     }
-    $stmt = $dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
+    $stmt = $overview_dbh->prepare('DELETE FROM overview WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
     $grouppath = preg_replace('/\./', '/', $group);
     $status = "deleted";
     $statusdate = time();
@@ -97,6 +110,18 @@ foreach ($grouplist as $groupline) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Caught exception: " . $e->getMessage(), FILE_APPEND);
             }
         }
+        // Delete article from cache
+        if ($enable_cache) {
+            $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $row['number'];
+            $result = cache_delete($article_key, $memcacheD);
+            if ($enable_cache_logging) {
+                if ($result) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " Deleted $article_key", FILE_APPEND);
+                } else {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " Failed to delete (or not found) $article_key", FILE_APPEND);
+                }
+            }
+        }
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
         $i ++;
     }
@@ -104,7 +129,7 @@ foreach ($grouplist as $groupline) {
         ':newsgroup' => $group,
         ':expireme' => $expireme
     ]);
-    $dbh = null;
+    $overview_dbh = null;
     if ($articles_dbh) {
         // Delete any extraneous articles from group-articles database
         $articles_stmt = $articles_dbh->prepare('DELETE FROM articles WHERE newsgroup=:newsgroup AND CAST(date AS int)<:expireme');
@@ -114,8 +139,7 @@ foreach ($grouplist as $groupline) {
         ]);
         $articles_dbh = null;
     }
-    unlink($lockfile);
-    touch($spooldir . '/' . $config_name . '-expire-timer');
+    
     if ($i > 50) {
         echo "Rebuilding threads for " . $group . "...\n";
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Rebuilding threads...", FILE_APPEND);
@@ -131,6 +155,8 @@ foreach ($grouplist as $groupline) {
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
 }
+unlink($lockfile);
+touch($tmr);
 
 function vacuum_group_database($group)
 {
@@ -172,6 +198,7 @@ function convert_max_articles_to_days($group)
         ':count' => $count
     ]);
     $i = 0;
+    $found = false;
     while ($row = $overview_query->fetch()) {
         $i ++;
         if ($i == $count) {
