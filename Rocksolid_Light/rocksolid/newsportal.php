@@ -2887,6 +2887,7 @@ function wrap_post($body)
     $lines = preg_split("/\n/", $body);
     $wrapped = '';
     foreach ($lines as $line) {
+        $line = rtrim($line);
         if (trim($line) == '') {
             $wrapped .= "\n";
             continue;
