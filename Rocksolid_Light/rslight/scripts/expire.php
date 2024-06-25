@@ -6,6 +6,7 @@ include ("$file_newsportal");
 $tmr = $spooldir . '/' . $config_name . '-expire-timer';
 if (file_exists($tmr)) {
     if (filemtime($tmr) + 86400 > time()) {
+		echo $tmr . " exists and is not expired\n";
         exit();
     }
 }
@@ -16,7 +17,7 @@ if (file_exists($lockfile)) {
 } else {
     $pid = false;
 }
-if (!$pid) {
+if (! $pid) {
     print "Starting expire...\n";
     file_put_contents($lockfile, getmypid()); // create lockfile
 } else {
@@ -110,18 +111,6 @@ foreach ($grouplist as $groupline) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Caught exception: " . $e->getMessage(), FILE_APPEND);
             }
         }
-        // Delete article from cache
-        if ($enable_cache) {
-            $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $row['number'];
-            $result = cache_delete($article_key, $memcacheD);
-            if ($enable_cache_logging) {
-                if ($result) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " Deleted $article_key", FILE_APPEND);
-                } else {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " Failed to delete (or not found) $article_key", FILE_APPEND);
-                }
-            }
-        }
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
         $i ++;
     }
@@ -139,7 +128,7 @@ foreach ($grouplist as $groupline) {
         ]);
         $articles_dbh = null;
     }
-    
+
     if ($i > 50) {
         echo "Rebuilding threads for " . $group . "...\n";
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Rebuilding threads...", FILE_APPEND);
@@ -154,6 +143,26 @@ foreach ($grouplist as $groupline) {
     vacuum_group_database($group);
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
+}
+// Expire cache
+// Delete article from cache
+if ($enable_cache == 'diskcache') {
+    if ($enable_cache_logging) {
+        file_put_contents($cache_log, "\n" . format_log_date() . " Expiring cache files", FILE_APPEND);
+    }
+    $cache_files = scandir($cache_dir);
+    foreach ($cache_files as $file) {
+        $file_name = $cache_dir . $file;
+        if (is_file($file_name) && (filemtime($file_name) < (time() - $cache_ttl))) {
+            if ($enable_cache_logging) {
+                file_put_contents($cache_log, "\n" . format_log_date() . " Expired: " . $file_name, FILE_APPEND);
+            }
+            unlink($file_name);
+        }
+    }
+    if ($enable_cache_logging) {
+        file_put_contents($cache_log, "\n" . format_log_date() . " Expired cache files", FILE_APPEND);
+    }
 }
 unlink($lockfile);
 touch($tmr);
