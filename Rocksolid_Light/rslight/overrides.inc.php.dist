@@ -76,6 +76,11 @@ return [
     // contained in user_agent string
     // 'block_by_user_agent' => array("semrushbot", "bytespider"),
 
+    // Block connections when one of these strings is
+    // contained in reverse dns string
+    // 'block_by_rdns' => array("hwclouds", "googlebot"),
+
+
     // Just leave this here to avoid comma errors
     'comma' => true
 ];
