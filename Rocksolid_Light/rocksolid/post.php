@@ -479,15 +479,15 @@ if ($show == 1) {
 
         $bodyzeile = wrap_post($bodyzeile);
         if ((isset($bodyzeile)) && ($post_autoquote))
-            echo htmlspecialchars($bodyzeile);
+            echo htmlspecialchars(rtrim($bodyzeile) . "\n");
         if (is_string($body))
-            echo htmlspecialchars($body);
+            echo htmlspecialchars(rtrim($body) . "\n");
         echo '</textarea></td></tr><tr><td>';
         if (! $post_autoquote) {
             echo '<input type="hidden" id="hidebody"';
             echo 'value="';
             if (isset($bodyzeile)) {
-                echo htmlspecialchars($bodyzeile);
+                echo htmlspecialchars(rtrim($bodyzeile) . "\n");
             }
             echo '">';
 
