@@ -415,7 +415,8 @@ function display_threads($threads, $oldest)
                         if (file_exists($config_dir . '/rewrite_body.inc.php')) {
                             include ($config_dir . '/rewrite_body.inc.php');
                         }
-                        $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
+                        $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+                   //     $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
                     }
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
@@ -547,7 +548,8 @@ function display_flat($threads, $oldest)
                 if (file_exists($config_dir . '/rewrite_body.inc.php')) {
                     include ($config_dir . '/rewrite_body.inc.php');
                 }
-                $display .= htmlentities(substr($text, 0, $snippetlength));
+                $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+                //$display .= htmlentities(substr($text, 0, $snippetlength));
             }
         }
         $results ++;
