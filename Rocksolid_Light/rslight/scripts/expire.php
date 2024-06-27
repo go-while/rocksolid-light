@@ -6,7 +6,7 @@ include ("$file_newsportal");
 $tmr = $spooldir . '/' . $config_name . '-expire-timer';
 if (file_exists($tmr)) {
     if (filemtime($tmr) + 86400 > time()) {
-		echo $tmr . " exists and is not expired\n";
+        echo $tmr . " exists and is not expired\n";
         exit();
     }
 }
@@ -144,26 +144,39 @@ foreach ($grouplist as $groupline) {
     echo "Expired " . $i . " articles for " . $group . "\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Expired " . $i . " articles", FILE_APPEND);
 }
-// Expire cache
-// Delete article from cache
+
+// Expire cache files if using diskcache
 if ($enable_cache == 'diskcache') {
-    if ($enable_cache_logging) {
-        file_put_contents($cache_log, "\n" . format_log_date() . " Expiring cache files", FILE_APPEND);
-    }
-    $cache_files = scandir($cache_dir);
-    foreach ($cache_files as $file) {
-        $file_name = $cache_dir . $file;
-        if (is_file($file_name) && (filemtime($file_name) < (time() - $cache_ttl))) {
-            if ($enable_cache_logging) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " Expired: " . $file_name, FILE_APPEND);
-            }
-            unlink($file_name);
+    $cache_expire_timer = $spooldir . '/cache-expire-timer';
+    if (! file_exists($cache_expire_timer) || (filemtime($cache_expire_timer) + 86400 < time())) {
+        if ($enable_cache_logging) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " Expiring cache files", FILE_APPEND);
         }
-    }
-    if ($enable_cache_logging) {
-        file_put_contents($cache_log, "\n" . format_log_date() . " Expired cache files", FILE_APPEND);
+        $cache_files = scandir($cache_dir);
+        foreach ($cache_files as $file) {
+            $file_name = $cache_dir . $file;
+            if (is_file($file_name) && (filemtime($file_name) < (time() - $cache_ttl))) {
+                if ($enable_cache_logging) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " Expired: " . $file_name, FILE_APPEND);
+                }
+                unlink($file_name);
+            }
+        }
+        if ($enable_cache_logging) {
+            file_put_contents($cache_log, "\n" . format_log_date() . " Expired cache files", FILE_APPEND);
+        }
+        touch($cache_expire_timer);
     }
 }
+
+// Remove reverse-dns database daily to allow up to date rebuild
+$rdns_file = $spooldir . '/rdns.dat';
+if (file_exists($rdns_file)) {
+    if (filemtime($rdns_file) + 86400 < time()) {
+        unlink($rdns_file);
+    }
+}
+
 unlink($lockfile);
 touch($tmr);
 
