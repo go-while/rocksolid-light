@@ -170,10 +170,12 @@ if ($enable_cache == 'diskcache') {
 }
 
 // Remove reverse-dns database daily to allow up to date rebuild
+$rdns_expire_timer = $spooldir . '/rdns-expire-timer';
 $rdns_file = $spooldir . '/rdns.dat';
 if (file_exists($rdns_file)) {
-    if (filemtime($rdns_file) + 86400 < time()) {
+    if (! file_exists($rdns_expire_timer) || (filemtime($rdns_expire_timer) + 86400 < time())) {
         unlink($rdns_file);
+        touch($rdns_expire_timer);
     }
 }
 
