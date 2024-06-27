@@ -2121,7 +2121,7 @@ function throttle_hits($client_device = null)
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
         foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' listed in block list", FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2140,7 +2140,7 @@ function throttle_hits($client_device = null)
         }
         foreach ($OVERRIDES['block_by_rdns'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Found in rdns " . $ua . " ' listed in block list", FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
