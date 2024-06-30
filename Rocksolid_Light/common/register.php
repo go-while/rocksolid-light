@@ -277,7 +277,7 @@ if (file_exists($email_registry)) {
         exit(2);
     }
 }
-if (! preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,3})$^", $user_email)) {
+if (! preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email)) {
     echo "Email must be in the form of an email address\r\n";
     echo '<br /><a href="register.php">Back</a>';
     exit(2);
