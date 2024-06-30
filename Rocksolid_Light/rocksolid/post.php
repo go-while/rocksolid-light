@@ -261,11 +261,6 @@ if ($type == "post") {
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
             } else {
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
-                /*
-                 * $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
-                 * } else {
-                 * $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes(mb_wordwrap($body, 75)), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
-                 */
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
@@ -304,7 +299,7 @@ if ($type == "reply") {
     $message = message_read($id, 0, $newsgroups);
     $head = $message->header;
 
-    $body = explode("\n", $message->body[0]);
+    $body = explode("\n", rtrim($message->body[0]));
     nntp_close($ns);
     if ($head->name != "") {
         $bodyzeile = $head->name;
@@ -314,18 +309,27 @@ if ($type == "reply") {
 
     // For Synchronet use
     $fromname = $bodyzeile;
-
     $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
     for ($i = 0; $i <= count($body) - 1; $i ++) {
         if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- '))
             break;
-        if (trim($body[$i]) != "") {
-            if ($body[$i][0] == '>')
-                $bodyzeile .= ">" . $body[$i] . "\n";
-            else
-                $bodyzeile .= "> " . $body[$i] . "\n";
-        } else {
-            $bodyzeile .= "\n";
+        if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {} else {
+            // Quote blank lines? YES by default
+            if (! isset($OVERRIDES['quote_blank_lines']) || $OVERRIDES['quote_blank_lines'] == true) {
+                if ($body[$i][0] == '>')
+                    $bodyzeile .= ">" . $body[$i] . "\n";
+                else
+                    $bodyzeile .= "> " . $body[$i] . "\n";
+            } else {
+                if (trim($body[$i]) != "") {
+                    if ($body[$i][0] == '>')
+                        $bodyzeile .= ">" . $body[$i] . "\n";
+                    else
+                        $bodyzeile .= "> " . $body[$i] . "\n";
+                } else {
+                    $bodyzeile .= "\n";
+                }
+            }
         }
     }
     $subject = $head->subject;
