@@ -311,9 +311,14 @@ if ($type == "reply") {
     $fromname = $bodyzeile;
     $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
     for ($i = 0; $i <= count($body) - 1; $i ++) {
-        if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- '))
+        if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- ')) {
             break;
+        }
+        // Try not to quote blank lines at the end of all quotes
         if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {} else {
+            // Remove spaces from starting quote '>' characters
+            $body = preg_replace("/^> >/", ">>", $body);
+
             // Quote blank lines? YES by default
             if (! isset($OVERRIDES['quote_blank_lines']) || $OVERRIDES['quote_blank_lines'] == true) {
                 if ($body[$i][0] == '>')
