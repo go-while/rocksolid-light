@@ -6,10 +6,21 @@ configpath="/etc/rslight"
 username="www-data"
 
 echo
-echo "This is the main installation script for Rocksolid Light"
+echo "This is an UPGRADE script for Rocksolid Light"
 echo "and must be run as root from the root directory of the extracted files"
 echo
-echo "Select installation directories"
+echo "Are you sure you wish to UPGRADE your installation?"
+echo "This action will overwrite your currently installed scripts"
+echo
+read -p "Type 'YES' to write the directories and overwrite current scripts: " default; echo
+if [ "$default" != "YES" ]
+then
+  echo exiting...
+  exit
+fi
+
+echo
+echo "Select current installation directories"
 echo
 
 echo "Choose a path for your web root for rslight"
@@ -47,10 +58,10 @@ echo "Spool dir: $spoolpath"
 echo "Config dir: $configpath"
 echo "Web user: $username"
 echo
-echo "Are you sure you wish to install to these directories now"
-echo "and change permissions as necessary to $username? "
+echo "Are you sure you wish to UPGRADE to these directories now,"
+echo "overwrite files and change permissions as necessary to $username? "
 echo
-read -p "Type 'YES' to create the directories and move files into place: " default; echo
+read -p "Type 'YES' to write the directories and overwrite current scripts: " default; echo
 
 if [ "$default" != "YES" ]
 then

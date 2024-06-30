@@ -2101,8 +2101,13 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
 
 function throttle_hits($client_device = null)
 {
-    global $CONFIG, $OVERRIDES, $logdir, $config_name;
-    $logfile = $logdir . '/newsportal.log';
+    global $CONFIG, $OVERRIDES, $logdir, $config_name, $spooldir;
+    $rdns_file = $spooldir . '/rdns.dat';
+    $rdns = array();
+    if (file_exists($rdns_file)) {
+        $rdns = unserialize(file_get_contents($rdns_file));
+    }
+    $logfile = $logdir . '/abuse.log';
 
     if (! $client_device) {
         $client_device = get_client_user_agent_info();
@@ -2111,17 +2116,38 @@ function throttle_hits($client_device = null)
 
     $_SESSION['rsactive'] = true;
 
+    // Block by user-agent
     if (isset($OVERRIDES['block_by_user_agent'])) {
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
         foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' listed in block list", FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
             }
         }
     }
+    // Block by rdns
+    if (isset($OVERRIDES['block_by_rdns'])) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (isset($rdns[$ip])) {
+            $ua = $rdns[$ip];
+        } else {
+            $ua = gethostbyaddr($ip);
+            $rdns[$ip] = $ua;
+            file_put_contents($rdns_file, serialize($rdns));
+        }
+        foreach ($OVERRIDES['block_by_rdns'] as $user_agent) {
+            if (stripos($ua, $user_agent) !== false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
+                $_SESSION['throttled'] = true;
+                header("HTTP/1.0 403 Forbidden");
+                exit();
+            }
+        }
+    }
+
     // $loadrate = allowed article request per second
     $loadrate = .15;
     if ($client_device == "bot") {
@@ -2635,12 +2661,12 @@ function get_data_from_msgid($msgid, $thisgroup = null)
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_data_from_msgid-' . $msgid;
         if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
-            if(isset($row['msgid'])) {
-            if ($enable_cache_logging) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
+            if (isset($row['msgid'])) {
+                if ($enable_cache_logging) {
+                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
+                }
+                return $row;
             }
-            return $row;
-        }
         } else {
             file_put_contents($cache_log, "\n" . format_log_date() . " (cache update) $row_cache", FILE_APPEND);
             cache_delete($row_cache, $memcacheD);
@@ -2887,6 +2913,7 @@ function wrap_post($body)
     $lines = preg_split("/\n/", $body);
     $wrapped = '';
     foreach ($lines as $line) {
+        $line = rtrim($line);
         if (trim($line) == '') {
             $wrapped .= "\n";
             continue;

@@ -30,13 +30,12 @@ $memcache_port = 11211;
  * Increasing this here will not work unless it is also
  * increased in memcached configuration
  * 
- * If using diskcache, pruning by size is only done daily
- * 
  * You probably do not need to change this
  */
 $cache_maxitemsize = 1024000;
 
 // Time in seconds to cache data
+// If using diskcache, pruning by $cache_ttl is only done daily
 $cache_ttl = 14400;
 
 /*
