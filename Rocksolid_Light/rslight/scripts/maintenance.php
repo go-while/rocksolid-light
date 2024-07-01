@@ -17,8 +17,17 @@
  * it to appear:
  * $config_dir/<section>/groups.txt
  */
+include ("paths.inc.php");
+chdir($spoolnews_path);
 include "config.inc.php";
 include ("$file_newsportal");
+
+$processUser = posix_getpwuid(posix_geteuid());
+if ($processUser['name'] != $CONFIG['webserver_user']) {
+    echo "You are running as: " . $processUser['name'] . "\n";
+    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+    exit();
+}
 
 $logfile = $logdir . '/import.log';
 

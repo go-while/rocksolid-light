@@ -1,6 +1,14 @@
-
 <?php
+include ("paths.inc.php");
+chdir($spoolnews_path);
 include "config.inc.php";
+
+$processUser = posix_getpwuid(posix_geteuid());
+if ($processUser['name'] != $CONFIG['webserver_user']) {
+    echo "You are running as: " . $processUser['name'] . "\n";
+    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+    exit();
+}
 
 $keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
@@ -86,7 +94,7 @@ function create_new($username, $password, $user_email)
         chmod($userFilename, 0666);
     }
     echo "User: " . $username . " Created\r\n";
-    echo "Password: " . $password ."\n";
+    echo "Password: " . $password . "\n";
     echo "Email: " . $user_email . "\n";
     exit(0);
 }
