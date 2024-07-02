@@ -49,6 +49,16 @@ if ($argv[1][0] == '-') {
                 echo "Email: " . $argv[3] . "\n";
             }
             break;
+        case "-banuser":
+            if (! isset($argv[2])) {
+                echo "Usage: -banuser username\n";
+                exit();
+            } else {
+                ban_user($argv[2]);
+                echo "User is banned: " . $argv[2] . "\n";
+                echo "To unban, remove from $config_dir/banned_users.conf\n";
+            }
+            break;
         case "-delete":
             if (! isset($argv[2])) {
                 echo "Usage: -delete username\n";
@@ -83,6 +93,8 @@ if ($argv[1][0] == '-') {
             echo "-newemail: Change user email '-newemail username emailaddress'\n";
             echo "           Email address will remain listed as 'verified'\n";
             echo "           Be sure to verify the address is correct\n";
+            echo "-banuser: Disable ability for user to log in '-banuser username'\n";
+            echo "          This doesn't block the site, just posting and other user features\n";
             echo "-delete: Delete user account '-delete username'\n";
             echo "         Be careful with this. You will not be asked to confirm\n";
             echo "         Account files will be placed in a dir named 'deleted'\n";
@@ -91,6 +103,31 @@ if ($argv[1][0] == '-') {
     exit();
 } else {
     exit();
+}
+
+function ban_user($username) {
+    global $config_dir;
+    $banfile = $config_dir . '/banned_users.conf';
+    $username = strtolower($username);
+    $userfile = $config_dir . '/users/' . $username;
+    if(! file_exists($userfile)) {
+        echo "User:" . $username . " Not Found\r\n";
+        return;
+    } else {
+        $lines = file($banfile);
+        foreach ($lines as $k => $v) {
+            if (!trim($v)) {
+                unset($lines[$k]);
+            } else {
+                if(trim($v) == $username) {
+                    echo "User:" . $username . " already banned.\n";
+                    return;
+                }
+            }
+        }
+        $lines[] = $username;
+        file_put_contents($banfile, "\n" . implode($lines) . "\n");
+    }
 }
 
 function change_user_email($username, $email) {
