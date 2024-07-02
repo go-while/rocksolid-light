@@ -2,6 +2,7 @@
 include ("paths.inc.php");
 chdir($spoolnews_path);
 include "config.inc.php";
+include "newsportal.php";
 
 $processUser = posix_getpwuid(posix_geteuid());
 if ($processUser['name'] != $CONFIG['webserver_user']) {
@@ -37,6 +38,17 @@ if ($argv[1][0] == '-') {
             }
             change_user_password($argv[2], $argv[3]);
             break;
+            
+        case "-newemail":
+            if (! isset($argv[2]) || ! isset($argv[3])) {
+                echo "Usage: -newemail username password\n";
+                exit();
+            } else {
+                change_user_email($argv[2], $argv[3]);
+                echo "Email changed for: " . $argv[2] . "\n";
+                echo "Email: " . $argv[3] . "\n";
+            }
+            break;
         case "-delete":
             if (! isset($argv[2])) {
                 echo "Usage: -delete username\n";
@@ -68,6 +80,9 @@ if ($argv[1][0] == '-') {
             echo "-version: Display version\n";
             echo "-create: Create user account '-create username password email'\n";
             echo "-newpass: Change user password '-newpass username newpassword'\n";
+            echo "-newemail: Change user email '-newemail username emailaddress'\n";
+            echo "           Email address will remain listed as 'verified'\n";
+            echo "           Be sure to verify the address is correct\n";
             echo "-delete: Delete user account '-delete username'\n";
             echo "         Be careful with this. You will not be asked to confirm\n";
             echo "         Account files will be placed in a dir named 'deleted'\n";
@@ -76,6 +91,18 @@ if ($argv[1][0] == '-') {
     exit();
 } else {
     exit();
+}
+
+function change_user_email($username, $email) {
+    global $config_dir;
+    $username = strtolower($username);
+    $userfile = $config_dir . '/users/' . $username;
+    if(! file_exists($userfile)) {
+        echo "User:" . $username . " Not Found\r\n";
+        return;
+    } else {
+        set_user_config($username, 'email', $email);
+    }
 }
 
 function change_user_password($username, $password) {
