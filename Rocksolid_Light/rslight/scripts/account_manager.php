@@ -24,13 +24,24 @@ if ($argv[1][0] == '-') {
             break;
         case "-create":
             if (! isset($argv[2]) || ! isset($argv[3]) || ! isset($argv[4])) {
-                echo "Usage: -create username password email'\n";
+                echo "Usage: -create username password email\n";
                 exit();
             }
             echo "Creating User: " . $argv[2] . "\n";
             create_new($argv[2], $argv[3], $argv[4]);
             break;
+        case "-newpass":
+            if (! isset($argv[2]) || ! isset($argv[3])) {
+                echo "Usage: -newpass username password\n";
+                exit();
+            }
+            change_user_password($argv[2], $argv[3]);
+            break;
         case "-delete":
+            if (! isset($argv[2])) {
+                echo "Usage: -delete username\n";
+                exit();
+            }
             echo "Removing User: " . $argv[2] . "\n";
             $deleted_users = $config_dir . '/users/deleted/';
             $deleted_config = $config_dir . '/userconfig/deleted/';
@@ -56,6 +67,7 @@ if ($argv[1][0] == '-') {
             echo "-help: This help page\n";
             echo "-version: Display version\n";
             echo "-create: Create user account '-create username password email'\n";
+            echo "-newpass: Change user password '-newpass username newpassword'\n";
             echo "-delete: Delete user account '-delete username'\n";
             echo "         Be careful with this. You will not be asked to confirm\n";
             echo "         Account files will be placed in a dir named 'deleted'\n";
@@ -64,6 +76,20 @@ if ($argv[1][0] == '-') {
     exit();
 } else {
     exit();
+}
+
+function change_user_password($username, $password) {
+    global $config_dir;
+    $username = strtolower($username);
+    $userfile = $config_dir . '/users/' . $username;
+    if(! file_exists($userfile)) {
+        echo "User:" . $username . " Not Found\r\n";
+        return;
+    } else {
+        file_put_contents($userfile, password_hash($password, PASSWORD_DEFAULT));
+        echo "Password changed for: " . $username . "\n";
+        echo "Password: " . $password . "\n";
+    }
 }
 
 function create_new($username, $password, $user_email)
