@@ -72,6 +72,9 @@ $cwd = getcwd();
 $webtmp = preg_replace('/spoolnews/', 'tmp/', $cwd);
 $keydir = preg_replace('/spoolnews/', 'pubkey/', $cwd);
 
+$banfile = $config_dir . '/banned_users.conf';
+@chown($banfile, $uinfo["uid"]);
+
 @mkdir($webtmp, 0755, 'recursive');
 @chown($webtmp, $uinfo["uid"]);
 @chgrp($webtmp, $uinfo["gid"]);
