@@ -2500,6 +2500,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         ]);
         unlink($grouppath . "/" . $this_article['local']);
         $article_dbh = null;
+        /*
         // Add to memcache
         if (file_exists($config_dir . '/cache.inc.php')) {
             include $config_dir . '/cache.inc.php';
@@ -2511,6 +2512,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
                 file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) (new) $article_key", FILE_APPEND);
             }
         }
+        */
     } else {
         if ($article_date > time())
             $article_date = time();

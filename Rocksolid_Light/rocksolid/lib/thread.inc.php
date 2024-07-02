@@ -84,7 +84,6 @@ function thread_cache_load($group)
             }
         }
     }
-
     $database = $spooldir . '/' . $group . '-data.db3';
     $table = "threads";
     if ($dbh = threads_db_open($database, $table)) {
