@@ -2121,7 +2121,7 @@ function throttle_hits($client_device = null)
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
         foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (blocking) '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2140,7 +2140,7 @@ function throttle_hits($client_device = null)
         }
         foreach ($OVERRIDES['block_by_rdns'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (blocking) '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2169,7 +2169,7 @@ function throttle_hits($client_device = null)
     if (($rate > $loadrate) && ($_SESSION['views'] > 50)) {
         header("HTTP/1.0 429 Too Many Requests");
         if (! isset($_SESSION['throttled'])) {
-            file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
+            file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
             $_SESSION['throttled'] = true;
         }
         exit(0);
