@@ -185,7 +185,7 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
-    global $CONFIG, $config_dir, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $text_error, $ns;
+    global $CONFIG, $config_dir, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $debug_log, $text_error, $ns;
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
@@ -262,7 +262,7 @@ function message_read($id, $bodynum = 0, $group = "")
             }
         }
         if (! isset($rawmessage) || $rawmessage === FALSE) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Requesting: " . $group . ":" . $id . " from server", FILE_APPEND);
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
             if (! isset($ns)) {
                 $ns = nntp_open();
             }

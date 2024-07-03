@@ -2101,7 +2101,7 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
 
 function throttle_hits($client_device = null)
 {
-    global $CONFIG, $OVERRIDES, $logdir, $config_name, $spooldir;
+    global $CONFIG, $OVERRIDES, $logdir, $abuse_log, $config_name, $spooldir;
     $rdns_file = $spooldir . '/rdns.dat';
     $rdns = array();
     if (file_exists($rdns_file)) {
@@ -2121,7 +2121,7 @@ function throttle_hits($client_device = null)
         $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
         foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (blocking) '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2140,7 +2140,7 @@ function throttle_hits($client_device = null)
         }
         foreach ($OVERRIDES['block_by_rdns'] as $user_agent) {
             if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Blocking " . $_SERVER['REMOTE_ADDR'] . " '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (blocking) '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2169,7 +2169,7 @@ function throttle_hits($client_device = null)
     if (($rate > $loadrate) && ($_SESSION['views'] > 50)) {
         header("HTTP/1.0 429 Too Many Requests");
         if (! isset($_SESSION['throttled'])) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Too many requests from " . $_SERVER['REMOTE_ADDR'] . " throttling" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
+            file_put_contents($abuse_log, "\n" . format_log_date() . " " . $_SERVER['REMOTE_ADDR'] . " (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
             $_SESSION['throttled'] = true;
         }
         exit(0);
