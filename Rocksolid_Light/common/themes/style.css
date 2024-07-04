@@ -665,6 +665,16 @@ table.np_results_table {
     font-size: 0.8em;
 }
 
+/* search sort toggle */
+.np_search_sort_toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-decoration: none;
+    color: var(--color-highlight);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+}
+
 /* overboard posted_date */
 .np_ob_posted_date {
 	margin-top: 0;
