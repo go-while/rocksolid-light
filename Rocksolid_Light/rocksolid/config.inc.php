@@ -44,6 +44,7 @@ if ($free_spool_disk_space < $min_spool_disk_space) {
 
 $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
+$abuse_log = $logdir . '/abuse.log';
 $lockdir = $spooldir . '/lock';
 $ssldir = $spooldir . '/ssl/';
 $user_ban_file = $config_dir . '/banned_names.conf';
@@ -184,7 +185,11 @@ $validate_email = 1;
 $setcookies = true;
 $anonym_address = "AnonUser@retrobbs.rocksolidbbs.com";
 $msgid_generate = "md5";
-$msgid_fqdn = $_SERVER["HTTP_HOST"];
+if (isset($_SERVER["HTTP_HOST"])) {
+    $msgid_fqdn = $_SERVER["HTTP_HOST"];
+} else {
+    $msgid_fqdn = false;
+}
 $post_autoquote = false;
 $post_captcha = false;
 
@@ -246,7 +251,9 @@ if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $sitelink = "http";
 }
 $sitelink .= "://";
-$sitelink .= $_SERVER['HTTP_HOST'];
+if (isset($_SERVER["HTTP_HOST"])) {
+    $sitelink .= $_SERVER["HTTP_HOST"];
+}
 
 /*
  * Do not edit anything below this line

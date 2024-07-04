@@ -682,6 +682,26 @@ table.np_results_table {
   font-size: 0.5em;
 }
 
+/* overboard style toggle */
+.np_ob_style_toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-decoration: none;
+    color: var(--color-highlight);
+    font-family: 'Jetbrains Mono', Mononoki, Noto Mono, 'Lucida Console', Monospace;
+    font-size: 0.8em;
+}
+
+/* search sort toggle */
+.np_search_sort_toggle {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-decoration: none;
+    color: var(--color-highlight);
+    font-family: 'Jetbrains Mono', Mononoki, Noto Mono, 'Lucida Console', Monospace;
+    font-size: 0.8em;
+}
+
 /* overboard posted_date */
 .np_ob_posted_date {
   margin-top: 0;

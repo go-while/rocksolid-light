@@ -20,10 +20,8 @@ if (isset($_REQUEST['group'])) {
 if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
     unset($_REQUEST['data']);
 }
-
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
     include "head.inc";
-
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
         echo "<center>Page Disabled</center>";
         include "tail.inc";
@@ -122,6 +120,26 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     // END Block poster
 
     exit(0);
+} else {
+    // Determine default view style
+    if (isset($_COOKIE['mail_name'])) {
+        if ($user_searchsort = get_config_file_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'searchsort')) {
+            $_SESSION['searchsort'] = $user_searchsort;
+        }
+    }
+    if (isset($_POST['searchsort'])) {
+        $_SESSION['searchsort'] = $_POST['searchsort'];
+    }
+    if (! isset($_SESSION['searchsort'])) {
+        if (isset($OVERRIDES['search_default_sort'])) {
+            $_SESSION['searchsort'] = $OVERRIDES['search_default_sort'];
+        } else {
+            $_SESSION['searchsort'] = 'relevance';
+        }
+    }
+    if (isset($_COOKIE['mail_name'])) {
+        save_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'searchsort', $_SESSION['searchsort'], true);
+    }
 }
 
 if (isset($frames_on) && $frames_on === true) {
@@ -175,7 +193,7 @@ if (isset($_POST['block_poster'])) {
             $blocked_user_config[base64_decode(urldecode($_REQUEST['data']))] = $_POST['block_poster'];
             file_put_contents($blockfile, serialize($blocked_user_config));
         }
-        echo "<center><b>'".$_POST['block_poster']."'</b> successfully added to your blocklist";
+        echo "<center><b>'" . $_POST['block_poster'] . "'</b> successfully added to your blocklist";
         echo '<br>You may edit your blocklist on your <a href="/spoolnews/user.php?command=Configuration">Configuration Page</a></center>';
         echo '<center><br><i>(Articles may still appear on Cached Pages)</i></center>';
     } else {
@@ -210,6 +228,16 @@ if (isset($search_group)) {
     echo '</td>';
     echo '</tr></table>';
 }
+echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+echo '<td class="np_ob_style_toggle">';
+
+echo '<div style="float:right;">';
+if ($_REQUEST['searchpoint'] == 'body') {
+    show_search_sort_toggle();
+}
+echo '</div>';
+echo '</td>';
+echo '</tr></table>';
 echo '<table cellspacing="0" width="100%" class="np_results_table">';
 
 # Iterate through groups
@@ -230,6 +258,7 @@ if ($_POST['searchpoint'] == 'body') {
         $overview = get_header_search($search_group, $_POST['terms']);
     }
 }
+
 foreach ($overview as $overviewline) {
     /* Find section for links */
     $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -369,12 +398,46 @@ function get_body_search($group, $terms)
         $dbh = null;
     }
     // do not perform a usort of an empty search result
-    if ($overview != null) {
-        usort($overview, function ($a, $b) {
-            return $a['rank'] <=> $b['rank'];
-        });
+
+    if ($_SESSION['searchsort'] != 'date') {
+        if ($overview != null) {
+            usort($overview, function ($a, $b) {
+                return $a['rank'] <=> $b['rank'];
+            });
+        }
+    } else {
+        if ($overview != null) {
+            usort($overview, function ($a, $b) {
+                return $b['date'] <=> $a['date'];
+            });
+        }
     }
     return $overview;
+}
+
+function show_search_sort_toggle()
+{
+    echo '<form method="post" action="' . $_SERVER['REQUEST_URI'] . '">';
+    echo 'Sort by: ';
+    if ($_SESSION['searchsort'] == 'date') {
+        echo '<input type="radio" name="searchsort" value="date" checked>Date';
+        echo '&nbsp;';
+        echo '<input type="radio" name="searchsort" value="relevance">Relevance';
+        echo '&nbsp;';
+    } else {
+        echo '<input type="radio" name="searchsort" value="date">Date';
+        echo '&nbsp;';
+        echo '<input type="radio" name="searchsort" value="relevance" checked>Relevance';
+        echo '&nbsp;';
+    }
+    echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
+    echo '<input type="hidden" name="data" value="' . $_REQUEST['data'] . '">';
+    echo '<input type="hidden" name="terms" value="' . $_REQUEST['terms'] . '">';
+    echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
+    echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
+    echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+    echo '<input class="np_button_link" type="submit" value="Reload" name="reload">';
+    echo '</form >';
 }
 
 function get_header_search($group, $terms)
@@ -382,7 +445,7 @@ function get_header_search($group, $terms)
     GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
-    
+
     if (isset($group)) {
         $grouplist[0] = $group;
     } else {

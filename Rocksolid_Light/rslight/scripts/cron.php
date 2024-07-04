@@ -53,6 +53,14 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
         }
     }
 }
+
+// Create paths in $config_dir/scripts path file
+$config_path_file = $config_dir . '/scripts/paths.inc.php';
+if(!file_exists($config_path_file)) {
+    file_put_contents($config_path_file, '<?php' ."\n");
+    file_put_contents($config_path_file, '$spoolnews_path = "' . getcwd() . '";', FILE_APPEND); 
+}
+
 # Generate user count file (must be root)
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/count_users.php");
 echo "Updated user count\n";
@@ -63,6 +71,9 @@ $cwd = getcwd();
 // Check permissions on some files
 $webtmp = preg_replace('/spoolnews/', 'tmp/', $cwd);
 $keydir = preg_replace('/spoolnews/', 'pubkey/', $cwd);
+
+$banfile = $config_dir . '/banned_users.conf';
+@chown($banfile, $uinfo["uid"]);
 
 @mkdir($webtmp, 0755, 'recursive');
 @chown($webtmp, $uinfo["uid"]);
