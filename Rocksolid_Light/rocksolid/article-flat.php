@@ -171,8 +171,10 @@ if ($message) {
     $thread_show["lastdate"] = false;
     $thread_show["latest"] = false;
     $thread_show["author"] = true;
-    // message_thread($message->header->id,$group,$thread,$pageids);
-    message_thread($message->header->id, $group, $thread, false);
+    if(isset($OVERRIDES['hide_thread_tree']) && $OVERRIDES['hide_thread_tree'] == true) {
+        // Currently broken
+        message_thread($message->header->id, $group, $thread, false);
+    }
     echo '<br>';
     echo '<a name="start"></a>';
     // navigation line
