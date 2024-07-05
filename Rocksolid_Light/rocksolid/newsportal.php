@@ -2087,6 +2087,10 @@ function get_config_value($configfile, $request)
 function disable_page_by_user_agent($client_device, $useragent, $script = "Page")
 {
     global $logdir, $config_name;
+    if (! $client_device) {
+        $client_device = get_client_user_agent_info();
+    }
+    $client_device = strtolower($client_device);
     if ($client_device == $useragent) {
         $logfile = $logdir . '/device.log';
         file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " " . $script . " disabled for '" . $useragent . "' Exiting...", FILE_APPEND);
@@ -2181,7 +2185,7 @@ function throttle_hits($client_device = null)
 
 function get_client_user_agent_info()
 {
-    global $config_dir;
+    global $config_dir, $logdir;
     // Try to get browser info to use for extra formatting of page
     $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
     $devices = array(
@@ -2201,15 +2205,15 @@ function get_client_user_agent_info()
             break;
         }
     }
-    if ($client_device == "spider") {
+    if ($client_device == "spider" || $client_device == "crawler") {
         $client_device = "bot";
     }
     // Log client device if enabled by semaphore
     if (file_exists($config_dir . '/devicelog.enable')) {
         $client_ip = getenv("REMOTE_ADDR");
         $logfile = $logdir . '/device.log';
-        file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " Client: " . $client_ip . " browser: " . $client_device, FILE_APPEND);
-        file_put_contents($logfile, "\nFull UA: " . $ua, FILE_APPEND);
+        file_put_contents($logfile, "\n" . date('M d H:i:s') . " Client: " . $client_ip . " browser: " . $client_device, FILE_APPEND);
+        file_put_contents($logfile, "\n    Full UA: " . $ua, FILE_APPEND);
     }
     return $client_device;
 }
