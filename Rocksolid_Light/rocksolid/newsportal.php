@@ -2118,10 +2118,10 @@ function throttle_hits($client_device = null)
 
     // Block by user-agent
     if (isset($OVERRIDES['block_by_user_agent'])) {
-        $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
-        foreach ($OVERRIDES['block_by_user_agent'] as $user_agent) {
-            if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $user_agent . "' found in User-Agent block list", FILE_APPEND);
+        $this_ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+        foreach ($OVERRIDES['block_by_user_agent'] as $block_user_agent) {
+            if (stripos($this_ua, $block_user_agent) !== false) {
+                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2132,15 +2132,15 @@ function throttle_hits($client_device = null)
     if (isset($OVERRIDES['block_by_rdns'])) {
         $ip = $_SERVER['REMOTE_ADDR'];
         if (isset($rdns[$ip])) {
-            $ua = $rdns[$ip];
+            $this_rdns = $rdns[$ip];
         } else {
-            $ua = gethostbyaddr($ip);
-            $rdns[$ip] = $ua;
+            $this_rdns = gethostbyaddr($ip);
+            $rdns[$ip] = $this_rdns;
             file_put_contents($rdns_file, serialize($rdns));
         }
-        foreach ($OVERRIDES['block_by_rdns'] as $user_agent) {
-            if (stripos($ua, $user_agent) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $user_agent . "' found in RDNS block list", FILE_APPEND);
+        foreach ($OVERRIDES['block_by_rdns'] as $block_rdns) {
+            if (stripos($this_rdns, $block_rdns) !== false) {
+                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_rdns . "' found in RDNS block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
