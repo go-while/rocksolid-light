@@ -893,7 +893,7 @@ function thread_format_lastmessage($c, $group = '')
         $table = 'articles';
         if (is_file($database)) {
             $dbh = article_db_open($database, $table);
-            $stmt = $dbh->prepare("SELECT * FROM $table WHERE date=:date ORDER BY date DESC");
+            $stmt = $dbh->prepare("SELECT name,date,msgid,number FROM $table WHERE date=:date ORDER BY date DESC");
             $stmt->bindParam(':date', $c->date_thread);
             $stmt->execute();
             if ($found = $stmt->fetch()) {
@@ -907,7 +907,7 @@ function thread_format_lastmessage($c, $group = '')
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
         $dbh = overview_db_open($database, $table);
-        $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND date=:date ORDER BY date DESC");
+        $stmt = $dbh->prepare("SELECT name,date,msgid,number FROM $table WHERE newsgroup=:newsgroup AND date=:date ORDER BY date DESC");
         $stmt->bindParam(':newsgroup', $group);
         $stmt->bindParam(':date', $c->date_thread);
         $stmt->execute();
@@ -956,6 +956,8 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
     global $file_article, $thread_maxSubject;
     global $age_count, $age_time, $age_color, $spooldir;
     global $frame_article;
+    global $last_thread;
+    global $debug_log;
     $output = "";
     if ($thread_treestyle == 3)
         $output .= "\n<UL>\n";
@@ -964,6 +966,14 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
         $lineclass = "np_thread_line" . (($article_count % 2) + 1);
         // read the first article
         $c = $headers[$liste[$i]];
+        
+        // Is a last message causing duplicates?
+        if(isset($last_thread) && $c->date_thread == $last_thread) {
+            // Seems we have more than one thread displayed for a single reply article
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Duplicate thread found in: " . $group . " msgid: " . $c->id, FILE_APPEND);
+            continue;
+        }
+        $last_thread = $c->date_thread;
         // Avoid listing if error (fixme)
         // if (preg_match('/\D/', $c->number)) {
         if (! is_numeric($c->number) || ! isset($c->id) || $c->date < 1) {
