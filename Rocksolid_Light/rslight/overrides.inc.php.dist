@@ -36,6 +36,10 @@ return [
     // Must be 'show' or 'hide'  
     'hide_unsub' => 'hide',
 
+    // Show thread tree above articles in thread view
+    // Default is false
+    'show_thread_tree' => false,
+
     // Reserved aliases
     'reserved_names' => array("admin", "sysop", "rslight"),
     
