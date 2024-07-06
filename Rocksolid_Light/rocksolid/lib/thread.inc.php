@@ -82,9 +82,7 @@ function thread_cache_load($group)
 function thread_cache_save($headers, $group)
 {
     global $spooldir, $compress_spoolfiles, $config_dir, $logdir, $config_name;
-    $logfile = $logdir . '/newsportal.log';
-    $thread_file = $spooldir . '/' . $group . '-data.dat';
-    
+
     file_put_contents($spooldir . '/' . $group . '-data.dat', serialize($headers));
 }
 
