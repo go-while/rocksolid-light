@@ -309,7 +309,10 @@ if ($type == "reply") {
 
     // For Synchronet use
     $fromname = $bodyzeile;
-    $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+    
+    // On Fri, 5 Jul 2024 15:54:40 -0500, nobody@nonospam.org wrote:
+    $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+    //$bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
     for ($i = 0; $i <= count($body) - 1; $i ++) {
         if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- ')) {
             break;
