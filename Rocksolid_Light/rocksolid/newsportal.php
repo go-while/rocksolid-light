@@ -2504,19 +2504,6 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         ]);
         unlink($grouppath . "/" . $this_article['local']);
         $article_dbh = null;
-        /*
-        // Add to memcache
-        if (file_exists($config_dir . '/cache.inc.php')) {
-            include $config_dir . '/cache.inc.php';
-        }
-        if ($enable_cache) {
-            $article_key = $cache_key_prefix . '_' . 'article.db3-' . $group . ':' . $this_article['local'];
-            $nicole = cache_add($article_key, gzcompress($this_article['article']), $cache_ttl, $memcacheD);
-            if ($enable_cache_logging && $nicole) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) (new) $article_key", FILE_APPEND);
-            }
-        }
-        */
     } else {
         if ($article_date > time())
             $article_date = time();
