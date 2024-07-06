@@ -68,18 +68,8 @@ function thread_pageselect($group, $article_count, $first)
 function thread_cache_load($group)
 {
     global $spooldir, $config_dir, $logdir, $compress_spoolfiles;
-
-    $database = $spooldir . '/' . $group . '-data.db3';
-    $table = "threads";
-    if ($dbh = threads_db_open($database, $table)) {
-        $stmt = $dbh->prepare("SELECT * FROM $table");
-        $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $headers = unserialize($row['headers']);
-            break;
-        }
-        $dbh = null;
-    }
+    
+    $headers = unserialize(file_get_contents($spooldir . '/' . $group . '-data.dat'));
     return ($headers);
 }
 
@@ -93,27 +83,9 @@ function thread_cache_save($headers, $group)
 {
     global $spooldir, $compress_spoolfiles, $config_dir, $logdir, $config_name;
     $logfile = $logdir . '/newsportal.log';
-
-    $database = $spooldir . '/' . $group . '-data.db3';
-    $table = "threads";
-    if ($dbh = threads_db_open($database, $table)) {
-        $drop = 'DROP TABLE IF EXISTS threads';
-        $drop_stmt = $dbh->prepare($drop);
-        $insert_sql = 'INSERT INTO ' . $table . '(headers) VALUES(?)';
-        $insert_stmt = $dbh->prepare($insert_sql);
-
-        $dbh->beginTransaction();
-        $drop_stmt->execute();
-        $dbh->exec("CREATE TABLE IF NOT EXISTS $table(
-			id INTEGER PRIMARY KEY,
-			headers TEXT,
-            unique (headers))");
-        $insert_stmt->execute([
-            serialize($headers)
-        ]);
-        $dbh->commit();
-        $dbh = null;
-    }
+    $thread_file = $spooldir . '/' . $group . '-data.dat';
+    
+    file_put_contents($spooldir . '/' . $group . '-data.dat', serialize($headers));
 }
 
 /*
@@ -305,7 +277,7 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
     $maxfetch = 0;
     $idstring = "0.36," . $server . "," . $compress_spoolfiles . "," . $maxarticles . "," . $maxarticles_extra . "," . $maxfetch . "," . $initialfetch . "," . $www_charset . ',' . $iconv_enable . ',' . $thread_show["replies"];
     $overviewformat = thread_overview_read($ns);
-    $spoolfilename = $spooldir . '/' . $groupname . '-data.db3';
+    $spoolfilename = $spooldir . '/' . $groupname . '-data.dat';
     fputs($ns, "GROUP $groupname\r\n"); // select a group
     $response = line_read($ns);
     $groupinfo = explode(" ", $response);
