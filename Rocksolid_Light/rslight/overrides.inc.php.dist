@@ -52,7 +52,14 @@ return [
     // Set to false to NOT add '>' to quotes for blank lines
     // Default is true
     'quote_blank_lines' => true,
-    
+   
+    // How to format 'who wrote' quoting in reply:
+    // 'On 4, Jan 2024, John Doe wrote:'
+    // Options are:
+    // 'date_name', 'msgid_name', 'date_msgid_name', or 'name'
+    // Default is 'date_name'
+    'quote_head' => 'date_name',
+ 
     // Disable immediate post insertion (wait for remote server)
     // for a SECTION. Comma separated list ex: 'rocksolid,section3,section5',
     'insert_disable' => 'sectionONE, sectionTWO',

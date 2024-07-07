@@ -306,13 +306,32 @@ if ($type == "reply") {
     } else {
         $bodyzeile = $head->from;
     }
-
-    // For Synchronet use
+    // For Synchronet use (deprecated)
     $fromname = $bodyzeile;
     
-    // On Fri, 5 Jul 2024 15:54:40 -0500, nobody@nonospam.org wrote:
-    $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
-    //$bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+    // Set quote reply format (On date somebody wrote:)
+    if(!isset($OVERRIDES['quote_head'])) {
+        $OVERRIDES['quote_head'] = 'date_name';
+    }
+    switch($OVERRIDES['quote_head']) {
+        case 'date_name':
+            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'msgid_name':
+            $bodyzeile = "In " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'date_msgid_name':
+            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " in " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'name':
+            $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        default:
+            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        
+    }
+    
     for ($i = 0; $i <= count($body) - 1; $i ++) {
         if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- ')) {
             break;
