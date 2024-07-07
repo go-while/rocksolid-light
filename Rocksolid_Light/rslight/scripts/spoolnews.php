@@ -173,7 +173,7 @@ echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group)
 {
-    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $spamlog, $logfile;
+    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $spamlog, $logfile, $debug_log;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -262,6 +262,7 @@ function get_articles($ns, $group)
         mkdir($grouppath, 0755, 'recursive');
     }
     $i = 0;
+    $dates_used = array();
     // GET INDIVIDUAL ARTICLE
     while ($article <= $detail[3]) {
         if (! is_numeric($article)) {
@@ -324,7 +325,18 @@ function get_articles($ns, $group)
                 // Find article date
                 if (stripos($response, "Date: ") === 0) {
                     $finddate = explode(': ', $response, 2);
-                    $article_date = strtotime($finddate[1]);
+                    
+                    // Here we try to handle an issue with exact same timestamps and
+                    // newsportal tries to sort by these and messes up thread view if same
+                    $artdate = strtotime($finddate[1]);
+                    while(isset($dates_used[$artdate])) {
+                        $artdate = $artdate + 1;
+                        $finddate[1] = date("D, j M Y G:i:s (T)", $artdate);
+                        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Rewrote date to: " . $artdate . " " . $finddate[1] . " for " . $group . ":" . $local, FILE_APPEND);
+                    }
+                    $article_date = $artdate;
+                    $dates_used[$article_date] = true;
+                    
                 }
                 // Get overview data
                 if (stripos($response, "Message-ID: ") === 0) {

@@ -879,10 +879,12 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
         // Is a last message causing duplicates?
         if(isset($last_thread) && $c->date_thread == $last_thread) {
             // Seems we have more than one thread displayed for a single reply article
-            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Duplicate thread found in: " . $group . " msgid: " . $c->id, FILE_APPEND);
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . "Duplicate thread found in: " . $group . " msgid: " . $c->id, FILE_APPEND);
+            // This is hopefully temporary until date stuff is fixed
             continue;
         }
         $last_thread = $c->date_thread;
+        
         // Avoid listing if error (fixme)
         // if (preg_match('/\D/', $c->number)) {
         if (! is_numeric($c->number) || ! isset($c->id) || $c->date < 1) {
