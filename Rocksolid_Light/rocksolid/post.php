@@ -315,19 +315,19 @@ if ($type == "reply") {
     }
     switch($OVERRIDES['quote_head']) {
         case 'date_name':
-            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
         case 'msgid_name':
             $bodyzeile = "In " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
         case 'date_msgid_name':
-            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " in " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " in " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
         case 'name':
             $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
         default:
-            $bodyzeile = "On " . date("D, j M Y G:i:s (T),", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
         
     }
