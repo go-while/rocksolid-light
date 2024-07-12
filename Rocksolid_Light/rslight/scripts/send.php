@@ -59,6 +59,10 @@ function post_articles($ns, $spooldir)
         return "No messages to send\r\n";
     }
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
+    $fail_dir = $outgoing_dir . '/failed/';
+    if(!is_dir($fail_dir)) {
+        mkdir($fail_dir);
+    }
     $messages = scandir($outgoing_dir);
     foreach ($messages as $message) {
         if (! is_file($outgoing_dir . $message)) {
@@ -84,15 +88,16 @@ function post_articles($ns, $spooldir)
         fputs($ns, ".\r\n");
         fclose($message_fp);
         $response = line_read($ns);
-        if (strcmp(substr($response, 0, 7), "441 435") == 0) {
-            $removed = unlink($outgoing_dir . $message);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response: " . $response, FILE_APPEND);
+        if (strcmp(substr($response, 0, 3), "441") == 0) {
+            rename($outgoing_dir . $message, $fail_dir . $message);
+         //   $removed = unlink($outgoing_dir . $message);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Posted: " . $message . ": " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POSTED: " . $message . ": " . $response, FILE_APPEND);
         } else {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to POST: " . $message . ": " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $message . ": " . $response, FILE_APPEND);
             continue;
         }
     }
