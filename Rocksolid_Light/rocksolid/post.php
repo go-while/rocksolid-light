@@ -67,6 +67,15 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 @$abspeichern = $_REQUEST["abspeichern"];
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
+
+if($type == 'reply') {
+    $max_crosspost = 12;
+    $allow_ngs_edit = false;
+} else {
+    $max_crosspost = 3;
+    $allow_ngs_edit = true;
+}
+
 if (! isset($group) && isset($newsgroups)) {
     $group = $newsgroups;
 }
@@ -104,6 +113,15 @@ if ($_REQUEST['returngroup']) {
     $returngroup = $_REQUEST['returngroup'];
 } else {
     $returngroup = $thisgroup;
+}
+
+$linkgroups = preg_split("/[\s,]+/", $returngroup);
+foreach($linkgroups as $linkgroup) {
+    $linkgroup = trim($linkgroup);
+    if (get_section_by_group($linkgroup)) {
+        $returngroup = $linkgroup;
+        break;
+    }
 }
 
 echo '<h1 class="np_thread_headline">';
@@ -219,7 +237,13 @@ if ($type == "post") {
         $type = "retry";
         $error = $text_post["missing_subject"];
     }
-
+    if($allow_ngs_edit) {
+        $grouptotal = preg_split("/\,/", $newsgroups);
+        if(count($grouptotal) > $max_crosspost) {
+            $type = "retry";
+            $error = "Too many newsgroups";
+        }
+    }
     // captcha-check
     if (($post_captcha) && (captcha::check() == false)) {
         $type = "retry";
@@ -398,6 +422,7 @@ if ($show == 1) {
         $ngroups = preg_split("/[\s,]+/", $newsgroups);
         $found = false;
         foreach ($ngroups as $group) {
+            $group = trim($group);
             if (get_section_by_group($group)) {
                 $found = true;
                 break;
@@ -440,6 +465,17 @@ if ($show == 1) {
             echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
             echo '</td><td>';
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
+            echo '</tr><tr>';
+        } else {
+            echo '<td align="right"><b>Newsgroups:</b></td>';
+            echo '<td>';
+            if($allow_ngs_edit) {
+                echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
+                echo "&nbsp;comma separated, max $max_crosspost groups";
+            } else {
+                echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
+            }
+            echo '</td><td>';
             echo '</tr><tr>';
         }
 
