@@ -467,13 +467,17 @@ if ($show == 1) {
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
             echo '</tr><tr>';
         } else {
-            echo '<td align="right"><b>Newsgroups:</b></td>';
-            echo '<td>';
-            if($allow_ngs_edit) {
-                echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
-                echo "&nbsp;comma separated, max $max_crosspost groups";
+            if(!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
+                echo '<td align="right"><b>Newsgroups:</b></td>';
+                echo '<td>';
+                if($allow_ngs_edit) {
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
+                    echo "&nbsp;comma separated, max $max_crosspost groups";
+                } else {
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
+                }
             } else {
-                echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
+                echo '<input tclass="post" type="hidden" name="fgroups" value="' . $newsgroups . '">';
             }
             echo '</td><td>';
             echo '</tr><tr>';

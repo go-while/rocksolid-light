@@ -16,6 +16,11 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
+    // Set to true to disable display and edit of newsgroups
+    // header when posting
+    // Default is false (newsgroups will display)
+    'disable_ngs_edit' => false,
+
     // Log posts?
     'enable_post_log' => false,
     
