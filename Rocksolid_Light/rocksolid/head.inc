@@ -27,5 +27,4 @@ if (isset($frames_on) && $frames_on === false) {
         include "../common/header.php";
     }
 }
-echo '<hr></head>';
-echo '<body textcolor="black" bgcolor="white">';
+echo '<hr>';

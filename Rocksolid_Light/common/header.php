@@ -1,5 +1,3 @@
-<html>
-<head>
 <?php
 if (basename(getcwd()) == 'mods') {
     $rootdir = "../../";
@@ -64,10 +62,9 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . 'common/themes/' . $_S
 } else {
     $header_image = $rootdir . 'common/images/rocksolidlight.png';
 }
+echo '</head><body textcolor="black" bgcolor="white">';
+echo '<div id = "loading_indicator"> </div>';
 ?>
-	</head>
-<body>
-<div id = "loading_indicator"> </div>
 
 <script>
    document.addEventListener('readystatechange', e => {
@@ -232,8 +229,3 @@ function head_mail_db_open($database, $table = 'messages')
      to_hide TEXT)");
     return ($dbh);
 }
-?>
-
-
-</body>
-</html>

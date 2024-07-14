@@ -16,6 +16,11 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
+    // Set to true to disable display and edit of newsgroups
+    // header when posting
+    // Default is false (newsgroups will display)
+    'disable_ngs_edit' => false,
+
     // Log posts?
     'enable_post_log' => false,
     
@@ -36,6 +41,10 @@ return [
     // Must be 'show' or 'hide'  
     'hide_unsub' => 'hide',
 
+    // Show thread tree above articles in thread view
+    // Default is false
+    'show_thread_tree' => false,
+
     // Reserved aliases
     'reserved_names' => array("admin", "sysop", "rslight"),
     
@@ -48,7 +57,14 @@ return [
     // Set to false to NOT add '>' to quotes for blank lines
     // Default is true
     'quote_blank_lines' => true,
-    
+   
+    // How to format 'who wrote' quoting in reply:
+    // 'On 4, Jan 2024, John Doe wrote:'
+    // Options are:
+    // 'date_name', 'msgid_name', 'date_msgid_name', or 'name'
+    // Default is 'date_name'
+    'quote_head' => 'date_name',
+ 
     // Disable immediate post insertion (wait for remote server)
     // for a SECTION. Comma separated list ex: 'rocksolid,section3,section5',
     'insert_disable' => 'sectionONE, sectionTWO',

@@ -16,4 +16,3 @@ if (file_exists('mods/header.php')) {
 }
 
 echo '<hr>';
-echo '</head>';

@@ -67,6 +67,15 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 @$abspeichern = $_REQUEST["abspeichern"];
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
+
+if($type == 'reply') {
+    $max_crosspost = 12;
+    $allow_ngs_edit = false;
+} else {
+    $max_crosspost = 3;
+    $allow_ngs_edit = true;
+}
+
 if (! isset($group) && isset($newsgroups)) {
     $group = $newsgroups;
 }
@@ -104,6 +113,15 @@ if ($_REQUEST['returngroup']) {
     $returngroup = $_REQUEST['returngroup'];
 } else {
     $returngroup = $thisgroup;
+}
+
+$linkgroups = preg_split("/[\s,]+/", $returngroup);
+foreach($linkgroups as $linkgroup) {
+    $linkgroup = trim($linkgroup);
+    if (get_section_by_group($linkgroup)) {
+        $returngroup = $linkgroup;
+        break;
+    }
 }
 
 echo '<h1 class="np_thread_headline">';
@@ -219,7 +237,13 @@ if ($type == "post") {
         $type = "retry";
         $error = $text_post["missing_subject"];
     }
-
+    if($allow_ngs_edit) {
+        $grouptotal = preg_split("/\,/", $newsgroups);
+        if(count($grouptotal) > $max_crosspost) {
+            $type = "retry";
+            $error = "Too many newsgroups";
+        }
+    }
     // captcha-check
     if (($post_captcha) && (captcha::check() == false)) {
         $type = "retry";
@@ -306,10 +330,32 @@ if ($type == "reply") {
     } else {
         $bodyzeile = $head->from;
     }
-
-    // For Synchronet use
+    // For Synchronet use (deprecated)
     $fromname = $bodyzeile;
-    $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+    
+    // Set quote reply format (On date somebody wrote:)
+    if(!isset($OVERRIDES['quote_head'])) {
+        $OVERRIDES['quote_head'] = 'date_name';
+    }
+    switch($OVERRIDES['quote_head']) {
+        case 'date_name':
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'msgid_name':
+            $bodyzeile = "In " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'date_msgid_name':
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " in " . $head->id . ", " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        case 'name':
+            $bodyzeile = $text_post["wrote_prefix"] . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        default:
+            $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
+            break;
+        
+    }
+    
     for ($i = 0; $i <= count($body) - 1; $i ++) {
         if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- ')) {
             break;
@@ -376,6 +422,7 @@ if ($show == 1) {
         $ngroups = preg_split("/[\s,]+/", $newsgroups);
         $found = false;
         foreach ($ngroups as $group) {
+            $group = trim($group);
             if (get_section_by_group($group)) {
                 $found = true;
                 break;
@@ -418,6 +465,21 @@ if ($show == 1) {
             echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
             echo '</td><td>';
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
+            echo '</tr><tr>';
+        } else {
+            if(!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
+                echo '<td align="right"><b>Newsgroups:</b></td>';
+                echo '<td>';
+                if($allow_ngs_edit) {
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
+                    echo "&nbsp;comma separated, max $max_crosspost groups";
+                } else {
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
+                }
+            } else {
+                echo '<input tclass="post" type="hidden" name="fgroups" value="' . $newsgroups . '">';
+            }
+            echo '</td><td>';
             echo '</tr><tr>';
         }
 
