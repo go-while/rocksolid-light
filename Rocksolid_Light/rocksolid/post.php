@@ -323,7 +323,7 @@ if ($type == "post") {
                         echo 'Please wait ' . round($wait) . ' minutes before posting again.<br />';
                     }
                 }
-                echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";
