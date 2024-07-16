@@ -206,6 +206,23 @@ if ($type == "post") {
             } else {
                 $_SESSION['pass'] = true;
                 $logged_in = true;
+                $name = trim($name);
+                $authkey = password_hash($name . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
+                $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
+                set_user_config(strtolower($name), "pkey", $pkey);
+?>
+<script type="text/javascript">
+       if (navigator.cookieEnabled)
+         var authcookie = "<?php echo $authkey; ?>";
+         var savename = "<?php echo stripslashes($name); ?>";
+	 var auth_expire = "<?php echo $auth_expire; ?>";
+	 var name_expire = "7776000";
+	 var pkey = "<?php echo $pkey; ?>";
+         document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
+         document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
+         document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
+      </script>
+<?php
             }
         }
     }
@@ -306,7 +323,7 @@ if ($type == "post") {
                         echo 'Please wait ' . round($wait) . ' minutes before posting again.<br />';
                     }
                 }
-                echo '<p><a href="' . $file_thread . '?group=' . $returngroup . '">Back</a></p>';
+                echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";
@@ -487,28 +504,23 @@ if ($show == 1) {
         echo '<td align="left">';
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
-        if (isset($form_noname) && $form_noname === true) {
-            echo htmlspecialchars($name);
-        } else {
             echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
             if (isset($name))
                 echo 'value="' . htmlspecialchars($name) . '"';
-            if ($logged_in) {
+            if ($logged_in && isset($name)) {
                 echo 'size="40" maxlength="40" readonly>';
+                file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG post.php AUTH SET for: " . $name, FILE_APPEND);
             } else {
                 echo 'size="40" maxlength="40">';
+                file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG post.php AUTH NOT SET for: " . $name, FILE_APPEND);
             }
             if ($CONFIG['anonuser'])
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
-        }
         echo '</td></tr><tr>';
         echo '<td align="right"><b>' . $text_post["password"] . '</b></td>';
         echo '<td align="left">';
-        // if (strcmp($user, $CONFIG['anonusername']) === 0) {
-        // $logged_in = false;
-        // }
 
-        if ($logged_in) {
+        if ($logged_in && isset($name)) {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"value="**********"';
             echo 'size="40" maxlength="40" readonly>';
         } else {
