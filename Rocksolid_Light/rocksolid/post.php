@@ -255,7 +255,7 @@ if ($type == "post") {
         $error = $text_post["missing_subject"];
     }
     if($allow_ngs_edit) {
-        $grouptotal = preg_split("/\,/", $newsgroups);
+        $grouptotal = preg_split("/( |\,)/", $newsgroups);
         if(count($grouptotal) > $max_crosspost) {
             $type = "retry";
             $error = "Too many newsgroups";
