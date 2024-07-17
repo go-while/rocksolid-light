@@ -1302,9 +1302,9 @@ function set_user_logged_in_cookies($name, $keys) {
 
 function check_bbs_auth($username, $password)
 {
-    global $config_dir, $spooldir, $CONFIG;
+    global $config_dir, $spooldir, $CONFIG, $auth_log;
 
-    $logfile = $spooldir . '/log/auth.log';
+    $logfile = $auth_log;
     if ($username == '' && $password == '') {
         return false;
     }
