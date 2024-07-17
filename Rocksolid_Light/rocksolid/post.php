@@ -206,24 +206,11 @@ if ($type == "post") {
             } else {
                 $_SESSION['pass'] = true;
                 $logged_in = true;
-                $name = trim($name);
-                $authkey = password_hash($name . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
-                $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
-                set_user_config(strtolower($name), "pkey", $pkey);
-?>
-<script type="text/javascript">
-       if (navigator.cookieEnabled)
-         var authcookie = "<?php echo $authkey; ?>";
-         var savename = "<?php echo stripslashes($name); ?>";
-	 var auth_expire = "<?php echo $auth_expire; ?>";
-	 var name_expire = "7776000";
-	 var pkey = "<?php echo $pkey; ?>";
-         document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
-         document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
-         document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
-      </script>
-<?php
+                set_user_logged_in_cookies($name, $keys);
             }
+        } else {
+            // Update cookie times to stay logged in
+            set_user_logged_in_cookies($name, $keys);
         }
     }
     // Check that user has not been recently banned
