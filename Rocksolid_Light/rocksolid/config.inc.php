@@ -2,6 +2,7 @@
 include "../common/config.inc.php";
 
 ini_set('memory_limit', '1536M');
+ini_set('session.gc_maxlifetime', 14400);
 
 /*
  * Config file name should be the basename
