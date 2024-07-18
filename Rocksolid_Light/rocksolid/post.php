@@ -68,12 +68,41 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
 
+$allow_ng_header_edit_post = true;
+$allow_ng_header_edit_reply = false;
+
+if(isset($OVERRIDES['allow_ng_header_edit'])) {
+    if($OVERRIDES['allow_ng_header_edit'] == 'post') {
+        $allow_ng_header_edit_post = true;
+    } else {
+        $allow_ng_header_edit_post = false;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'reply') {
+        $allow_ng_header_edit_reply = true;
+    } else {
+        $allow_ng_header_edit_reply = false;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'both') {
+        $allow_ng_header_edit_post = true;
+        $allow_ng_header_edit_reply = true;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'none') {
+        $allow_ng_header_edit_post = false;
+        $allow_ng_header_edit_reply = false;
+    }
+}
+
+$allow_ngs_edit = false;
 if($type == 'reply') {
+    if($allow_ng_header_edit_reply) {
+        $allow_ngs_edit = true;
+    }
     $max_crosspost = 12;
-    $allow_ngs_edit = false;
 } else {
+    if($allow_ng_header_edit_post) {
+        $allow_ngs_edit = true;
+    }
     $max_crosspost = 3;
-    $allow_ngs_edit = true;
 }
 
 if (! isset($group) && isset($newsgroups)) {

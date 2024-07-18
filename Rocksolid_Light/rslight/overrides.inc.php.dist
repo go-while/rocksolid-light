@@ -45,6 +45,11 @@ return [
     // Default is false
     'show_thread_tree' => false,
 
+    // Allow editing Newsgroups header when ...
+    // Options: 'post', 'reply', 'both', 'none'
+    // If not set, default = 'post'
+    'allow_ng_header_edit' => 'post',
+
     // Reserved aliases
     'reserved_names' => array("admin", "sysop", "rslight"),
     
