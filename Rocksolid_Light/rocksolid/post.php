@@ -496,10 +496,10 @@ if ($show == 1) {
                 echo 'value="' . htmlspecialchars($name) . '"';
             if ($logged_in && isset($name)) {
                 echo 'size="40" maxlength="40" readonly>';
-                file_put_contents($auth_log, "\n" . format_log_date() . " AUTH SET for: " . $name, FILE_APPEND);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH SET for: " . $name, FILE_APPEND);
             } else {
                 echo 'size="40" maxlength="40">';
-                file_put_contents($auth_log, "\n" . format_log_date() . " AUTH NOT SET for: " . $name, FILE_APPEND);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH NOT SET for: " . $name, FILE_APPEND);
             }
             if ($CONFIG['anonuser'])
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';

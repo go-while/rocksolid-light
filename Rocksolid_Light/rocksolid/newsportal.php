@@ -647,7 +647,7 @@ function groups_show($gruppen)
                     if ($lastarticleinfo = unserialize($lar)) {
                         if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
                             if ($enable_cache_logging) {
-                                file_put_contents($cache_log, "\n" . format_log_date() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
+                                file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
                             }
                             $found = 1;
                         } else {
@@ -694,9 +694,9 @@ function groups_show($gruppen)
                         cache_add($memcache_key, serialize($row), $cache_ttl, $memcacheD);
                         if ($enable_cache_logging) {
                             if ($nicole) {
-                                file_put_contents($cache_log, "\n" . format_log_date() . " (cache update) $memcache_key", FILE_APPEND);
+                                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache update) $memcache_key", FILE_APPEND);
                             } else {
-                                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
+                                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) $memcache_key", FILE_APPEND);
                             }
                         }
                     }
@@ -1319,7 +1319,7 @@ function check_bbs_auth($username, $password)
         if ($banned[0] == '#')
             continue;
         if (strtolower(trim($username)) == strtolower(trim($banned))) {
-            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
             return false;
         }
     }
@@ -1343,7 +1343,7 @@ function check_bbs_auth($username, $password)
     }
 
     if (trim($username) == strtolower($CONFIG['anonusername']) && $CONFIG['anonuser'] != true) {
-        file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (' . $CONFIG["anonusername"] . ' is disabled)', FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (' . $CONFIG["anonusername"] . ' is disabled)', FILE_APPEND);
         return FALSE;
     }
 
@@ -1354,7 +1354,7 @@ function check_bbs_auth($username, $password)
             touch($userFilename);
             $ok = TRUE;
         } else {
-            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
             return FALSE;
         }
     } else {
@@ -1362,7 +1362,7 @@ function check_bbs_auth($username, $password)
     }
     if ($ok) {
         if ($username != 'localuser') {
-            file_put_contents($logfile, "\n" . format_log_date() . " AUTH OK for: " . $username, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH OK for: " . $username, FILE_APPEND);
         }
         return TRUE;
     } else {
@@ -1378,10 +1378,10 @@ function check_bbs_auth($username, $password)
                 fclose($userFileHandle);
                 chmod($userFilename, 0666);
             }
-            file_put_contents($logfile, "\n" . format_log_date() . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
             return TRUE;
         } else {
-            file_put_contents($logfile, "\n" . format_log_date() . " AUTH Failed for: " . $username, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username, FILE_APPEND);
             return FALSE;
         }
     }
@@ -1521,10 +1521,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
         file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . format_log_date() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
     }
     return array(
         'res' => $res,
@@ -1533,6 +1533,15 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
         'spamlevel' => $spamlevel,
         'spam_fail' => $spam_fail
     );
+}
+
+function logging_prefix() {
+    global $client_ip_address;
+    if(trim($client_ip_address == '')) {
+        return format_log_date();
+    } else {
+        return format_log_date() . " " . $client_ip_address;
+    }
 }
 
 function format_log_date()
@@ -1651,7 +1660,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         if ($getgroups = cache_get($memcache_key, $memcacheD)) {
             if ($groups = unserialize($getgroups)) {
                 if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $memcache_key", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $memcache_key", FILE_APPEND);
                 }
             }
         }
@@ -1677,7 +1686,7 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
         if ($groups && $enable_cache) {
             $nicole = cache_add($memcache_key, serialize($groups), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $memcache_key", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) $memcache_key", FILE_APPEND);
             }
         }
     }
@@ -1780,7 +1789,7 @@ function threads_db_open($database, $table = "threads")
     $group = substr($database, $spooldir_len, (strlen($database) - $spooldir_len) - 9);
     $group = trim($group, '/');
     if (! get_section_by_group($group, true)) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
         return false;
     }
     try {
@@ -1874,7 +1883,7 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\//", "", $group);
     if (! preg_match('/\-articles\.db3\-new/', $database)) {
         if (! get_section_by_group($group, true)) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
             return false;
         }
     }
@@ -1939,7 +1948,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         if ($msg2 = gzuncompress(cache_get($article_key, $memcacheD))) {
             $ok_article = 1;
             if ($enable_cache_logging) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $article_key", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $article_key", FILE_APPEND);
             }
         }
     }
@@ -1975,7 +1984,7 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
         if ($ok_article == 1 && $enable_cache) {
             $nicole = cache_add($article_key, gzcompress($msg2), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $article_key", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) $article_key", FILE_APPEND);
             }
         }
     }
@@ -2114,7 +2123,7 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
     $client_device = strtolower($client_device);
     if ($client_device == $useragent) {
         $logfile = $logdir . '/device.log';
-        file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " " . $script . " disabled for '" . $useragent . "' Exiting...", FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " " . $script . " disabled for '" . $useragent . "' Exiting...", FILE_APPEND);
         if ($client_device == "bot") {
             $_SESSION['bot'] = true;
         }
@@ -2146,7 +2155,7 @@ function throttle_hits($client_device = null)
         $this_ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
         foreach ($OVERRIDES['block_by_user_agent'] as $block_user_agent) {
             if (stripos($this_ua, $block_user_agent) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_user_agent . "' found in User-Agent block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . logging_prefix() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_user_agent . "' found in User-Agent block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2165,7 +2174,7 @@ function throttle_hits($client_device = null)
         }
         foreach ($OVERRIDES['block_by_rdns'] as $block_rdns) {
             if (stripos($this_rdns, $block_rdns) !== false) {
-                file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_rdns . "' found in RDNS block list", FILE_APPEND);
+                file_put_contents($abuse_log, "\n" . logging_prefix() . " [" . $_SERVER['REMOTE_ADDR'] . "] (blocking) '" . $block_rdns . "' found in RDNS block list", FILE_APPEND);
                 $_SESSION['throttled'] = true;
                 header("HTTP/1.0 403 Forbidden");
                 exit();
@@ -2194,7 +2203,7 @@ function throttle_hits($client_device = null)
     if (($rate > $loadrate) && ($_SESSION['views'] > 50)) {
         header("HTTP/1.0 429 Too Many Requests");
         if (! isset($_SESSION['throttled'])) {
-            file_put_contents($abuse_log, "\n" . format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "] (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
+            file_put_contents($abuse_log, "\n" . logging_prefix() . " [" . $_SERVER['REMOTE_ADDR'] . "] (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
             $_SESSION['throttled'] = true;
         }
         exit(0);
@@ -2233,7 +2242,7 @@ function get_client_user_agent_info()
     if (file_exists($config_dir . '/devicelog.enable')) {
         $client_ip = getenv("REMOTE_ADDR");
         $logfile = $logdir . '/device.log';
-        file_put_contents($logfile, "\n" . date('M d H:i:s') . " Client: " . $client_ip . " browser: " . $client_device, FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " browser: " . $client_device, FILE_APPEND);
         file_put_contents($logfile, "\n    Full UA: " . $ua, FILE_APPEND);
     }
     return $client_device;
@@ -2272,7 +2281,7 @@ function write_access_log()
     global $logdir;
     $accessfile = $logdir . '/access.log';
     $currentPageUrl = $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-    file_put_contents($accessfile, "\n" . format_log_date() . " " . $currentPageUrl, FILE_APPEND);
+    file_put_contents($accessfile, "\n" . logging_prefix() . " " . $currentPageUrl, FILE_APPEND);
 }
 
 function verify_gpg_signature($res, $signed_text)
@@ -2470,7 +2479,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     if ($check_duplicates) {
         if (check_duplicate_msgid($this_article['mid'], $group)) {
             echo "\n(newsportal)Duplicate Message-ID for: " . $group . ":" . $this_article['mid'];
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['mid'], FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $this_article['mid'], FILE_APPEND);
             return "441 Insert failed (duplicate)\r\n";
         }
     }
@@ -2531,7 +2540,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
     echo "\nSpooling: " . $group . " " . $this_article['local'];
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
+    file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
     $status = "spooled";
     $statusdate = time();
     $statusreason = "imported";
@@ -2602,7 +2611,7 @@ function get_db_data_from_msgid($msgid, $group)
         $row_cache = $cache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
         if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
             if ($enable_cache_logging) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
             }
             return $row;
         }
@@ -2627,7 +2636,7 @@ function get_db_data_from_msgid($msgid, $group)
         if ($enable_cache) {
             $nicole = cache_add($row_cache, gzcompress(serialize($row)), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) $row_cache", FILE_APPEND);
             }
         }
         return $row;
@@ -2677,12 +2686,12 @@ function get_data_from_msgid($msgid, $thisgroup = null)
         if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
             if (isset($row['msgid'])) {
                 if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $row_cache", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
                 }
                 return $row;
             }
         } else {
-            file_put_contents($cache_log, "\n" . format_log_date() . " (cache update) $row_cache", FILE_APPEND);
+            file_put_contents($cache_log, "\n" . logging_prefix() . " (cache update) $row_cache", FILE_APPEND);
             cache_delete($row_cache, $memcacheD);
         }
     }
@@ -2711,7 +2720,7 @@ function get_data_from_msgid($msgid, $thisgroup = null)
         if ($enable_cache) {
             $nicole = cache_add($row_cache, gzcompress(serialize($row)), $cache_ttl, $memcacheD);
             if ($enable_cache_logging && $nicole) {
-                file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) $row_cache", FILE_APPEND);
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) $row_cache", FILE_APPEND);
             }
         }
         return $row;
@@ -2808,7 +2817,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     foreach ($grouplist as $group) {
         $config_name = get_section_by_group($group, true);
         if (! $config_name) {
-            file_put_contents($logfile, "\n" . format_log_date() . " Group not found: " . $group, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix() . " Group not found: " . $group, FILE_APPEND);
             continue;
         }
         if ($CONFIG['article_database'] == '1') {
@@ -2821,7 +2830,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                 ]);
                 $articles_dbh = null;
             } else {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to access: " . $database, FILE_APPEND);
+                file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Failed to access: " . $database, FILE_APPEND);
                 continue;
             }
         }
@@ -2830,7 +2839,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             $database = $spooldir . '/articles-overview.db3';
             $overview_dbh = overview_db_open($database);
             if (! $overview_dbh) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
+                file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
                 return;
             }
             $close_ovdb = true;
@@ -2849,7 +2858,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
         while ($row = $overview_query->fetch()) {
             if (isset($row['number'])) {
                 // echo "\nFOUND: " . $messageid . " IN: " . $group;
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
+                file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
             }
             if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
                 unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
@@ -2867,9 +2876,9 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                 $result = cache_delete($article_key, $memcacheD);
                 if ($enable_cache_logging) {
                     if ($result) {
-                        file_put_contents($cache_log, "\n" . format_log_date() . " Deleted $article_key", FILE_APPEND);
+                        file_put_contents($cache_log, "\n" . logging_prefix() . " Deleted $article_key", FILE_APPEND);
                     } else {
-                        file_put_contents($cache_log, "\n" . format_log_date() . " Failed to delete (or not found) $article_key", FILE_APPEND);
+                        file_put_contents($cache_log, "\n" . logging_prefix() . " Failed to delete (or not found) $article_key", FILE_APPEND);
                     }
                 }
             }
@@ -3014,7 +3023,7 @@ function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null)
     }
     if ($enable_cache == 'diskcache') {
         if ($low_spool_disk_space) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for cache). Pausing diskcache", FILE_APPEND);
+            file_put_contents($cache_log, "\n" . logging_prefix() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for cache). Pausing diskcache", FILE_APPEND);
             return false;
         }
         if ($nicole = file_put_contents($cache_dir . '/' . $cache_key, $data)) {

@@ -206,7 +206,7 @@ function message_read($id, $bodynum = 0, $group = "")
         if ($message_data) {
             if ($message = unserialize(gzuncompress($message_data))) {
                 if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $cache_key", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $cache_key", FILE_APPEND);
                 }
                 return $message;
             }
@@ -262,7 +262,7 @@ function message_read($id, $bodynum = 0, $group = "")
             }
         }
         if (! isset($rawmessage) || $rawmessage === FALSE) {
-            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
+            file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
             if (! isset($ns)) {
                 $ns = nntp_open();
             }
@@ -309,7 +309,7 @@ function message_read($id, $bodynum = 0, $group = "")
     if ($enable_cache) {
         $nicole = cache_add($cache_key, gzcompress(serialize($message)), $cache_ttl, $memcacheD);
         if ($enable_cache_logging && $nicole) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) " . $cache_key, FILE_APPEND);
+            file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) " . $cache_key, FILE_APPEND);
         }
     }
     return $message;
