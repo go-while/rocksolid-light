@@ -1280,6 +1280,15 @@ function group_display_name($gname)
 }
 
 function set_user_logged_in_cookies($name, $keys) {
+
+    global $debug_log;
+    if( !get_user_config($name, 'encryptionkey')) {
+        $key = openssl_random_pseudo_bytes(44);
+        set_user_config($name, 'encryptionkey', base64_encode($key));
+        file_put_contents($debug_log, "\n" . logging_prefix() . " Created encryptionkey for: " . $name, FILE_APPEND);
+
+    }
+
     $name = trim($name);
             $auth_expire = 14400;
             $authkey = password_hash($name . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
