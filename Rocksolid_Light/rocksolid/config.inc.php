@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "../common/config.inc.php";
 
 ini_set('memory_limit', '1536M');
