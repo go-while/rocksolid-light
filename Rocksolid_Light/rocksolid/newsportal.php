@@ -1286,7 +1286,6 @@ function set_user_logged_in_cookies($name, $keys) {
         $key = openssl_random_pseudo_bytes(44);
         set_user_config($name, 'encryptionkey', base64_encode($key));
         file_put_contents($debug_log, "\n" . logging_prefix() . " Created encryptionkey for: " . $name, FILE_APPEND);
-
     }
 
     $name = trim($name);
@@ -1363,7 +1362,11 @@ function check_bbs_auth($username, $password)
             touch($userFilename);
             $ok = TRUE;
         } else {
-            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
+            if(trim($password) == '') {
+                file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (no password)', FILE_APPEND);
+            } else {
+                file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
+            }
             return FALSE;
         }
     } else {

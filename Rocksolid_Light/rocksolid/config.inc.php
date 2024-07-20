@@ -1,9 +1,12 @@
 <?php
-session_start();
-include "../common/config.inc.php";
-
 ini_set('memory_limit', '1536M');
-ini_set('session.gc_maxlifetime', 14400);
+if (!isset($_SESSION)) {
+    ini_set('session.gc_maxlifetime', 14400);
+    session_set_cookie_params(14400);
+    session_start();
+ }
+
+include "../common/config.inc.php";
 
 /*
  * Config file name should be the basename

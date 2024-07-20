@@ -1,6 +1,5 @@
 <?php
 session_cache_limiter('public');
-session_start();
 
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
 header("Cache-Control: max-age=120");
@@ -89,7 +88,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '</tr><tr>';
     echo '<td><input type="submit" name="Submit" value="Search"></td>';
     echo '</tr></table></td></form></tr></table>';
-
     // Block poster
     if (isset($_COOKIE['mail_name'])) {
         if (isset($_REQUEST['data'])) {
@@ -229,7 +227,7 @@ if (isset($search_group)) {
     echo '</tr></table>';
 }
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-echo '<td class="np_ob_style_toggle">';
+echo '<td class="np_search_sort_toggle">';
 
 echo '<div style="float:right;">';
 if ($_REQUEST['searchpoint'] == 'body') {
@@ -398,15 +396,12 @@ function get_body_search($group, $terms)
         $dbh = null;
     }
     // do not perform a usort of an empty search result
-
-    if ($_SESSION['searchsort'] != 'date') {
-        if ($overview != null) {
+    if ($overview != null) {
+        if ($_SESSION['searchsort'] != 'date') {
             usort($overview, function ($a, $b) {
                 return $a['rank'] <=> $b['rank'];
             });
-        }
-    } else {
-        if ($overview != null) {
+        } else {
             usort($overview, function ($a, $b) {
                 return $b['date'] <=> $a['date'];
             });
