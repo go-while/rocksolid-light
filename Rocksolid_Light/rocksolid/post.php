@@ -225,6 +225,7 @@ if ($type == "post") {
         } else {
             // Update cookie times to stay logged in
             set_user_logged_in_cookies($name, $keys);
+            file_put_contents($auth_log, "\n" . logging_prefix() . " UPDATED AUTH COOKIES for: " . $name, FILE_APPEND);
         }
     }
     // Check that user has not been recently banned
