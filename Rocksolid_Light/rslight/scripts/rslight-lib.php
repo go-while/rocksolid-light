@@ -155,7 +155,7 @@ function interact($msgsock, $use_crypto = false)
                     $msg = "482 Authentication commands issued out of sequence\r\n";
                 } else {
                     $pass = $command[2];
-                    if (check_bbs_auth($user, $pass)) {
+                    if (check_bbs_auth($user, $pass, stream_socket_get_name($msgsock, true))) {
                         $auth_ok = 1;
                         $msg = "281 Authentication succeeded\r\n";
                     } else {

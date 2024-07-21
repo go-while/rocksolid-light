@@ -1302,7 +1302,7 @@ function verify_logged_in($name) {
         file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS OK for: " . $name, FILE_APPEND);
     } else {
         $logged_in = false;
-        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set: " . $name, FILE_APPEND);
+        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set for: " . $name, FILE_APPEND);
     }
     if ($CONFIG['anonuser'] == '1') {
         $logged_in = false;
@@ -1342,7 +1342,7 @@ function set_user_logged_in_cookies($name, $keys) {
 <?php
 }
 
-function check_bbs_auth($username, $password)
+function check_bbs_auth($username, $password, $sockip = null)
 {
     global $config_dir, $spooldir, $CONFIG, $auth_log;
 
@@ -1361,7 +1361,7 @@ function check_bbs_auth($username, $password)
         if ($banned[0] == '#')
             continue;
         if (strtolower(trim($username)) == strtolower(trim($banned))) {
-            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
             return false;
         }
     }
@@ -1385,7 +1385,7 @@ function check_bbs_auth($username, $password)
     }
 
     if (trim($username) == strtolower($CONFIG['anonusername']) && $CONFIG['anonuser'] != true) {
-        file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (' . $CONFIG["anonusername"] . ' is disabled)', FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (' . $CONFIG["anonusername"] . ' is disabled)', FILE_APPEND);
         return FALSE;
     }
 
@@ -1397,9 +1397,9 @@ function check_bbs_auth($username, $password)
             $ok = TRUE;
         } else {
             if(trim($password) == '') {
-                file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (no password)', FILE_APPEND);
+                file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (no password)', FILE_APPEND);
             } else {
-                file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
+                file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
             }
             return FALSE;
         }
@@ -1408,7 +1408,7 @@ function check_bbs_auth($username, $password)
     }
     if ($ok) {
         if ($username != 'localuser') {
-            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH OK for: " . $username, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username, FILE_APPEND);
         }
         return TRUE;
     } else {
@@ -1424,10 +1424,10 @@ function check_bbs_auth($username, $password)
                 fclose($userFileHandle);
                 chmod($userFilename, 0666);
             }
-            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
             return TRUE;
         } else {
-            file_put_contents($logfile, "\n" . logging_prefix() . " AUTH Failed for: " . $username, FILE_APPEND);
+            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username, FILE_APPEND);
             return FALSE;
         }
     }
@@ -1581,12 +1581,22 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     );
 }
 
-function logging_prefix() {
+function logging_prefix($sockip = null) {
     global $client_ip_address;
-    if(trim($client_ip_address == '')) {
+    if($sockip) {
+        if(preg_match("/\[/", $sockip)) {
+            $ipv6_addr = explode("]", $sockip);
+            $client_ip = substr($ipv6_addr[0], 1);
+        } else {
+            $client_ip = $sockip;
+        }
+    } else {
+        $client_ip = $client_ip_address;
+    }
+    if(trim($client_ip == '')) {
         return format_log_date();
     } else {
-        return format_log_date() . " [" . $client_ip_address . "]";
+        return format_log_date() . " [" . $client_ip . "]";
     }
 }
 
