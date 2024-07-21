@@ -1291,10 +1291,10 @@ function verify_logged_in($name) {
     } else {
         if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
             $ip_pass = false;
-            file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses changed for: " . $name, FILE_APPEND);
+            file_put_contents($auth_log, "\n" . logging_prefix() . " IP address changed for: " . $name, FILE_APPEND);
         } else {
             $ip_pass = true;
-            file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses OK for: " . $name, FILE_APPEND);
+            file_put_contents($auth_log, "\n" . logging_prefix() . " IP address OK for: " . $name, FILE_APPEND);
         }
     }
     if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {

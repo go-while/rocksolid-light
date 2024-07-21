@@ -58,30 +58,11 @@ if ($setcookies) {
         $name = $_COOKIE["mail_name"];
 }
 
-$ip_pass = false;
-if (! isset($_SESSION['remote_address'])) {
-    $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
-    $_SESSION['start_address'] = $_SESSION['remote_address'];
-    $ip_pass = true;
-} else {
-    if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
-        $ip_pass = false;
-        file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses changed for: " . $name, FILE_APPEND);
-    } else {
-        $ip_pass = true;
-        file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses OK for: " . $name, FILE_APPEND);
-    }
+$logged_in = false;
+if(trim($name) != '') {
+    $logged_in = verify_logged_in(trim(strtolower($name)));
 }
-if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {
-    $logged_in = true;
-    file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS OK for: " . $name, FILE_APPEND);
-} else {
-    $logged_in = false;
-    file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set: " . $name, FILE_APPEND);
-}
-if ($CONFIG['anonuser'] == '1') {
-    $logged_in = false;
-}
+
 // This will log user post info (group and username)
 $enable_post_log = false;
 if ($OVERRIDES['enable_post_log'] > 0) {
