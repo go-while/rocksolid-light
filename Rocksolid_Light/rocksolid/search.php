@@ -166,17 +166,16 @@ $title .= ' - search results for: ' . $_POST['terms'];
 include "head.inc";
 
 // Handle Block poster
+$post_username = trim(strtolower($_POST['username']));
 if (isset($_POST['block_poster'])) {
-    if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+    if ((password_verify($post_username . $keys[0] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($post_username . $keys[1] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     } else {
-        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
+        if (check_bbs_auth($post_username, $_POST['password'])) {
             if ($ip_pass) {
                 $_SESSION['pass'] = true;
             }
-            $authkey = password_hash($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), PASSWORD_DEFAULT);
-            $pkey = hash('crc32', get_user_config($_POST['username'], 'encryptionkey'));
-            set_user_config(strtolower($_POST['username']), "pkey", $pkey);
+            set_user_logged_in_cookies($post_username, $keys);
             $logged_in = true;
         }
     }

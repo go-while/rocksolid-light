@@ -1279,20 +1279,54 @@ function group_display_name($gname)
     return $gname;
 }
 
+function verify_logged_in($name) {
+    global $CONFIG, $auth_log;
+
+    $logged_in = false;
+    $ip_pass = false;
+    if (! isset($_SESSION['remote_address'])) {
+        $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION['start_address'] = $_SESSION['remote_address'];
+        $ip_pass = true;
+    } else {
+        if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
+            $ip_pass = false;
+            file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses changed for: " . $name, FILE_APPEND);
+        } else {
+            $ip_pass = true;
+            file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses OK for: " . $name, FILE_APPEND);
+        }
+    }
+    if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {
+        $logged_in = true;
+        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS OK for: " . $name, FILE_APPEND);
+    } else {
+        $logged_in = false;
+        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set: " . $name, FILE_APPEND);
+    }
+    if ($CONFIG['anonuser'] == '1') {
+        $logged_in = false;
+    }
+    return $logged_in ;
+}
+
 function set_user_logged_in_cookies($name, $keys) {
 
     global $debug_log;
-    if( !get_user_config($name, 'encryptionkey')) {
+    $name = trim($name);
+    $name_lc = strtolower($name);
+
+    if( !get_user_config($name_lc, 'encryptionkey')) {
         $key = openssl_random_pseudo_bytes(44);
-        set_user_config($name, 'encryptionkey', base64_encode($key));
+        set_user_config($name_lc, 'encryptionkey', base64_encode($key));
         file_put_contents($debug_log, "\n" . logging_prefix() . " Created encryptionkey for: " . $name, FILE_APPEND);
     }
 
-    $name = trim($name);
-            $auth_expire = 14400;
-            $authkey = password_hash($name . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
-            $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
-            set_user_config(strtolower($name), "pkey", $pkey);
+    $auth_expire = 14400;
+    $authkey = password_hash($name_lc . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
+    $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
+    set_user_config(strtolower($name), "pkey", $pkey);
+    $_SESSION['pass'] = true;
 ?>
 <script type="text/javascript">
    if (navigator.cookieEnabled)

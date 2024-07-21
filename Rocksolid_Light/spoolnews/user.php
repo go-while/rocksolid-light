@@ -69,24 +69,27 @@ $logged_in = false;
 if (! isset($_POST['username'])) {
     $_POST['username'] = $_COOKIE['mail_name'];
 }
-$name = $_POST['username'];
+$name = trim(strtolower($_POST['username']));
 if (! isset($_POST['password'])) {
     $_POST['password'] = null;
 }
 if (! isset($_COOKIE['mail_auth'])) {
     $_COOKIE['mail_auth'] = null;
 }
-if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
-    $logged_in = true;
-} else {
-    if (check_bbs_auth($_POST['username'], $_POST['password'])) {
-        if ($ip_pass) {
-            $_SESSION['pass'] = true;
-        }
-        set_user_logged_in_cookies($name, $keys);
+$logged_in = verify_logged_in(trim(strtolower($_POST['username'])));
+if(!$logged_in) {
+    if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     } else {
-        echo 'Authentication Required';
+        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
+            if ($ip_pass) {
+                $_SESSION['pass'] = true;
+            }
+            set_user_logged_in_cookies($name, $keys);
+            $logged_in = true;
+        } else {
+            echo 'Authentication Required';
+        }
     }
 }
 

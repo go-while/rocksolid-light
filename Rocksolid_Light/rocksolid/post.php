@@ -69,13 +69,15 @@ if (! isset($_SESSION['remote_address'])) {
         file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses changed for: " . $name, FILE_APPEND);
     } else {
         $ip_pass = true;
+        file_put_contents($auth_log, "\n" . logging_prefix() . " IP addresses OK for: " . $name, FILE_APPEND);
     }
 }
 if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {
     $logged_in = true;
+    file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS OK for: " . $name, FILE_APPEND);
 } else {
     $logged_in = false;
-    file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION auth expired or not exist for: " . $name, FILE_APPEND);
+    file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set: " . $name, FILE_APPEND);
 }
 if ($CONFIG['anonuser'] == '1') {
     $logged_in = false;
@@ -237,6 +239,7 @@ if ($type == "post") {
                 $_SESSION['pass'] = true;
                 $logged_in = true;
                 set_user_logged_in_cookies($name, $keys);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " SET AUTH COOKIES for: " . $name, FILE_APPEND);
             }
         } else {
             // Update cookie times to stay logged in
