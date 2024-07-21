@@ -1410,6 +1410,7 @@ function check_bbs_auth($username, $password, $sockip = null)
         if ($username != 'localuser') {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username, FILE_APPEND);
         }
+            $_SESSION['start_address'] = $_SESSION['remote_address'];
         return TRUE;
     } else {
         if (isset($CONFIG['auto_create']) && $CONFIG['auto_create'] == true) {
@@ -1425,6 +1426,7 @@ function check_bbs_auth($username, $password, $sockip = null)
                 chmod($userFilename, 0666);
             }
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
+            $_SESSION['start_address'] = $_SESSION['remote_address'];
             return TRUE;
         } else {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username, FILE_APPEND);
