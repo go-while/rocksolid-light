@@ -1586,11 +1586,12 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
 function logging_prefix($sockip = null) {
     global $client_ip_address;
     if($sockip) {
-        if(preg_match("/\[/", $sockip)) {
+        if(preg_match("/\./", $sockip)) {
+            $ipv4_addr = preg_split("/\:/", $sockip);
+            $client_ip = $ipv4_addr[0];
+        } else {
             $ipv6_addr = explode("]", $sockip);
             $client_ip = substr($ipv6_addr[0], 1);
-        } else {
-            $client_ip = $sockip;
         }
     } else {
         $client_ip = $client_ip_address;
