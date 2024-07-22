@@ -1410,7 +1410,10 @@ function check_bbs_auth($username, $password, $sockip = null)
         if ($username != 'localuser') {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username, FILE_APPEND);
         }
+        if (isset($_SESSION)) {
             $_SESSION['start_address'] = $_SESSION['remote_address'];
+            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " SET IP address for: " . $username, FILE_APPEND);
+        }
         return TRUE;
     } else {
         if (isset($CONFIG['auto_create']) && $CONFIG['auto_create'] == true) {
