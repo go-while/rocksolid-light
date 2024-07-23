@@ -58,6 +58,9 @@ if ($setcookies) {
         $name = $_COOKIE["mail_name"];
 }
 
+// Truncate username at 30 characters to avoid abuse
+$name = substr($name, 0, 30);
+
 $logged_in = false;
 if(trim($name) != '') {
     $logged_in = verify_logged_in(trim(strtolower($name)));
