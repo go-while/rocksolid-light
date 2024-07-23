@@ -1284,9 +1284,8 @@ function verify_logged_in($name) {
 
     $logged_in = false;
     $ip_pass = false;
-    if (! isset($_SESSION['remote_address'])) {
-        $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
-        $_SESSION['start_address'] = $_SESSION['remote_address'];
+    if (! isset($_SESSION['start_address'])) {
+        $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
         $ip_pass = true;
     } else {
         if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
@@ -1411,7 +1410,7 @@ function check_bbs_auth($username, $password, $sockip = null)
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username, FILE_APPEND);
         }
         if (isset($_SESSION)) {
-            $_SESSION['start_address'] = $_SESSION['remote_address'];
+            $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " SET IP address for: " . $username, FILE_APPEND);
         }
         return TRUE;
@@ -1429,7 +1428,7 @@ function check_bbs_auth($username, $password, $sockip = null)
                 chmod($userFilename, 0666);
             }
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username . ' (auto created user)', FILE_APPEND);
-            $_SESSION['start_address'] = $_SESSION['remote_address'];
+            $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
             return TRUE;
         } else {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username, FILE_APPEND);
