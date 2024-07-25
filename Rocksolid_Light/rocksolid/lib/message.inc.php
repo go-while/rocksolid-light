@@ -49,9 +49,14 @@ function message_parse($rawmessage)
         // We have multible bodies, so we split the message into its parts
         $boundary = "--" . $message->header->content_type_boundary;
         // lets find the first part
-        while ($rawmessage[$i] != $boundary)
+
+        while ($rawmessage[$i] != $boundary) {
+            if(!$rawmessage[$i]) {
+                break;
+            }
             $i ++;
-        $i ++;
+        }
+            $i ++;
         $part = array();
         while ($i <= $count_rawmessage) {
             if (($rawmessage[$i] == $boundary) || ($i == $count_rawmessage - 1) || ($rawmessage[$i] == $boundary . '--')) {
