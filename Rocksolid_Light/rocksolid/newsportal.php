@@ -1289,6 +1289,8 @@ function verify_logged_in($name) {
     if(!isset($_SESSION['start_stamp'])) {
         $_SESSION['start_stamp'] = time();
     }
+
+    // This is for debugging session expiration issues
     $start_stamp = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['start_stamp'])));
     $previous_activity = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['previous_activity'])));
     file_put_contents($debug_log, "\n" . logging_prefix() . " SESSION AGE for: " . $name . "  Started: " . $start_stamp . " Gap: " . $previous_activity, FILE_APPEND);
