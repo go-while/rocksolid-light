@@ -1280,13 +1280,23 @@ function group_display_name($gname)
 }
 
 function verify_logged_in($name) {
-    global $CONFIG, $auth_log;
+    global $CONFIG, $auth_log, $debug_log;
 
     $logged_in = false;
     $ip_pass = false;
+
+    // For checking session expire stuff
+    if(!isset($_SESSION['start_stamp'])) {
+        $_SESSION['start_stamp'] = time();
+    }
+    $start_stamp = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['start_stamp'])));
+    $previous_activity = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['previous_activity'])));
+    file_put_contents($debug_log, "\n" . logging_prefix() . " SESSION AGE for: " . $name . "  Started: " . $start_stamp . " Gap: " . $previous_activity, FILE_APPEND);
+
     if (! isset($_SESSION['start_address'])) {
         $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
         $ip_pass = true;
+        file_put_contents($auth_log, "\n" . logging_prefix() . " IP address SET for: " . $name, FILE_APPEND);
     } else {
         if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
             $ip_pass = false;
@@ -1301,7 +1311,7 @@ function verify_logged_in($name) {
         file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS OK for: " . $name, FILE_APPEND);
     } else {
         $logged_in = false;
-        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS expired or not set for: " . $name, FILE_APPEND);
+        file_put_contents($auth_log, "\n" . logging_prefix() . " SESSION PASS false or expired for: " . $name, FILE_APPEND);
     }
     if ($CONFIG['anonuser'] == '1') {
         $logged_in = false;
