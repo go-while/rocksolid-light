@@ -9,12 +9,15 @@ if (!isset($_SESSION)) {
         session_unset();
         session_destroy();
     }
+    if(!isset($_SESSION['last_activity'])) {
+        $_SESSION['last_activity'] = time();
+    }
     $_SESSION['previous_activity'] = $_SESSION['last_activity'];
     $_SESSION['last_activity'] = time();
     if(!isset($_SESSION['start_stamp'])) {
         $_SESSION['start_stamp'] = time();
     }
- }
+}
 
 include "../common/config.inc.php";
 
