@@ -1418,12 +1418,12 @@ function check_bbs_auth($username, $password, $sockip = null)
         $ok = FALSE;
     }
     if ($ok) {
-        if ($username != 'localuser') {
+        if ($username != $CONFIG['server_auth_user']) {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH OK for: " . $username, FILE_APPEND);
-        }
-        if (isset($_SESSION)) {
-            $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
-            file_put_contents($logfile, "\n" . logging_prefix($sockip) . " SET IP address for: " . $username, FILE_APPEND);
+            if (isset($_SESSION)) {
+                $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
+                file_put_contents($logfile, "\n" . logging_prefix($sockip) . " SET IP address for: " . $username, FILE_APPEND);
+            }
         }
         return TRUE;
     } else {
@@ -3141,4 +3141,20 @@ function cache_get($cache_key, $memcacheD = null)
         }
     }
     return false;
+}
+
+function change_identity($uid, $gid)
+{
+    global $CONFIG;
+    if (! posix_setgid($gid)) {
+        //print "Unable to setgid to " . $gid . "!\n";
+        print "Cannot change to user '" . $CONFIG['webserver_user'] . "'\n";
+        exit();
+    }
+
+    if (! posix_setuid($uid)) {
+        //print "Unable to setuid to " . $uid . "!\n";
+        print "Cannot change to user '" . $CONFIG['webserver_user'] . "'\n";
+        exit();
+    }
 }

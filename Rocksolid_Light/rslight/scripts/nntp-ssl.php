@@ -32,22 +32,6 @@
     server_loop($bind, $CONFIG['local_ssl_port']);
 
     /**
-     * Change the identity to a non-priv user
-     */
-    function change_identity($uid, $gid)
-    {
-        if (! posix_setgid($gid)) {
-            print "Unable to setgid to " . $gid . "!\n";
-            exit();
-        }
-
-        if (! posix_setuid($uid)) {
-            print "Unable to setuid to " . $uid . "!\n";
-            exit();
-        }
-    }
-
-    /**
      * Creates a server socket and listens for incoming client connections
      *
      * @param string $address

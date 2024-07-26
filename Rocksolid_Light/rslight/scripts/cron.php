@@ -274,17 +274,4 @@ function rotate_keys()
     file_put_contents($keyfile, serialize($newkeys));
     touch($keyfile);
 }
-
-function change_identity($uid, $gid)
-{
-    if (! posix_setgid($gid)) {
-        print "Unable to setgid to " . $gid . "!\n";
-        exit();
-    }
-
-    if (! posix_setuid($uid)) {
-        print "Unable to setuid to " . $uid . "!\n";
-        exit();
-    }
-}
 ?>

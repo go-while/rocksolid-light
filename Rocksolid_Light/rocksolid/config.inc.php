@@ -61,7 +61,9 @@ if ($free_spool_disk_space < $min_spool_disk_space) {
 }
 
 // Logging
-$client_ip_address = $_SERVER['REMOTE_ADDR'];
+if(isset($_SERVER['REMOTE_ADDR'])) {
+    $client_ip_address = $_SERVER['REMOTE_ADDR'];
+}
 
 $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
