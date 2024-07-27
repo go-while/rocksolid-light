@@ -49,12 +49,12 @@ function message_parse($rawmessage)
         // We have multible bodies, so we split the message into its parts
         $boundary = "--" . $message->header->content_type_boundary;
         // lets find the first part
-
         while ($rawmessage[$i] != $boundary) {
+            $i ++;
+            // Missing boundary line?
             if(!$rawmessage[$i]) {
                 break;
             }
-            $i ++;
         }
             $i ++;
         $part = array();
@@ -837,6 +837,12 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             return "no-archive";
         }
 
+        if(isset($head->content_type[0])) {
+            if(!strpos($head->content_type[0], "/")) {
+                echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
+                return "blocked";
+            }
+        }
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face
