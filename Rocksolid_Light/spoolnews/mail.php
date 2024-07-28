@@ -19,39 +19,6 @@ $logfile = $logdir . '/mail.log';
 $keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
 
-// How long should cookie allow user to stay logged in?
-// 14400 = 4 hours
-$auth_expire = 14400;
-$logged_in = false;
-if (! isset($_POST['username'])) {
-    $_POST['username'] = $_COOKIE['mail_name'];
-}
-$name = $_POST['username'];
-if (! isset($_POST['password'])) {
-    $_POST['password'] = null;
-}
-if (! isset($_COOKIE['mail_auth'])) {
-    $_COOKIE['mail_auth'] = null;
-}
-if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
-    $logged_in = true;
-} else {
-    if (check_bbs_auth($_POST['username'], $_POST['password'])) {
-        $authkey = password_hash($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), PASSWORD_DEFAULT);
-        ?>
-<script type="text/javascript">
-       if (navigator.cookieEnabled)
-         var authcookie = "<?php echo $authkey; ?>";
-         var savename = "<?php echo stripslashes($name); ?>";
-	 var auth_expire = "<?php echo $auth_expire; ?>";
-	 var name_expire = "7776000";
-         document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
-         document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
-      </script>
-<?php
-        $logged_in = true;
-    }
-}
 $title .= ' - Mail';
 include "head.inc";
 
@@ -105,6 +72,11 @@ if (isset($_POST['username'])) {
         }
     }
 }
+$logged_in = false;
+if(trim($name) != '') {
+    $logged_in = verify_logged_in(trim(strtolower($name)));
+}
+
 if ($logged_in !== true) {
     echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';

@@ -22,6 +22,18 @@ chdir($spoolnews_path);
 include "config.inc.php";
 include ("$file_newsportal");
 
+// Change to webserver user if root
+$uinfo = posix_getpwnam($CONFIG['webserver_user']);
+/* Change to non root user */
+change_identity($uinfo["uid"], $uinfo["gid"]);
+$processUser = posix_getpwuid(posix_geteuid());
+if ($processUser['name'] != $CONFIG['webserver_user']) {
+    echo "You are running as: " . $processUser['name'] . "\n";
+    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+    exit();
+}
+/* Everything below runs as $CONFIG['webserver_user'] */
+
 $processUser = posix_getpwuid(posix_geteuid());
 if ($processUser['name'] != $CONFIG['webserver_user']) {
     echo "You are running as: " . $processUser['name'] . "\n";

@@ -1,5 +1,4 @@
 <?php
-session_start();
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600 * 24)) . " GMT");
 
 include "config.inc.php";

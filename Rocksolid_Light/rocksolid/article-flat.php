@@ -1,15 +1,14 @@
 <?php
-session_start();
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + (100)) . " GMT");
 header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
 include "config.inc.php";
 include "$file_newsportal";
+
+if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
+    $_SESSION['last_access'] = time();
+}
 
 $logfile = $logdir . '/newsportal.log';
 if (isset($_COOKIE['mail_name'])) {

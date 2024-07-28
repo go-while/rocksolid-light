@@ -49,9 +49,14 @@ function message_parse($rawmessage)
         // We have multible bodies, so we split the message into its parts
         $boundary = "--" . $message->header->content_type_boundary;
         // lets find the first part
-        while ($rawmessage[$i] != $boundary)
+        while ($rawmessage[$i] != $boundary) {
             $i ++;
-        $i ++;
+            // Missing boundary line?
+            if(!$rawmessage[$i]) {
+                break;
+            }
+        }
+            $i ++;
         $part = array();
         while ($i <= $count_rawmessage) {
             if (($rawmessage[$i] == $boundary) || ($i == $count_rawmessage - 1) || ($rawmessage[$i] == $boundary . '--')) {
@@ -206,7 +211,7 @@ function message_read($id, $bodynum = 0, $group = "")
         if ($message_data) {
             if ($message = unserialize(gzuncompress($message_data))) {
                 if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . format_log_date() . " (cache hit) $cache_key", FILE_APPEND);
+                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $cache_key", FILE_APPEND);
                 }
                 return $message;
             }
@@ -262,7 +267,7 @@ function message_read($id, $bodynum = 0, $group = "")
             }
         }
         if (! isset($rawmessage) || $rawmessage === FALSE) {
-            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
+            file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
             if (! isset($ns)) {
                 $ns = nntp_open();
             }
@@ -309,7 +314,7 @@ function message_read($id, $bodynum = 0, $group = "")
     if ($enable_cache) {
         $nicole = cache_add($cache_key, gzcompress(serialize($message)), $cache_ttl, $memcacheD);
         if ($enable_cache_logging && $nicole) {
-            file_put_contents($cache_log, "\n" . format_log_date() . " (cache write) " . $cache_key, FILE_APPEND);
+            file_put_contents($cache_log, "\n" . logging_prefix() . " (cache write) " . $cache_key, FILE_APPEND);
         }
     }
     return $message;
@@ -832,6 +837,12 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             return "no-archive";
         }
 
+        if(isset($head->content_type[0])) {
+            if(!strpos($head->content_type[0], "/")) {
+                echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
+                return "blocked";
+            }
+        }
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
             // X-Face

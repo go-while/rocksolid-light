@@ -22,39 +22,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-session_start();
+include "config.inc.php";
+$CONFIG = include ($config_file);
+include $file_newsportal;
+
+include "head.inc";
+
+if (disable_page_by_user_agent($client_device, "bot", "Post")) {
+    echo "<center>Page Disabled</center>";
+    include "tail.inc";
+    exit();
+}
+
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
 }
-include "config.inc.php";
-$CONFIG = include ($config_file);
-$logfile = $logdir . '/post.log';
 
-$ip_pass = false;
-if (! isset($_SESSION['remote_address'])) {
-    $_SESSION['remote_address'] = $_SERVER['REMOTE_ADDR'];
-    $_SESSION['start_address'] = $_SESSION['remote_address'];
-    $ip_pass = true;
-} else {
-    if ($_SERVER['REMOTE_ADDR'] != $_SESSION['start_address']) {
-        $ip_pass = false;
-    } else {
-        $ip_pass = true;
-    }
-}
-if ($ip_pass && (isset($_SESSION['pass']) && $_SESSION['pass'] === true)) {
-    $logged_in = true;
-} else {
-    $logged_in = false;
-}
-if ($CONFIG['anonuser'] == '1') {
-    $logged_in = false;
-}
-// This will log user post info (group and username)
-$enable_post_log = false;
-if ($OVERRIDES['enable_post_log'] > 0) {
-    $enable_post_log = $OVERRIDES['enable_post_log'];
-}
+$logfile = $logdir . '/post.log';
 
 @$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
 @$newsgroups = $_REQUEST["newsgroups"];
@@ -68,12 +52,61 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
 
+// Load name from cookies
+if ($setcookies) {
+    if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
+        $name = $_COOKIE["mail_name"];
+}
+
+// Truncate username at 30 characters to avoid abuse
+$name = substr($name, 0, 30);
+
+$logged_in = false;
+if(trim($name) != '') {
+    $logged_in = verify_logged_in(trim(strtolower($name)));
+}
+
+// This will log user post info (group and username)
+$enable_post_log = false;
+if ($OVERRIDES['enable_post_log'] > 0) {
+    $enable_post_log = $OVERRIDES['enable_post_log'];
+}
+
+$allow_ng_header_edit_post = true;
+$allow_ng_header_edit_reply = false;
+
+if(isset($OVERRIDES['allow_ng_header_edit'])) {
+    if($OVERRIDES['allow_ng_header_edit'] == 'post') {
+        $allow_ng_header_edit_post = true;
+    } else {
+        $allow_ng_header_edit_post = false;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'reply') {
+        $allow_ng_header_edit_reply = true;
+    } else {
+        $allow_ng_header_edit_reply = false;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'both') {
+        $allow_ng_header_edit_post = true;
+        $allow_ng_header_edit_reply = true;
+    }
+    if($OVERRIDES['allow_ng_header_edit'] == 'none') {
+        $allow_ng_header_edit_post = false;
+        $allow_ng_header_edit_reply = false;
+    }
+}
+
+$allow_ngs_edit = false;
 if($type == 'reply') {
+    if($allow_ng_header_edit_reply) {
+        $allow_ngs_edit = true;
+    }
     $max_crosspost = 12;
-    $allow_ngs_edit = false;
 } else {
+    if($allow_ng_header_edit_post) {
+        $allow_ngs_edit = true;
+    }
     $max_crosspost = 3;
-    $allow_ngs_edit = true;
 }
 
 if (! isset($group) && isset($newsgroups)) {
@@ -89,15 +122,6 @@ if ((isset($post_server)) && ($post_server != ""))
     $server = $post_server;
 if ((isset($post_port)) && ($post_port != ""))
     $port = $post_port;
-
-include $file_newsportal;
-include "head.inc";
-
-if (disable_page_by_user_agent($client_device, "bot", "Post")) {
-    echo "<center>Page Disabled</center>";
-    include "tail.inc";
-    exit();
-}
 
 global $synchro_user, $synchro_pass;
 // check to which groups the user is allowed to post to
@@ -136,14 +160,6 @@ if (isset($type) && $type == 'post') {
 // has the user write-rights on the newsgroups?
 if ((function_exists("npreg_group_has_read_access") && ! npreg_group_has_read_access($newsgroups)) || (function_exists("npreg_group_has_write_access") && ! npreg_group_has_write_access($newsgroups))) {
     die("access denied");
-}
-
-// Load name from cookies
-if ($setcookies) {
-    if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
-        $name = $_COOKIE["mail_name"];
-    // if ((isset($_COOKIE["cookie_email"])) && (!isset($email)))
-    // $email=$_COOKIE["cookie_email"];
 }
 
 // Load name and email from the registration system, if available
@@ -206,24 +222,13 @@ if ($type == "post") {
             } else {
                 $_SESSION['pass'] = true;
                 $logged_in = true;
-                $name = trim($name);
-                $authkey = password_hash($name . $keys[0] . get_user_config($name, 'encryptionkey'), PASSWORD_DEFAULT);
-                $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
-                set_user_config(strtolower($name), "pkey", $pkey);
-?>
-<script type="text/javascript">
-       if (navigator.cookieEnabled)
-         var authcookie = "<?php echo $authkey; ?>";
-         var savename = "<?php echo stripslashes($name); ?>";
-	 var auth_expire = "<?php echo $auth_expire; ?>";
-	 var name_expire = "7776000";
-	 var pkey = "<?php echo $pkey; ?>";
-         document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
-         document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
-         document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
-      </script>
-<?php
+                set_user_logged_in_cookies($name, $keys);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " SET AUTH COOKIES for: " . $name, FILE_APPEND);
             }
+        } else {
+            // Update cookie times to stay logged in
+            set_user_logged_in_cookies($name, $keys);
+            file_put_contents($auth_log, "\n" . logging_prefix() . " UPDATED AUTH COOKIES for: " . $name, FILE_APPEND);
         }
     }
     // Check that user has not been recently banned
@@ -255,7 +260,7 @@ if ($type == "post") {
         $error = $text_post["missing_subject"];
     }
     if($allow_ngs_edit) {
-        $grouptotal = preg_split("/\,/", $newsgroups);
+        $grouptotal = preg_split("/( |\,)/", $newsgroups);
         if(count($grouptotal) > $max_crosspost) {
             $type = "retry";
             $error = "Too many newsgroups";
@@ -509,10 +514,10 @@ if ($show == 1) {
                 echo 'value="' . htmlspecialchars($name) . '"';
             if ($logged_in && isset($name)) {
                 echo 'size="40" maxlength="40" readonly>';
-                file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG post.php AUTH SET for: " . $name, FILE_APPEND);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH SET for: " . $name, FILE_APPEND);
             } else {
                 echo 'size="40" maxlength="40">';
-                file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG post.php AUTH NOT SET for: " . $name, FILE_APPEND);
+                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH NOT SET for: " . $name, FILE_APPEND);
             }
             if ($CONFIG['anonuser'])
                 echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';

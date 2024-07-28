@@ -1,6 +1,5 @@
 <?php
 session_cache_limiter('public');
-session_start();
 
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
 header("Cache-Control: max-age=120");
@@ -89,7 +88,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     echo '</tr><tr>';
     echo '<td><input type="submit" name="Submit" value="Search"></td>';
     echo '</tr></table></td></form></tr></table>';
-
     // Block poster
     if (isset($_COOKIE['mail_name'])) {
         if (isset($_REQUEST['data'])) {
@@ -168,17 +166,16 @@ $title .= ' - search results for: ' . $_POST['terms'];
 include "head.inc";
 
 // Handle Block poster
+$post_username = trim(strtolower($_POST['username']));
 if (isset($_POST['block_poster'])) {
-    if ((password_verify($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($_POST['username'] . $keys[1] . get_user_config($_POST['username'], 'encryptionkey'), $_COOKIE['mail_auth']))) {
+    if ((password_verify($post_username . $keys[0] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($post_username . $keys[1] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     } else {
-        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
+        if (check_bbs_auth($post_username, $_POST['password'])) {
             if ($ip_pass) {
                 $_SESSION['pass'] = true;
             }
-            $authkey = password_hash($_POST['username'] . $keys[0] . get_user_config($_POST['username'], 'encryptionkey'), PASSWORD_DEFAULT);
-            $pkey = hash('crc32', get_user_config($_POST['username'], 'encryptionkey'));
-            set_user_config(strtolower($_POST['username']), "pkey", $pkey);
+            set_user_logged_in_cookies($post_username, $keys);
             $logged_in = true;
         }
     }
@@ -229,7 +226,7 @@ if (isset($search_group)) {
     echo '</tr></table>';
 }
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-echo '<td class="np_ob_style_toggle">';
+echo '<td class="np_search_sort_toggle">';
 
 echo '<div style="float:right;">';
 if ($_REQUEST['searchpoint'] == 'body') {
@@ -398,15 +395,12 @@ function get_body_search($group, $terms)
         $dbh = null;
     }
     // do not perform a usort of an empty search result
-
-    if ($_SESSION['searchsort'] != 'date') {
-        if ($overview != null) {
+    if ($overview != null) {
+        if ($_SESSION['searchsort'] != 'date') {
             usort($overview, function ($a, $b) {
                 return $a['rank'] <=> $b['rank'];
             });
-        }
-    } else {
-        if ($overview != null) {
+        } else {
             usort($overview, function ($a, $b) {
                 return $b['date'] <=> $a['date'];
             });

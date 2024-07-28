@@ -1,7 +1,25 @@
 <?php
-include "../common/config.inc.php";
-
 ini_set('memory_limit', '1536M');
+if (!isset($_SESSION)) {
+    ini_set('session.gc_maxlifetime', 14400);
+    session_set_cookie_params(14400);
+    session_start();
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+        // last request was more than 30 minutes ago
+        session_unset();
+        session_destroy();
+    }
+    if(!isset($_SESSION['last_activity'])) {
+        $_SESSION['last_activity'] = time();
+    }
+    $_SESSION['previous_activity'] = $_SESSION['last_activity'];
+    $_SESSION['last_activity'] = time();
+    if(!isset($_SESSION['start_stamp'])) {
+        $_SESSION['start_stamp'] = time();
+    }
+}
+
+include "../common/config.inc.php";
 
 /*
  * Config file name should be the basename
@@ -42,9 +60,15 @@ if ($free_spool_disk_space < $min_spool_disk_space) {
     $low_spool_disk_space = false;
 }
 
+// Logging
+if(isset($_SERVER['REMOTE_ADDR'])) {
+    $client_ip_address = $_SERVER['REMOTE_ADDR'];
+}
+
 $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
 $abuse_log = $logdir . '/abuse.log';
+$auth_log = $logdir . '/auth.log';
 $lockdir = $spooldir . '/lock';
 $ssldir = $spooldir . '/ssl/';
 $user_ban_file = $config_dir . '/banned_names.conf';
