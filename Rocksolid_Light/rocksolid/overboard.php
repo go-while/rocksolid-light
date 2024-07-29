@@ -61,6 +61,11 @@ if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
 $CONFIG = include ($config_file);
 $logfile = $logdir . '/overboard.log';
 
+$cookie_mail_name = $_COOKIE['mail_name'];
+if(isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+    unset($cookie_mail_name);
+}
+
 # How many days old should articles be displayed?
 if (isset($_GET['thisgroup'])) {
     $article_age = 30;
@@ -106,10 +111,10 @@ if (isset($_GET['thisgroup'])) {
     $grouplist = array();
     $grouplist[0] = _rawurldecode(_rawurldecode($_GET['thisgroup']));
     $cachefile = $spooldir . "/" . $grouplist[0] . "-overboard.dat";
-    if (isset($_COOKIE['mail_name'])) {
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+    if (isset($cookie_mail_name)) {
+        if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
             $userdata[$grouplist[0]] = time();
             file_put_contents($userfile, serialize($userdata));
         }
@@ -119,8 +124,8 @@ if (isset($_GET['thisgroup'])) {
 }
 
 // Determine default view style
-if (isset($_COOKIE['mail_name'])) {
-    if ($user_obstyle = get_config_file_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle')) {
+if (isset($cookie_mail_name)) {
+    if ($user_obstyle = get_config_file_value($config_dir . '/userconfig/' . strtolower($cookie_mail_name), 'obstyle')) {
         $_SESSION['obstyle'] = $user_obstyle;
     }
 }
@@ -134,8 +139,8 @@ if (! isset($_SESSION['obstyle'])) {
         $_SESSION['obstyle'] = 'articles';
     }
 }
-if (isset($_COOKIE['mail_name'])) {
-    save_config_value($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']), 'obstyle', $_SESSION['obstyle'], true);
+if (isset($cookie_mail_name)) {
+    save_config_value($config_dir . '/userconfig/' . strtolower($cookie_mail_name), 'obstyle', $_SESSION['obstyle'], true);
 }
 show_overboard_header($grouplist);
 
@@ -268,10 +273,10 @@ function display_threads($threads, $oldest)
     }
     // Get registered user settings
     $newonly = false;
-    if (isset($_COOKIE['mail_name'])) {
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+    if (isset($cookie_mail_name)) {
+        if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
             if (file_exists($userfile)) {
                 $blocked_user_config = unserialize(file_get_contents($userfile));
             } else {
@@ -448,12 +453,12 @@ function display_flat($threads, $oldest)
     }
     // Get registered user settings
     $newonly = false;
-    if (isset($_COOKIE['mail_name'])) {
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+    if (isset($cookie_mail_name)) {
+        if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
         }
-        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+        $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
         if (file_exists($userfile)) {
             $blocked_user_config = unserialize(file_get_contents($userfile));
         } else {

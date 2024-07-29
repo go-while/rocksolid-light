@@ -613,10 +613,15 @@ function groups_show($gruppen)
     $nonsubs = array();
     $user = null;
     // Get registered user settings
-    if (isset($_COOKIE['mail_name'])) {
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+
+    $cookie_mail_name = $_COOKIE['mail_name'];
+    if(isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+        unset($cookie_mail_name);
+    }
+    if (isset($cookie_mail_name)) {
+        if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
         }
     }
     for ($i = 0; $i < $c; $i ++) {
