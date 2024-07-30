@@ -222,13 +222,15 @@ if ($type == "post") {
             } else {
                 $_SESSION['pass'] = true;
                 $logged_in = true;
-                set_user_logged_in_cookies($name, $keys);
-                file_put_contents($auth_log, "\n" . logging_prefix() . " SET AUTH COOKIES for: " . $name, FILE_APPEND);
+                if (set_user_logged_in_cookies($name, $keys)) {
+                    file_put_contents($auth_log, "\n" . logging_prefix() . " SET AUTH COOKIES for: " . $name, FILE_APPEND);
+                }
             }
         } else {
             // Update cookie times to stay logged in
-            set_user_logged_in_cookies($name, $keys);
-            file_put_contents($auth_log, "\n" . logging_prefix() . " UPDATED AUTH COOKIES for: " . $name, FILE_APPEND);
+            if (set_user_logged_in_cookies($name, $keys)) {
+                file_put_contents($auth_log, "\n" . logging_prefix() . " UPDATED AUTH COOKIES for: " . $name, FILE_APPEND);
+            }
         }
     }
     // Check that user has not been recently banned

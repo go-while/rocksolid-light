@@ -85,7 +85,7 @@ if(!$logged_in) {
             if ($ip_pass) {
                 $_SESSION['pass'] = true;
             }
-            set_user_logged_in_cookies($name, $keys);
+            set_user_logged_in_cookies(trim($_POST['username']), $keys);
             $logged_in = true;
         } else {
             echo 'Authentication Required';

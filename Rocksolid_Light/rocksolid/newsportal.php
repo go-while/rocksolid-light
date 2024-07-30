@@ -1328,9 +1328,13 @@ function verify_logged_in($name) {
 
 function set_user_logged_in_cookies($name, $keys) {
 
-    global $debug_log;
+    global $debug_log, $CONFIG;
     $name = trim($name);
     $name_lc = strtolower($name);
+
+    if($name == $CONFIG['anonusername']) {
+        return false;
+    }
 
     if( !get_user_config($name_lc, 'encryptionkey')) {
         $key = openssl_random_pseudo_bytes(44);
@@ -1356,6 +1360,7 @@ function set_user_logged_in_cookies($name, $keys) {
      document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
   </script>
 <?php
+    return true;
 }
 
 function check_bbs_auth($username, $password, $sockip = null)
