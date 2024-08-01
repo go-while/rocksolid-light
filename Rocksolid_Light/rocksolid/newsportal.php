@@ -1864,30 +1864,6 @@ function mail_db_open($database, $table = 'messages')
     return ($dbh);
 }
 
-function threads_db_open($database, $table = "threads")
-{
-    global $spooldir, $logdir, $config_name;
-    $logfile = $logdir . '/debug.log';
-    $spooldir_len = strlen($spooldir);
-    $group = substr($database, $spooldir_len, (strlen($database) - $spooldir_len) - 9);
-    $group = trim($group, '/');
-    if (! get_section_by_group($group, true)) {
-        file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
-        return false;
-    }
-    try {
-        $dbh = new PDO('sqlite:' . $database);
-    } catch (PDOException $e) {
-        echo 'Connection failed: ' . $e->getMessage();
-        exit();
-    }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS threads(
-			id INTEGER PRIMARY KEY,
-			headers TEXT,
-            unique (headers))");
-    return ($dbh);
-}
-
 function history_db_open($database, $table = 'history')
 {
     try {
