@@ -784,18 +784,30 @@ function groups_show($gruppen)
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
 
             if ($found == 1) {
-                $poster = address_decode($lastarticleinfo['name'], "nowhere");
-                $lastarticleinfo['from'] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
-                if (isset($poster[0]['personal'])) {
-                    $lastarticleinfo['name'] = $poster[0]['personal'];
+                $fromline = address_decode(headerDecode($lastarticleinfo['name']), "nowhere");
+                if (! isset($fromline[0]["host"]))
+                    $fromline[0]["host"] = "";
+                $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+                if (! isset($fromline[0]["personal"])) {
+                    $poster_name = $fromline[0]["mailbox"];
                 } else {
-                    $lastarticleinfo['name'] = $poster[0]['mailbox'];
+                    $poster_name = $fromline[0]["personal"];
                 }
-                $fromoutput[0] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
+                if (trim($poster_name) == '') {
+                    $fromoutput = explode("<", html_entity_decode($c->name));
+                    if (strlen($fromoutput[0]) < 1) {
+                        $poster_name = $fromoutput[1];
+                    } else {
+                        $poster_name = $fromoutput[0];
+                    }
+                }
+                $lastarticleinfo['name'] = $poster_name;
+
                 $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
                 $groupdisplay .= '<table><tr><td>';
                 $groupdisplay .= '<font class="np_last_posted_date">by: ';
-                $groupdisplay .= create_name_link(mb_decode_mimeheader(html_entity_decode($lastarticleinfo['name'])), $lastarticleinfo['from']);
+
+                $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
