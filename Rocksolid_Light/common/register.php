@@ -5,6 +5,8 @@ include "alphabet.inc.php";
 $title .= ' - Register';
 include "head.inc";
 
+$logfile = $spooldir . '/log/register.log';
+
 # $workpath: Where to cache users (must be writable by calling program)
 $workpath = $config_dir . "users/";
 $keypath = $config_dir . "userconfig/";
@@ -426,7 +428,7 @@ function accept_new_password($username, $password)
 
 function change_user_password($username, $password)
 {
-    global $config_dir;
+    global $config_dir, $logfile;
     $username = strtolower($username);
     $userfile = $config_dir . '/users/' . $username;
     if (!file_exists($userfile)) {
@@ -436,6 +438,7 @@ function change_user_password($username, $password)
         file_put_contents($userfile, password_hash($password, PASSWORD_DEFAULT));
         echo "Password Changed for User: " . $username . "\n<br />";
         echo "NEW Password: " . $password . "\n";
+        file_put_contents($logfile, "\nChanged PASSWORD for: " . $username, FILE_APPEND);
     }
 }
 
@@ -651,7 +654,7 @@ function create_account($username, $password, $user_email)
 
 function create_new($username, $password, $user_email)
 {
-    global $config_dir, $CONFIG, $keys, $workpath, $keypath;
+    global $config_dir, $CONFIG, $keys, $workpath, $keypath, $logfile;
     include $config_dir . '/synchronet.conf';
     if (isset($_POST['code'])) {
         $code = $_POST['code'];
@@ -686,10 +689,13 @@ function create_new($username, $password, $user_email)
         }
         $verified = 1;
     }
+
+    // Create NEW account
     if ($userFileHandle = @fopen($userFilename, 'w+')) {
         fwrite($userFileHandle, password_hash($password, PASSWORD_DEFAULT));
         fclose($userFileHandle);
         chmod($userFilename, 0666);
+        file_put_contents($logfile, "\nCreated NEW Account for: " . $username, FILE_APPEND);
     }
     // Create synchronet account (this is very incomplete. Ignore this)
     if (isset($synch_create) && $synch_create == true) {
