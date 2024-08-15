@@ -369,7 +369,7 @@ function reset_password($username = null, $user_email = null)
 
 function verify_reset_password($username, $user_email)
 {
-    global $keys;
+    global $keys, $logfile;
     if ($username != null && $user_email != null) {
         $get_userval = get_config_value('/userconfig/' . trim(strtolower($username)), 'email');
         if (strcmp(trim(strtolower($get_userval)), trim(strtolower($user_email))) != 0) {
@@ -383,6 +383,7 @@ function verify_reset_password($username, $user_email)
             echo '<td><input name="pwcommand" type="hidden" id="pwcommand" value="retry" readonly="readonly"></td>';
             echo '<input name="command" type="hidden" id="command" value="ResetPW" readonly="readonly">';
             echo '<input type="submit" name="Submit" value="Back"></td></form>';
+            file_put_contents($logfile, "\n" . logging_prefix() . " CHANGE PASSWORD (Username or Email Not Found) for: " . $username, FILE_APPEND);
             return false;
         } else {
             return true;
@@ -438,7 +439,7 @@ function change_user_password($username, $password)
         file_put_contents($userfile, password_hash($password, PASSWORD_DEFAULT));
         echo "Password Changed for User: " . $username . "\n<br />";
         echo "NEW Password: " . $password . "\n";
-        file_put_contents($logfile, "\nChanged PASSWORD for: " . $username, FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " Changed PASSWORD for: " . $username, FILE_APPEND);
     }
 }
 
@@ -695,7 +696,7 @@ function create_new($username, $password, $user_email)
         fwrite($userFileHandle, password_hash($password, PASSWORD_DEFAULT));
         fclose($userFileHandle);
         chmod($userFilename, 0666);
-        file_put_contents($logfile, "\nCreated NEW Account for: " . $username, FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " Created NEW Account for: " . $username, FILE_APPEND);
     }
     // Create synchronet account (this is very incomplete. Ignore this)
     if (isset($synch_create) && $synch_create == true) {
@@ -820,4 +821,13 @@ function prepareCaptcha($captchaImage)
     $usedAlphabet = rand(0, 9);
     $code = $alphabet[$usedAlphabet] . $alphabetsForNumbers[$usedAlphabet][$expression->n1] . $alphabetsForNumbers[$usedAlphabet][$expression->n2];
     return ($code);
+}
+
+function format_log_date()
+{
+    return date('M d H:i:s');
+}
+
+function logging_prefix() {
+    return format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "]";
 }
