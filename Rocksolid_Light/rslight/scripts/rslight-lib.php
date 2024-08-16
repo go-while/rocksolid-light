@@ -284,12 +284,12 @@ function prepare_post($filename)
     $bbsmail_check = "@@RSL";
 
     foreach ($message as $line) {
-        if (trim($line) == "" || $lines > 0) {
+        if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
             $lines ++;
         }
-        if ($lines > 0 && $is_header = 0) {
-            $break;
+        if ($lines > 0 && $is_header == 0) {
+            break;
         }
         if (stripos($line, "From: ") === 0) {
             $lines ++;
@@ -363,8 +363,10 @@ function process_post($message, $group)
     /* Process post */
     foreach ($message as $line) {
         $bytes = $bytes + mb_strlen($line, '8bit');
-        if (trim($line) == "" || $lines > 0) {
+        if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
+            $lines ++;
+        } else {
             $lines ++;
         }
         if ($is_header == 0) {
@@ -486,8 +488,10 @@ function process_post($message, $group)
     $lines = 0;
     $ng = 0;
     foreach ($message as $line) {
-        if (trim($line) == "" || $lines > 0) {
+        if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
+            $lines ++;
+        } else {
             $lines ++;
         }
         if (stripos($line, "Newsgroups: ") === 0 && $is_header == 1) {
@@ -1140,12 +1144,6 @@ function get_list($mode, $ngroup, $msgsock)
     }
 }
 
-/*
- * function encode_subject($line) {
- * $newstring=mb_encode_mimeheader(quoted_printable_decode($line));
- * return $newstring;
- * }
- */
 function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $article_date, $date_i, $mid_i, $references_i, $bytes_i, $lines_i, $xref_i, $body)
 {
     global $enable_rslight, $spooldir, $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile;
@@ -1202,19 +1200,6 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     $header = 1;
     $tmp_file_handle = fopen($tmp_file, 'w');
     while ($buf = fgets($in_file)) {
-        if ($header == 1) {
-            if (stripos($buf, "Content-Type: ") === 0) {
-                preg_match('/.*charset=.*/', $buf, $te);
-                $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
-            }
-            if (stripos($buf, "Newsgroups: ") === 0) {
-                $response = str_ireplace($group, $group, $buf);
-                // Identify each group name for xref
-                $groupnames = explode("Newsgroups: ", $buf);
-                $allgroups = preg_split("/\ |\,/", $groupnames[1]);
-                $ref = 0;
-            }
-        } else {}
         if ((trim($buf) == "") && ($header == 1)) {
             $current_article['xref'] = "Xref: " . $CONFIG['pathhost'];
             foreach ($allgroups as $agroup) {
@@ -1234,6 +1219,19 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
             $header = 0;
             fputs($tmp_file_handle, $current_article['xref'] . PHP_EOL);
             $buf .= '';
+        }
+        if ($header == 1) {
+            if (stripos($buf, "Content-Type: ") === 0) {
+                preg_match('/.*charset=.*/', $buf, $te);
+                $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
+            }
+            if (stripos($buf, "Newsgroups: ") === 0) {
+                $response = str_ireplace($group, $group, $buf);
+                // Identify each group name for xref
+                $groupnames = explode("Newsgroups: ", $buf);
+                $allgroups = preg_split("/\ |\,/", $groupnames[1]);
+                $ref = 0;
+            }
         }
         fputs($tmp_file_handle, rtrim($buf, "\n\r") . PHP_EOL);
     }

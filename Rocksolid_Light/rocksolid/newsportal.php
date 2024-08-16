@@ -613,10 +613,15 @@ function groups_show($gruppen)
     $nonsubs = array();
     $user = null;
     // Get registered user settings
-    if (isset($_COOKIE['mail_name'])) {
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+
+    $cookie_mail_name = $_COOKIE['mail_name'];
+    if(isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+        unset($cookie_mail_name);
+    }
+    if (isset($cookie_mail_name)) {
+        if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
+            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
         }
     }
     for ($i = 0; $i < $c; $i ++) {
@@ -779,18 +784,30 @@ function groups_show($gruppen)
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
 
             if ($found == 1) {
-                $poster = address_decode($lastarticleinfo['name'], "nowhere");
-                $lastarticleinfo['from'] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
-                if (isset($poster[0]['personal'])) {
-                    $lastarticleinfo['name'] = $poster[0]['personal'];
+                $fromline = address_decode(headerDecode($lastarticleinfo['name']), "nowhere");
+                if (! isset($fromline[0]["host"]))
+                    $fromline[0]["host"] = "";
+                $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
+                if (! isset($fromline[0]["personal"])) {
+                    $poster_name = $fromline[0]["mailbox"];
                 } else {
-                    $lastarticleinfo['name'] = $poster[0]['mailbox'];
+                    $poster_name = $fromline[0]["personal"];
                 }
-                $fromoutput[0] = $poster[0]['mailbox'] . "@" . $poster[0]['host'];
+                if (trim($poster_name) == '') {
+                    $fromoutput = explode("<", html_entity_decode($c->name));
+                    if (strlen($fromoutput[0]) < 1) {
+                        $poster_name = $fromoutput[1];
+                    } else {
+                        $poster_name = $fromoutput[0];
+                    }
+                }
+                $lastarticleinfo['name'] = $poster_name;
+
                 $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
                 $groupdisplay .= '<table><tr><td>';
                 $groupdisplay .= '<font class="np_last_posted_date">by: ';
-                $groupdisplay .= create_name_link(mb_decode_mimeheader(html_entity_decode($lastarticleinfo['name'])), $lastarticleinfo['from']);
+
+                $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
@@ -1323,9 +1340,13 @@ function verify_logged_in($name) {
 
 function set_user_logged_in_cookies($name, $keys) {
 
-    global $debug_log;
+    global $debug_log, $CONFIG;
     $name = trim($name);
     $name_lc = strtolower($name);
+
+    if($name == $CONFIG['anonusername']) {
+        return false;
+    }
 
     if( !get_user_config($name_lc, 'encryptionkey')) {
         $key = openssl_random_pseudo_bytes(44);
@@ -1351,6 +1372,7 @@ function set_user_logged_in_cookies($name, $keys) {
      document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
   </script>
 <?php
+    return true;
 }
 
 function check_bbs_auth($username, $password, $sockip = null)
@@ -1851,30 +1873,6 @@ function mail_db_open($database, $table = 'messages')
      message TEXT,
      from_hide TEXT,
      to_hide TEXT)");
-    return ($dbh);
-}
-
-function threads_db_open($database, $table = "threads")
-{
-    global $spooldir, $logdir, $config_name;
-    $logfile = $logdir . '/debug.log';
-    $spooldir_len = strlen($spooldir);
-    $group = substr($database, $spooldir_len, (strlen($database) - $spooldir_len) - 9);
-    $group = trim($group, '/');
-    if (! get_section_by_group($group, true)) {
-        file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
-        return false;
-    }
-    try {
-        $dbh = new PDO('sqlite:' . $database);
-    } catch (PDOException $e) {
-        echo 'Connection failed: ' . $e->getMessage();
-        exit();
-    }
-    $dbh->exec("CREATE TABLE IF NOT EXISTS threads(
-			id INTEGER PRIMARY KEY,
-			headers TEXT,
-            unique (headers))");
     return ($dbh);
 }
 

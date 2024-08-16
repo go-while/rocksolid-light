@@ -194,13 +194,6 @@ function vacuum_group_database($group)
             $article_dbh = null;
         }
     }
-    $database = $spooldir . '/' . $group . '-data.db3';
-    if ($data_dbh = threads_db_open($database)) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " VACUUM threads database...", FILE_APPEND);
-        $data_stmt = $data_dbh->prepare('VACUUM');
-        $data_stmt->execute();
-        $data_dbh = null;
-    }
     // Check for moderation flag here. Yes, in vacuum.
     is_moderated($group);
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " Checked for moderation flag", FILE_APPEND);

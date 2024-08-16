@@ -12,8 +12,12 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 
 $logfile = $logdir . '/newsportal.log';
 if (isset($_COOKIE['mail_name'])) {
-    if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+    $cookie_mail_name = trim(strtolower($_COOKIE['mail_name']));
+    if($_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+        unset($cookie_mail_name);
+    }
+    if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
+        $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
     }
 }
 // register parameters

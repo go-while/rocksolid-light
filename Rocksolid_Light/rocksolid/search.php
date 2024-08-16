@@ -116,7 +116,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
         }
     }
     // END Block poster
-
     exit(0);
 } else {
     // Determine default view style
@@ -462,7 +461,7 @@ function get_header_search($group, $terms)
         }
         $article_dbh = article_db_open($article_database);
         $article_stmt = $article_dbh->prepare("SELECT * FROM articles WHERE number=:number");
-        if (is_multibyte($_POST['terms'])) {
+        if (!isset($_POST['data']) && is_multibyte($_POST['terms'])) {
             $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:group");
             $stmt->bindParam(':group', $group);
             $stmt->execute();

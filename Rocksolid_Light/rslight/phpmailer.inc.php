@@ -23,4 +23,4 @@ $mailer['password'] = "password";
 
 require $phpmailer['phpmailer'];
 require $phpmailer['smtp'];
-?>
+require $phpmailer['exception'];
