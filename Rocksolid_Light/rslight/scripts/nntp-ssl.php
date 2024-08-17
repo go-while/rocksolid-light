@@ -2,11 +2,18 @@
     include "config.inc.php";
     include ("$file_newsportal");
     include $config_dir . "/scripts/rslight-lib.php";
+    $lockfile = $lockdir . '/rslight-nntp-ssl.lock';
     if (file_exists($config_dir . "/nntp.disable")) {
         clearstatcache(true, $config_dir . "/nntp.disable");
-        $parent_pid = file_get_contents($lockdir . '/rslight-nntp.lock', IGNORE_NEW_LINES);
+        $parent_pid = file_get_contents($lockfile);
         posix_kill($parent_pid, SIGTERM);
         exit();
+    }
+    if (file_exists($config_dir . "/nntp.restart")) {
+        clearstatcache(true, $config_dir . "/nntp.restart");
+        $parent_pid = file_get_contents($lockfile);
+        posix_kill($parent_pid, SIGTERM);
+        unlink($config_dir . "/nntp.restart");
     }
     /**
      * Listens for requests and forks on each connection

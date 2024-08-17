@@ -34,11 +34,6 @@ function interact($msgsock, $use_crypto = false)
         $msg = "";
         set_time_limit(30);
         $buf = fgets($msgsock, 2048);
-        if (file_exists($config_dir . "/nntp.disable")) {
-            $parent_pid = file_get_contents($lockdir . '/rslight-nntp.lock', IGNORE_NEW_LINES);
-            posix_kill($parent_pid, SIGTERM);
-            exit();
-        }
         if ($buf === false) {
             // file_put_contents($logfile, "\n".format_log_date()." socket read failed: reason: " . socket_strerror(socket_last_error($msgsock)), FILE_APPEND);
             break;
