@@ -51,9 +51,8 @@
     function server_loop($address, $port)
     {
         GLOBAL $__server_listening;
-        GLOBAL $CONFIG, $logdir, $lockdir, $webserver_uid, $webserver_gid, $installed_path, $config_path, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $auth_ok;
+        GLOBAL $CONFIG, $logdir, $lockfile, $webserver_uid, $webserver_gid, $installed_path, $config_path, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $auth_ok;
         $logfile = $logdir . '/nntp.log';
-        $lockfile = $lockdir . '/rslight-nntp.lock';
         $pid = file_get_contents($lockfile);
         if (posix_getsid($pid) === false || ! is_file($lockfile)) {
             print "Starting Rocksolid Light NNTP Server...\n";
