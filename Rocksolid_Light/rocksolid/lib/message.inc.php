@@ -808,7 +808,6 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         $local_poster = true;
     }
     $body = $article_data->body[$attachment];
-    $notice = false;
     if ($head) {
         // User blocklist
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
@@ -838,11 +837,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             return "no-archive";
         }
 
-        if(stripos($head->subject, "Re: ") === 0) {
-            if(!isset($head->references)) {
-                $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
-            }
-        }
+        // Any header checks to display notice in article display
+        $notice = display_header_notice($head);
+
         if(isset($head->content_type[0])) {
             if(!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
@@ -1048,4 +1045,14 @@ function articleflat_pageselect($group, $id, $article_count, $first)
             $return .= '</span>';
     }
     return $return;
+}
+
+function display_header_notice($head) {
+    $notice = false;
+    if(stripos($head->subject, "Re: ") === 0) {
+        if(!isset($head->references)) {
+            $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
+        }
+    }
+    return $notice;
 }
