@@ -563,7 +563,7 @@ function show_header_short($head, $group, $local_poster = false)
 <p id="<?php echo $head->id; ?>"
 	style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
 &nbsp;
-<a href="#"
+<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
 	onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
 	style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
 		mid</i></a>
@@ -571,7 +571,7 @@ function show_header_short($head, $group, $local_poster = false)
 <p id="<?php echo $head->number . 'copy'; ?>"
 	style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
 &nbsp;
-<a href="#"
+<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
 	onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
 	style="text-decoration: none" title="Copy article link to clipboard"><i>copy
 		link</i></a>
