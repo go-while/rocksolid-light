@@ -9,12 +9,12 @@
         posix_kill($parent_pid, SIGTERM);
         exit();
     }
-    if (file_exists($config_dir . "/nntp.restart")) {
-        clearstatcache(true, $config_dir . "/nntp.restart");
+    if (file_exists($config_dir . "/nntp.reload")) {
+        clearstatcache(true, $config_dir . "/nntp.reload");
         $parent_pid = file_get_contents($lockfile);
         posix_kill($parent_pid, SIGTERM);
         if (!is_numeric($CONFIG['local_ssl_port'])) {
-            unlink($config_dir . "/nntp.restart");
+            unlink($config_dir . "/nntp.reload");
         }
     }
     /**
