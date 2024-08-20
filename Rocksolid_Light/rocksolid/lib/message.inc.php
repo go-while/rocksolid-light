@@ -808,6 +808,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         $local_poster = true;
     }
     $body = $article_data->body[$attachment];
+    $notice = false;
     if ($head) {
         // User blocklist
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
@@ -837,6 +838,11 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             return "no-archive";
         }
 
+        if(stripos($head->subject, "Re: ") === 0) {
+            if(!isset($head->references)) {
+                $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
+            }
+        }
         if(isset($head->content_type[0])) {
             if(!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
@@ -845,6 +851,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
+            echo $notice;
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
