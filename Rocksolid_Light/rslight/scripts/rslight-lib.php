@@ -1245,6 +1245,7 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
         } else {
             $this_snippet = get_search_snippet($body);
         }
+        unlink($tmp_file);
     } else {
         rename($tmp_file, $tradspool_out_file);
     }
