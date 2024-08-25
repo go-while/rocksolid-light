@@ -14,6 +14,8 @@
         $parent_pid = file_get_contents($lockfile);
         posix_kill($parent_pid, SIGTERM);
         unlink($config_dir . "/nntp.reload");
+        unlink($lockfile);
+        sleep(5);
     }
     /**
      * Listens for requests and forks on each connection

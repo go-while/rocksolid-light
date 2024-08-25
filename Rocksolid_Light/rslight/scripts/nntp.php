@@ -16,6 +16,8 @@
         if (!is_numeric($CONFIG['local_ssl_port'])) {
             unlink($config_dir . "/nntp.reload");
         }
+        unlink($lockfile);
+        sleep(5);
     }
     /**
      * Listens for requests and forks on each connection
