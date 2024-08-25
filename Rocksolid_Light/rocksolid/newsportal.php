@@ -1826,7 +1826,8 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
         $body = quoted_printable_decode($body);
     }
     if ($content_type !== '') {
-        $mysnippet = recode_charset($body, $content_type, "utf8");
+        $content_type = explode(';', $content_type);
+        $mysnippet = recode_charset($body, $content_type[0]);
     } else {
         $mysnippet = $body;
     }
