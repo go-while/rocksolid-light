@@ -563,7 +563,7 @@ function show_header_short($head, $group, $local_poster = false)
 <p id="<?php echo $head->id; ?>"
 	style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
 &nbsp;
-<a href="#"
+<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
 	onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
 	style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
 		mid</i></a>
@@ -571,7 +571,7 @@ function show_header_short($head, $group, $local_poster = false)
 <p id="<?php echo $head->number . 'copy'; ?>"
 	style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
 &nbsp;
-<a href="#"
+<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
 	onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
 	style="text-decoration: none" title="Copy article link to clipboard"><i>copy
 		link</i></a>
@@ -837,6 +837,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             return "no-archive";
         }
 
+        // Any header checks to display notice in article display
+        $notice = display_header_notice($head);
+
         if(isset($head->content_type[0])) {
             if(!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
@@ -845,6 +848,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             show_header($head, $group, $local_poster);
+            echo $notice;
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
@@ -1041,4 +1045,14 @@ function articleflat_pageselect($group, $id, $article_count, $first)
             $return .= '</span>';
     }
     return $return;
+}
+
+function display_header_notice($head) {
+    $notice = false;
+    if(stripos($head->subject, "Re: ") === 0) {
+        if(!isset($head->references)) {
+            $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
+        }
+    }
+    return $notice;
 }

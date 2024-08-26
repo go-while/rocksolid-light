@@ -2,11 +2,20 @@
     include "config.inc.php";
     include ("$file_newsportal");
     include $config_dir . "/scripts/rslight-lib.php";
+    $lockfile = $lockdir . '/rslight-nntp-ssl.lock';
     if (file_exists($config_dir . "/nntp.disable")) {
         clearstatcache(true, $config_dir . "/nntp.disable");
-        $parent_pid = file_get_contents($lockdir . '/rslight-nntp.lock', IGNORE_NEW_LINES);
+        $parent_pid = file_get_contents($lockfile);
         posix_kill($parent_pid, SIGTERM);
         exit();
+    }
+    if (file_exists($config_dir . "/nntp.reload")) {
+        clearstatcache(true, $config_dir . "/nntp.reload");
+        $parent_pid = file_get_contents($lockfile);
+        posix_kill($parent_pid, SIGTERM);
+        unlink($config_dir . "/nntp.reload");
+        unlink($lockfile);
+        sleep(5);
     }
     /**
      * Listens for requests and forks on each connection
@@ -42,9 +51,8 @@
     function server_loop($address, $port)
     {
         GLOBAL $__server_listening;
-        GLOBAL $CONFIG, $logdir, $lockdir, $webserver_uid, $webserver_gid, $installed_path, $config_path, $groupconfig, $workpath, $path, $spooldir, $ssldir, $nntp_group, $auth_ok;
+        GLOBAL $CONFIG, $logdir, $lockfile, $webserver_uid, $webserver_gid, $installed_path, $config_path, $groupconfig, $workpath, $path, $spooldir, $ssldir, $nntp_group, $auth_ok;
         $logfile = $logdir . '/nntp.log';
-        $lockfile = $lockdir . '/rslight-nntp-ssl.lock';
         $pid = file_get_contents($lockfile);
         if (posix_getsid($pid) === false || ! is_file($lockfile)) {
             print "Starting Rocksolid Light NNTP Server...\n";

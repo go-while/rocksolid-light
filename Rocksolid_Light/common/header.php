@@ -8,34 +8,6 @@ if (basename(getcwd()) == 'mods') {
 include ($rootdir . 'common/config.inc.php');
 
 $CONFIG = include $config_file;
-?>
-   <script type="text/javascript">
-     if (navigator.cookieEnabled)
-       document.cookie = "tzo="+ (- new Date().getTimezoneOffset())+"; path=/";
-   </script>
-   <style>
-      #loading_indicator {
-         position: absolute;
-         top: 0;
-         bottom: 0;
-         left: 0;
-         right: 0;
-         margin: auto;
-         border: 10px solid grey;
-         border-radius: 50%;
-         border-top: 10px solid blue;
-         width: 100px;
-         height: 100px;
-         animation: spinIndicator 1s linear infinite;
-      }
-      @keyframes spinIndicator {
-         100% {
-            transform: rotate(360deg);
-         }
-      }
-   </style>
-
-<?php
 
 $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES);
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
@@ -62,20 +34,8 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . 'common/themes/' . $_S
 } else {
     $header_image = $rootdir . 'common/images/rocksolidlight.png';
 }
-echo '</head><body textcolor="black" bgcolor="white">';
-echo '<div id = "loading_indicator"> </div>';
-?>
 
-<script>
-   document.addEventListener('readystatechange', e => {
-   if(document.readyState === "complete"){
-       document.getElementById("loading_indicator").style.display ="none";
-       document.querySelector("body").style.visibility = "visible";
-   }
-});
-  document.querySelector("body").style.visibility = "hidden";
-  document.getElementById("loading_indicator").style.visibility = "visible";
-</script>
+?>
 
 	<table class="np_header_bar_top" width="100%" valign="middle">
 		<tr>
