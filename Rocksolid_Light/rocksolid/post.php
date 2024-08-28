@@ -135,6 +135,7 @@ $thisgroup = _rawurldecode($_REQUEST['group']);
 // Is this a reply to an article containing Followup-To?
 if (isset($_REQUEST['fgroups'])) {
     $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups']);
+    $thisgroup = preg_replace('/\,+/', ',', $thisgroup);
 }
 
 $newsgroups = $thisgroup;
