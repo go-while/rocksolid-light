@@ -52,6 +52,11 @@ $logfile = $logdir . '/post.log';
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
 
+if(isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
+    $followupto = trim($_REQUEST['followupto']);
+} else {
+    $followupto = null;
+}
 // Load name from cookies
 if ($setcookies) {
     if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
@@ -129,7 +134,7 @@ $thisgroup = _rawurldecode($_REQUEST['group']);
 
 // Is this a reply to an article containing Followup-To?
 if (isset($_REQUEST['fgroups'])) {
-    $thisgroup = $_REQUEST['fgroups'];
+    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups']);
 }
 
 $newsgroups = $thisgroup;
@@ -306,9 +311,9 @@ if ($type == "post") {
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
             } else {
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto);
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
@@ -476,18 +481,21 @@ if ($show == 1) {
         echo '</tr><tr>';
 
         if ($has_followup) {
-            echo '<td align="right">';
-            echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
+            echo '<td align="right"><b>Newsgroups:&nbsp;</b>';
             echo '</td><td>';
-            echo '<label for="followup">' . $head->followup . ' (followup-to is set';
+
+            echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
+            echo '&nbsp;';
+            echo '<label for="followup">' . $head->followup . ' (Followup-To is set';
             if (! get_section_by_group($head->followup)) {
                 echo ' but <b><i>posting will fail - no such group </i></b>';
             }
             echo ')</label></td>';
             echo '</tr><tr>';
-            echo '<tr><td align="right">';
-            echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
+            echo '<td align="right"><b>or:&nbsp;</b>';
             echo '</td><td>';
+            echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
+            echo '&nbsp;';
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
             echo '</tr><tr>';
         } else {
@@ -495,8 +503,14 @@ if ($show == 1) {
                 echo '<td align="right"><b>Newsgroups:</b></td>';
                 echo '<td>';
                 if($allow_ngs_edit) {
-                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
-                    echo "&nbsp;comma separated, max $max_crosspost groups";
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" maxlength="240" value="' . $newsgroups . '">';
+                    echo "&nbsp;(max $max_crosspost groups)";
+                    echo '</td><td>';
+                   echo '</tr><tr>';
+                    echo '<td align="right"><b>Followup-To:</b></td>';
+                    echo '<td>';
+                    echo '<input tclass="post" type="text" name="followupto" size="40" maxlength="80">';
+                    echo "&nbsp;(optional)";
                 } else {
                     echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
                 }
