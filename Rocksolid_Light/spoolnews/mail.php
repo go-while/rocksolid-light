@@ -33,6 +33,27 @@ echo '<h1 class="np_thread_headline">';
 echo '<a href="mail.php" target=' . $frame['menu'] . '>mail</a> / ';
 echo htmlspecialchars($_POST['username']) . '</h1>';
 
+$name = '';
+$logged_in = false;
+if (! isset($_POST['username'])) {
+    $_POST['username'] = $_COOKIE['mail_name'];
+}
+$name = trim(strtolower($_POST['username']));
+
+if (! isset($_POST['password'])) {
+    $_POST['password'] = null;
+}
+if (! isset($_COOKIE['mail_auth'])) {
+    $_COOKIE['mail_auth'] = null;
+}
+
+$logged_in = verify_logged_in(trim(strtolower($name)));
+if(!$logged_in) {
+    if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
+        $logged_in = true;
+    }
+}
+
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // New Message button
 if ($_POST['command'] !== 'Send') {
@@ -56,26 +77,6 @@ if (isset($_POST['command']) && $_POST['command'] == 'Message') {
     echo '</td>';
 }
 echo '<td width=100%></td></tr></table>';
-
-if (isset($_POST['username'])) {
-    $name = $_POST['username'];
-    // Save name in cookie
-    if ($setcookies == true) {
-        setcookie("mail_name", stripslashes($name), time() + (3600 * 24 * 90), "/");
-    }
-} else {
-    if ($setcookies) {
-        if ((isset($_COOKIE["mail_name"])) && (! isset($name))) {
-            $name = $_COOKIE["mail_name"];
-        } else {
-            $name = '';
-        }
-    }
-}
-$logged_in = false;
-if(trim($name) != '') {
-    $logged_in = verify_logged_in(trim(strtolower($name)));
-}
 
 if ($logged_in !== true) {
     echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
