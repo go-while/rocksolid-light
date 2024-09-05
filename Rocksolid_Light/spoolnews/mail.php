@@ -83,7 +83,7 @@ if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     // echo '<form name="form1" method="post" action="mail.php" enctype="multipart/form-data">';
     echo '<tr><td><strong>Please Login<br /></strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $name . '"></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
     echo '<td><input name="source" type="hidden" id="source" value="Mail:mail.php" readonly="readonly"></td>';
