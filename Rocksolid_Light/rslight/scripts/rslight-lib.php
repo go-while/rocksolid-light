@@ -62,7 +62,8 @@ function interact($msgsock, $use_crypto = false)
             }
         }
 
-        if (isset($command[1])) {}
+        if (isset($command[1])) {
+        }
         if ($command[0] == 'date') {
             $msg = '111 ' . date('YmdHis') . "\r\n";
             fwrite($msgsock, $msg, strlen($msg));
@@ -248,7 +249,7 @@ function become_daemon()
 {
     $pid = pcntl_fork();
 
-    if ($pid == - 1) {
+    if ($pid == -1) {
         /* fork failed */
         echo "fork failure!\n";
         exit();
@@ -281,26 +282,26 @@ function prepare_post($filename)
     foreach ($message as $line) {
         if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
-            $lines ++;
+            $lines++;
         }
         if ($lines > 0 && $is_header == 0) {
             break;
         }
         if (stripos($line, "From: ") === 0) {
-            $lines ++;
+            $lines++;
             $head_from = true;
             continue;
         }
         if (stripos($line, "Newsgroups: ") === 0) {
             $ngroups = explode(': ', $line);
-            $lines ++;
+            $lines++;
             $head_newsgroups = true;
             continue;
         }
         if (stripos($line, "Subject: ") === 0) {
             $sub = explode(': ', $line);
             $subject = $sub[1];
-            $lines ++;
+            $lines++;
             $head_subject = true;
             continue;
         }
@@ -343,7 +344,15 @@ function prepare_post($filename)
 
 function process_post($message, $group)
 {
-    global $logfile, $spooldir, $config_dir, $CONFIG, $nntp_group;
+    global $logfile, $spooldir, $config_dir, $logfile, $CONFIG, $nntp_group;
+
+    $posted_db = $spooldir . '/posted_articles.dat';
+    if (file_exists($posted_db)) {
+        $posted_articles = unserialize(file_get_contents($posted_db));
+    } else {
+        $posted_articles = array();
+    }
+
     $no_mid = 1;
     $no_date = 1;
     $no_org = 1;
@@ -360,9 +369,9 @@ function process_post($message, $group)
         $bytes = $bytes + mb_strlen($line, '8bit');
         if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
-            $lines ++;
+            $lines++;
         } else {
-            $lines ++;
+            $lines++;
         }
         if ($is_header == 0) {
             $body .= $line . "\n";
@@ -438,6 +447,30 @@ function process_post($message, $group)
     } else {
         $msgid = $mid[1];
     }
+
+    /* Find section for posting */
+    $section = get_section_by_group($group);
+
+    // Get server details for this section
+    if (file_exists($config_dir . $section . '.inc.php')) {
+        $config_file = $config_dir . $section . '.inc.php';
+    } else {
+        $config_file = $config_dir . 'rslight.inc.php';
+    }
+    $THIS_CONFIG = include($config_file);
+    $this_server = $THIS_CONFIG['remote_server'] . $THIS_CONFIG['remote_port'];
+
+
+    echo "DATA: " . $this_server . "\n";
+    echo "MSGID: " . $msgid . "\n";
+
+    if (isset($posted_articles[$msgid][$this_server])) {
+        $previously_posted = true;
+    } else {
+        $previously_posted = false;
+        $posted_articles[$msgid][$this_server] = true;
+    }
+
     /*
      * SPAM CHECK
      */
@@ -455,11 +488,14 @@ function process_post($message, $group)
         $response = "441 Posting failed (Exceeds Spam Score)\r\n";
         return $response;
     }
-    /* Find section for posting */
-    $section = get_section_by_group($group);
 
     @mkdir($spooldir . "/" . $section . "/outgoing", 0755, 'recursive');
     $postfilename = $spooldir . '/' . $section . '/outgoing/' . $msgid . '.msg';
+    if(file_exists($postfilename)) {
+        $postfilename_previous = true;
+    } else {
+        $postfilename_previous = false;
+    }
     $postfilehandle = fopen($postfilename, 'w');
     if ($no_date == 1) {
         $article_date = time();
@@ -485,9 +521,9 @@ function process_post($message, $group)
     foreach ($message as $line) {
         if (trim($line) == "" && $lines > 0) {
             $is_header = 0;
-            $lines ++;
+            $lines++;
         } else {
-            $lines ++;
+            $lines++;
         }
         if (stripos($line, "Newsgroups: ") === 0 && $is_header == 1) {
             fputs($postfilehandle, "Newsgroups: " . $newsgroups . "\r\n");
@@ -508,10 +544,25 @@ function process_post($message, $group)
     fclose($postfilehandle);
     chmod($postfilename, 0600);
     unlink($filename);
+
     if ($section == "") {
         $response = "441 Posting failed (section not found)\r\n";
+        file_put_contents($logfile, "\n" . format_log_date() . " " . trim($response) . " for " . $group, FILE_APPEND);
     } else {
         $response = insert_article($section, $group, $postfilename, $subject, $from[1], $article_date, $date_rep, $msgid, $references, $bytes, $lines, $xref, $body);
+        // Only add to another section if a different remote server is used
+        // else only add to local database for next group
+        if ($previously_posted) {
+            file_put_contents($logfile, "\n" . format_log_date() . " NOT adding article to: " . $section . "/outgoing - Already Posted", FILE_APPEND);
+            if(!$postfilename_previous) {
+                unlink($postfilename);
+            } else {
+                file_put_contents($logfile, "\n" . format_log_date() . " NOT DELETING: " . $section . "/outgoing - Already Exists", FILE_APPEND);
+            }
+        } else {
+            file_put_contents($posted_db, serialize($posted_articles));
+            file_put_contents($logfile, "\n" . format_log_date() . " Adding article to: " . $section . "/outgoing", FILE_APPEND);
+        }
     }
     return $response;
 }
@@ -525,11 +576,11 @@ function get_next($nntp_group)
     }
     $ok_article = get_article_list($nntp_group);
     sort($ok_article);
-    $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
     if (($nntp_article + 1) > $last) {
         $response = "421 No next article to retrieve\r\n";
     } else {
-        $nntp_article ++;
+        $nntp_article++;
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
         $dbh = overview_db_open($database, $table);
@@ -556,11 +607,11 @@ function get_last($nntp_group)
     }
     $ok_article = get_article_list($nntp_group);
     rsort($ok_article);
-    $first = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    $first = $ok_article[key(array_slice($ok_article, -1, 1, true))];
     if (($nntp_article - 1) < $first || ! isset($nntp_article)) {
         $response = "422 No previous article to retrieve\r\n";
     } else {
-        $nntp_article --;
+        $nntp_article--;
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
         $dbh = overview_db_open($database, $table);
@@ -617,7 +668,7 @@ function get_xhdr($header, $articles)
             $ok_article = get_article_list($nntp_group);
             // fclose($group_overviewfp);
             sort($ok_article);
-            $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+            $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
             if (! is_numeric($last))
                 $last = 0;
         } else {
@@ -625,7 +676,7 @@ function get_xhdr($header, $articles)
         }
     }
     $msg = "221 Header information for " . $header . " follows (from articles)\r\n";
-    for ($i = $first; $i <= $last; $i ++) {
+    for ($i = $first; $i <= $last; $i++) {
         $article_full_path = $thisgroup . '/' . strval($i);
         $data = extract_header_line($article_full_path, $header, $tmpgroup, $i);
         if ($data !== false) {
@@ -719,7 +770,7 @@ function get_xover($articles, $msgsock)
             if (strpos($articles, "-")) {
                 $ok_article = get_article_list($nntp_group);
                 sort($ok_article);
-                $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+                $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
                 if (! is_numeric($last)) {
                     $last = 0;
                 }
@@ -737,7 +788,7 @@ function get_xover($articles, $msgsock)
     $dbh = overview_db_open($database, $table);
 
     $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number=:number"); // Why doesn't BETWEEN work properly here?
-    for ($i = $first; $i <= $last; $i ++) {
+    for ($i = $first; $i <= $last; $i++) {
         $stmt->execute([
             'thisgroup' => $nntp_group,
             ':number' => $i
@@ -972,7 +1023,7 @@ function get_listgroup($nntp_group, $msgsock)
     // fclose($group_overviewfp);
     $count = count($ok_article);
     sort($ok_article);
-    $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
     $first = $ok_article[0];
     if (! is_numeric($last))
         $last = 0;
@@ -1009,7 +1060,7 @@ function get_group($change_group)
     $ok_article = get_article_list($nntp_group);
     $count = count($ok_article);
     sort($ok_article);
-    $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
     $first = $ok_article[0];
     if (! is_numeric($last))
         $last = 0;
@@ -1033,7 +1084,7 @@ function get_newgroups($mode)
                 continue;
             $ok_article = get_article_list($nntp_group);
             sort($ok_article);
-            $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+            $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
             $first = $ok_article[0];
             if (! is_numeric($last))
                 $last = 0;
@@ -1092,7 +1143,7 @@ function get_list($mode, $ngroup, $msgsock)
                 continue;
             $ok_article = get_article_list($findgroup);
             sort($ok_article);
-            $last = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+            $last = $ok_article[key(array_slice($ok_article, -1, 1, true))];
             $first = $ok_article[0];
             if (! is_numeric($last)) {
                 $last = 0;
@@ -1279,7 +1330,7 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     // End Overview
     $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $saveconfig = fopen($local_groupfile, 'w+');
-    $local ++;
+    $local++;
     foreach ($grouplist as $savegroup) {
         $name = explode(':', $savegroup);
         if (strcmp($name[0], $nntp_group) == 0) {
@@ -1291,7 +1342,7 @@ function insert_article($section, $nntp_group, $filename, $subject_i, $from_i, $
     fclose($saveconfig);
     unlink($sn_lockfile);
     $return_val = "240 Article received OK (posted)\r\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $nntp_group . ":" . -- $local . " " . $return_val, FILE_APPEND);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $nntp_group . ":" . --$local . " " . trim($return_val), FILE_APPEND);
     return ($return_val);
 }
 
@@ -1407,4 +1458,3 @@ function create_node_ssl_cert($pemfile)
     chmod($pubkeyfile, 0660);
     chmod($pubkeytxtfile, 0660);
 }
-?>
