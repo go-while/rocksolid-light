@@ -460,10 +460,6 @@ function process_post($message, $group)
     $THIS_CONFIG = include($config_file);
     $this_server = $THIS_CONFIG['remote_server'] . $THIS_CONFIG['remote_port'];
 
-
-    echo "DATA: " . $this_server . "\n";
-    echo "MSGID: " . $msgid . "\n";
-
     if (isset($posted_articles[$msgid][$this_server])) {
         $previously_posted = true;
     } else {
