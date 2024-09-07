@@ -518,7 +518,7 @@ if ($show == 1) {
                     echo '</tr><tr>';
                     echo '<td align="right"><b>Followup-To:</b></td>';
                     echo '<td>';
-                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80">';
+                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of group to redirect replies">';
                     echo "&nbsp;(optional)";
                 } else {
                     echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
