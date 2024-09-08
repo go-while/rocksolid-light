@@ -613,7 +613,7 @@ blockquote.np_article_quote {
 
 /* headline */
 h1.np_post_headline {
-	font-size: 1em;
+	font-size: 0.8em;
 }
 
 /* Head with the input fields for subject, name and email  */
