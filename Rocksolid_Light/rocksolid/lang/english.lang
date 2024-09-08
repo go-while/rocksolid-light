@@ -49,6 +49,7 @@ $text_post["button_post"]="Post Article";
 $text_post["remember"]="Remember name";
 $text_post["message"]="Message";
 $text_post["group_head"]="Compose a post in ";
+$text_post["group_head_reply"]="Reply to post in ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="You aren't allowed to post to the groups:";
 $text_post["message_posted"]="Message posted";

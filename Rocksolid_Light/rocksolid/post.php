@@ -468,7 +468,11 @@ if ($show == 1) {
         }
         // show post form
         $fieldencrypt = md5(rand(1, 10000000));
-        echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        if ($type == 'reply') {
+            echo '<h1 class="np_post_headline">' . $text_post["group_head_reply"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        } else {
+            echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        }
         if (! $found) {
             echo ' (posting will fail - no such group)';
         }
