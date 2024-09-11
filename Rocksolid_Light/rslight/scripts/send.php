@@ -90,7 +90,6 @@ function post_articles($ns, $spooldir)
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "441") == 0) {
             rename($outgoing_dir . $message, $fail_dir . $message);
-         //   $removed = unlink($outgoing_dir . $message);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
@@ -101,7 +100,7 @@ function post_articles($ns, $spooldir)
             continue;
         }
     }
-    prune_dir_by_days($outgoing_dir, 7);
+    prune_dir_by_days($fail_dir, 7);
     return "Messages sent\r\n";
 }
 ?>

@@ -1302,6 +1302,10 @@ function verify_logged_in($name) {
     $logged_in = false;
     $ip_pass = false;
 
+    if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
+        return false;
+    }
+
     // For checking session expire stuff
     if(!isset($_SESSION['start_stamp'])) {
         $_SESSION['start_stamp'] = time();

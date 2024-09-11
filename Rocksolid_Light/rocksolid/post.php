@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 include "config.inc.php";
-$CONFIG = include ($config_file);
+$CONFIG = include($config_file);
 include $file_newsportal;
 
 include "head.inc";
@@ -52,6 +52,11 @@ $logfile = $logdir . '/post.log';
 @$references = $_REQUEST["references"];
 @$id = $_REQUEST["id"];
 
+if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
+    $followupto = trim($_REQUEST['followupto']);
+} else {
+    $followupto = null;
+}
 // Load name from cookies
 if ($setcookies) {
     if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
@@ -62,7 +67,7 @@ if ($setcookies) {
 $name = substr($name, 0, 30);
 
 $logged_in = false;
-if(trim($name) != '') {
+if (trim($name) != '') {
     $logged_in = verify_logged_in(trim(strtolower($name)));
 }
 
@@ -75,38 +80,46 @@ if ($OVERRIDES['enable_post_log'] > 0) {
 $allow_ng_header_edit_post = true;
 $allow_ng_header_edit_reply = false;
 
-if(isset($OVERRIDES['allow_ng_header_edit'])) {
-    if($OVERRIDES['allow_ng_header_edit'] == 'post') {
+if (isset($OVERRIDES['allow_ng_header_edit'])) {
+    if ($OVERRIDES['allow_ng_header_edit'] == 'post') {
         $allow_ng_header_edit_post = true;
     } else {
         $allow_ng_header_edit_post = false;
     }
-    if($OVERRIDES['allow_ng_header_edit'] == 'reply') {
+    if ($OVERRIDES['allow_ng_header_edit'] == 'reply') {
         $allow_ng_header_edit_reply = true;
     } else {
         $allow_ng_header_edit_reply = false;
     }
-    if($OVERRIDES['allow_ng_header_edit'] == 'both') {
+    if ($OVERRIDES['allow_ng_header_edit'] == 'both') {
         $allow_ng_header_edit_post = true;
         $allow_ng_header_edit_reply = true;
     }
-    if($OVERRIDES['allow_ng_header_edit'] == 'none') {
+    if ($OVERRIDES['allow_ng_header_edit'] == 'none') {
         $allow_ng_header_edit_post = false;
         $allow_ng_header_edit_reply = false;
     }
 }
 
 $allow_ngs_edit = false;
-if($type == 'reply') {
-    if($allow_ng_header_edit_reply) {
+if ($type == 'reply') {
+    if ($allow_ng_header_edit_reply) {
         $allow_ngs_edit = true;
     }
-    $max_crosspost = 12;
+    if (isset($OVERRIDES['max_crosspost_reply']) && $OVERRIDES['max_crosspost_reply'] > 0) {
+        $max_crosspost = $OVERRIDES['max_crosspost_reply'];
+    } else {
+        $max_crosspost = 12;
+    }
 } else {
-    if($allow_ng_header_edit_post) {
+    if ($allow_ng_header_edit_post) {
         $allow_ngs_edit = true;
     }
-    $max_crosspost = 3;
+    if (isset($OVERRIDES['max_crosspost_post']) && $OVERRIDES['max_crosspost_post'] > 0) {
+        $max_crosspost = $OVERRIDES['max_crosspost_post'];
+    } else {
+        $max_crosspost = 3;
+    }
 }
 
 if (! isset($group) && isset($newsgroups)) {
@@ -129,7 +142,8 @@ $thisgroup = _rawurldecode($_REQUEST['group']);
 
 // Is this a reply to an article containing Followup-To?
 if (isset($_REQUEST['fgroups'])) {
-    $thisgroup = $_REQUEST['fgroups'];
+    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups']);
+    $thisgroup = preg_replace('/\,+/', ',', $thisgroup);
 }
 
 $newsgroups = $thisgroup;
@@ -140,7 +154,7 @@ if ($_REQUEST['returngroup']) {
 }
 
 $linkgroups = preg_split("/[\s,]+/", $returngroup);
-foreach($linkgroups as $linkgroup) {
+foreach ($linkgroups as $linkgroup) {
     $linkgroup = trim($linkgroup);
     if (get_section_by_group($linkgroup)) {
         $returngroup = $linkgroup;
@@ -261,9 +275,9 @@ if ($type == "post") {
         $type = "retry";
         $error = $text_post["missing_subject"];
     }
-    if($allow_ngs_edit) {
+    if ($allow_ngs_edit) {
         $grouptotal = preg_split("/( |\,)/", $newsgroups);
-        if(count($grouptotal) > $max_crosspost) {
+        if (count($grouptotal) > $max_crosspost) {
             $type = "retry";
             $error = "Too many newsgroups";
         }
@@ -306,9 +320,9 @@ if ($type == "post") {
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], null, true);
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
             } else {
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname']);
+                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto);
             }
             // Article sent without errors, or duplicate?
             if ((substr($message, 0, 3) == "240") || (substr($message, 0, 7) == "441 435")) {
@@ -356,12 +370,12 @@ if ($type == "reply") {
     }
     // For Synchronet use (deprecated)
     $fromname = $bodyzeile;
-    
+
     // Set quote reply format (On date somebody wrote:)
-    if(!isset($OVERRIDES['quote_head'])) {
+    if (!isset($OVERRIDES['quote_head'])) {
         $OVERRIDES['quote_head'] = 'date_name';
     }
-    switch($OVERRIDES['quote_head']) {
+    switch ($OVERRIDES['quote_head']) {
         case 'date_name':
             $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
@@ -377,15 +391,15 @@ if ($type == "reply") {
         default:
             $bodyzeile = "On " . date("D, j M Y G:i:s O,", $head->date) . " " . $bodyzeile . $text_post["wrote_suffix"] . "\n\n";
             break;
-        
     }
-    
-    for ($i = 0; $i <= count($body) - 1; $i ++) {
+
+    for ($i = 0; $i <= count($body) - 1; $i++) {
         if ((isset($cutsignature)) && ($cutsignature == true) && ($body[$i] == '-- ')) {
             break;
         }
         // Try not to quote blank lines at the end of all quotes
-        if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {} else {
+        if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {
+        } else {
             // Remove spaces from starting quote '>' characters
             $body = preg_replace("/^> >/", ">>", $body);
 
@@ -424,7 +438,7 @@ if ($type == "reply") {
     $show = 1;
     $references = false;
     if (isset($head->references[0])) {
-        for ($i = 0; $i <= count($head->references) - 1; $i ++) {
+        for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $references .= $head->references[$i] . " ";
         }
     }
@@ -454,7 +468,11 @@ if ($show == 1) {
         }
         // show post form
         $fieldencrypt = md5(rand(1, 10000000));
-        echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        if ($type == 'reply') {
+            echo '<h1 class="np_post_headline">' . $text_post["group_head_reply"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        } else {
+            echo '<h1 class="np_post_headline">' . $text_post["group_head"] . group_display_name($newsgroups) . $text_post["group_tail"];
+        }
         if (! $found) {
             echo ' (posting will fail - no such group)';
         }
@@ -476,27 +494,36 @@ if ($show == 1) {
         echo '</tr><tr>';
 
         if ($has_followup) {
-            echo '<td align="right">';
-            echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
+            echo '<td align="right"><b>Newsgroups:&nbsp;</b>';
             echo '</td><td>';
-            echo '<label for="followup">' . $head->followup . ' (followup-to is set';
+
+            echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
+            echo '&nbsp;';
+            echo '<label for="followup">' . $head->followup . ' (Followup-To is set';
             if (! get_section_by_group($head->followup)) {
                 echo ' but <b><i>posting will fail - no such group </i></b>';
             }
             echo ')</label></td>';
             echo '</tr><tr>';
-            echo '<tr><td align="right">';
-            echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
+            echo '<td align="right"><b>or:&nbsp;</b>';
             echo '</td><td>';
+            echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
+            echo '&nbsp;';
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
             echo '</tr><tr>';
         } else {
-            if(!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
+            if (!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
                 echo '<td align="right"><b>Newsgroups:</b></td>';
                 echo '<td>';
-                if($allow_ngs_edit) {
-                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '">';
-                    echo "&nbsp;comma separated, max $max_crosspost groups";
+                if ($allow_ngs_edit) {
+                    echo '<input tclass="post" type="text" name="fgroups" size="40" maxlength="240" value="' . $newsgroups . '">';
+                    echo "&nbsp;(max $max_crosspost groups)";
+                    echo '</td><td>';
+                    echo '</tr><tr>';
+                    echo '<td align="right"><b>Followup-To:</b></td>';
+                    echo '<td>';
+                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of group to redirect replies">';
+                    echo "&nbsp;(optional)";
                 } else {
                     echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
                 }
@@ -511,18 +538,18 @@ if ($show == 1) {
         echo '<td align="left">';
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
-            echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
-            if (isset($name))
-                echo 'value="' . htmlspecialchars($name) . '"';
-            if ($logged_in && isset($name)) {
-                echo 'size="40" maxlength="40" readonly>';
-                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH SET for: " . $name, FILE_APPEND);
-            } else {
-                echo 'size="40" maxlength="40">';
-                file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH NOT SET for: " . $name, FILE_APPEND);
-            }
-            if ($CONFIG['anonuser'])
-                echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
+        echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
+        if (isset($name))
+            echo 'value="' . htmlspecialchars($name) . '"';
+        if ($logged_in && isset($name)) {
+            echo 'size="40" maxlength="40" readonly>';
+            file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH SET for: " . $name, FILE_APPEND);
+        } else {
+            echo 'size="40" maxlength="40">';
+            file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH NOT SET for: " . $name, FILE_APPEND);
+        }
+        if ($CONFIG['anonuser'])
+            echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
         echo '</td></tr><tr>';
         echo '<td align="right"><b>' . $text_post["password"] . '</b></td>';
         echo '<td align="left">';
@@ -581,27 +608,28 @@ if ($show == 1) {
             }
             echo '">';
 
-            ?>
-<script language="JavaScript">
-<!--
-function quoten() {
-  document.getElementById("postbody").value=document.getElementById("hidebody").value;
-  document.getElementById("hidebody").value="";
-}
-//-->
-</script>
+?>
+            <script language="JavaScript">
+                <!--
+                function quoten() {
+                    document.getElementById("postbody").value = document.getElementById("hidebody").value;
+                    document.getElementById("hidebody").value = "";
+                }
+                //
+                -->
+            </script>
 
-<?php } ?>
+        <?php } ?>
 
-<input type="submit" value="<?php echo $text_post["button_post"];?>">
-<?php if ($setcookies==true) { ?>
-&nbsp;
-<input tabindex="100" type="Button" name="quote"
-	value="<?php echo $text_post["quote"]?>"
-	onclick="quoten(); this.style.visibility= 'hidden';">
-&nbsp;
+        <input type="submit" value="<?php echo $text_post["button_post"]; ?>">
+        <?php if ($setcookies == true) { ?>
+            &nbsp;
+            <input tabindex="100" type="Button" name="quote"
+                value="<?php echo $text_post["quote"] ?>"
+                onclick="quoten(); this.style.visibility= 'hidden';">
+            &nbsp;
 
-<?php
+        <?php
         }
         if (! isset($OVERRIDES['disable_attach'])) {
             $OVERRIDES['disable_attach'] = array();
@@ -618,19 +646,20 @@ function quoten() {
         }
         ?>
 
-</table>
-</div>
-<input type="hidden" name="type" value="post">
-<input type="hidden" name="newsgroups"
-	value="<?php echo htmlspecialchars($newsgroups); ?>">
-<input type="hidden" name="references"
-	value="<?php echo htmlentities($references); ?>">
-<input type="hidden" name="group"
-	value="<?php echo htmlspecialchars($newsgroups); ?>">
-<input type="hidden" name="returngroup"
-	value="<?php echo htmlspecialchars($thisgroup); ?>">
-<input type="hidden" name="fielddecrypt"
-	value="<?php echo htmlspecialchars($fieldencrypt);?>">
-</form>
+        </table>
+        </div>
+        <input type="hidden" name="type" value="post">
+        <input type="hidden" name="newsgroups"
+            value="<?php echo htmlspecialchars($newsgroups); ?>">
+        <input type="hidden" name="references"
+            value="<?php echo htmlentities($references); ?>">
+        <input type="hidden" name="group"
+            value="<?php echo htmlspecialchars($newsgroups); ?>">
+        <input type="hidden" name="returngroup"
+            value="<?php echo htmlspecialchars($thisgroup); ?>">
+        <input type="hidden" name="fielddecrypt"
+            value="<?php echo htmlspecialchars($fieldencrypt); ?>">
+        </form>
 
-<?php } } ?>
+<?php }
+} ?>

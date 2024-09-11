@@ -1,6 +1,6 @@
 <?php
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 
 // Check timer
 $tmr = $spooldir . '/' . $config_name . '-expire-timer';
@@ -112,7 +112,7 @@ foreach ($grouplist as $groupline) {
             }
         }
         add_to_history($group, $row['number'], $row['msgid'], $status, $statusdate, $statusreason, $statusnotes);
-        $i ++;
+        $i++;
     }
     $stmt->execute([
         ':newsgroup' => $group,
@@ -179,6 +179,9 @@ if (file_exists($rdns_file)) {
     }
 }
 
+// Remove posted cache db
+unlink($spooldir . '/posted_articles.dat');
+
 unlink($lockfile);
 touch($tmr);
 
@@ -217,7 +220,7 @@ function convert_max_articles_to_days($group)
     $i = 0;
     $found = false;
     while ($row = $overview_query->fetch()) {
-        $i ++;
+        $i++;
         if ($i == $count) {
             $found = $row;
         }

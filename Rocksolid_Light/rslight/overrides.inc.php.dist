@@ -16,11 +16,6 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
-    // Set to true to disable display and edit of newsgroups
-    // header when posting
-    // Default is false (newsgroups will display)
-    'disable_ngs_edit' => false,
-
     // Log posts?
     'enable_post_log' => false,
     
@@ -49,6 +44,18 @@ return [
     // Options: 'post', 'reply', 'both', 'none'
     // If not set, default = 'post'
     'allow_ng_header_edit' => 'post',
+
+    // How many groups to allow in Newsgroups: header
+    // Post and Reply may be different.
+    // Default is post = 3, reply = 12
+    'max_crosspost_post' => 3,
+    'max_crosspost_reply' => 6,
+
+    // This will disable newsgroups editing entirely if true 
+    // Set to true to disable display and edit of newsgroups
+    // header when posting
+    // Default is false (newsgroups will display)
+    'disable_ngs_edit' => false,
 
     // Reserved aliases
     'reserved_names' => array("admin", "sysop", "rslight"),
