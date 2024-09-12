@@ -512,7 +512,7 @@ function display_flat($threads, $oldest)
         }
         if ($target['date'] < $expireme) {
             unset($this_overboard['threads'][$target['date']]);
-            unset($this_overboard['threadlink'][$new]);
+            unset($this_overboard['threadlink'][$value]);
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
         }
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
@@ -542,9 +542,14 @@ function display_flat($threads, $oldest)
 
             $display .= '</p>';
             // link for (thread), if possible
+            if(isset($target_head)) {
+                unset($target_head);
+            }
+            // Display 'full thread' link if available
             if (isset($this_overboard['threadlink'][$value])) {
-                if ($target !== false) {
-                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target['number'] . '&group=' . rawurlencode($target['newsgroup']) . '#' . $target['number'] . '"> (full thread)</a></font>';
+                $target_head = get_data_from_msgid($this_overboard['threadlink'][$value]);
+                 if ($target_head !== false) {
+                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target_head['number'] . '&group=' . rawurlencode($target_head['newsgroup']) . '#' . $target_head['number'] . '"> (full thread)</a></font>';
                 }
             }
             $display .= '</p>';
