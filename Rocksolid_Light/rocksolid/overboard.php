@@ -312,6 +312,9 @@ function display_threads($threads, $oldest)
     $style = 0;
     $results = 0;
     foreach ($nicole as $key => $value) {
+        if(isset($target_head)) {
+            unset($target_head);
+        }
         if (isset($this_overboard['msgids'][$key])) {
             $target_head = $this_overboard['msgids'][$key];
         }
