@@ -89,7 +89,10 @@ function post_articles($ns, $spooldir)
         fclose($message_fp);
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "441") == 0) {
-            rename($outgoing_dir . $message, $fail_dir . $message);
+            // Keep retrying outgoing message for 4 hours in case of temporary issue
+            if(filemtime($outgoing_dir . $message) < (time() - 14400)) {
+                rename($outgoing_dir . $message, $fail_dir . $message);
+            }
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
