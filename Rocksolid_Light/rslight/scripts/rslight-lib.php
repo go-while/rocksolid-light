@@ -93,7 +93,7 @@ function interact($msgsock, $use_crypto = false)
             $tempfilehandle = fopen($tempfilename, 'wb');
             fwrite($msgsock, $msg, strlen($msg));
             $buf = fgets($msgsock, 2048);
-            while (trim($buf) !== '.') {
+            while (rtrim($buf) !== '.') {
                 fwrite($tempfilehandle, $buf);
                 $buf = fgets($msgsock, 2048);
             }
