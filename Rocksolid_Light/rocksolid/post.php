@@ -590,8 +590,10 @@ if ($show == 1) {
 
         echo '<div class="np_post_body">';
         echo '<table><tr>';
-        echo '<td><b>' . $text_post["message"] . '</b><br> <textarea ';
-        echo 'class="postbody" id="postbody" ';
+        echo '<td><b>' . $text_post["message"] . '</b>';
+        echo '&nbsp;&nbsp;<font size="2em">(Lines will wrap at ' . $wrap_width . ' characters after posting)</font>';
+        echo '<br> <textarea cols="' . $wrap_width . '"';
+        echo 'class="postbody" id="postbody" cols="72"';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
         $bodyzeile = wrap_post($bodyzeile);

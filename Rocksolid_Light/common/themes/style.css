@@ -310,8 +310,8 @@ textarea.postbody {
 	background-color: var(--color-medium);
 	border: none;
 	color: var(--color-text);
-	height: calc(1em * 1.5 * 20);
-	width: calc(1em * 1.5 * 40);
+	height: calc(1em * 40);
+    width: auto;
 }
 
 textarea.configuration {
