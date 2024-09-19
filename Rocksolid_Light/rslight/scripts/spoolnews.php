@@ -252,7 +252,7 @@ function get_articles($ns, $group)
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group . " (requested: xover " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
         return false;
     }
-    while (trim($response = line_read($ns)) !== '.') {
+    while (rtrim($response = line_read($ns)) !== '.') {
         $ov = preg_split("/\t/", $response);
         $overview_msgid[$ov[0]] = $ov[4];
     }
