@@ -59,10 +59,9 @@ if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = null;
 }
 
-// Check header strings for bad characters
+// Check some header strings for bad characters
 $newsgroups = sanitize_header($newsgroups);
 $subject = sanitize_header($subject);
-$name = sanitize_header($name);
 $email = sanitize_header($email);
 
 // Load name from cookies
@@ -73,6 +72,7 @@ if ($setcookies) {
 
 // Truncate username at 30 characters to avoid abuse
 $name = substr($name, 0, 30);
+$name = sanitize_header($name);
 
 $logged_in = false;
 if (trim($name) != '') {
