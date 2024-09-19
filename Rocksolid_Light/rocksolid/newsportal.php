@@ -3007,6 +3007,11 @@ function check_article_integrity($rawmessage)
     return $returnval;
 }
 
+/* Remove or replace characters in a string */
+function sanitize_header($text) {
+    return preg_replace("/\`/", "'", $text);
+}
+
 function wrap_post($body)
 {
     global $wrap_width;

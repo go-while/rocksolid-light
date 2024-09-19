@@ -54,9 +54,17 @@ $logfile = $logdir . '/post.log';
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
+    $followupto = sanitize_header($followupto);
 } else {
     $followupto = null;
 }
+
+// Check header strings for bad characters
+$newsgroups = sanitize_header($newsgroups);
+$subject = sanitize_header($subject);
+$name = sanitize_header($name);
+$email = sanitize_header($email);
+
 // Load name from cookies
 if ($setcookies) {
     if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
