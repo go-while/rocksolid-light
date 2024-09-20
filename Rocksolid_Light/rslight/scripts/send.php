@@ -23,7 +23,7 @@
 set_time_limit(900);
 
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 
 if ($CONFIG['remote_server'] == '') {
     exit();
@@ -60,7 +60,7 @@ function post_articles($ns, $spooldir)
     }
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
     $fail_dir = $outgoing_dir . '/failed/';
-    if(!is_dir($fail_dir)) {
+    if (!is_dir($fail_dir)) {
         mkdir($fail_dir);
     }
     $messages = scandir($outgoing_dir);
@@ -88,12 +88,16 @@ function post_articles($ns, $spooldir)
         fputs($ns, ".\r\n");
         fclose($message_fp);
         $response = line_read($ns);
-        if (strcmp(substr($response, 0, 3), "441") == 0) {
-            // Keep retrying outgoing message for 4 hours in case of temporary issue
-            if(filemtime($outgoing_dir . $message) < (time() - 14400)) {
+        if (strcmp(substr($response, 0, 3), "441") == 0) {  // Posting failed
+            if (strcmp(substr($response, 0, 6), "441 43") == 0) {  // Article specifically rejected. Move to 'failed'
                 rename($outgoing_dir . $message, $fail_dir . $message);
+            } else {  // Article may have failed for some other reason
+                // Keep retrying outgoing message for 4 hours in case of temporary issue
+                if (filemtime($outgoing_dir . $message) < (time() - 14400)) {
+                    rename($outgoing_dir . $message, $fail_dir . $message);
+                }
             }
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
+        //    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
@@ -106,4 +110,3 @@ function post_articles($ns, $spooldir)
     prune_dir_by_days($fail_dir, 7);
     return "Messages sent\r\n";
 }
-?>
