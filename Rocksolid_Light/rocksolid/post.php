@@ -54,9 +54,16 @@ $logfile = $logdir . '/post.log';
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
+    $followupto = sanitize_header($followupto);
 } else {
     $followupto = null;
 }
+
+// Check some header strings for bad characters
+$newsgroups = sanitize_header($newsgroups);
+$subject = sanitize_header($subject);
+$email = sanitize_header($email);
+
 // Load name from cookies
 if ($setcookies) {
     if ((isset($_COOKIE["mail_name"])) && (! isset($name)))
@@ -65,6 +72,7 @@ if ($setcookies) {
 
 // Truncate username at 30 characters to avoid abuse
 $name = substr($name, 0, 30);
+$name = sanitize_header($name);
 
 $logged_in = false;
 if (trim($name) != '') {
@@ -590,8 +598,10 @@ if ($show == 1) {
 
         echo '<div class="np_post_body">';
         echo '<table><tr>';
-        echo '<td><b>' . $text_post["message"] . '</b><br> <textarea ';
-        echo 'class="postbody" id="postbody" ';
+        echo '<td><b>' . $text_post["message"] . '</b>';
+        echo '&nbsp;&nbsp;<font size="2em">(Lines will wrap at ' . $wrap_width . ' characters after posting)</font>';
+        echo '<br> <textarea cols="' . $wrap_width . '"';
+        echo 'class="postbody" id="postbody" cols="72"';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
         $bodyzeile = wrap_post($bodyzeile);

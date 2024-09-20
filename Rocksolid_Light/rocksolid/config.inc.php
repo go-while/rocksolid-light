@@ -216,6 +216,7 @@ if (isset($_SERVER["HTTP_HOST"])) {
 }
 $post_autoquote = false;
 $post_captcha = false;
+$wrap_width = 72;
 
 /*
  * Attachments

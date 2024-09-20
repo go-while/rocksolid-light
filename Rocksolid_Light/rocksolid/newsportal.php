@@ -1302,9 +1302,11 @@ function verify_logged_in($name) {
     $logged_in = false;
     $ip_pass = false;
 
-    if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
-        return false;
-    }
+  //  /* This may cause issues if cookies or javascript disabled
+  //  if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
+  //      return false;
+   // }
+    
 
     // For checking session expire stuff
     if(!isset($_SESSION['start_stamp'])) {
@@ -3005,9 +3007,14 @@ function check_article_integrity($rawmessage)
     return $returnval;
 }
 
+/* Remove or replace characters in a string */
+function sanitize_header($text) {
+    return preg_replace("/\`/", "'", $text);
+}
+
 function wrap_post($body)
 {
-    $line_length = 72;
+    global $wrap_width;
     $lines = preg_split("/\n/", $body);
     $wrapped = '';
     foreach ($lines as $line) {
@@ -3024,11 +3031,11 @@ function wrap_post($body)
                     break;
                 }
             }
-            if (strlen($line) > $line_length) {
+            if (strlen($line) > $wrap_width) {
                 // HERE is where we wrap quoted lines (not so easy)
                 $start = substr($line, 0, $depth + 1);
                 $end = substr($line, $depth + 1);
-                $line_wrapped = $start . mb_wordwrap($end, $line_length);
+                $line_wrapped = $start . mb_wordwrap($end, $wrap_width);
                 $line_wrapped = preg_split("/\n/", $line_wrapped);
                 foreach ($line_wrapped as $lw) {
                     if ($lw[0] != '>') {
@@ -3045,9 +3052,9 @@ function wrap_post($body)
                 $wrapped .= $line . "\n";
             }
         } else {
-            if (strlen($line) > $line_length) {
+            if (strlen($line) > $wrap_width) {
                 // HERE is where we wrap NON quoted lines (easy)
-                $wrapped .= mb_wordwrap($line, $line_length) . "\n";
+                $wrapped .= mb_wordwrap($line, $wrap_width) . "\n";
             } else {
                 $wrapped .= $line . "\n";
             }

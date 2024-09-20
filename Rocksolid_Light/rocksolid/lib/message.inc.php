@@ -38,7 +38,7 @@ function message_parse($rawmessage)
     $i = 0;
     while ($rawmessage[$i] != "") {
         $rawheader[] = $rawmessage[$i];
-        $i ++;
+        $i++;
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
@@ -50,19 +50,19 @@ function message_parse($rawmessage)
         $boundary = "--" . $message->header->content_type_boundary;
         // lets find the first part
         while ($rawmessage[$i] != $boundary) {
-            $i ++;
+            $i++;
             // Missing boundary line?
-            if(!$rawmessage[$i]) {
+            if (!$rawmessage[$i]) {
                 break;
             }
         }
-            $i ++;
+        $i++;
         $part = array();
         while ($i <= $count_rawmessage) {
             if (($rawmessage[$i] == $boundary) || ($i == $count_rawmessage - 1) || ($rawmessage[$i] == $boundary . '--')) {
                 $partmessage = message_parse($part);
                 // merge the content-types of the message with those of the part
-                for ($o = 0; $o < count($partmessage->header->content_type); $o ++) {
+                for ($o = 0; $o < count($partmessage->header->content_type); $o++) {
                     $message->header->content_type[] = $partmessage->header->content_type[$o];
                     $message->header->content_type_charset[] = $partmessage->header->content_type_charset[$o];
                     $message->header->content_type_name[] = $partmessage->header->content_type_name[$o];
@@ -76,18 +76,18 @@ function message_parse($rawmessage)
             }
             if ($rawmessage[$i] == $boundary . '--')
                 break;
-            $i ++;
+            $i++;
         }
         // Is this a multipart/alternative multipart-message? Do we have to
         // delete all non plain/text parts?
         if (($attachment_delete_alternative) && ($content_type[1] == "alternative")) {
             $plaintext = false;
-            for ($o = 0; $o < count($message->header->content_type); $o ++) {
+            for ($o = 0; $o < count($message->header->content_type); $o++) {
                 if ($message->header->content_type[$o] == "text/plain")
                     $plaintext = true; // we found at least one text/plain
             }
             if ($plaintext) { // now we can delete the other parts
-                for ($o = 0; $o < count($message->header->content_type); $o ++) {
+                for ($o = 0; $o < count($message->header->content_type); $o++) {
                     if ($message->header->content_type[$o] != "text/plain") {
                         unset($message->header->content_type[$o]);
                         unset($message->header->content_type_name[$o]);
@@ -102,8 +102,8 @@ function message_parse($rawmessage)
         // No mime-attachments in the message:
         $body = "";
         $uueatt = 0; // as default we have no uuencoded attachments
-                     // Handle inline attachments
-        for ($i ++; $i < $count_rawmessage; $i ++) {
+        // Handle inline attachments
+        for ($i++; $i < $count_rawmessage; $i++) {
             // do we have an inlay uuencoded file?
             if ((strtolower(substr($rawmessage[$i], 0, 10)) != "begin 644 ") || ($attachment_uudecode == false)) {
                 $body .= $rawmessage[$i] . "\n";
@@ -115,12 +115,12 @@ function message_parse($rawmessage)
                     $uue_infoline_raw = $rawmessage[$i];
                     $uue_infoline = explode(" ", $uue_infoline_raw);
                     $uue_data = "";
-                    $i ++;
+                    $i++;
                     $no_end = 0;
                     while ($rawmessage[$i] != "end") {
                         if (strlen(trim($rawmessage[$i])) > 2)
                             $uue_data .= $rawmessage[$i] . "\n";
-                        $i ++;
+                        $i++;
                         if ($i > $count_rawmessage) {
                             $no_end = 1;
                             break;
@@ -128,10 +128,10 @@ function message_parse($rawmessage)
                     }
                     // now write the data in an attachment
                     if ($no_end != 1) {
-                        $uueatt ++;
+                        $uueatt++;
                         $message->body[$uueatt] = uudecode($uue_data);
                         $message->header->content_type_name[$uueatt] = "";
-                        for ($o = 2; $o < count($uue_infoline); $o ++)
+                        for ($o = 2; $o < count($uue_infoline); $o++)
                             $message->header->content_type_name[$uueatt] .= $uue_infoline[$o];
                         $message->header->content_type[$uueatt] = get_mimetype_by_string($message->body[$uueatt]);
                     }
@@ -164,7 +164,7 @@ function message_parse($rawmessage)
         $message->header->content_type_format = array(
             "fixed"
         );
-    for ($o = 0; $o < count($message->body); $o ++) {
+    for ($o = 0; $o < count($message->body); $o++) {
         if (! isset($message->header->content_type_charset[$o]))
             $message->header->content_type_charset[$o] = $www_charset;
         if (! isset($message->header->content_type_name[$o]))
@@ -234,15 +234,15 @@ function message_read($id, $bodynum = 0, $group = "")
             unset($message->header);
         }
         // Is a non-existing attachment of an article requested?
-        if ((isset($message->header)) && ($bodynum != - 1) && (! isset($message->header->content_type[$bodynum])))
+        if ((isset($message->header)) && ($bodynum != -1) && (! isset($message->header->content_type[$bodynum])))
             return false;
-        if ((file_exists($cachefilename_body . $bodynum)) && ($bodynum != - 1)) {
+        if ((file_exists($cachefilename_body . $bodynum)) && ($bodynum != -1)) {
             $cachefile = fopen($cachefilename_body . $bodynum, "r");
             $message->body[$bodynum] = fread($cachefile, filesize($cachefilename_body . $bodynum));
             fclose($cachefile);
         }
     }
-    if ((! isset($message->header)) || ((! isset($message->body[$bodynum])) && ($bodynum != - 1))) {
+    if ((! isset($message->header)) || ((! isset($message->body[$bodynum])) && ($bodynum != -1))) {
         // Pull article from spool if exists, else from server
         if (trim($group) == '') {
             return false;
@@ -301,7 +301,7 @@ function message_read($id, $bodynum = 0, $group = "")
                 fputs($cachefile, serialize($message->header));
             }
             fclose($cachefile);
-            for ($i = 0; $i < count($message->header->content_type); $i ++) {
+            for ($i = 0; $i < count($message->header->content_type); $i++) {
                 if (isset($message->body[$i])) {
                     $cachefile = fopen($cachefilename_body . $i, "w");
                     fwrite($cachefile, $message->body[$i]);
@@ -328,10 +328,10 @@ function textwrap($text, $wrap = 80, $break = "\n", $maxlen = false)
         $lastWhite = 0; // position of last whitespace char
         $lastChar = 0; // position of last char
         $lastBreak = 0; // position of last break
-                        // while there is text to process
+        // while there is text to process
         while ($lastChar < $len && (($maxlen == false) || (strlen($h) < $maxlen))) {
             $char = substr($text, $lastChar, 1); // get the next character
-                                                 // if we are beyond the wrap boundry and there is a place to break
+            // if we are beyond the wrap boundry and there is a place to break
             if (($lastChar - $lastBreak > $wrap) && ($lastWhite > $lastBreak)) {
                 $h .= substr($text, $lastBreak, ($lastWhite - $lastBreak)) . $break;
                 $lastChar = $lastWhite + 1;
@@ -425,9 +425,9 @@ function show_header($head, $group, $local_poster = false)
                 if ($endname > 8)
                     $endname = 8;
                 if ($endname < 3)
-                    $endname ++;
+                    $endname++;
                 if ($endname < 3)
-                    $endname ++;
+                    $endname++;
             } else {
                 $endname = $namelen;
             }
@@ -476,7 +476,7 @@ function show_header($head, $group, $local_poster = false)
     }
     if (($article_show["References"]) && (isset($head->references[0]))) {
         echo $text_header["references"];
-        for ($i = 0; $i <= count($head->references) - 1; $i ++) {
+        for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
             echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
@@ -491,7 +491,7 @@ function show_header($head, $group, $local_poster = false)
     }
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
         echo $text_header["attachments"];
-        for ($i = 1; $i < count($head->content_type); $i ++) {
+        for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
                 $contype = "HTML Version";
             } else {
@@ -559,22 +559,22 @@ function show_header_short($head, $group, $local_poster = false)
     echo 'window.getSelection().removeAllRanges();';
     echo '}';
     echo '</script> ';
-    ?>
-<p id="<?php echo $head->id; ?>"
-	style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
-&nbsp;
-<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
-	onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
-	style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
-		mid</i></a>
+?>
+    <p id="<?php echo $head->id; ?>"
+        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+        onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
+        style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
+            mid</i></a>
 
-<p id="<?php echo $head->number . 'copy'; ?>"
-	style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
-&nbsp;
-<a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
-	onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
-	style="text-decoration: none" title="Copy article link to clipboard"><i>copy
-		link</i></a>
+    <p id="<?php echo $head->number . 'copy'; ?>"
+        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+        onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy article link to clipboard"><i>copy
+            link</i></a>
 <?php
     echo '&nbsp;&nbsp;Newsgroups: ';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
@@ -607,7 +607,7 @@ function show_header_short($head, $group, $local_poster = false)
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
         echo '<div class=np_ob_posted_date>';
         echo $text_header["attachments"];
-        for ($i = 1; $i < count($head->content_type); $i ++) {
+        for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
                 $contype = "HTML Version";
             } else {
@@ -708,14 +708,14 @@ function decode_textbody($body, $format = "fixed")
     $depth = 0;
     $paragraph = ""; // empty paragraph
     $lastline = "";
-    for ($i = 0; $i < count($body) + 1; $i ++) {
+    for ($i = 0; $i < count($body) + 1; $i++) {
         // calculate the quote depth of the actual line
         $ndepth = 0;
         $tdepth = 0;
-        for ($j = 0; $j <= strlen(@$body[$i]); $j ++) {
+        for ($j = 0; $j <= strlen(@$body[$i]); $j++) {
             $tdepth = $j;
             if (@$body[$i][$j] == '>') {
-                $ndepth ++;
+                $ndepth++;
             } else {
                 if ((@$body[$i][$j] != ' ') || (@$body[$i][$j - 1] == ' ') || ($j == 0)) {
                     break;
@@ -839,16 +839,24 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
 
         // Any header checks to display notice in article display
         $notice = display_header_notice($head);
-
-        if(isset($head->content_type[0])) {
-            if(!strpos($head->content_type[0], "/")) {
+        if (isset($head->content_type[0])) {
+            if (!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
                 return "blocked";
             }
         }
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
+
+            // If we can't find the actual text in 'zero', check 'one' just in case
+            if (trim($body) == '') {  // There is no text in the text/plain body, it seems
+                if ($head->content_type[$attachment + 1] == "text/plain") {  // There's another text/plain body. Lucky us!
+                    $body = $article_data->body[$attachment + 1];
+                }
+            }
+
             show_header($head, $group, $local_poster);
             echo $notice;
+
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
@@ -901,13 +909,13 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                 echo '<div class="np_article_body">';
             }
             $currentlen = 0; // needed if $maxlen is set
-            for ($i = 0; $i <= count($body) && (($currentlen < $maxlen) || ($maxlen == false)); $i ++) {
+            for ($i = 0; $i <= count($body) && (($currentlen < $maxlen) || ($maxlen == false)); $i++) {
                 // HTMLized Quotings instead of boring > ?
                 if ($article_graphicquotes) {
                     // HTMLized Quotings
-                    for ($j = $depth; $j < @$body[$i]->depth; $j ++)
+                    for ($j = $depth; $j < @$body[$i]->depth; $j++)
                         echo '<blockquote class="np_article_quote">';
-                    for ($j = @$body[$i]->depth; $j < $depth; $j ++)
+                    for ($j = @$body[$i]->depth; $j < $depth; $j++)
                         echo '</blockquote>';
                     $t = @$body[$i]->text;
                     echo display_links_in_body($t);
@@ -934,7 +942,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             // If attachment is image embed into article
             if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
                 echo $text_header["attachments"];
-                for ($i = 1; $i < count($head->content_type); $i ++) {
+                for ($i = 1; $i < count($head->content_type); $i++) {
                     if (! strcmp($head->content_type[$i], "text/html")) {
                         $contype = "HTML Version";
                     } else {
@@ -981,13 +989,13 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
             echo '<div class="np_article_body">';
             echo "(Copy text below to quote in reply)<br /><br />";
             $currentlen = 0; // needed if $maxlen is set
-            for ($i = 0; $i <= count($body) && (($currentlen < $maxlen) || ($maxlen == false)); $i ++) {
+            for ($i = 0; $i <= count($body) && (($currentlen < $maxlen) || ($maxlen == false)); $i++) {
                 // HTMLized Quotings instead of boring > ?
                 if ($article_graphicquotes) {
                     // HTMLized Quotings
-                    for ($j = $depth; $j < $body[$i]->depth; $j ++)
+                    for ($j = $depth; $j < $body[$i]->depth; $j++)
                         echo '<blockquote class="np_article_quote">';
-                    for ($j = $body[$i]->depth; $j < $depth; $j ++)
+                    for ($j = $body[$i]->depth; $j < $depth; $j++)
                         echo '</blockquote>';
                     $t = html_parse(text2html($body[$i]->text)) . '<br>';
                     echo $t;
@@ -1030,7 +1038,7 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     $return = "";
     if ($article_count > $articleflat_articles_per_page)
         $return .= $text_thread["pages"];
-    for ($i = 0; $i < $pages; $i ++) {
+    for ($i = 0; $i < $pages; $i++) {
         if ($first != $i * $articleflat_articles_per_page + 1)
             $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $articleflat_articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articleflat_articles_per_page . '#start">';
         else
@@ -1047,10 +1055,11 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     return $return;
 }
 
-function display_header_notice($head) {
+function display_header_notice($head)
+{
     $notice = false;
-    if(stripos($head->subject, "Re: ") === 0) {
-        if(!isset($head->references)) {
+    if (stripos($head->subject, "Re: ") === 0) {
+        if (!isset($head->references)) {
             $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
         }
     }
