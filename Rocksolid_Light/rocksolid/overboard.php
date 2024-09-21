@@ -263,7 +263,8 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $config_name, $spooldir, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $config_name, $spooldir, $config_dir;
+    global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
@@ -446,7 +447,8 @@ function display_threads($threads, $oldest)
 
 function display_flat($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir;
+    global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table cellspacing="0" width="100%" class="np_results_table">';
     if (! isset($threads)) {
