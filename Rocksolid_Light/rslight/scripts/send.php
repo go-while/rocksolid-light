@@ -23,12 +23,12 @@
 set_time_limit(900);
 
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 
 if ($CONFIG['remote_server'] == '') {
     exit();
 }
-$logfile = $logdir . '/spoolnews.log';
+$logfile = $logdir . '/send.log';
 
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
 
@@ -55,17 +55,25 @@ echo "\nSend Done\r\n";
 function post_articles($ns, $spooldir)
 {
     global $logfile, $config_name;
-    if (! is_dir($spooldir . "/" . $config_name . "/outgoing/")) {
-        return "No messages to send\r\n";
-    }
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
     $fail_dir = $outgoing_dir . '/failed/';
-    if(!is_dir($fail_dir)) {
+
+    if (!is_dir($fail_dir)) {
         mkdir($fail_dir);
     }
+    if (! is_dir($outgoing_dir)) {
+        mkdir($outgoing_dir);
+        return "No messages to send\r\n";
+    }
+
     $messages = scandir($outgoing_dir);
     foreach ($messages as $message) {
         if (! is_file($outgoing_dir . $message)) {
+            continue;
+        }
+        if (filemtime($outgoing_dir . $message) < (time() - 14400)) { // Stop trying to send article of over 4 hours old
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: Too many retries, giving up for: " . $message, FILE_APPEND);
+            rename($outgoing_dir . $message, $fail_dir . $message);
             continue;
         }
         echo "Sending: " . $outgoing_dir . $message . "\r\n";
@@ -88,12 +96,10 @@ function post_articles($ns, $spooldir)
         fputs($ns, ".\r\n");
         fclose($message_fp);
         $response = line_read($ns);
-        if (strcmp(substr($response, 0, 3), "441") == 0) {
-            // Keep retrying outgoing message for 4 hours in case of temporary issue
-            if(filemtime($outgoing_dir . $message) < (time() - 14400)) {
+        if (strcmp(substr($response, 0, 3), "441") == 0) {  // Posting failed
+            if (strcmp(substr($response, 0, 6), "441 43") == 0) {  // Article specifically rejected. Move to 'failed'
                 rename($outgoing_dir . $message, $fail_dir . $message);
             }
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $response, FILE_APPEND);
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
@@ -106,4 +112,3 @@ function post_articles($ns, $spooldir)
     prune_dir_by_days($fail_dir, 7);
     return "Messages sent\r\n";
 }
-?>
