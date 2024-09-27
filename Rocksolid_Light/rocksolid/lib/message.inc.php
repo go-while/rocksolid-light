@@ -845,18 +845,27 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                 return "blocked";
             }
         }
-        if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
 
-            // If we can't find the actual text in 'zero', check 'one' just in case
+        // If attachment=0 newsportal expects it to be plain text
+        if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
+            // If we can't find the actual text in 'zero', look for it just in case
             if (trim($body) == '') {  // There is no text in the text/plain body, it seems
-                if ($head->content_type[$attachment + 1] == "text/plain") {  // There's another text/plain body. Lucky us!
-                    $body = $article_data->body[$attachment + 1];
+                $plaintext = false;
+                for ($o = 1; $o < count($head->content_type); $o++) {
+                    if ($head->content_type[$o] == "text/plain") {
+                        if (trim($article_data->body[$o]) != '') {
+                            $plaintext = $o; // we found at least one text/plain
+                            $body = $article_data->body[$o];
+                            break;
+                        }
+                    }
+                }
+                if ($plaintext === false) {
+                    $notice = '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' - no text found in message body)</p><hr>';
                 }
             }
-
             show_header($head, $group, $local_poster);
             echo $notice;
-
             // X-Face
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
@@ -950,20 +959,31 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                     }
                     $type = explode('/', $head->content_type[$i]);
                     if (trim($type[0]) == "image") {
+                        if ($i > 2) {
+                            echo ', ';
+                        }
                         echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . '<img src="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '" title="' . $contype . '" alt="' . $contype . '" style="max-width: 20vw; max-height: 100px;"></a>&nbsp;';
                     } else {
-                        echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+                        if ($plaintext !== false && $plaintext != $i) {
+                            if ($i > 2) {
+                                echo ', ';
+                            }
+                            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+                        }
                     }
-                    if ($i < count($head->content_type) - 1)
-                        echo ', ';
                 }
             }
             echo '</div>';
         } else {
-            echo $body;
+            if ($attachment == 0) {
+                show_header($head, $group, $local_poster);
+                $notice = '<hr><p class=np_ob_posted_date>(message #' . $head->number . " - no 'text/plain' part found in this message)</p><hr>";
+                echo $notice;
+            } else {
+                echo $body;
+            }
         }
     }
-    echo '</div>';
 }
 
 function message_decrypt($key, $group, $id, $attachment = 0, $article_data = false, $maxlen = false)
