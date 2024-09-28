@@ -1632,7 +1632,29 @@ function logging_prefix($sockip = null)
     }
 }
 
-function wipe_newsportal_spool_info($group) {
+function repair_broken_group($group)
+{
+    global $debug_log, $spooldir;
+    $rslight_file = $spooldir . '/' . $group . '-rslight_info.txt';
+    $newsportal_file = $spooldir . '/' . $group . '-info.txt';
+
+    if (file_exists($rslight_file) && file_exists($newsportal_file)) {
+        $rslight_info = file_get_contents($rslight_file);
+        $newsportal_info = file($newsportal_file);
+        $newsportal_info = trim($newsportal_info[1]);
+        $newsportal_start = explode(" ", $newsportal_info);
+        $rslight_start = explode(" ", $rslight_info);
+
+        $variance = fdiv(floatval($newsportal_start[0]), floatval($rslight_start[0]));
+        if($variance != 1) {
+            file_put_contents($debug_log, "\n " . format_log_date() . " GROUP MISMATCH: " . $group . " Start rslight: " . $rslight_start[0] . " Start newsportal: " . $newsportal_start[0] . " Repairing...", FILE_APPEND);
+            wipe_newsportal_spool_info($group);
+        }
+    }
+}
+
+function wipe_newsportal_spool_info($group)
+{
     global $spooldir;
     $gpath = $spooldir . '/' . $group;
     @unlink($gpath . '-cache.txt');

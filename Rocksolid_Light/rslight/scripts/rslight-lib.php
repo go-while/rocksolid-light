@@ -1037,7 +1037,7 @@ function get_listgroup($nntp_group, $msgsock)
 
 function get_group($change_group)
 {
-    global $spooldir, $path, $nntp_group, $nntp_article, $groupconfig;
+    global $spooldir, $path, $nntp_group, $nntp_article, $groupconfig, $debug_log;
     $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $ok_group = false;
     $count = 0;
@@ -1064,6 +1064,13 @@ function get_group($change_group)
         $first = 0;
     $nntp_article = $first;
     $msg = "211 " . $count . " " . $first . " " . $last . " " . $nntp_group . "\r\n";
+
+    // Write article number statistics to file (matching newsportal info.txt format)
+    $articlestats = explode(" ", $msg);
+    $savestats = $articlestats[2] . " " . $articlestats[3] . " " . $articlestats[1];
+    file_put_contents($spooldir . '/' . $nntp_group . '-rslight_info.txt', $savestats);
+    
+    repair_broken_group($nntp_group);
     return $msg;
 }
 
