@@ -267,7 +267,6 @@ function message_read($id, $bodynum = 0, $group = "")
             }
         }
         if (! isset($rawmessage) || $rawmessage === FALSE) {
-            file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
             if (! isset($ns)) {
                 $ns = nntp_open();
             }
@@ -282,7 +281,9 @@ function message_read($id, $bodynum = 0, $group = "")
                 // should check, if the thread stored in the spool-directory
                 // also doesnt't contain that article...
                 thread_cache_removearticle($group, $id);
+                file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server", FILE_APPEND);
                 return false;
+            } else {
             }
             $rawmessage = array();
             $line = line_read($ns);
