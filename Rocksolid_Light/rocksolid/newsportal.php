@@ -3007,6 +3007,11 @@ function check_article_integrity($rawmessage)
         $returnval = " Skipping message (date in future): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
         return $returnval;
     }
+    // Date is probably 1 Jan 1970
+    if ($message->header->date < 100) {
+        $returnval = " Skipping message (date too old): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
+        return $returnval;
+    }
     // Now we know if the message is a mime-multipart message:
     $content_type = explode("/", $message->header->content_type[0]);
     if ($content_type[0] == "multipart") {
