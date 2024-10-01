@@ -302,22 +302,22 @@ if (! function_exists('quoted_printable_encode')) {
             '=FF'
         );
         // are there "forbidden" characters in the string?
-        for ($i = 0; $i < strlen($line) && ord($line[$i]) <= 127; $i ++);
+        for ($i = 0; $i < strlen($line) && ord($line[$i]) <= 127; $i++);
         if ($i < strlen($line)) { // yes, there are. So lets encode them!
             $from = $i;
-            for ($to = strlen($line) - 1; ord($line[$to]) <= 127; $to --);
+            for ($to = strlen($line) - 1; ord($line[$to]) <= 127; $to--);
             // lets scan for the start and the end of the to be encoded _words_
-            for (; $from > 0 && $line[$from] != ' '; $from --);
+            for (; $from > 0 && $line[$from] != ' '; $from--);
             if ($from > 0)
-                $from ++;
-            for (; $to < strlen($line) && $line[$to] != ' '; $to ++);
+                $from++;
+            for (; $to < strlen($line) && $line[$to] != ' '; $to++);
             // split the string into the to be encoded middle and the rest
             $begin = substr($line, 0, $from);
             $middle = substr($line, $from, $to - $from);
             $end = substr($line, $to);
             // ok, now lets encode $middle...
             $newmiddle = "";
-            for ($i = 0; $i < strlen($middle); $i ++)
+            for ($i = 0; $i < strlen($middle); $i++)
                 $newmiddle .= $qp_table[ord($middle[$i])];
             // now we glue the parts together...
             $line = $begin . '=?' . $www_charset . '?Q?' . $newmiddle . '?=' . $end;
@@ -421,7 +421,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     global $msgid_generate, $msgid_fqdn, $rslight_version;
 
     flush();
-    
+
     $logfile = $logdir . '/post.log';
     $attachment_temp_dir = $spooldir . "/tmp/";
     if (! is_dir($attachment_temp_dir)) {
@@ -527,7 +527,9 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
             $posting_user = hash('sha1', strtolower($authname) . $CONFIG['thissitekey'] . $_SERVER['HTTP_HOST']);
             fputs($ns, 'X-Rslight-Site: ' . $sitekey . "\r\n");
             fputs($ns, 'X-Rslight-Posting-User: ' . $posting_user . "\r\n");
-            set_user_config($authname, 'posting-user', $posting_user);
+            if ($userconfig) {
+                set_user_config($authname, 'posting-user', $posting_user);
+            }
         }
 
         if (isset($encryptthis)) {
@@ -634,4 +636,3 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
     }
     return $message;
 }
-?>
