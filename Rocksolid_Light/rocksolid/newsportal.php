@@ -31,7 +31,7 @@ if (file_exists("lib/message.inc.php"))
 if (file_exists("lib/post.inc.php"))
     include "lib/post.inc.php";
 
-$CONFIG = include ($config_file);
+$CONFIG = include($config_file);
 
 /*
  * opens the connection to the NNTP-Server
@@ -200,12 +200,12 @@ function validate_email($address)
     global $validate_email;
     $return = true;
     if (($validate_email >= 1) && ($return == true))
-/* Need to clean up this regex to work properly with preg_match
+        /* Need to clean up this regex to work properly with preg_match
     $return = (preg_match('^[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+'.'@'.
                '[-!#$%&\'*+\\/0-9=?A-Z^_A-z{|}~]+\.'.
                '[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+$',$address));
 */
-    $return = 1;
+        $return = 1;
     if (($validate_email >= 2) && ($return == true)) {
         $addressarray = address_decode($address, "garantiertungueltig");
         $return = checkdnsrr($addressarray[0]["host"], "MX");
@@ -232,18 +232,18 @@ function uudecode_line($line)
     $data = substr($line, 1);
     $length = ord($line[0]) - 32;
     $decoded = "";
-    for ($i = 0; $i < (strlen($data) >> 2); $i ++) {
+    for ($i = 0; $i < (strlen($data) >> 2); $i++) {
         $pack = substr($data, $i << 2, 4);
         $upack = "";
         $bitmaske = 0;
-        for ($o = 0; $o < 4; $o ++) {
+        for ($o = 0; $o < 4; $o++) {
             $g = ((ord($pack[3 - $o]) - 32));
             if ($g == 64)
                 $g = 0;
             $bitmaske = $bitmaske | ($g << (6 * $o));
         }
         $schablone = 255;
-        for ($o = 0; $o < 3; $o ++) {
+        for ($o = 0; $o < 3; $o++) {
             $c = ($bitmaske & $schablone) >> ($o << 3);
             $schablone = ($schablone << 8);
             $upack = chr($c) . $upack;
@@ -265,7 +265,7 @@ function uudecode($data)
 {
     $d = explode("\n", $data);
     $u = "";
-    for ($i = 0; $i < count($d) - 1; $i ++)
+    for ($i = 0; $i < count($d) - 1; $i++)
         $u .= uudecode_line($d[$i]);
     return $u;
 }
@@ -342,27 +342,11 @@ function testGroup($groupname)
             return true;
         } else {
             /* Find section */
-            $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            foreach ($menulist as $menu) {
-                if ($menu[0] == '#') {
-                    continue;
-                }
-                $menuitem = explode(':', $menu);
-                if ($menuitem[1] == '0') {
-                    continue;
-                }
-                $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
-                $section = "";
-                while ($gl = fgets($glfp)) {
-                    $group_name = preg_split("/( |\t)/", $gl, 2);
-                    if (stripos(trim($groupname), trim($group_name[0])) !== false) {
-                        fclose($glfp);
-                        return true;
-                    }
-                }
+            if (get_section_by_group($groupname, false)) {
+                return true;
+            } else {
+                return false;
             }
-            fclose($glfp);
-            return false;
         }
     } else {
         return true;
@@ -405,11 +389,11 @@ function testGroups($newsgroups)
     $count = count($groups);
     $return = "";
     $o = 0;
-    for ($i = 0; $i < $count; $i ++) {
+    for ($i = 0; $i < $count; $i++) {
         if (testgroup($groups[$i]) && (! function_exists("npreg_group_has_write_access") || npreg_group_has_write_access($groups[$i]))) {
             if ($o > 0)
                 $return .= ",";
-            $o ++;
+            $o++;
             $return .= $groups[$i];
         }
     }
@@ -538,7 +522,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
                     $gruppe->name = $gr[0];
                     $desc = $gr[1];
                 } else { // No
-                         // no, get it from the newsserver.
+                    // no, get it from the newsserver.
                     $gruppe->name = $tmp;
                     if (is_file($spooldir . '/' . $tmp . '-title')) {
                         $response = file_get_contents($spooldir . '/' . $tmp . '-title');
@@ -615,7 +599,7 @@ function groups_show($gruppen)
     // Get registered user settings
 
     $cookie_mail_name = $_COOKIE['mail_name'];
-    if(isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+    if (isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
         unset($cookie_mail_name);
     }
     if (isset($cookie_mail_name)) {
@@ -624,7 +608,7 @@ function groups_show($gruppen)
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
         }
     }
-    for ($i = 0; $i < $c; $i ++) {
+    for ($i = 0; $i < $c; $i++) {
         unset($groupdisplay);
         $g = $gruppen[$i];
         if (isset($g->text)) {
@@ -874,7 +858,7 @@ function groups_show_frames($gruppen)
     $c = count($gruppen);
     echo '<div class="np_index_groupblock">';
     $acttype = "keins";
-    for ($i = 0; $i < $c; $i ++) {
+    for ($i = 0; $i < $c; $i++) {
         $g = $gruppen[$i];
         if (isset($g->text)) {
             if ($acttype != "text") {
@@ -961,12 +945,12 @@ function getTimestamp($value)
 
 function parse_header($hdr, $number = "")
 {
-    for ($i = count($hdr) - 1; $i > 0; $i --)
+    for ($i = count($hdr) - 1; $i > 0; $i--)
         if (preg_match("/^(\x09|\x20)/", $hdr[$i]))
             $hdr[$i - 1] = $hdr[$i - 1] . " " . ltrim($hdr[$i]);
     $header = new headerType();
     $header->isAnswer = false;
-    for ($count = 0; $count < count($hdr); $count ++) {
+    for ($count = 0; $count < count($hdr); $count++) {
         $variable = substr($hdr[$count], 0, strpos($hdr[$count], " "));
         $value = trim(substr($hdr[$count], strpos($hdr[$count], " ") + 1));
         switch (strtolower($variable)) {
@@ -1009,7 +993,7 @@ function parse_header($hdr, $number = "")
                 $header->content_type = array();
                 $subheader = explode(";", $value);
                 $header->content_type[0] = strtolower(trim($subheader[0]));
-                for ($i = 1; $i < count($subheader); $i ++) {
+                for ($i = 1; $i < count($subheader); $i++) {
                     $gleichpos = strpos($subheader[$i], "=");
                     if ($gleichpos) {
                         $subvariable = trim(substr($subheader[$i], 0, $gleichpos));
@@ -1064,7 +1048,7 @@ function parse_header($hdr, $number = "")
                 $header->user_agent = trim($value);
                 break;
             case "x-face:": // not ready
-                             // echo "<p>-".base64_decode($value)."-</p>";
+                // echo "<p>-".base64_decode($value)."-</p>";
                 break;
             case "x-no-archive:":
                 $header->xnoarchive = strtolower(trim($value));
@@ -1108,8 +1092,8 @@ function decode_body($body, $encoding)
         case "quoted-printable":
             $body = Quoted_printable_decode($body);
             $body = str_replace("=\n", "", $body);
-        // default:
-        // $body=str_replace("\n..\n","\n.\n",$body);
+            // default:
+            // $body=str_replace("\n..\n","\n.\n",$body);
     }
 
     return $body;
@@ -1136,7 +1120,7 @@ function html_parse($text)
     $words = explode(" ", $text);
     $n = count($words);
     $is_link = 0;
-    for ($i = 0; $i < $n; $i ++) {
+    for ($i = 0; $i < $n; $i++) {
         $word = $words[$i];
         // add the spaces between the words
         if ($i > 0)
@@ -1169,7 +1153,7 @@ function display_links_in_body($text)
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
     if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-        include ($config_dir . '/rewrite_body.inc.php');
+        include($config_dir . '/rewrite_body.inc.php');
     }
 
     echo $text;
@@ -1237,7 +1221,7 @@ function message_cancel($subject, $from, $newsgroups, $ref, $body, $id)
         $body = str_replace("\r", '', $body);
         $b = explode("\n", $body);
         $body = "";
-        for ($i = 0; $i < count($b); $i ++) {
+        for ($i = 0; $i < count($b); $i++) {
             if ((strpos(substr($b[$i], 0, strpos($b[$i], " ")), ">") != false) | (strcmp(substr($b[$i], 0, 1), ">") == 0)) {
                 $body .= textwrap(stripSlashes($b[$i]), 78, "\r\n") . "\r\n";
             } else {
@@ -1276,7 +1260,7 @@ function _rawurldecode($string)
 function rslight_decrypt($data, $key)
 {
     $encryption_key = base64_decode($key);
-    list ($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
+    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $encryption_key, 0, $iv);
 }
 
@@ -1296,20 +1280,21 @@ function group_display_name($gname)
     return $gname;
 }
 
-function verify_logged_in($name) {
+function verify_logged_in($name)
+{
     global $CONFIG, $auth_log, $debug_log;
 
     $logged_in = false;
     $ip_pass = false;
 
-  //  /* This may cause issues if cookies or javascript disabled
-  //  if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
-  //      return false;
-   // }
-    
+    //  /* This may cause issues if cookies or javascript disabled
+    //  if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
+    //      return false;
+    // }
+
 
     // For checking session expire stuff
-    if(!isset($_SESSION['start_stamp'])) {
+    if (!isset($_SESSION['start_stamp'])) {
         $_SESSION['start_stamp'] = time();
     }
 
@@ -1341,20 +1326,21 @@ function verify_logged_in($name) {
     if ($CONFIG['anonuser'] == '1') {
         $logged_in = false;
     }
-    return $logged_in ;
+    return $logged_in;
 }
 
-function set_user_logged_in_cookies($name, $keys) {
+function set_user_logged_in_cookies($name, $keys)
+{
 
     global $debug_log, $CONFIG;
     $name = trim($name);
     $name_lc = strtolower($name);
 
-    if($name == $CONFIG['anonusername']) {
+    if ($name == $CONFIG['anonusername']) {
         return false;
     }
 
-    if( !get_user_config($name_lc, 'encryptionkey')) {
+    if (!get_user_config($name_lc, 'encryptionkey')) {
         $key = openssl_random_pseudo_bytes(44);
         set_user_config($name_lc, 'encryptionkey', base64_encode($key));
         file_put_contents($debug_log, "\n" . logging_prefix() . " Created encryptionkey for: " . $name, FILE_APPEND);
@@ -1366,17 +1352,17 @@ function set_user_logged_in_cookies($name, $keys) {
     set_user_config(strtolower($name), "pkey", $pkey);
     $_SESSION['pass'] = true;
 ?>
-<script type="text/javascript">
-   if (navigator.cookieEnabled)
-     var authcookie = "<?php echo $authkey; ?>";
-     var savename = "<?php echo stripslashes($name); ?>";
- var auth_expire = "<?php echo $auth_expire; ?>";
- var name_expire = "7776000";
- var pkey = "<?php echo $pkey; ?>";
-     document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
-     document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
-     document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
-  </script>
+    <script type="text/javascript">
+        if (navigator.cookieEnabled)
+            var authcookie = "<?php echo $authkey; ?>";
+        var savename = "<?php echo stripslashes($name); ?>";
+        var auth_expire = "<?php echo $auth_expire; ?>";
+        var name_expire = "7776000";
+        var pkey = "<?php echo $pkey; ?>";
+        document.cookie = "mail_auth=" + authcookie + "; max-age=" + auth_expire + "; path=/";
+        document.cookie = "mail_name=" + savename + "; max-age=" + name_expire + "; path=/";
+        document.cookie = "pkey=" + pkey + "; max-age=" + name_expire + "; path=/";
+    </script>
 <?php
     return true;
 }
@@ -1435,7 +1421,7 @@ function check_bbs_auth($username, $password, $sockip = null)
             touch($userFilename);
             $ok = TRUE;
         } else {
-            if(trim($password) == '') {
+            if (trim($password) == '') {
                 file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (no password)', FILE_APPEND);
             } else {
                 file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (password incorrect)', FILE_APPEND);
@@ -1625,10 +1611,11 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     );
 }
 
-function logging_prefix($sockip = null) {
+function logging_prefix($sockip = null)
+{
     global $client_ip_address;
-    if($sockip) {
-        if(preg_match("/\./", $sockip)) {
+    if ($sockip) {
+        if (preg_match("/\./", $sockip)) {
             $ipv4_addr = preg_split("/\:/", $sockip);
             $client_ip = $ipv4_addr[0];
         } else {
@@ -1638,11 +1625,42 @@ function logging_prefix($sockip = null) {
     } else {
         $client_ip = $client_ip_address;
     }
-    if(trim($client_ip == '')) {
+    if (trim($client_ip == '')) {
         return format_log_date();
     } else {
         return format_log_date() . " [" . $client_ip . "]";
     }
+}
+
+function repair_broken_group($group)
+{
+    global $debug_log, $spooldir;
+    $rslight_file = $spooldir . '/' . $group . '-rslight_info.txt';
+    $newsportal_file = $spooldir . '/' . $group . '-info.txt';
+
+    if (file_exists($rslight_file) && file_exists($newsportal_file)) {
+        $rslight_info = file_get_contents($rslight_file);
+        $newsportal_info = file($newsportal_file);
+        $newsportal_info = trim($newsportal_info[1]);
+        $newsportal_start = explode(" ", $newsportal_info);
+        $rslight_start = explode(" ", $rslight_info);
+        if ($newsportal_start[0] != $rslight_start[0]) {
+            file_put_contents($debug_log, "\n " . format_log_date() . " GROUP MISMATCH: " . $group . " Start rslight: " . $rslight_start[0] . " Start newsportal: " . $newsportal_start[0] . " Repairing...", FILE_APPEND);
+            wipe_newsportal_spool_info($group);
+        }
+    }
+}
+
+function wipe_newsportal_spool_info($group)
+{
+    global $spooldir;
+    $gpath = $spooldir . '/' . $group;
+    @unlink($gpath . '-cache.txt');
+    @unlink($gpath . '-data.dat');
+    @unlink($gpath . '-firstarticleinfo.dat');
+    @unlink($gpath . '-lastarticleinfo.dat');
+    @unlink($gpath . '-info.txt');
+    @unlink($gpath . '-overboard.dat');
 }
 
 function format_log_date()
@@ -1678,9 +1696,9 @@ function truncate_email($address)
         if ($endname > 8)
             $endname = 8;
         if ($endname < 3)
-            $endname ++;
+            $endname++;
         if ($endname < 3)
-            $endname ++;
+            $endname++;
     } else {
         $endname = $namelen;
     }
@@ -2272,7 +2290,7 @@ function throttle_hits($client_device = null)
         $_SESSION['starttime'] = time();
         $_SESSION['views'] = 0;
     }
-    $_SESSION['views'] ++;
+    $_SESSION['views']++;
     // $rate = current hits / seconds since start of session
     $rate = fdiv($_SESSION['views'], (time() - $_SESSION['starttime']));
     // if $rate > greater than $loadrate, throttle hits
@@ -2395,7 +2413,7 @@ function mb_wordwrap($string, $width = 75, $break = "\n", $cut = false)
     $breakWidth = mb_strlen($break);
     $result = '';
     $lastStart = $lastSpace = 0;
-    for ($current = 0; $current < $stringWidth; $current ++) {
+    for ($current = 0; $current < $stringWidth; $current++) {
         $char = mb_substr($string, $current, 1);
         $possibleBreak = $char;
         if ($breakWidth !== 1) {
@@ -2495,7 +2513,7 @@ function get_next_article_number($group)
 {
     $ok_article = get_article_list($group);
     sort($ok_article);
-    $local = $ok_article[key(array_slice($ok_article, - 1, 1, true))];
+    $local = $ok_article[key(array_slice($ok_article, -1, 1, true))];
     if (! is_numeric($local)) {
         $local = 0;
     }
@@ -2504,7 +2522,7 @@ function get_next_article_number($group)
         $local = 1;
     }
     while (is_deleted_post($group, $local)) {
-        $local ++;
+        $local++;
     }
     return $local;
 }
@@ -2979,7 +2997,7 @@ function check_article_integrity($rawmessage)
     $i = 0;
     while ($rawmessage[$i] != "") {
         $rawheader[] = $rawmessage[$i];
-        $i ++;
+        $i++;
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
@@ -2987,6 +3005,11 @@ function check_article_integrity($rawmessage)
     // Check if date is in future (allow up to 60 seconds in future)
     if ($message->header->date > (time() + 60)) {
         $returnval = " Skipping message (date in future): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
+        return $returnval;
+    }
+    // Date is probably 1 Jan 1970
+    if ($message->header->date < 100) {
+        $returnval = " Skipping message (date too old): " . $message->header->id . " (" . date('M d H:i:s', $message->header->date) . ")";
         return $returnval;
     }
     // Now we know if the message is a mime-multipart message:
@@ -2997,7 +3020,7 @@ function check_article_integrity($rawmessage)
         $boundary = "--" . $message->header->content_type_boundary;
         // lets find the first part
         while ($rawmessage[$i] != $boundary) {
-            $i ++;
+            $i++;
             if ($i > $count_rawmessage) {
                 $returnval = " Skipping malformed message: " . $message->header->id;
                 return $returnval;
@@ -3008,7 +3031,8 @@ function check_article_integrity($rawmessage)
 }
 
 /* Remove or replace characters in a string */
-function sanitize_header($text) {
+function sanitize_header($text)
+{
     return preg_replace("/\`/", "'", $text);
 }
 
@@ -3026,7 +3050,7 @@ function wrap_post($body)
         if ($line[0] == '>') {
             $depth = 0;
             while ($line[$depth] == '>') {
-                $depth ++;
+                $depth++;
                 if ($depth > 30) {
                     break;
                 }
@@ -3042,7 +3066,7 @@ function wrap_post($body)
                         $i = 0;
                         while ($i < $depth) {
                             $wrapped .= '>';
-                            $i ++;
+                            $i++;
                         }
                         $wrapped .= ' ';
                     }
@@ -3065,7 +3089,7 @@ function wrap_post($body)
 
 function delete_message_from_overboard($config_name, $group, $messageid)
 {
-    GLOBAL $spooldir;
+    global $spooldir;
     $cachefile = $spooldir . "/" . $config_name . "-overboard.dat";
     if (is_file($cachefile)) {
         $cached_overboard = unserialize(file_get_contents($cachefile));
