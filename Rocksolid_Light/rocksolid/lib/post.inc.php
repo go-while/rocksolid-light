@@ -524,7 +524,11 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
 
         if (! isset($OVERRIDES['disable_rslight_headers']) || $OVERRIDES['disable_rslight_headers'] != true) {
             $sitekey = password_hash($CONFIG['thissitekey'] . $msgid, PASSWORD_DEFAULT);
-            $posting_user = hash('sha1', strtolower($authname) . $CONFIG['thissitekey'] . $_SERVER['HTTP_HOST']);
+            if ($authname) {
+                $posting_user = hash('sha1', strtolower($authname) . $CONFIG['thissitekey'] . $_SERVER['HTTP_HOST']);
+            } else {
+                $posting_user = hash('sha1', strtolower($from) . $CONFIG['thissitekey'] . $_SERVER['HTTP_HOST']);
+            }
             fputs($ns, 'X-Rslight-Site: ' . $sitekey . "\r\n");
             fputs($ns, 'X-Rslight-Posting-User: ' . $posting_user . "\r\n");
             if ($userconfig) {
