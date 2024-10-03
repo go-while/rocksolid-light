@@ -17,45 +17,44 @@
  * it to appear:
  * $config_dir/<section>/groups.txt
  */
-include ("paths.inc.php");
+include("paths.inc.php");
 chdir($spoolnews_path);
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 
-// Change to webserver user if root
-$uinfo = posix_getpwnam($CONFIG['webserver_user']);
-/* Change to non root user */
-change_identity($uinfo["uid"], $uinfo["gid"]);
-$processUser = posix_getpwuid(posix_geteuid());
-if ($processUser['name'] != $CONFIG['webserver_user']) {
-    echo "You are running as: " . $processUser['name'] . "\n";
-    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
-    exit();
+if ($argv[1] != '-newsection') {
+    // Change to webserver user if root
+    $uinfo = posix_getpwnam($CONFIG['webserver_user']);
+    /* Change to non root user */
+    change_identity($uinfo["uid"], $uinfo["gid"]);
+    $processUser = posix_getpwuid(posix_geteuid());
+    if ($processUser['name'] != $CONFIG['webserver_user']) {
+        echo "You are running as: " . $processUser['name'] . "\n";
+        echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+        exit();
+    }
+    /* Everything below runs as $CONFIG['webserver_user'] */
+
+    $processUser = posix_getpwuid(posix_geteuid());
+    if ($processUser['name'] != $CONFIG['webserver_user']) {
+        echo "You are running as: " . $processUser['name'] . "\n";
+        echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+        exit();
+    }
+
+    $logfile = $logdir . '/import.log';
+
+    $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
+
+    $pid = file_get_contents($lockfile);
+    if (posix_getsid($pid) === false || ! is_file($lockfile)) {
+        print "Starting Import...\n";
+        file_put_contents($lockfile, getmypid()); // create lockfile
+    } else {
+        print "Import currently running\n";
+        exit();
+    }
 }
-/* Everything below runs as $CONFIG['webserver_user'] */
-
-$processUser = posix_getpwuid(posix_geteuid());
-if ($processUser['name'] != $CONFIG['webserver_user']) {
-    echo "You are running as: " . $processUser['name'] . "\n";
-    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
-    exit();
-}
-
-$logfile = $logdir . '/import.log';
-
-$lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
-$cronfile = $spooldir . '/cron.disable';
-
-$pid = file_get_contents($lockfile);
-if (posix_getsid($pid) === false || ! is_file($lockfile)) {
-    print "Starting Import...\n";
-    file_put_contents($lockfile, getmypid()); // create lockfile
-} else {
-    print "Import currently running\n";
-    exit();
-}
-
-touch($cronfile);
 
 if (! isset($argv[1])) {
     $argv[1] = "-help";
@@ -82,6 +81,14 @@ if ($argv[1][0] == '-') {
                 import();
             }
             break;
+        case "-newsection":
+            if (!isset($argv[2])) {
+                echo "Please provide a section name\n";
+                exit;
+            }
+            echo "Creating section: " . $argv[2] . "\n";
+            echo create_section($argv[2]);
+            break;
         case "-clean":
             clean_spool();
             break;
@@ -94,16 +101,58 @@ if ($argv[1][0] == '-') {
             echo "-clean: Remove extraneous group db3 files\n";
             echo "-import: Import articles from a .db3 file (-import alt.test-articles)\n";
             echo "         You must first add group name to <config_dir>/<section>/groups.txt manually\n";
+            echo "-newsection: Create a new section for groups\n";
             echo "-remove: Remove all data for a group (-remove alt.test)\n";
             echo "         You must also remove group name from <config_dir>/<section>/groups.txt manually\n";
             echo "-reset: Reset a group to restart from zero messages (-reset alt.test)\n";
             break;
     }
-    unlink($cronfile);
     exit();
 } else {
-    unlink($cronfile);
     exit();
+}
+
+function create_section($section = false)
+{
+    global $spooldir, $config_dir, $spoolnews_path, $CONFIG;
+    $menufile = $config_dir . '/menu.conf';
+
+    if (!isset($section)) {
+        return "Please include a section name\n";
+    }
+    $uinfo = posix_getpwnam($CONFIG['webserver_user']);
+    $spoolsection = $spooldir . '/' . $section;
+    $configsection = $config_dir . '/' . $section;
+
+    $websectionarray = explode('/', $spoolnews_path);
+    $websectionpath = substr($spoolnews_path, 0, strlen($spoolnews_path) - 9);
+    $websection = $websectionpath . $section;
+    $websection = $websectionpath . '/' . $section;
+
+    if (!file_exists($websection . '/newsportal.php')) {
+        echo "Creating symlinks " . $websection . "\n";
+        mkdir($websection);
+        exec("ln -s " . $websectionpath . '/rocksolid/*' . ' ' . $websection);
+    }
+
+    if (!file_exists($configsection . '/groups.txt')) {
+        mkdir($configsection);
+        echo 'Creating ' . $configsection . '/groups.txt' . "\n";
+        touch($configsection . '/groups.txt');
+    }
+
+    $menuexists = false;
+    $menudata = file($config_dir . '/menu.conf');
+    foreach ($menudata as $menuentry) {
+        if (strpos($menuentry, $section) !== false) {
+            $menuexists = true;
+            break;
+        }
+    }
+    if (!$menuexists) {
+        file_put_contents($config_dir . '/menu.conf', $section . ":1:1", FILE_APPEND);
+    }
+    echo 'Please now edit ' . $configsection . "/groups.txt to add groups to this section\n";
 }
 
 function clean_spool()
@@ -237,7 +286,7 @@ function remove_articles($group)
         }
     }
     $overview_dbh = null;
-    foreach($del_array as $delme) {
+    foreach ($del_array as $delme) {
         delete_message($delme, $group);
         echo "Deleting " . $delme . " from " . $group . "\n";
     }
@@ -248,7 +297,7 @@ function remove_articles($group)
     $clear_stmt->bindParam(':group', $group);
     $clear_stmt->execute();
     $history_dbh = null;
-    
+
     rename($spooldir . '/' . $group . '-articles.db3', $spooldir . '/' . $group . '-articles.db3-removed');
     unlink($spooldir . '/' . $group . '-data.db3');
     unlink($spooldir . '/' . $group . '-info.txt');
@@ -291,7 +340,7 @@ function import_articles($group)
             $bytes = $bytes + mb_strlen($response, '8bit');
             if (trim($response) == "" || $lines > 0) {
                 $is_header = 0;
-                $lines ++;
+                $lines++;
             }
             if ($is_header == 1) {
                 $response = str_replace("\t", " ", $response);
@@ -309,7 +358,9 @@ function import_articles($group)
                 $article_date = $row['date'];
                 if (stripos($response, "Content-Type: ") === 0) {
                     preg_match('/.*charset=.*/', $response, $te);
-                    $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
+                    if (isset($te[0])) {
+                        $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
+                    }
                 }
                 if (stripos($response, "References: ") === 0) {
                     $this_references = explode('References: ', $response);
@@ -329,7 +380,7 @@ function import_articles($group)
         // add to database
         // CREATE SEARCH SNIPPET
         $this_snippet = get_search_snippet($body, $content_type[1]);
-        $xref = create_xref_from_msgid($msgid, $group, $local);
+        $xref = create_xref_from_msgid($mid[1], $group, $local);
         $new_article_stmt->execute([
             $group,
             $local,
@@ -356,10 +407,11 @@ function import_articles($group)
         $status = "respooled";
         $statusdate = time();
         $statusreason = "repair";
+        $statusnotes = '';
         add_to_history($group, $local, $mid[1], $status, $statusdate, $statusreason, $statusnotes);
         echo "\nImported: " . $group . " " . $local;
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Imported: " . $group . ":" . $local, FILE_APPEND);
-        $i ++;
+        $i++;
         $references = "";
     }
     $new_article_dbh = null;
@@ -373,4 +425,3 @@ function import_articles($group)
     unlink($spooldir . '/' . $group . '-overboard.dat');
     reset_group($group);
 }
-?>
