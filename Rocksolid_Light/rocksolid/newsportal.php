@@ -1644,7 +1644,7 @@ function repair_broken_group($group)
         $newsportal_info = trim($newsportal_info[1]);
         $newsportal_start = explode(" ", $newsportal_info);
         $rslight_start = explode(" ", $rslight_info);
-        if ($newsportal_start[0] != $rslight_start[0] || (($rslight_start[2] - $newsportal_start[2]) > 5)) {
+        if ($newsportal_start[0] != $rslight_start[0] || (($rslight_start[2] - $newsportal_start[2]) > 10)) {
             file_put_contents($debug_log, "\n " . format_log_date() . " GROUP MISMATCH: " . $group . " rslight: " . $rslight_info . " newsportal: " . $newsportal_info . " Repairing...", FILE_APPEND);
             wipe_newsportal_spool_info($group);
         }
