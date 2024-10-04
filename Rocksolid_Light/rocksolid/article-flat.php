@@ -13,7 +13,7 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 $logfile = $logdir . '/newsportal.log';
 if (isset($_COOKIE['mail_name'])) {
     $cookie_mail_name = trim(strtolower($_COOKIE['mail_name']));
-    if($_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+    if ($_COOKIE['mail_name'] == $CONFIG['anonusername']) {
         unset($cookie_mail_name);
     }
     if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
@@ -81,16 +81,16 @@ if ($userdata) {
 }
 
 if (isset($frames_on) && $frames_on === true) {
-    ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash; 
-    if ( window.self !== window.top ) {
-	/* Great! now we move along */
-    } else {
-	window.location.href = '../index.php?content='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
+?>
+    <script>
+        var contentURL = window.location.pathname + window.location.search + window.location.hash;
+        if (window.self !== window.top) {
+            /* Great! now we move along */
+        } else {
+            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
+        }
+        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
+    </script>
 <?php
 }
 
@@ -139,10 +139,12 @@ if ($message) {
             if ($admin_msg_log[$group] != 0) {
                 $msg_from = 'admin';
                 $msg_to = 'admin';
-                $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . " may need repair";
+                $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . ":" . $message->header->number . " may need repair";
                 $msg_body_2 = "\n\nRun maintenance.php -import " . $group;
                 $msg_subject = "ERROR in $group";
-                // send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                if (isset($OVERRIDES['send_admin_debug_messages']) && $OVERRIDES['send_admin_debug_messages'] == true) {
+                    send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                }
                 file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
                 $admin_msg_log[$group] = 0;
             } else {
@@ -163,7 +165,7 @@ if ($message) {
 
     // which articles are exactly on this page?
     $pageids = array();
-    for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $articleflat_articles_per_page - 1)); $i ++) {
+    for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $articleflat_articles_per_page - 1)); $i++) {
         $pageids[] = $subthread[$i];
     }
 
@@ -174,7 +176,7 @@ if ($message) {
     $thread_show["lastdate"] = false;
     $thread_show["latest"] = false;
     $thread_show["author"] = true;
-    if(isset($OVERRIDES['show_thread_tree']) && $OVERRIDES['show_thread_tree'] == true) {
+    if (isset($OVERRIDES['show_thread_tree']) && $OVERRIDES['show_thread_tree'] == true) {
         message_thread($message->header->id, $group, $thread, false);
     }
     echo '<br>';

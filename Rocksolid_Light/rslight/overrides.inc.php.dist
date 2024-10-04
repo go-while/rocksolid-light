@@ -90,6 +90,11 @@ return [
     // If unset, default is 'articles'
     'overboard_default_view' => 'articles',
 
+    // Send Admin debug messages
+    // Some debug messages can be sent to admin address (rslight email)
+    // Default is false
+    'send_admin_debug_messages' => false,
+
     // Disable New Articles link on groups page
     'overboard_disable_new_link' => false,
 
