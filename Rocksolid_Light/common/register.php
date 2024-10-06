@@ -6,6 +6,7 @@ $title .= ' - Register';
 include "head.inc";
 
 $logfile = $spooldir . '/log/register.log';
+$mail_log = $spooldir . '/log/mail.log';
 
 # $workpath: Where to cache users (must be writable by calling program)
 $workpath = $config_dir . "users/";
@@ -445,7 +446,7 @@ function change_user_password($username, $password)
 
 function send_reset_email($username, $user_email)
 {
-    global $CONFIG, $config_dir, $spooldir, $keys;
+    global $CONFIG, $config_dir, $spooldir, $mail_log, $keys;
 
     $email = trim(strtolower($user_email));
 
@@ -530,10 +531,12 @@ function send_reset_email($username, $user_email)
     $msg .= "Note: replies to this email address are checked daily.";
     $mail->Body = wordwrap($msg, 70);
 
-    if (!$mail->send()) {
+     if (!$mail->send()) {
         echo 'The message could not be sent.';
         echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
+        file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
     } else {
+        file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email, FILE_APPEND);
         echo 'An email has been sent to ' . $user_email . '<br />';
         echo 'Please enter the code from the email below:<br />';
         echo '<form name="create1" method="post" action="register.php">';
@@ -562,7 +565,7 @@ function send_reset_email($username, $user_email)
 
 function create_account($username, $password, $user_email)
 {
-    global $CONFIG, $config_dir, $keys, $user_email, $email_registry;
+    global $CONFIG, $config_dir, $keys, $user_email, $mail_log, $email_registry;
 
     if ($CONFIG['verify_email'] == true) {
         include($config_dir . '/phpmailer.inc.php');
@@ -631,11 +634,13 @@ function create_account($username, $password, $user_email)
         $mail->Body = wordwrap($msg, 70);
 
         if (!$mail->send()) {
+            file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
             echo 'The message could not be sent.';
             echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
             echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
             exit(1);
         } else {
+            file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email, FILE_APPEND);
             echo 'An email has been sent to ' . $user_email . '<br />';
             echo 'Please enter the code from the email below:<br />';
         }
