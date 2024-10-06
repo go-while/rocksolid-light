@@ -2133,7 +2133,7 @@ function get_poster_name($name)
  */
 function save_config_value($configfile, $name, $value, $value_unique = false)
 {
-    global $spooldir;
+    global $spooldir, $logdir;
     $return_val = false;
     $tempfile = tempnam($spooldir, 'rslight-');
     if (file_exists($tempfile)) {
@@ -2605,6 +2605,9 @@ function check_duplicate_msgid($msgid, $group)
 
     $found = false;
 
+// DEBUG
+file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Checking " . $group . " " . $msgid . " for duplicate", FILE_APPEND);
+
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $dbh = overview_db_open($database, $table);
@@ -2632,6 +2635,10 @@ function check_duplicate_msgid($msgid, $group)
         }
     }
     $dbh = null;
+
+    if($found) {
+        file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " FOUND Duplicate " . $msgid, FILE_APPEND);
+    }
 
     return $found;
 }
@@ -2702,15 +2709,17 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         unlink($grouppath . "/" . $this_article['local']);
         $article_dbh = null;
     } else {
+        $article_date = $this_article['epochdate'];
         if ($article_date > time())
             $article_date = time();
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
     echo "\nSpooling: " . $group . " " . $this_article['local'];
-    file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
+    file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'] . " " . $this_article['mid'], FILE_APPEND);
     $status = "spooled";
     $statusdate = time();
     $statusreason = "imported";
+    $statusnotes = '';
     add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
 }
 
