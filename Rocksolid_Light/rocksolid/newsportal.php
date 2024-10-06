@@ -2343,6 +2343,78 @@ function get_client_user_agent_info()
     return $client_device;
 }
 
+/* This function sends internet email
+ * $subject and $body are strings
+ * $mail_to is an email address to send to
+ * $mail_from is an email address to use as from
+ * $mail_name is the name to use with $mail_from when sending
+ *   required if setting $mail_from
+ * DEFAULT is Admin address for to (phpmailer.inc.php)
+ * DEFAULT is standard From address for from (phpmailer.inc.php)
+ */
+function send_internet_email($subject, $body, $mail_to = false, $mail_from = false, $mail_name = false)
+{
+    global $CONFIG, $config_dir, $spooldir, $keys;
+    global $debug_log, $mail_log;
+
+    include($config_dir . '/phpmailer.inc.php');
+    if (class_exists('PHPMailer')) {
+        $mail = new PHPMailer();
+    } else {
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+    }
+
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+
+    $mail->IsSMTP();
+    # uncomment below to enable debugging
+    # $mail->SMTPDebug = 3;
+
+    $mail->CharSet = 'UTF-8';
+    $mail->Host = $mailer['host'];
+    $mail->SMTPAuth = true;
+
+    $mail->Port = $mailer['port'];
+    $mail->Username = $mailer['username'];
+    $mail->Password = $mailer['password'];;
+    $mail->SMTPSecure = 'tls';
+
+
+    if ($mail_from != false) {
+        $mail->setFrom($mail_from, $mail_name);
+    } else {
+        $mail->setFrom($mail_user . '@' . $mail_domain, $mail_name); // Default Admin
+        $mail_from = $mail_user . '@' . $mail_domain;
+    }
+
+    if ($mail_to != false) {
+        $mail->addAddress($mail_to);
+    } else {
+        $mail->addAddress($mail_admin_user . '@' . $mail_admin_domain, $mail_admin_name); // Default Admin
+        $mail_to = $mail_admin_user . '@' . $mail_admin_domain;
+    }
+
+    $mail->Subject = $subject;
+
+    foreach ($mail_custom_header as $key => $value) {
+        $mail->addCustomHeader($key, $value);
+    }
+
+    $mail->Body = $body;
+
+    if (!$mail->send()) {
+        file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_from . ' to: ' . $mail_to . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
+    } else {
+        file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_from . ' to: ' . $mail_to, FILE_APPEND);
+    }
+}
+
 function get_user_mail_auth_data($user)
 {
     global $spooldir;
