@@ -56,9 +56,9 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
 
 // Create paths in $config_dir/scripts path file
 $config_path_file = $config_dir . '/scripts/paths.inc.php';
-if(!file_exists($config_path_file)) {
-    file_put_contents($config_path_file, '<?php' ."\n");
-    file_put_contents($config_path_file, '$spoolnews_path = "' . getcwd() . '";', FILE_APPEND); 
+if (!file_exists($config_path_file)) {
+    file_put_contents($config_path_file, '<?php' . "\n");
+    file_put_contents($config_path_file, '$spoolnews_path = "' . getcwd() . '";', FILE_APPEND);
 }
 
 # Generate user count file (must be root)
@@ -131,6 +131,8 @@ if ($rslight_gpg['enable'] == '1') {
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/interBBS_mail.php");
 }
 
+check_disk_space();
+
 reset($menulist);
 foreach ($menulist as $menu) {
     if (($menu[0] == '#') || (trim($menu) == "")) {
@@ -180,9 +182,68 @@ expire_files();
 echo "Removed old files\n";
 file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " completed...", FILE_APPEND);
 
+function check_disk_space()
+{
+    global $CONFIG, $logdir, $spooldir;
+    global $low_spool_disk_space, $min_spool_disk_space, $free_spool_disk_space;
+    $logfile = $logdir . '/spoolnews.log';
+
+    $warning_spool_disk_space = $min_spool_disk_space * 1.1;
+
+    if ($free_spool_disk_space < $warning_spool_disk_space) {
+        $nearing_low_spool_disk_space = true;
+    } else {
+        $nearing_low_spool_disk_space = false;
+    }
+
+    if ($nearing_low_spool_disk_space) {
+        if ($low_spool_disk_space) { // Disk space low. Spooling will pause
+            print "Low Disk Space (less than " . $min_spool_disk_space . " available)\n";
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for spool). Pausing spoolnews", FILE_APPEND);
+
+            $subject = "LOW DISK SPACE ON " . $CONFIG['server_path'];
+            $body = "LOW DISK SPACE ON " . $CONFIG['server_path'] . "\n";
+            $body .= "Space has fallen below " . $min_spool_disk_space . "GB\n";
+            $body .= "Space remaining: " . round($free_spool_disk_space) . "GB\n";
+            $timer_type = "low_spool_disk_space";
+
+        } else { // Disk space approaching low (within 10%) This is a warning only
+            print "Nearing Low Disk Space (less than " . round($warning_spool_disk_space, 1) . "Gb available for spool)\n";
+            file_put_contents($logfile, "\n" . format_log_date() . " Nearing Low Disk Space (less than " . round($warning_spool_disk_space, 1) . "Gb available for spool)", FILE_APPEND);
+
+            $subject = "NEARING LOW DISK SPACE ON " . $CONFIG['server_path'];
+            $body = "NEARING LOW DISK SPACE ON " . $CONFIG['server_path'] . "\n";
+            $body .= "Space has fallen below " . round($warning_spool_disk_space) . "GB\n";
+            $body .= "Space remaining: " . round($free_spool_disk_space) . "GB\n\n";
+            $body .= "Spooling will pause when space below " . $min_spool_disk_space . "GB\n";
+            $timer_type = "nearing_low_spool_disk_space";
+        }
+
+        $date_window = 86400;
+        $send_email_timer_file = $spooldir . '/email_send_timer.dat';
+        if (file_exists($send_email_timer_file)) {
+            $send_email_timer = unserialize(file_get_contents($send_email_timer_file));
+        } else {
+            $send_email_timer = array();
+        }
+        if (! isset($send_email_timer[$timer_type])) {
+            $send_email_timer[$timer_type] = 0;
+        }
+        if ($send_email_timer[$timer_type] < (time() - $date_window)) {
+            if ($send_email_timer[$timer_type] != 0) {
+                $send_email_timer[$timer_type] = 0;
+            } else {
+                $send_email_timer[$timer_type] = time();
+            }
+            send_internet_email($subject, $body);
+        }
+        file_put_contents($send_email_timer_file, serialize($send_email_timer));
+    }
+}
+
 function expire_files()
 {
-    global $spooldir, $logdir;
+    global $spooldir, $logdir, $uinfo;
     $now = time();
     // Days to prune
     $nocemdays = 7;
@@ -232,7 +293,7 @@ function log_rotate()
     if ((time() - $rotate) > 86400) {
         $log_files = scandir($logdir);
         foreach ($log_files as $logfile) {
-            if (substr($logfile, - 4) != '.log') {
+            if (substr($logfile, -4) != '.log') {
                 continue;
             }
             $logfile = $logdir . '/' . $logfile;
@@ -274,4 +335,3 @@ function rotate_keys()
     file_put_contents($keyfile, serialize($newkeys));
     touch($keyfile);
 }
-?>
