@@ -248,23 +248,17 @@ function reset_group($group, $remove = 0)
         '.',
         'outgoing'
     ));
-
     foreach ($config_files as $config_file) {
-        $output = array();
-        echo $config_location . '/' . $config_file . "\n";
-        $thisfile = file($config_location . '/' . $config_file);
-        foreach ($thisfile as $thisgroupline) {
-            $onegroup = explode(':', $thisgroupline);
-            if (trim($onegroup[0]) == $group) {
-                echo "FOUND: " . $group . " in " . $section . "\n";
-                if ($remove == 0) {
-                    $output[] = $group . "\n";
-                }
-            } else {
-                $output[] = $thisgroupline;
-            }
+        if (!str_ends_with($config_file, '_groups.dat')) {
+            continue;
         }
-        file_put_contents($config_location . '/' . $config_file, $output);
+        $groups_array = unserialize(file_get_contents($config_location . '/' . $config_file));
+        if (isset($groups_array[$group])) {
+            echo "Current group pointer for " . $group . ": " . $groups_array[$group] . "\n";
+            $groups_array[$group] = '1';
+            echo "New group pointer for " . $group . ": " . $groups_array[$group] . "\n";
+        }
+        file_put_contents($config_location . '/' . $config_file, serialize($groups_array));
     }
 }
 
@@ -298,12 +292,12 @@ function remove_articles($group)
     $clear_stmt->execute();
     $history_dbh = null;
 
-    rename($spooldir . '/' . $group . '-articles.db3', $spooldir . '/' . $group . '-articles.db3-removed');
-    unlink($spooldir . '/' . $group . '-data.db3');
-    unlink($spooldir . '/' . $group . '-info.txt');
-    unlink($spooldir . '/' . $group . '-cache.txt');
-    unlink($spooldir . '/' . $group . '-lastarticleinfo.dat');
-    unlink($spooldir . '/' . $group . '-overboard.dat');
+    @rename($spooldir . '/' . $group . '-articles.db3', $spooldir . '/' . $group . '-articles.db3-removed');
+    @unlink($spooldir . '/' . $group . '-data.db3');
+    @unlink($spooldir . '/' . $group . '-info.txt');
+    @unlink($spooldir . '/' . $group . '-cache.txt');
+    @unlink($spooldir . '/' . $group . '-lastarticleinfo.dat');
+    @unlink($spooldir . '/' . $group . '-overboard.dat');
 }
 
 function import_articles($group)
