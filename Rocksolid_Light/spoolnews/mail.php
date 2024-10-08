@@ -298,8 +298,17 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo "<td>To: </td><td><input type='text' name='to' value='" . $mail_to . "'/></td>";
     echo '</tr><tr>';
     echo "<td>Subject: </td><td><input type='text' name='subject' value='" . htmlentities($subject) . "'/></td>";
-    echo '</tr><tr>';
-    echo "<td></td><td><textarea class='postbody' id='message' name='message'>$message</textarea></td>";
+    echo '</tr></table>';
+
+    echo '<div class="np_post_body">';
+    echo '<table><tr>';
+
+    echo '<textarea cols="' . $wrap_width . '"';
+    echo 'class="postbody" id="message" cols="72"';
+    echo 'name="message" wrap="soft">' . $message . '</textarea>';
+
+    echo '</table></div><table><tbody><tr>';
+
     echo '</tr><tr>';
     echo "<input type='hidden' name='from' value='" . $user . "' />";
     echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
