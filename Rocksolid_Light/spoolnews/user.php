@@ -398,26 +398,29 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         echo '</tr>';
         // Send Mail by Email
         if ($OVERRIDES['disable_mail_to_email'] !== true) {
-            echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Send Mail to my Internet Email: </h3>';
+            if (get_user_config($_POST['username'], 'email_verified') == 'true') {
+                if ($email_address = get_user_config($_POST['username'], 'email')) {
+                    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Send Mail to my Internet Email: </h3>';
+                    if (! isset($user_config['send_mail_to_email'])) {
+                        $user_config['send_mail_to_email'] = 'false';
+                    }
+                    if ($user_config['send_mail_to_email'] == 'true') {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true" checked="checked">';
+                    } else {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true">';
+                    }
+                    echo '<label for="send_mail_to_email"> Yes, Forward Mail to my Email</label><br />';
 
-            if (! isset($user_config['send_mail_to_email'])) {
-                $user_config['send_mail_to_email'] = 'false';
-            }
-            if ($user_config['send_mail_to_email'] == 'true') {
-                echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true" checked="checked">';
-            } else {
-                echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true">';
-            }
-            echo '<label for="send_mail_to_email"> Yes, Forward Mail to my Email</label><br />';
+                    if ($user_config['send_mail_to_email'] == 'false') {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false" checked="checked">';
+                    } else {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false">';
+                    }
+                    echo '<label for="send_mail_to_email"> No, Do Not Forward Mail to my Email</label><br />';
 
-            if ($user_config['send_mail_to_email'] == 'false') {
-                echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false" checked="checked">';
-            } else {
-                echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false">';
+                    echo '</tr>';
+                }
             }
-            echo '<label for="send_mail_to_email"> No, Do Not Forward Mail to my Email</label><br />';
-
-            echo '</tr>';
         }
         echo '</td></tr>';
     }
