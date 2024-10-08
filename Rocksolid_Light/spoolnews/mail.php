@@ -317,11 +317,15 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo '<div class="np_post_body">';
     echo '<table><tr>';
 
+    echo '<td><b>' . $text_post["message"] . '</b>';
+    echo '&nbsp;&nbsp;<font size="2em">(This is an interBBS or localBBS Mail Message. This is not Email)</font><br />';
+
+
     echo '<textarea cols="' . $wrap_width . '"';
     echo 'class="postbody" id="message" cols="72"';
     echo 'name="message" wrap="soft">' . $message . '</textarea>';
 
-    echo '</table></div><table><tbody><tr>';
+    echo '</td></table></div><table><tbody><tr>';
 
     echo '</tr><tr>';
     echo "<input type='hidden' name='from' value='" . $user . "' />";
