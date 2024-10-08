@@ -254,15 +254,17 @@ if (isset($_POST['sendMessage'])) {
                 }
 
                 // Send internet email notification here
-                $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
-                if ($user_config['send_mail_to_email'] == 'true') {
-                    $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
-                    if (get_user_config($to, 'email_verified') == 'true') {
-                        if ($email_address = get_user_config($to, 'email')) {
-                            $message = "\nYou have received mail from " . $from . " on " . ltrim($CONFIG['server_path'], "@") . "\n\n-----\n" . $message;
-                            $message = rtrim($message);
-                            $message .= "\n-----\n\nTo Reply, log into site and view Mail";
-                            send_internet_email($email_subject, $message, $email_address);
+                if (strpos('@', $to) === false) {
+                    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
+                    if ($user_config['send_mail_to_email'] == 'true') {
+                        $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
+                        if (get_user_config($to, 'email_verified') == 'true') {
+                            if ($email_address = get_user_config($to, 'email')) {
+                                $message = "\nYou have received mail from " . $from . " on " . ltrim($CONFIG['server_path'], "@") . "\n\n-----\n" . $message;
+                                $message = rtrim($message);
+                                $message .= "\n-----\n\nTo Reply, log into site and view Mail";
+                                send_internet_email($email_subject, $message, $email_address);
+                            }
                         }
                     }
                 }

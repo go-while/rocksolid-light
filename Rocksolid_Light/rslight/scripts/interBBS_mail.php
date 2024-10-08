@@ -181,7 +181,7 @@ if ($do_mail_update == true) {
 
 function import_user_message($from, $rcpt, $date, $subject, $message)
 {
-    global $config_dir, $spooldir, $OVERRIDES;
+    global $CONFIG, $config_dir, $spooldir, $OVERRIDES;
 
     if (($to = get_config_value('aliases.conf', strtolower($rcpt))) == false) {
         $to = strtolower($rcpt);
