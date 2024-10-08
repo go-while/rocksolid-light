@@ -1,6 +1,6 @@
 <?php
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 include $config_dir . "/gpg.conf";
 
 $logfile = $logdir . '/mail.log';
@@ -181,7 +181,7 @@ if ($do_mail_update == true) {
 
 function import_user_message($from, $rcpt, $date, $subject, $message)
 {
-    global $config_dir, $spooldir;
+    global $config_dir, $spooldir, $OVERRIDES;
 
     if (($to = get_config_value('aliases.conf', strtolower($rcpt))) == false) {
         $to = strtolower($rcpt);
@@ -215,8 +215,21 @@ function import_user_message($from, $rcpt, $date, $subject, $message)
         $mail_viewed,
         $rcpt_viewed
     ]);
-
     $dbh = null;
+
+    // Send internet email notification here
+    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
+    if ($user_config['send_mail_to_email'] == 'true') {
+        $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
+        if (get_user_config($to, 'email_verified') == 'true') {
+            if ($email_address = get_user_config($to, 'email')) {
+                $message = "\nYou have received mail from " . $from . " on " . ltrim($CONFIG['server_path'], "@") . "\n\n-----\n" . $message;
+                $message = rtrim($message);
+                $message .= "\n-----\n\nTo Reply, log into site and view Mail";
+                send_internet_email($email_subject, $message, $email_address);
+            }
+        }
+    }
     return true;
 }
 
@@ -551,4 +564,3 @@ function send_keys_to_group($res, $rslight_gpg)
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Mail Sent: <" . $thishash . "@" . $domain . ">", FILE_APPEND);
     return true;
 }
-

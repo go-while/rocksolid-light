@@ -48,7 +48,7 @@ if (! isset($_COOKIE['mail_auth'])) {
 }
 
 $logged_in = verify_logged_in(trim(strtolower($name)));
-if(!$logged_in) {
+if (!$logged_in) {
     if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     }
@@ -252,6 +252,20 @@ if (isset($_POST['sendMessage'])) {
                         $return_val = "Failed to Send. No Key for Destination";
                     }
                 }
+
+                // Send internet email notification here
+                $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
+                if ($user_config['send_mail_to_email'] == 'true') {
+                    $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
+                    if (get_user_config($to, 'email_verified') == 'true') {
+                        if ($email_address = get_user_config($to, 'email')) {
+                            $message = "\nYou have received mail from " . $from . " on " . ltrim($CONFIG['server_path'], "@") . "\n\n-----\n" . $message;
+                            $message = rtrim($message);
+                            $message .= "\n-----\n\nTo Reply, log into site and view Mail";
+                            send_internet_email($email_subject, $message, $email_address);
+                        }
+                    }
+                }
                 $return_val = "Message sent.";
             } else {
                 $return_val = "Failed to Send. Database Error";
@@ -344,8 +358,7 @@ function view_mailbox($user)
         } else {
             echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
         }
-        $button_link = 'np_mail_button_link';
-        ;
+        $button_link = 'np_mail_button_link';;
         if (($row['mail_from'] == $user) && ($row['mail_viewed'] == 'true')) {
             $button_link = 'np_mail_button_read';
         } elseif (($row['rcpt_to'] == $user) && ($row['rcpt_viewed'] == 'true')) {
@@ -368,7 +381,7 @@ function view_mailbox($user)
         echo '<input name="command" type="hidden" id="command" value="Message" readonly="readonly">';
         echo '</form>';
         echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
-        $i ++;
+        $i++;
     }
     echo '</tbody></table><br />';
     include "tail.inc";

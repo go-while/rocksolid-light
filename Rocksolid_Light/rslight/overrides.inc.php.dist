@@ -95,6 +95,9 @@ return [
     // Default is false
     'send_admin_debug_messages' => false,
 
+    // Disable toggle to send interBBS Mail to email
+    'disable_mail_to_email' => true,
+
     // Disable New Articles link on groups page
     'overboard_disable_new_link' => false,
 
