@@ -2605,9 +2605,6 @@ function check_duplicate_msgid($msgid, $group)
 
     $found = false;
 
-// DEBUG
-file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " Checking " . $group . " " . $msgid . " for duplicate", FILE_APPEND);
-
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
     $dbh = overview_db_open($database, $table);
