@@ -1368,24 +1368,6 @@ function find_article_by_msgid($msgid)
     return $return;
 }
 
-function get_article_list($thisgroup)
-{
-    global $spooldir;
-    $database = $spooldir . "/articles-overview.db3";
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
-    $stmt->execute([
-        'thisgroup' => $thisgroup
-    ]);
-    $ok_article = array();
-    while ($found = $stmt->fetch()) {
-        $ok_article[] = $found['number'];
-    }
-    $dbh = null;
-    return (array_unique($ok_article));
-}
-
 function create_node_ssl_cert($pemfile)
 {
     global $CONFIG, $ssldir, $webtmp, $logdir, $config_dir, $spooldir;

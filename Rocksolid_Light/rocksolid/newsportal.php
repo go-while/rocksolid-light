@@ -755,7 +755,7 @@ function groups_show($gruppen)
             }
             /* Display article count */
             $groupdisplay .= '</td><td class="' . $lineclass . '">';
-            if ($gl_age)
+            if ($gl_age && isset($g->age))
                 $datecolor = thread_format_date_color($g->age);
             $groupdisplay .= '<small>';
             if ($datecolor != "")
@@ -2592,6 +2592,24 @@ function get_next_article_number($group)
         $local++;
     }
     return $local;
+}
+
+function get_article_list($thisgroup)
+{
+    global $spooldir;
+    $database = $spooldir . "/articles-overview.db3";
+    $table = 'overview';
+    $dbh = overview_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
+    $stmt->execute([
+        'thisgroup' => $thisgroup
+    ]);
+    $ok_article = array();
+    while ($found = $stmt->fetch()) {
+        $ok_article[] = $found['number'];
+    }
+    $dbh = null;
+    return (array_unique($ok_article));
 }
 
 function check_duplicate_msgid($msgid, $group)

@@ -32,14 +32,28 @@ if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'
     $save_nocem_messages = false;
 }
 
-$groups_array_file = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . "-remote_groups.dat";
+$remote_groups_array_file = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . "-remote_groups.dat";
+
 $file_groups = $config_path . "groups.txt";
-$local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
 $logfile = $logdir . '/spoolnews.log';
 $spamlog = $logdir . '/spam.log';
 
 # END MAIN CONFIGURATION
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
+
+# Put this here for version 0.9.157 for a while to clean up dir
+if(file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
+    $section_dir = $spooldir . '/' . $config_name . '/';
+    @mkdir($section_dir . 'OLD');
+    $files = scandir($section_dir);
+    foreach ($files as $file) {
+        $file_name = $section_dir . $file;
+        if (is_file($file_name) && str_ends_with($file, ".txt")) {
+            copy($file_name, $section_dir . 'OLD/' . $file);
+            unlink($file_name);
+        }
+    }  
+}
 
 // Defaults
 $maxarticles_per_run = 100;
@@ -86,7 +100,7 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
 
 $sem = $spooldir . "/" . $config_name . ".reload";
 if (is_file($sem)) {
-    unlink($groups_array_file);
+    unlink($remote_groups_array_file);
     unlink($sem);
     $maxfirstrequest = 200;
 }
@@ -106,6 +120,7 @@ foreach ($menulist as $menu) {
         echo "\nLoaded groups";
     }
 }
+
 # Clean outgoing directory for LOCAL sections
 if ($CONFIG['remote_server'] == '') {
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
@@ -170,7 +185,8 @@ echo "\nSpoolnews Done\n";
 function get_articles($ns, $group)
 {
     global $enable_rslight, $rslight_gpg, $config_name, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG;
-    global $groups_array_file, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $spamlog, $logfile, $debug_log;
+    global $remote_groups_array_file, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path;
+    global $file_groups, $logdir, $config_name, $spamlog, $logfile, $debug_log;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -196,13 +212,13 @@ function get_articles($ns, $group)
         return (1);
     }
     # Get config
-    if (file_exists($groups_array_file)) {
-        $groups_array = unserialize(file_get_contents($groups_array_file));
+    if (file_exists($remote_groups_array_file)) {
+        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
     } else {
-        $groups_array = array();
+        $remote_groups_array = array();
     }
-    if(isset($groups_array[$group])) {
-        $article = $groups_array[$group];
+    if(isset($remote_groups_array[$group])) {
+        $article = $remote_groups_array[$group];
     } else {
         $article = 1;
     }
@@ -565,50 +581,11 @@ function get_articles($ns, $group)
         }
     }
     # Save config
-    if (file_exists($groups_array_file)) {
-        $groups_array = unserialize(file_get_contents($groups_array_file));
+    if (file_exists($remote_groups_array_file)) {
+        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
     } else {
-        $groups_array = array();
+        $remote_groups_array = array();
     }
-    $groups_array[$group] = $article;
-    file_put_contents($groups_array_file, serialize($groups_array));
-    save_config_value($local_groupfile, $group, $local, true);
-}
-
-function create_spool_groups($in_groups, $out_groups)
-{
-    global $spooldir, $config_name;
-    $grouplist = file($in_groups, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $temp_file = tempnam($spooldir . "/tmp/", 'groupfile-');
-    foreach ($grouplist as $group) {
-        if ($group[0] == ":") {
-            continue;
-        }
-        $thisgroup = preg_split("/( |\t)/", $group, 2);
-        if ($val = get_config_file_value($out_groups, $thisgroup[0])) {
-            file_put_contents($temp_file, $thisgroup[0] . ":" . $val . "\n", FILE_APPEND);
-        } else {
-            file_put_contents($temp_file, $thisgroup[0] . "\n", FILE_APPEND);
-        }
-    }
-    rename($temp_file, $out_groups);
-    return;
-}
-
-function get_article_list($thisgroup)
-{
-    global $spooldir;
-    $database = $spooldir . "/articles-overview.db3";
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
-    $stmt->execute([
-        'thisgroup' => $thisgroup
-    ]);
-    $ok_article = array();
-    while ($found = $stmt->fetch()) {
-        $ok_article[] = $found['number'];
-    }
-    $dbh = null;
-    return (array_unique($ok_article));
+    $remote_groups_array[$group] = $article;
+    file_put_contents($remote_groups_array_file, serialize($remote_groups_array));
 }
