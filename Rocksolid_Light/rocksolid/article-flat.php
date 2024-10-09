@@ -144,6 +144,7 @@ if ($message) {
                 $msg_subject = "ERROR in $group";
                 if (isset($OVERRIDES['send_admin_debug_messages']) && $OVERRIDES['send_admin_debug_messages'] == true) {
                     send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
+                    send_internet_email($subject, $msg_subject, $msg_body . $msg_body_2);
                 }
                 file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
                 $admin_msg_log[$group] = 0;
