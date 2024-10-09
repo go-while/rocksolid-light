@@ -9,6 +9,13 @@
 # Custom Headers (you can add multiple)
 #$mail_custom_header['X-Custom-Header-Name'] = "header info";
 
+# Admin address info
+# This will format email address as:
+# $mail_admin_user@$mail_admin_domain 
+$mail_admin_user = "adminuser";
+$mail_admin_domain = "admindomain";
+$mail_admin_name = "Name for Admin";
+
 # Display From info
 $mail_user = "user";
 $mail_domain = "domain";

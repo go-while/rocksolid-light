@@ -69,6 +69,7 @@ $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
 $abuse_log = $logdir . '/abuse.log';
 $auth_log = $logdir . '/auth.log';
+$mail_log = $logdir . '/mail.log';
 $lockdir = $spooldir . '/lock';
 $ssldir = $spooldir . '/ssl/';
 $user_ban_file = $config_dir . '/banned_names.conf';

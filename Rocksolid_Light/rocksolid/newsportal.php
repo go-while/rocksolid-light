@@ -755,7 +755,7 @@ function groups_show($gruppen)
             }
             /* Display article count */
             $groupdisplay .= '</td><td class="' . $lineclass . '">';
-            if ($gl_age)
+            if ($gl_age && isset($g->age))
                 $datecolor = thread_format_date_color($g->age);
             $groupdisplay .= '<small>';
             if ($datecolor != "")
@@ -1298,12 +1298,7 @@ function verify_logged_in($name)
         $_SESSION['start_stamp'] = time();
     }
 
-    // This is for debugging session expiration issues
-    $start_stamp = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['start_stamp'])));
-    $previous_activity = get_date_interval(get_date_interval(date("D, j M Y H:i T", $_SESSION['previous_activity'])));
-    file_put_contents($debug_log, "\n" . logging_prefix() . " SESSION AGE for: " . $name . "  Started: " . $start_stamp . " Gap: " . $previous_activity, FILE_APPEND);
-
-    if (! isset($_SESSION['start_address'])) {
+     if (! isset($_SESSION['start_address'])) {
         $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
         $ip_pass = true;
         file_put_contents($auth_log, "\n" . logging_prefix() . " IP address SET for: " . $name, FILE_APPEND);
@@ -1644,8 +1639,8 @@ function repair_broken_group($group)
         $newsportal_info = trim($newsportal_info[1]);
         $newsportal_start = explode(" ", $newsportal_info);
         $rslight_start = explode(" ", $rslight_info);
-        if ($newsportal_start[0] != $rslight_start[0]) {
-            file_put_contents($debug_log, "\n " . format_log_date() . " GROUP MISMATCH: " . $group . " Start rslight: " . $rslight_start[0] . " Start newsportal: " . $newsportal_start[0] . " Repairing...", FILE_APPEND);
+        if ($newsportal_start[0] != $rslight_start[0] || (($rslight_start[2] - $newsportal_start[2]) > 10)) {
+            file_put_contents($debug_log, "\n " . format_log_date() . " GROUP MISMATCH: " . $group . " rslight: " . $rslight_info . " newsportal: " . $newsportal_info . " Repairing...", FILE_APPEND);
             wipe_newsportal_spool_info($group);
         }
     }
@@ -2133,7 +2128,7 @@ function get_poster_name($name)
  */
 function save_config_value($configfile, $name, $value, $value_unique = false)
 {
-    global $spooldir;
+    global $spooldir, $logdir;
     $return_val = false;
     $tempfile = tempnam($spooldir, 'rslight-');
     if (file_exists($tempfile)) {
@@ -2343,6 +2338,84 @@ function get_client_user_agent_info()
     return $client_device;
 }
 
+/* This function sends internet email
+ * $subject and $body are strings
+ * $mail_to is an email address to send to
+ * $mail_from is an email address to use as from
+ * $mail_name is the name to use with $mail_from when sending
+ *   required if setting $mail_from
+ * DEFAULT is Admin address for to (phpmailer.inc.php)
+ * DEFAULT is standard From address for from (phpmailer.inc.php)
+ */
+function send_internet_email($subject, $body, $mail_to = false, $mail_from = false, $mail_name = false)
+{
+    global $CONFIG, $config_dir, $spooldir, $keys;
+    global $debug_log, $mail_log;
+
+    include($config_dir . '/phpmailer.inc.php');
+    if (class_exists('PHPMailer')) {
+        $mail = new PHPMailer();
+    } else {
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+    }
+
+    if(!$mail) {
+        return false;
+    }
+
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
+
+    $mail->IsSMTP();
+    # uncomment below to enable debugging
+    # $mail->SMTPDebug = 3;
+
+    $mail->CharSet = 'UTF-8';
+    $mail->Host = $mailer['host'];
+    $mail->SMTPAuth = true;
+
+    $mail->Port = $mailer['port'];
+    $mail->Username = $mailer['username'];
+    $mail->Password = $mailer['password'];;
+    $mail->SMTPSecure = 'tls';
+
+
+    if ($mail_from != false) {
+        $mail->setFrom($mail_from, $mail_name);
+    } else {
+        $mail->setFrom($mail_user . '@' . $mail_domain, $mail_name); // Default Admin
+        $mail_from = $mail_user . '@' . $mail_domain;
+    }
+
+    if ($mail_to != false) {
+        $mail->addAddress($mail_to);
+    } else {
+        $mail->addAddress($mail_admin_user . '@' . $mail_admin_domain, $mail_admin_name); // Default Admin
+        $mail_to = $mail_admin_user . '@' . $mail_admin_domain;
+    }
+
+    $mail->Subject = $subject;
+
+    foreach ($mail_custom_header as $key => $value) {
+        $mail->addCustomHeader($key, $value);
+    }
+
+    $mail->Body = $body;
+
+    if (!$mail->send()) {
+        file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_from . ' to: ' . $mail_to . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
+        return true;
+    } else {
+        file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_from . ' to: ' . $mail_to, FILE_APPEND);
+        return false;
+    }
+}
+
 function get_user_mail_auth_data($user)
 {
     global $spooldir;
@@ -2527,6 +2600,24 @@ function get_next_article_number($group)
     return $local;
 }
 
+function get_article_list($thisgroup)
+{
+    global $spooldir;
+    $database = $spooldir . "/articles-overview.db3";
+    $table = 'overview';
+    $dbh = overview_db_open($database, $table);
+    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
+    $stmt->execute([
+        'thisgroup' => $thisgroup
+    ]);
+    $ok_article = array();
+    while ($found = $stmt->fetch()) {
+        $ok_article[] = $found['number'];
+    }
+    $dbh = null;
+    return (array_unique($ok_article));
+}
+
 function check_duplicate_msgid($msgid, $group)
 {
     global $spooldir, $logdir;
@@ -2560,6 +2651,10 @@ function check_duplicate_msgid($msgid, $group)
         }
     }
     $dbh = null;
+
+    if ($found) {
+        file_put_contents($logdir . '/debug.log', "\n" . format_log_date() . " FOUND Duplicate " . $msgid, FILE_APPEND);
+    }
 
     return $found;
 }
@@ -2630,15 +2725,17 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         unlink($grouppath . "/" . $this_article['local']);
         $article_dbh = null;
     } else {
+        $article_date = $this_article['epochdate'];
         if ($article_date > time())
             $article_date = time();
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
     echo "\nSpooling: " . $group . " " . $this_article['local'];
-    file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'], FILE_APPEND);
+    file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Spooling: " . $group . ":" . $this_article['local'] . " " . $this_article['mid'], FILE_APPEND);
     $status = "spooled";
     $statusdate = time();
     $statusreason = "imported";
+    $statusnotes = '';
     add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
 }
 

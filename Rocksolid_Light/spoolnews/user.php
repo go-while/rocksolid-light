@@ -12,14 +12,14 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $_SESSION = array();
     session_destroy();
     unset($_COOKIE['mail_name']);
-    setcookie('mail_name', '', - 1, '/');
+    setcookie('mail_name', '', -1, '/');
     $logmeout = true;
 } else {
     $logmeout = false;
 }
 
-include ("config.inc.php");
-include ("newsportal.php");
+include("config.inc.php");
+include("newsportal.php");
 
 $ip_pass = false;
 if (! isset($_SESSION['remote_address'])) {
@@ -77,7 +77,7 @@ if (! isset($_COOKIE['mail_auth'])) {
     $_COOKIE['mail_auth'] = null;
 }
 $logged_in = verify_logged_in(trim(strtolower($_POST['username'])));
-if(!$logged_in) {
+if (!$logged_in) {
     if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     } else {
@@ -130,14 +130,14 @@ if ($logged_in == true) {
     echo '</td>';
 }
 if ((isset($_COOKIE["mail_name"]))) {
- // Logout button
- echo '<td>';
- echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
- echo '<input name="command" type="hidden" id="command" value="Logout" readonly="readonly">';
- echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
- echo '<button class="np_button_link" type="submit">Logout</button>';
- echo '</form>';
- echo '</td>';
+    // Logout button
+    echo '<td>';
+    echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+    echo '<input name="command" type="hidden" id="command" value="Logout" readonly="readonly">';
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo '<button class="np_button_link" type="submit">Logout</button>';
+    echo '</form>';
+    echo '</td>';
 }
 echo '<td width=100%></td></tr></table>';
 
@@ -179,6 +179,11 @@ $userfile = $spooldir . '/' . $user . '-articleviews.dat';
 if (is_file($userfile)) {
     $userdata = unserialize(file_get_contents($userfile));
 }
+if (!file_exists($config_dir . '/userconfig/' . $user . '.config')) {
+    $user_config = array();
+    file_put_contents($config_dir . '/userconfig/' . $user . '.config', serialize($user_array));
+}
+
 // Show Logged-In Message
 if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
     if (isset($_POST['source'])) {
@@ -283,6 +288,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     $user_config['timezone'] = $_POST['timezone'];
     $user_config['theme'] = $_POST['theme'];
     $user_config['hide_unsub'] = $_POST['hide_unsub'];
+    $user_config['send_mail_to_email'] = $_POST['send_mail_to_email'];
     file_put_contents($config_dir . '/userconfig/' . $user . '.config', serialize($user_config));
     $_SESSION['theme'] = $user_config['theme'];
     $mysubs = explode("\n", $_POST['subscribed']);
@@ -307,8 +313,8 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     }
     $block = preg_split("/\r\n|\n|\r/", $_POST['blocked_users_config']);
     foreach ($block as $blocked_user) {
-        foreach($blocked_saved_config as $key => $value) {
-            if($key == $blocked_user) {
+        foreach ($blocked_saved_config as $key => $value) {
+            if ($key == $blocked_user) {
                 $newblocks[$key] = $value;
                 break;
             }
@@ -321,7 +327,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     if ($userdata) {
         ksort($userdata);
     }
-    
+
     // Save new password
     if ((trim($_POST['password']) != '') && ($_POST['password'] == $_POST['password2'])) {
         $userFilename = $config_dir . '/users/' . strtolower($user);
@@ -373,6 +379,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         $user_config['subscribed'] = $_POST['subscribed'];
         $user_config['theme'] = $_POST['theme'];
         $user_config['blocked_users_config'] = $_POST['blocked_users_config'];
+        $user_config['send_mail_to_email'] = $_POST['send_mail_to_email'];
     }
     // Show Config
     echo '<hr><h1 class="np_thread_headline"></h1>';
@@ -389,6 +396,33 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
         echo '<input name="display_email" type="text" id="username"value="' . $display_email . '" maxlength="40"></td>';
         echo '</tr>';
+        // Send Mail by Email
+        if ($OVERRIDES['disable_mail_to_email'] !== true) {
+            if (get_user_config($_POST['username'], 'email_verified') == 'true') {
+                if ($email_address = get_user_config($_POST['username'], 'email')) {
+                    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Send Mail to my Internet Email: </h3>';
+                    if (! isset($user_config['send_mail_to_email'])) {
+                        $user_config['send_mail_to_email'] = 'false';
+                    }
+                    if ($user_config['send_mail_to_email'] == 'true') {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true" checked="checked">';
+                    } else {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true">';
+                    }
+                    echo '<label for="send_mail_to_email"> Yes, Forward Mail to my Email</label><br />';
+
+                    if ($user_config['send_mail_to_email'] == 'false') {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false" checked="checked">';
+                    } else {
+                        echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false">';
+                    }
+                    echo '<label for="send_mail_to_email"> No, Do Not Forward Mail to my Email</label><br />';
+
+                    echo '</tr>';
+                }
+            }
+        }
+        echo '</td></tr>';
     }
     // Signature
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Signature:</h3></td>';
@@ -399,7 +433,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     if ($OVERRIDES['disable_xface'] != true) {
         echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>X-Face:</h3></td>';
         $xflink = $config_dir . 'xface.txt';
-        if(file_exists($xflink)) {
+        if (file_exists($xflink)) {
             echo '</tr><td class="np_result_line1" style="word-wrap:break-word";>' . file_get_contents($xflink) . '</td><tr>';
         }
         echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="xface" name="xface" rows="4" cols="80">' . $user_config['xface'];
@@ -480,7 +514,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         $blockdata = $user_config['blocked_users_config'];
         foreach ($blocked_users_config as $key => $value) {
             echo $key . "\n";
-//            echo $value . "\n";
+            //            echo $value . "\n";
         }
     }
     echo '</textarea></td>';
@@ -537,6 +571,7 @@ function retry_configuration($message)
     echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' />";
     echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' />";
     echo "<input type='hidden' name='blocked_users_config' value'" . $_POST['blocked_users_config'] . "' />";
+    echo "<input type='hidden' name='send_mail_to_email' value'" . $_POST['send_mail_to_email'] . "' />";
     echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
     echo '</center>';
     exit();

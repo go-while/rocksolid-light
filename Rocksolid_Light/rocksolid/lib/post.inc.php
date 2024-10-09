@@ -534,6 +534,14 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = 
             if ($userconfig) {
                 set_user_config($authname, 'posting-user', $posting_user);
             }
+            $posthashfile = $spooldir . '/posthash.dat';
+            if(file_exists($posthashfile)) {
+                $posthash = unserialize(file_get_contents($posthashfile));
+            } else {
+                $posthash = array();
+            }
+            $posthash[$posting_user] = $authname;
+            file_put_contents($posthashfile, serialize($posthash));
         }
 
         if (isset($encryptthis)) {

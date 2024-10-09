@@ -104,6 +104,12 @@ chmod 700 "$configpath/userconfig"
 chown $username "$configpath/rslight.inc.php"
 chgrp $username "$configpath/rslight.inc.php"
 echo "done"
+echo
+echo -n "Setting semaphore to restart nntp server(s)..."
+touch "$configpath/nntp.reload"
+chown $username "$configpath/nntp.reload"
+chgrp $username "$configpath/nntp.reload"
+echo "done"
 
 echo
 echo -n "Applying configuration..."

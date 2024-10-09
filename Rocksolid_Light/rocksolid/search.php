@@ -359,7 +359,7 @@ echo $thispage;
 
 function get_body_search($group, $terms)
 {
-    GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
+    GLOBAL $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
     $terms = preg_replace("/'/", ' ', $terms);
     $terms = trim($terms);
     if ($terms[0] !== '"' || substr($terms, - 1) !== '"') {
@@ -374,17 +374,21 @@ function get_body_search($group, $terms)
     if ($group != '') {
         $grouplist[0] = $group;
     } else {
-        $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
+        $local_groupfile = $config_dir . "/" . $config_name . "/groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     }
     foreach ($grouplist as $thisgroup) {
-        $name = explode(':', $thisgroup);
+        $name = preg_split("/( |\t)/", $thisgroup, 2);
         $group = $name[0];
         $database = $spooldir . '/' . $group . '-articles.db3';
         if (! is_file($database)) {
             continue;
         }
         $dbh = article_db_open($database);
+        if(!$dbh) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Failed to open database: " . $database . " in search.php", FILE_APPEND);
+            continue;
+        }
         $stmt = $dbh->prepare("SELECT snippet(search_fts, 6, '<strong><font class=search_result><i>', '</i></font></strong>', '...', $snippet_size) as snippet, newsgroup, number, name, date, subject, rank FROM search_fts WHERE search_fts MATCH 'search_snippet:$terms' ORDER BY rank");
         $stmt->execute();
 
@@ -435,14 +439,14 @@ function show_search_sort_toggle()
 
 function get_header_search($group, $terms)
 {
-    GLOBAL $CONFIG, $config_name, $spooldir, $snippet_size;
+    GLOBAL $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
 
     if (isset($group)) {
         $grouplist[0] = $group;
     } else {
-        $local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
+        $local_groupfile = $config_dir . "/" . $config_name . "/groups.txt";
         $grouplist = file($local_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     }
 
@@ -453,13 +457,17 @@ function get_header_search($group, $terms)
     $overview = array();
 
     foreach ($grouplist as $thisgroup) {
-        $name = explode(':', $thisgroup);
+        $name = preg_split("/( |\t)/", $thisgroup, 2);
         $group = $name[0];
         $article_database = $spooldir . '/' . $group . '-articles.db3';
         if (! is_file($article_database)) {
             continue;
         }
         $article_dbh = article_db_open($article_database);
+        if(!$article_dbh) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Failed to open database: " . $article_database . " in search.php", FILE_APPEND);
+            continue;
+        }
         $article_stmt = $article_dbh->prepare("SELECT * FROM articles WHERE number=:number");
         if (!isset($_POST['data']) && is_multibyte($_POST['terms'])) {
             $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:group");

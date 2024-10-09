@@ -1,5 +1,5 @@
 <?php
-include ("paths.inc.php");
+include("paths.inc.php");
 chdir($spoolnews_path);
 include "config.inc.php";
 include "newsportal.php";
@@ -36,6 +36,13 @@ if ($argv[1][0] == '-') {
             echo "Creating User: " . $argv[2] . "\n";
             create_new($argv[2], $argv[3], $argv[4]);
             break;
+        case "-getuserbyhash":
+            if (! isset($argv[2])) {
+                echo "Usage: -getuserbyhash posting_hash\n";
+                exit();
+            }
+            get_user_by_hash($argv[2]);
+            break;
         case "-newpass":
             if (! isset($argv[2]) || ! isset($argv[3])) {
                 echo "Usage: -newpass username password\n";
@@ -43,7 +50,7 @@ if ($argv[1][0] == '-') {
             }
             change_user_password($argv[2], $argv[3]);
             break;
-            
+
         case "-newemail":
             if (! isset($argv[2]) || ! isset($argv[3])) {
                 echo "Usage: -newemail username password\n";
@@ -94,6 +101,7 @@ if ($argv[1][0] == '-') {
             echo "-help: This help page\n";
             echo "-version: Display version\n";
             echo "-create: Create user account '-create username password email'\n";
+            echo "-getuserbyhash: Find username by Posting-User hash\n";
             echo "-newpass: Change user password '-newpass username newpassword'\n";
             echo "-newemail: Change user email '-newemail username emailaddress'\n";
             echo "           Email address will remain listed as 'verified'\n";
@@ -110,12 +118,31 @@ if ($argv[1][0] == '-') {
     exit();
 }
 
-function ban_user($username) {
+function get_user_by_hash($postinghash)
+{
+    global $spooldir;
+    $posthashfile = $spooldir . '/posthash.dat';
+    if (file_exists($posthashfile)) {
+        $posthash = unserialize(file_get_contents($posthashfile));
+    } else {
+        echo "Hash file not found\n";
+        return;
+    }
+    if(isset($posthash[$postinghash])) {
+        echo $posthash[$postinghash] . ' : ' . $postinghash . "\n";
+    } else {
+        echo "$postinghash not found in database\n";
+    }
+    return;
+}
+
+function ban_user($username)
+{
     global $config_dir;
     $banfile = $config_dir . '/banned_users.conf';
     $username = strtolower($username);
     $userfile = $config_dir . '/users/' . $username;
-    if(! file_exists($userfile)) {
+    if (! file_exists($userfile)) {
         echo "User:" . $username . " Not Found\r\n";
         return;
     } else {
@@ -124,7 +151,7 @@ function ban_user($username) {
             if (!trim($v)) {
                 unset($lines[$k]);
             } else {
-                if(trim($v) == $username) {
+                if (trim($v) == $username) {
                     echo "User:" . $username . " already banned.\n";
                     return;
                 }
@@ -135,11 +162,12 @@ function ban_user($username) {
     }
 }
 
-function change_user_email($username, $email) {
+function change_user_email($username, $email)
+{
     global $config_dir;
     $username = strtolower($username);
     $userfile = $config_dir . '/users/' . $username;
-    if(! file_exists($userfile)) {
+    if (! file_exists($userfile)) {
         echo "User:" . $username . " Not Found\r\n";
         return;
     } else {
@@ -147,11 +175,12 @@ function change_user_email($username, $email) {
     }
 }
 
-function change_user_password($username, $password) {
+function change_user_password($username, $password)
+{
     global $config_dir;
     $username = strtolower($username);
     $userfile = $config_dir . '/users/' . $username;
-    if(! file_exists($userfile)) {
+    if (! file_exists($userfile)) {
         echo "User:" . $username . " Not Found\r\n";
         return;
     } else {
@@ -199,4 +228,3 @@ function make_key($username)
     $key = openssl_random_pseudo_bytes(44);
     return base64_encode($key);
 }
-

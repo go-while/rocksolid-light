@@ -24,10 +24,6 @@ include "config.inc.php";
 include("$file_newsportal");
 include $config_dir . '/gpg.conf';
 
-if ($CONFIG['remote_server'] != '') {
-    $remote_groupfile = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . ".txt";
-}
-
 if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
     $save_nocem_messages = true;
     $nocem_dir = $spooldir . "/saved_nocem";
@@ -36,13 +32,28 @@ if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'
     $save_nocem_messages = false;
 }
 
+$remote_groups_array_file = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . "-remote_groups.dat";
+
 $file_groups = $config_path . "groups.txt";
-$local_groupfile = $spooldir . "/" . $config_name . "/local_groups.txt";
 $logfile = $logdir . '/spoolnews.log';
 $spamlog = $logdir . '/spam.log';
 
 # END MAIN CONFIGURATION
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
+
+# Put this here for version 0.9.157 for a while to clean up dir
+if(file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
+    $section_dir = $spooldir . '/' . $config_name . '/';
+    @mkdir($section_dir . 'OLD');
+    $files = scandir($section_dir);
+    foreach ($files as $file) {
+        $file_name = $section_dir . $file;
+        if (is_file($file_name) && str_ends_with($file, ".txt")) {
+            copy($file_name, $section_dir . 'OLD/' . $file);
+            unlink($file_name);
+        }
+    }  
+}
 
 // Defaults
 $maxarticles_per_run = 100;
@@ -67,6 +78,12 @@ $path = $workpath . "articles/";
 if ($low_spool_disk_space) {
     print "Low Disk Space (less than " . $min_spool_disk_space . " available)\n";
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Low Disk Space (less than " . $min_spool_disk_space . "Gb available for spool). Pausing spoolnews", FILE_APPEND);
+
+    $subject = "LOW DISK SPACE ON " . $CONFIG['server_path'];
+    $body = "LOW DISK SPACE ON " . $CONFIG['server_path'] . "\n";
+    $body .= "Space has fallen below " . $min_spool_disk_space . "GB\n";
+    $body .= "Space remaining: " . round($free_spool_disk_space) . "GB\n";
+
     exit();
 }
 
@@ -83,17 +100,10 @@ if (posix_getsid($pid) === false || ! is_file($lockfile)) {
 
 $sem = $spooldir . "/" . $config_name . ".reload";
 if (is_file($sem)) {
-    unlink($remote_groupfile);
+    unlink($remote_groups_array_file);
     unlink($sem);
     $maxfirstrequest = 200;
 }
-
-# Check for groups file, create if necessary
-// only do remote server groups if necessary
-if ($CONFIG['remote_server'] != '') {
-    create_spool_groups($file_groups, $remote_groupfile);
-}
-create_spool_groups($file_groups, $local_groupfile);
 
 # Iterate through groups
 $enable_rslight = 0;
@@ -110,6 +120,7 @@ foreach ($menulist as $menu) {
         echo "\nLoaded groups";
     }
 }
+
 # Clean outgoing directory for LOCAL sections
 if ($CONFIG['remote_server'] == '') {
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
@@ -173,7 +184,9 @@ echo "\nSpoolnews Done\n";
 
 function get_articles($ns, $group)
 {
-    global $enable_rslight, $rslight_gpg, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path, $remote_groupfile, $local_groupfile, $local, $logdir, $config_name, $spamlog, $logfile, $debug_log;
+    global $enable_rslight, $rslight_gpg, $config_name, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG;
+    global $remote_groups_array_file, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path;
+    global $file_groups, $logdir, $config_name, $spamlog, $logfile, $debug_log;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -199,17 +212,15 @@ function get_articles($ns, $group)
         return (1);
     }
     # Get config
-    $grouplist = file($remote_groupfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($grouplist as $findgroup) {
-        $name = explode(':', $findgroup);
-        if (strcmp($name[0], $group) == 0) {
-            if (is_numeric(trim($name[1]))) {
-                $article = $name[1] + 1;
-            } else {
-                $article = 1;
-            }
-            break;
-        }
+    if (file_exists($remote_groups_array_file)) {
+        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+    } else {
+        $remote_groups_array = array();
+    }
+    if(isset($remote_groups_array[$group])) {
+        $article = $remote_groups_array[$group];
+    } else {
+        $article = 1;
     }
 
     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
@@ -219,6 +230,7 @@ function get_articles($ns, $group)
     # Split group response line to get last article number
     # $article is the next number we want, not the last we retrieved
     $detail = explode(" ", $response);
+    $latest_remote_article = $detail[3];
     if (! isset($article)) {
         $article = $detail[2];
     }
@@ -278,8 +290,8 @@ function get_articles($ns, $group)
                 $local = $article;
             }
             if (check_duplicate_msgid($overview_msgid[$article], $group)) {
-                echo "\n(spoolnews)Duplicate Message-ID for: " . $group . ":" . $overview_msgid[$article];
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $overview_msgid[$article], FILE_APPEND);
+                echo "\n(spoolnews)Duplicate Message-ID for: " . $group . ":" . $article . " " . $overview_msgid[$article];
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article . " " . $overview_msgid[$article], FILE_APPEND);
                 $article++;
                 continue;
             }
@@ -437,9 +449,9 @@ function get_articles($ns, $group)
             // Prefer Injection-Date to Date header
             if (isset($injectiondate)) {
                 $artdate = $injectiondate;
-              //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date for: " . $mid[1], FILE_APPEND);
+                //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date for: " . $mid[1], FILE_APPEND);
             } else {
-              //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date for: " . $mid[1], FILE_APPEND);
+                //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date for: " . $mid[1], FILE_APPEND);
             }
 
             // Check if date matches exactly another article and handle else sorting doesn't like it
@@ -530,6 +542,7 @@ function get_articles($ns, $group)
                         } else {
                             $current_article['local'] = get_next_article_number($agroup);
                         }
+                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Preparing to spool " . $group . ":" . $article, FILE_APPEND);
                         $tmp = insert_article_from_array($current_article, false);
                         if ($tmp[0] != "4") {
                             $pass = true;
@@ -552,7 +565,7 @@ function get_articles($ns, $group)
         }
     }
     // END GET INDIVIDUAL ARTICLE
-    $article--;
+    //$article--;
     // $local--;
     // Update title
     if (! is_file($workpath . $group . "-title")) {
@@ -568,44 +581,11 @@ function get_articles($ns, $group)
         }
     }
     # Save config
-    save_config_value($remote_groupfile, $group, $article, true);
-    save_config_value($local_groupfile, $group, $local, true);
-}
-
-function create_spool_groups($in_groups, $out_groups)
-{
-    global $spooldir;
-    $grouplist = file($in_groups, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $temp_file = tempnam($spooldir . "/tmp/", 'groupfile-');
-    foreach ($grouplist as $group) {
-        if ($group[0] == ":") {
-            continue;
-        }
-        $thisgroup = preg_split("/( |\t)/", $group, 2);
-        if ($val = get_config_file_value($out_groups, $thisgroup[0])) {
-            file_put_contents($temp_file, $thisgroup[0] . ":" . $val . "\n", FILE_APPEND);
-        } else {
-            file_put_contents($temp_file, $thisgroup[0] . "\n", FILE_APPEND);
-        }
+    if (file_exists($remote_groups_array_file)) {
+        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+    } else {
+        $remote_groups_array = array();
     }
-    rename($temp_file, $out_groups);
-    return;
-}
-
-function get_article_list($thisgroup)
-{
-    global $spooldir;
-    $database = $spooldir . "/articles-overview.db3";
-    $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
-    $stmt->execute([
-        'thisgroup' => $thisgroup
-    ]);
-    $ok_article = array();
-    while ($found = $stmt->fetch()) {
-        $ok_article[] = $found['number'];
-    }
-    $dbh = null;
-    return (array_unique($ok_article));
+    $remote_groups_array[$group] = $article;
+    file_put_contents($remote_groups_array_file, serialize($remote_groups_array));
 }

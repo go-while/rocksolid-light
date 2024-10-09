@@ -48,7 +48,7 @@ if (! isset($_COOKIE['mail_auth'])) {
 }
 
 $logged_in = verify_logged_in(trim(strtolower($name)));
-if(!$logged_in) {
+if (!$logged_in) {
     if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     }
@@ -252,6 +252,22 @@ if (isset($_POST['sendMessage'])) {
                         $return_val = "Failed to Send. No Key for Destination";
                     }
                 }
+
+                // Send internet email notification here
+                if (strpos('@', $to) === false) {
+                    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
+                    if ($user_config['send_mail_to_email'] == 'true') {
+                        $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
+                        if (get_user_config($to, 'email_verified') == 'true') {
+                            if ($email_address = get_user_config($to, 'email')) {
+                                $message = "\nYou have received mail from " . $from . " on " . ltrim($CONFIG['server_path'], "@") . "\n\n-----\n" . $message;
+                                $message = rtrim($message);
+                                $message .= "\n-----\n\nTo Reply, log into site and view Mail";
+                                send_internet_email($email_subject, $message, $email_address);
+                            }
+                        }
+                    }
+                }
                 $return_val = "Message sent.";
             } else {
                 $return_val = "Failed to Send. Database Error";
@@ -298,8 +314,21 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo "<td>To: </td><td><input type='text' name='to' value='" . $mail_to . "'/></td>";
     echo '</tr><tr>';
     echo "<td>Subject: </td><td><input type='text' name='subject' value='" . htmlentities($subject) . "'/></td>";
-    echo '</tr><tr>';
-    echo "<td></td><td><textarea class='postbody' id='message' name='message'>$message</textarea></td>";
+    echo '</tr></table>';
+
+    echo '<div class="np_post_body">';
+    echo '<table><tr>';
+
+    echo '<td><b>' . $text_post["message"] . '</b>';
+    echo '&nbsp;&nbsp;<font size="2em">(This is an interBBS or localBBS Mail Message. This is not Email)</font><br />';
+
+
+    echo '<textarea cols="' . $wrap_width . '"';
+    echo 'class="postbody" id="message" cols="72"';
+    echo 'name="message" wrap="soft">' . $message . '</textarea>';
+
+    echo '</td></table></div><table><tbody><tr>';
+
     echo '</tr><tr>';
     echo "<input type='hidden' name='from' value='" . $user . "' />";
     echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
@@ -335,8 +364,7 @@ function view_mailbox($user)
         } else {
             echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
         }
-        $button_link = 'np_mail_button_link';
-        ;
+        $button_link = 'np_mail_button_link';;
         if (($row['mail_from'] == $user) && ($row['mail_viewed'] == 'true')) {
             $button_link = 'np_mail_button_read';
         } elseif (($row['rcpt_to'] == $user) && ($row['rcpt_viewed'] == 'true')) {
@@ -359,7 +387,7 @@ function view_mailbox($user)
         echo '<input name="command" type="hidden" id="command" value="Message" readonly="readonly">';
         echo '</form>';
         echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
-        $i ++;
+        $i++;
     }
     echo '</tbody></table><br />';
     include "tail.inc";
