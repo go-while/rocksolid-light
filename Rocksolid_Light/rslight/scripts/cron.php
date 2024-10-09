@@ -184,7 +184,7 @@ file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cr
 
 function check_disk_space()
 {
-    global $CONFIG, $logdir, $spooldir;
+    global $CONFIG, $OVERRIDES, $logdir, $spooldir;
     global $low_spool_disk_space, $min_spool_disk_space, $free_spool_disk_space;
     $logfile = $logdir . '/spoolnews.log';
 
@@ -206,7 +206,6 @@ function check_disk_space()
             $body .= "Space has fallen below " . $min_spool_disk_space . "GB\n";
             $body .= "Space remaining: " . round($free_spool_disk_space) . "GB\n";
             $timer_type = "low_spool_disk_space";
-
         } else { // Disk space approaching low (within 10%) This is a warning only
             print "Nearing Low Disk Space (less than " . round($warning_spool_disk_space, 1) . "Gb available for spool)\n";
             file_put_contents($logfile, "\n" . format_log_date() . " Nearing Low Disk Space (less than " . round($warning_spool_disk_space, 1) . "Gb available for spool)", FILE_APPEND);
@@ -219,25 +218,27 @@ function check_disk_space()
             $timer_type = "nearing_low_spool_disk_space";
         }
 
-        $date_window = 86400;
-        $send_email_timer_file = $spooldir . '/email_send_timer.dat';
-        if (file_exists($send_email_timer_file)) {
-            $send_email_timer = unserialize(file_get_contents($send_email_timer_file));
-        } else {
-            $send_email_timer = array();
-        }
-        if (! isset($send_email_timer[$timer_type])) {
-            $send_email_timer[$timer_type] = 0;
-        }
-        if ($send_email_timer[$timer_type] < (time() - $date_window)) {
-            if ($send_email_timer[$timer_type] != 0) {
-                $send_email_timer[$timer_type] = 0;
+        if ($OVERRIDES['send_admin_debug_messages'] === true) {
+            $date_window = 86400;
+            $send_email_timer_file = $spooldir . '/email_send_timer.dat';
+            if (file_exists($send_email_timer_file)) {
+                $send_email_timer = unserialize(file_get_contents($send_email_timer_file));
             } else {
-                $send_email_timer[$timer_type] = time();
+                $send_email_timer = array();
             }
-            send_internet_email($subject, $body);
+            if (! isset($send_email_timer[$timer_type])) {
+                $send_email_timer[$timer_type] = 0;
+            }
+            if ($send_email_timer[$timer_type] < (time() - $date_window)) {
+                if ($send_email_timer[$timer_type] != 0) {
+                    $send_email_timer[$timer_type] = 0;
+                } else {
+                    $send_email_timer[$timer_type] = time();
+                }
+                send_internet_email($subject, $body);
+            }
+            file_put_contents($send_email_timer_file, serialize($send_email_timer));
         }
-        file_put_contents($send_email_timer_file, serialize($send_email_timer));
     }
 }
 

@@ -91,7 +91,7 @@ return [
     'overboard_default_view' => 'articles',
 
     // Send Admin debug messages
-    // Some debug messages can be sent to admin address (rslight email)
+    // Some debug messages can be sent to admin by email 
     // Default is false
     'send_admin_debug_messages' => false,
 

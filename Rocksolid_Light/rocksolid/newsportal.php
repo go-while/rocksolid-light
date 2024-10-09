@@ -2359,6 +2359,10 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
         $mail = new PHPMailer\PHPMailer\PHPMailer();
     }
 
+    if(!$mail) {
+        return false;
+    }
+
     $mail->SMTPOptions = array(
         'ssl' => array(
             'verify_peer' => false,
@@ -2405,8 +2409,10 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
 
     if (!$mail->send()) {
         file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_from . ' to: ' . $mail_to . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
+        return true;
     } else {
         file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_from . ' to: ' . $mail_to, FILE_APPEND);
+        return false;
     }
 }
 
