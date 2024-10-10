@@ -158,7 +158,7 @@ if ($CONFIG['remote_server'] != '') {
                     echo "\nOPENING $ns2: " . $ns2 . "\n";
                 }
                 if (! $ns2) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to local nntp server", FILE_APPEND);
                     // exit();
                 } else {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
