@@ -379,9 +379,7 @@ function display_threads($threads, $oldest)
                             $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
                             
                             $text = $article['search_snippet'];
-                            if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                                include ($config_dir . '/rewrite_body.inc.php');
-                            }
+                            $text = rewrite_body($text);
                             $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
                         }
                     }
@@ -420,9 +418,7 @@ function display_threads($threads, $oldest)
                     if ($CONFIG['article_database'] == '1') {
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                         $text = $article['search_snippet'];
-                        if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                            include ($config_dir . '/rewrite_body.inc.php');
-                        }
+                        $text = rewrite_body($text);
                         $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
                    //     $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
                     }
@@ -559,9 +555,7 @@ function display_flat($threads, $oldest)
             if ($CONFIG['article_database'] == '1') {
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $text = $article['search_snippet'];
-                if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                    include ($config_dir . '/rewrite_body.inc.php');
-                }
+                $text = rewrite_body($text);
                 $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
                 //$display .= htmlentities(substr($text, 0, $snippetlength));
             }

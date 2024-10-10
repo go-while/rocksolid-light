@@ -1130,6 +1130,14 @@ function html_parse($text)
     return ($ntext);
 }
 
+function rewrite_body($text) {
+    global $config_dir;
+    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+        include($config_dir . '/rewrite_body.inc.php');
+    }
+    return $text;
+}
+
 function display_links_in_body($text)
 {
     global $config_dir;
@@ -1152,10 +1160,7 @@ function display_links_in_body($text)
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
-    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-        include($config_dir . '/rewrite_body.inc.php');
-    }
-
+    $text = rewrite_body($text);
     echo $text;
     if ($isquote) {
         echo '</blockquote>';
