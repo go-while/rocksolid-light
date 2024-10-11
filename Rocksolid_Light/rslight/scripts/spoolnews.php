@@ -153,17 +153,17 @@ if ($CONFIG['remote_server'] != '') {
             $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
             if (filemtime($timer_file) + 600 < time()) {
                 touch($timer_file);
-                if (! $ns2) {
-                    $ns2 = nntp_open();
-                    echo "\nOPENING $ns2: " . $ns2 . "\n";
+                if (! $ns_local) {
+                    $ns_local = nntp_open();
+                    echo "\nOPENING Local server: " . $ns_local . "\n";
                 }
-                if (! $ns2) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to local nntp server", FILE_APPEND);
+                if (! $ns_local) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
                     // exit();
                 } else {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Updating threads for: " . $name[0] . "...", FILE_APPEND);
                     try {
-                        thread_load_newsserver($ns2, $name[0], 0);
+                        thread_load_newsserver($ns_local, $name[0], 0);
                     } catch (Exception $exc) {
                         echo "\nFatal exception caught: " . $exc->getMessage();
                     } catch (Error $err) {
@@ -174,8 +174,8 @@ if ($CONFIG['remote_server'] != '') {
             }
         }
     }
-    if ($ns2) {
-        nntp_close($ns2);
+    if ($ns_local) {
+        nntp_close($ns_local);
     }
     nntp_close($ns);
 }
