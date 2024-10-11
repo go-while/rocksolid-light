@@ -124,12 +124,8 @@ if ($message) {
     $thread = thread_load($group);
     $subthread = thread_getsubthreadids($message->header->id, $thread);
     if (! $subthread) {
-        $date_window = 86400;
-        $msg_log_file = $spooldir . '/admin_msg_log.dat';
         echo '<center>Group is rebuilding... Please try again later</center>';
-
         repair_broken_group($group);
-
         exit();
     }
     if ($thread_articles == false) {
