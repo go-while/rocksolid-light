@@ -1173,6 +1173,7 @@ function display_links_in_body($text)
  */
 function readPlainHeader(&$ns, $group, $articleNumber)
 {
+    global $text_error;
     fputs($ns, "GROUP $group\r\n");
     $line = line_read($ns);
     fputs($ns, "HEAD $articleNumber\r\n");
