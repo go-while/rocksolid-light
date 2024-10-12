@@ -751,6 +751,10 @@ function groups_show($gruppen)
             } else {
                 if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
                     continue;
+                } else {
+                    $groupdisplay .= '</span><p class="np_group_user_tools">';
+                    $groupdisplay .= '<a class="np_group_user_tools" href="index.php?subscribe=' . urlencode($g->name) . '">(subscribe)</a>';
+                    $groupdisplay .= '</p';
                 }
             }
             /* Display article count */
@@ -1130,6 +1134,15 @@ function html_parse($text)
     return ($ntext);
 }
 
+function rewrite_body($text)
+{
+    global $config_dir;
+    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
+        include($config_dir . '/rewrite_body.inc.php');
+    }
+    return $text;
+}
+
 function display_links_in_body($text)
 {
     global $config_dir;
@@ -1152,10 +1165,7 @@ function display_links_in_body($text)
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
-    if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-        include($config_dir . '/rewrite_body.inc.php');
-    }
-
+    $text = rewrite_body($text);
     echo $text;
     if ($isquote) {
         echo '</blockquote>';
@@ -1168,6 +1178,7 @@ function display_links_in_body($text)
  */
 function readPlainHeader(&$ns, $group, $articleNumber)
 {
+    global $text_error;
     fputs($ns, "GROUP $group\r\n");
     $line = line_read($ns);
     fputs($ns, "HEAD $articleNumber\r\n");
@@ -1298,7 +1309,7 @@ function verify_logged_in($name)
         $_SESSION['start_stamp'] = time();
     }
 
-     if (! isset($_SESSION['start_address'])) {
+    if (! isset($_SESSION['start_address'])) {
         $_SESSION['start_address'] = $_SERVER['REMOTE_ADDR'];
         $ip_pass = true;
         file_put_contents($auth_log, "\n" . logging_prefix() . " IP address SET for: " . $name, FILE_APPEND);
@@ -2359,7 +2370,7 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
         $mail = new PHPMailer\PHPMailer\PHPMailer();
     }
 
-    if(!$mail) {
+    if (!$mail) {
         return false;
     }
 
@@ -2416,6 +2427,10 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
     }
 }
 
+/* get_user_mail_auth_data is poorly named but
+ * it retrieves newsgroup status per user info
+ * for subscribe/unsubscribe/read/unread 
+ */
 function get_user_mail_auth_data($user)
 {
     global $spooldir;

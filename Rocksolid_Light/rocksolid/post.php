@@ -59,6 +59,8 @@ if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = null;
 }
 
+$max_followupto = 1;
+
 // Check some header strings for bad characters
 $newsgroups = sanitize_header($newsgroups);
 $subject = sanitize_header($subject);
@@ -288,6 +290,11 @@ if ($type == "post") {
         if (count($grouptotal) > $max_crosspost) {
             $type = "retry";
             $error = "Too many newsgroups";
+        }
+        $followuptotal = preg_split("/( |\,)/", $followupto);
+        if (count($followuptotal) > $max_followupto) {
+            $type = "retry";
+            $error = "Too many groups in followup-to";
         }
     }
     // captcha-check
@@ -530,7 +537,7 @@ if ($show == 1) {
                     echo '</tr><tr>';
                     echo '<td align="right"><b>Followup-To:</b></td>';
                     echo '<td>';
-                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of group to redirect replies">';
+                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of one group to redirect replies">';
                     echo "&nbsp;(optional)";
                 } else {
                     echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
@@ -603,7 +610,7 @@ if ($show == 1) {
         echo '<br> <textarea cols="' . $wrap_width . '"';
         echo 'class="postbody" id="postbody" cols="72"';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
-
+        
         $bodyzeile = wrap_post($bodyzeile);
         if ((isset($bodyzeile)) && ($post_autoquote))
             echo htmlspecialchars(rtrim($bodyzeile) . "\n");

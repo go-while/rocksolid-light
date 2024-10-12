@@ -124,35 +124,8 @@ if ($message) {
     $thread = thread_load($group);
     $subthread = thread_getsubthreadids($message->header->id, $thread);
     if (! $subthread) {
-        $date_window = 86400;
-        $msg_log_file = $spooldir . '/admin_msg_log.dat';
         echo '<center>Group is rebuilding... Please try again later</center>';
-        if (file_exists($msg_log_file)) {
-            $admin_msg_log = unserialize(file_get_contents($msg_log_file));
-        } else {
-            $admin_msg_log = array();
-        }
-        if (! isset($admin_msg_log[$group])) {
-            $admin_msg_log[$group] = 0;
-        }
-        if ($admin_msg_log[$group] < (time() - $date_window)) {
-            if ($admin_msg_log[$group] != 0) {
-                $msg_from = 'admin';
-                $msg_to = 'admin';
-                $msg_body = format_log_date() . " " . $config_name . " GROUP ERROR: " . $group . ":" . $message->header->number . " may need repair";
-                $msg_body_2 = "\n\nRun maintenance.php -import " . $group;
-                $msg_subject = "ERROR in $group";
-                if (isset($OVERRIDES['send_admin_debug_messages']) && $OVERRIDES['send_admin_debug_messages'] == true) {
-                    send_admin_message($msg_to, $msg_from, $msg_subject, $msg_body . $msg_body_2);
-                    send_internet_email($subject, $msg_subject, $msg_body . $msg_body_2);
-                }
-                file_put_contents($debug_log, "\n" . $msg_body, FILE_APPEND);
-                $admin_msg_log[$group] = 0;
-            } else {
-                $admin_msg_log[$group] = time();
-            }
-        }
-        file_put_contents($msg_log_file, serialize($admin_msg_log));
+        repair_broken_group($group);
         exit();
     }
     if ($thread_articles == false) {

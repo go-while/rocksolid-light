@@ -32,16 +32,16 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 }
 
 if (isset($frames_on) && $frames_on === true) {
-    ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash;
-    if ( window.self !== window.top ) {
-        /* Great! now we move along */
-    } else {
-        window.location.href = '../index.php?content='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
+?>
+    <script>
+        var contentURL = window.location.pathname + window.location.search + window.location.hash;
+        if (window.self !== window.top) {
+            /* Great! now we move along */
+        } else {
+            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
+        }
+        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
+    </script>
 
 <?php
 }
@@ -58,11 +58,11 @@ if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
     exit();
 }
 
-$CONFIG = include ($config_file);
+$CONFIG = include($config_file);
 $logfile = $logdir . '/overboard.log';
 
 $cookie_mail_name = $_COOKIE['mail_name'];
-if(isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
+if (isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
     unset($cookie_mail_name);
 }
 
@@ -211,7 +211,7 @@ foreach ($grouplist as $findgroup) {
                 $ref = preg_split("/[\s]+/", $overviewline['refs']);
                 $this_overboard['threadlink'][$thismsgid] = $ref[0];
             }
-            if ($results ++ > ($maxdisplay - 2)) {
+            if ($results++ > ($maxdisplay - 2)) {
                 break;
             }
             // }
@@ -313,7 +313,7 @@ function display_threads($threads, $oldest)
     $style = 0;
     $results = 0;
     foreach ($nicole as $key => $value) {
-        if(isset($target_head)) {
+        if (isset($target_head)) {
             unset($target_head);
         }
         if (isset($this_overboard['msgids'][$key])) {
@@ -342,7 +342,7 @@ function display_threads($threads, $oldest)
                     }
                 }
             }
-            $results ++;
+            $results++;
             $skip = '';
             if ($nohead) {
                 if (($style % 2) == 0) {
@@ -350,46 +350,46 @@ function display_threads($threads, $oldest)
                 } else {
                     $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
                 }
-                $display .= '<center>';
-                $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
-                $display .= '<p class=np_ob_subject>';
-                $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
-                $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
-                $timetest = $oldest;
-                if ($newonly) {
-                    $timetest = $userdata[$target_head['newsgroup']];
-                }
-                if ((($target_head['date'] < $timetest) || $result_count > 10) && isset($target_head['date'])) {
-                    $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
-                    $block = false;
-                    foreach ($blocked_user_config as $bkey => $bvalue) {
-                        $blockme = '/' . addslashes($bkey) . '/';
-                        if (preg_match($blockme, $target_head['name'])) {
-                            $block = true;
-                            break;
-                        }
+                if ($target_head) {
+                    $display .= '<center>';
+                    $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
+                    $display .= '<p class=np_ob_subject>';
+                    $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
+                    $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
+                    $timetest = $oldest;
+                    if ($newonly) {
+                        $timetest = $userdata[$target_head['newsgroup']];
                     }
-                    if ($block) {
-                        $display .= '<br /><br />';
-                        $display .= '<p class=np_ob_subject>';
-                        $display .= '<b><span>(message #' . $target_head['number'] . ' hidden by your blocklist)</span></a></b>';
-                    } else {
-                        $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
-                        if ($CONFIG['article_database'] == '1') {
-                            $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
-                            
-                            $text = $article['search_snippet'];
-                            if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                                include ($config_dir . '/rewrite_body.inc.php');
+                    if ((($target_head['date'] < $timetest) || $result_count > 10) && isset($target_head['date'])) {
+                        $poster = get_poster_name(mb_decode_mimeheader($target_head['name']));
+                        $block = false;
+                        foreach ($blocked_user_config as $bkey => $bvalue) {
+                            $blockme = '/' . addslashes($bkey) . '/';
+                            if (preg_match($blockme, $target_head['name'])) {
+                                $block = true;
+                                break;
                             }
-                            $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
                         }
+                        if ($block) {
+                            $display .= '<br /><br />';
+                            $display .= '<p class=np_ob_subject>';
+                            $display .= '<b><span>(message #' . $target_head['number'] . ' hidden by your blocklist)</span></a></b>';
+                        } else {
+                            $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
+                            if ($CONFIG['article_database'] == '1') {
+                                $article = get_db_data_from_msgid($target_head['msgid'], $target_head['newsgroup'], 1);
+
+                                $text = $article['search_snippet'];
+                                $text = rewrite_body($text);
+                                $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
+                            }
+                        }
+                        $skip = $target_head['number'];
                     }
-                    $skip = $target_head['number'];
+                    $display .= '</center>';
+                    $style++;
+                    $nohead = false;
                 }
-                $display .= '</center>';
-                $style ++;
-                $nohead = false;
             }
             if ($skip != $target['number']) {
                 $poster = get_poster_name(mb_decode_mimeheader($target['name']));
@@ -420,11 +420,9 @@ function display_threads($threads, $oldest)
                     if ($CONFIG['article_database'] == '1') {
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                         $text = $article['search_snippet'];
-                        if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                            include ($config_dir . '/rewrite_body.inc.php');
-                        }
+                        $text = rewrite_body($text);
                         $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
-                   //     $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
+                        //     $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
                     }
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
@@ -544,13 +542,13 @@ function display_flat($threads, $oldest)
 
             $display .= '</p>';
             // link for (thread), if possible
-            if(isset($target_head)) {
+            if (isset($target_head)) {
                 unset($target_head);
             }
             // Display 'full thread' link if available
             if (isset($this_overboard['threadlink'][$value])) {
                 $target_head = get_data_from_msgid($this_overboard['threadlink'][$value]);
-                 if ($target_head !== false) {
+                if ($target_head !== false) {
                     $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target_head['number'] . '&group=' . rawurlencode($target_head['newsgroup']) . '#' . $target_head['number'] . '"> (full thread)</a></font>';
                 }
             }
@@ -559,14 +557,12 @@ function display_flat($threads, $oldest)
             if ($CONFIG['article_database'] == '1') {
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $text = $article['search_snippet'];
-                if (file_exists($config_dir . '/rewrite_body.inc.php')) {
-                    include ($config_dir . '/rewrite_body.inc.php');
-                }
+                $text = rewrite_body($text);
                 $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
                 //$display .= htmlentities(substr($text, 0, $snippetlength));
             }
         }
-        $results ++;
+        $results++;
         if ($results > ($maxdisplay - 1)) {
             break;
         }
