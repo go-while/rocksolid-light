@@ -596,8 +596,8 @@ function groups_show($gruppen)
     $subs = array();
     $nonsubs = array();
     $user = null;
-    // Get registered user settings
 
+    // Get registered user settings
     $cookie_mail_name = $_COOKIE['mail_name'];
     if (isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
         unset($cookie_mail_name);
@@ -606,8 +606,15 @@ function groups_show($gruppen)
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+
+            // User blocklist
+            $blocked_userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+            if (file_exists($blocked_userfile)) {
+                $blocked_user_config = unserialize(file_get_contents($blocked_userfile));
+            }
         }
     }
+    
     for ($i = 0; $i < $c; $i++) {
         unset($groupdisplay);
         $g = $gruppen[$i];
@@ -793,9 +800,22 @@ function groups_show($gruppen)
 
                 $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
                 $groupdisplay .= '<table><tr><td>';
-                $groupdisplay .= '<font class="np_last_posted_date">by: ';
 
-                $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
+                $block = false;
+                foreach ($blocked_user_config as $key => $value) {
+                    $blockme = '/' . addslashes($key) . '/';
+                    if (preg_match($blockme, $name_from)) {
+                        $block = true;
+                        break;
+                    }
+                }
+                $groupdisplay .= '<font class="np_last_posted_date">by: ';
+                if ($block) {
+                    $groupdisplay .= "(blocked user)";
+                } else {
+                    $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
+                }
+
                 $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
@@ -3114,7 +3134,7 @@ function check_article_integrity($rawmessage, $artdate = false)
     // Parse the Header:
     $message->header = parse_header($rawheader);
 
-    if(!$artdate) {
+    if (!$artdate) {
         $artdate = $message->header->date;
     }
     // Check if date is in future (allow up to 60 seconds in future)
