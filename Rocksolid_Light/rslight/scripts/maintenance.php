@@ -157,7 +157,7 @@ function create_section($section = false)
     }
     if (!$menuexists) {
         echo "Adding menu entry to " . $config_dir . "menu.conf\n";
-        $newmenu[] = $section . "1:1\n";
+        $newmenu[] = $section . ":1:1\n";
         $newmenu = implode($newmenu);
         file_put_contents($config_dir . 'menu.conf', $newmenu);
     }
