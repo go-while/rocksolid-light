@@ -143,14 +143,23 @@ function create_section($section = false)
 
     $menuexists = false;
     $menudata = file($config_dir . '/menu.conf');
+    $newmenu = array();
     foreach ($menudata as $menuentry) {
+        if(trim($menuentry) == '') {
+            continue;
+        }
         if (strpos($menuentry, $section) !== false) {
+            echo "Menu entry already exists for: " . $section . "\n";
             $menuexists = true;
             break;
         }
+        $newmenu[] = $menuentry;
     }
     if (!$menuexists) {
-        file_put_contents($config_dir . '/menu.conf', $section . ":1:1", FILE_APPEND);
+        echo "Adding menu entry to " . $config_dir . "menu.conf\n";
+        $newmenu[] = $section . "1:1\n";
+        $newmenu = implode($newmenu);
+        file_put_contents($config_dir . 'menu.conf', $newmenu);
     }
     echo 'Please now edit ' . $configsection . "/groups.txt to add groups to this section\n";
 }
