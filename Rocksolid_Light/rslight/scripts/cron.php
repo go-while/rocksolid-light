@@ -24,6 +24,7 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
     $fp1 = $spooldir . "/" . $config_name . "/groups.txt";
     unlink($fp1);
     touch($fp1);
+    $group_exists = array();
     foreach ($menulist as $menu) {
         if (($menu[0] == '#') || trim($menu) == "") {
             continue;
@@ -35,8 +36,11 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
                 if (($ok_group[0] == ':') || (trim($ok_group) == "")) {
                     continue;
                 }
-                $ok_group = preg_split("/( |\t)/", trim($ok_group), 2);
-                file_put_contents($fp1, $ok_group[0] . "\r\n", FILE_APPEND);
+                $entry = preg_split("/( |\t)/", trim($ok_group), 2);
+                if (!isset($group_exists[$entry[0]])) {
+                    file_put_contents($fp1, $entry[0] . "\n", FILE_APPEND);
+                }
+                $group_exists[$entry[0]] = true;
             }
         }
     }
