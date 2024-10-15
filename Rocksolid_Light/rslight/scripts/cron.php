@@ -144,7 +144,18 @@ foreach ($menulist as $menu) {
     }
     $menuitem = explode(':', $menu);
     chdir("../" . $menuitem[0]);
-    if ($CONFIG['remote_server'] !== '') {
+
+    $this_config_name = $menuitem[0];
+    if(file_exists($config_dir.$this_config_name.'.inc.php')) {
+      $config_file = $config_dir.$this_config_name.'.inc.php';
+    } else {
+      $config_file = $config_dir.'rslight.inc.php';
+    }
+
+    $this_CONFIG = include($config_file);
+    file_put_contents($debug_log, "\n" . format_log_date() . " Using " . $config_file . " for " . $menuitem[0], FILE_APPEND);
+
+    if ($this_CONFIG['remote_server'] !== '') {
         # Send articles
         echo "Sending articles\n";
         echo exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/send.php");
@@ -153,6 +164,8 @@ foreach ($menulist as $menu) {
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
             echo "\nRefreshed spoolnews\n";
         }
+    } else {
+        file_put_contents($debug_log, "\n" . format_log_date() . " Remote disabled for " . $menuitem[0] . " (no remote server)", FILE_APPEND);
     }
     # Expire articles
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/expire.php");

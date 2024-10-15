@@ -447,6 +447,7 @@ function get_articles($ns, $group)
             $bytes = $bytes + ($lines * 2);
 
             // Prefer Injection-Date to Date header
+            // Some newsreaders (PiaoHong) produce a Date header that php does not like
             if (isset($injectiondate)) {
                 $artdate = $injectiondate;
                   file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
@@ -464,7 +465,7 @@ function get_articles($ns, $group)
             $dates_used[$article_date] = true;
 
             // Don't spool article if $banned or fails integrity test
-            $integrity = check_article_integrity(file($articleHandle));
+            $integrity = check_article_integrity(file($articleHandle), $artdate);
             if (($banned !== false) || ($integrity !== false)) {
                 unlink($articleHandle);
                 if ($integrity) {
