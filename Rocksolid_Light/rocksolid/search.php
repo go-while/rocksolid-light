@@ -458,7 +458,7 @@ function get_header_search($group, $terms)
 
 function display_search_tools($home = true)
 {
-    global $CONFIG, $config_name, $search_group;
+    global $CONFIG, $config_name, $search_group, $file_index, $file_thread;
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
