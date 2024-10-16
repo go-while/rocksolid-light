@@ -81,6 +81,10 @@ return [
     // for a SECTION. Comma separated list ex: 'rocksolid,section3,section5',
     'insert_disable' => 'sectionONE, sectionTWO',
 
+    // Disable pushing articles to remote server for these sections
+    // (replace 'testsection...' with your choice of sections)
+    'disable_remote_push' => array("testsectionone", "testsectiontwo"),
+
     // Disable posting attachments by section
     // List section names to disable:
     // array("sectionONE", "sectionTWO", "sectionETC"),

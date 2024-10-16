@@ -447,11 +447,12 @@ function get_articles($ns, $group)
             $bytes = $bytes + ($lines * 2);
 
             // Prefer Injection-Date to Date header
+            // Some newsreaders (PiaoHong) produce a Date header that php does not like
             if (isset($injectiondate)) {
                 $artdate = $injectiondate;
-                //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date for: " . $mid[1], FILE_APPEND);
+                  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
             } else {
-                //  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date for: " . $mid[1], FILE_APPEND);
+                  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
             }
 
             // Check if date matches exactly another article and handle else sorting doesn't like it
@@ -464,11 +465,11 @@ function get_articles($ns, $group)
             $dates_used[$article_date] = true;
 
             // Don't spool article if $banned or fails integrity test
-            $integrity = check_article_integrity(file($articleHandle));
+            $integrity = check_article_integrity(file($articleHandle), $artdate);
             if (($banned !== false) || ($integrity !== false)) {
                 unlink($articleHandle);
                 if ($integrity) {
-                    file_put_contents($logfile, "\n" . format_log_date() . $integrity, FILE_APPEND);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $integrity, FILE_APPEND);
                 } elseif ($banned) {
                     file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
                 }

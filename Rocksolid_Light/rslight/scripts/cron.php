@@ -24,6 +24,7 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
     $fp1 = $spooldir . "/" . $config_name . "/groups.txt";
     unlink($fp1);
     touch($fp1);
+    $group_exists = array();
     foreach ($menulist as $menu) {
         if (($menu[0] == '#') || trim($menu) == "") {
             continue;
@@ -35,8 +36,11 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
                 if (($ok_group[0] == ':') || (trim($ok_group) == "")) {
                     continue;
                 }
-                $ok_group = preg_split("/( |\t)/", trim($ok_group), 2);
-                file_put_contents($fp1, $ok_group[0] . "\r\n", FILE_APPEND);
+                $entry = preg_split("/( |\t)/", trim($ok_group), 2);
+                if (!isset($group_exists[$entry[0]])) {
+                    file_put_contents($fp1, $entry[0] . "\n", FILE_APPEND);
+                }
+                $group_exists[$entry[0]] = true;
             }
         }
     }
@@ -140,7 +144,18 @@ foreach ($menulist as $menu) {
     }
     $menuitem = explode(':', $menu);
     chdir("../" . $menuitem[0]);
-    if ($CONFIG['remote_server'] !== '') {
+
+    $this_config_name = $menuitem[0];
+    if(file_exists($config_dir.$this_config_name.'.inc.php')) {
+      $config_file = $config_dir.$this_config_name.'.inc.php';
+    } else {
+      $config_file = $config_dir.'rslight.inc.php';
+    }
+
+    $this_CONFIG = include($config_file);
+    file_put_contents($debug_log, "\n" . format_log_date() . " Using " . $config_file . " for " . $menuitem[0], FILE_APPEND);
+
+    if ($this_CONFIG['remote_server'] !== '') {
         # Send articles
         echo "Sending articles\n";
         echo exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/send.php");
@@ -149,6 +164,8 @@ foreach ($menulist as $menu) {
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
             echo "\nRefreshed spoolnews\n";
         }
+    } else {
+        file_put_contents($debug_log, "\n" . format_log_date() . " Remote disabled for " . $menuitem[0] . " (no remote server)", FILE_APPEND);
     }
     # Expire articles
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/expire.php");

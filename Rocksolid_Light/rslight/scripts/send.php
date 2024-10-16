@@ -54,7 +54,7 @@ echo "\nSend Done\r\n";
 
 function post_articles($ns, $spooldir)
 {
-    global $logfile, $config_name;
+    global $CONFIG, $OVERRIDES, $logfile, $debug_log, $config_name;
     $outgoing_dir = $spooldir . "/" . $config_name . "/outgoing/";
     $fail_dir = $outgoing_dir . '/failed/';
 
@@ -64,6 +64,16 @@ function post_articles($ns, $spooldir)
     if (! is_dir($outgoing_dir)) {
         mkdir($outgoing_dir);
         return "No messages to send\r\n";
+    }
+
+    // Check overrides.inc.php if this section is disabled for remote push
+    if (isset($OVERRIDES['disable_remote_push'])) {
+        foreach ($OVERRIDES['disable_remote_push'] as $disable) {
+            if ($config_name == $disable) {
+                file_put_contents($debug_log, "\n" . format_log_date() . " Remote push disabled for " . $config_name . " by override", FILE_APPEND);
+                return "Remote push disabled for this section: " . $config_name;
+            }
+        }
     }
 
     $messages = scandir($outgoing_dir);

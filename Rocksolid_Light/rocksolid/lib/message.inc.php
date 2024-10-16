@@ -278,10 +278,11 @@ function message_read($id, $bodynum = 0, $group = "")
             $line = line_read($ns);
             if (substr($line, 0, 3) != "220") {
                 // requested article doesn't exist on the newsserver. Now we
-                // should check, if the thread stored in the spool-directory
+                // should check if the thread stored in the spool-directory
                 // also doesnt't contain that article...
                 thread_cache_removearticle($group, $id);
-                file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server. Removing...", FILE_APPEND);
+                // This is most likely a bot calling an old article, not a bug
+            //    file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server. Removing...", FILE_APPEND);
                 return false;
             } else {
             }

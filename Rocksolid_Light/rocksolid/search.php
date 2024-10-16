@@ -27,67 +27,9 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
         exit();
     }
 
-    echo '<h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-    if ($search_group) {
-        echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
-    }
-    echo 'search</h1>';
-    echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
-    if (isset($search_group)) {
-        $searching = $search_group;
-    } else {
-        $searching = $config_name;
-    }
-    echo '<body>';
-    echo '<table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
-    echo '<tr>';
-    echo '<form name="form1" method="post" action="search.php">';
-    echo '<td>';
-    echo '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="1">';
-    echo '<tr>';
-    echo '<td colspan="3">Searching <strong>' . $searching . '</strong></td>';
-    echo '</tr>';
-    echo '<tr>';
-    if (! isset($_REQUEST['data'])) {
-        echo '<td>Search Terms:&nbsp';
-    } else {
-        echo '<td>Search Poster:&nbsp';
-    }
-    if (isset($_GET['terms'])) {
-        echo '<input name="terms" type="text" id="terms" value="' . $_GET['terms'] . '"></td>';
-    } else {
-        echo '<input name="terms" type="text" id="terms"></td>';
-    }
-    echo '</tr><tr><td>';
-    if (isset($_GET['searchpoint']) && $_GET['searchpoint'] == 'Poster') {
-        if ($CONFIG['article_database'] == '1') {
-            echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
-        }
-        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="name" checked="checked"/>Poster&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
-    } else {
-        if ($CONFIG['article_database'] == '1') {
-            echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
-        }
-        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
-    }
-    echo '</td></tr>';
-    echo '<tr>';
-    echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
-    if (isset($search_group)) {
-        echo '<input type="hidden" name="group" value="' . urlencode($search_group) . '">';
-    }
-    echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
-    if (isset($_GET['data'])) {
-        echo '<input type="hidden" name="data" value="' . $_GET['data'] . '">';
-    }
-    echo '</tr><tr>';
-    echo '<td><input type="submit" name="Submit" value="Search"></td>';
-    echo '</tr></table></td></form></tr></table>';
+    // Display search tools
+    display_search_tools();
+
     // Block poster
     if (isset($_COOKIE['mail_name'])) {
         if (isset($_REQUEST['data'])) {
@@ -140,16 +82,16 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
 }
 
 if (isset($frames_on) && $frames_on === true) {
-    ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash;
-    if ( window.self !== window.top ) {
-        /* Great! now we move along */
-    } else {
-        window.location.href = '../index.php?content='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
+?>
+    <script>
+        var contentURL = window.location.pathname + window.location.search + window.location.hash;
+        if (window.self !== window.top) {
+            /* Great! now we move along */
+        } else {
+            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
+        }
+        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
+    </script>
 
 <?php
 }
@@ -197,6 +139,9 @@ if (isset($_POST['block_poster'])) {
     }
     exit(0);
 }
+
+display_search_tools();
+echo "<hr>";
 
 ob_start();
 if (isset($search_group)) {
@@ -296,8 +241,7 @@ foreach ($overview as $overviewline) {
     $fromline = address_decode(headerDecode($overviewline['name']), "nowhere");
 
     if (! isset($fromline[0]["personal"])) {
-        $lastname = $fromline[0]["mailbox"];
-        ;
+        $lastname = $fromline[0]["mailbox"];;
     } else {
         $lastname = $fromline[0]["personal"];
     }
@@ -342,7 +286,7 @@ foreach ($overview as $overviewline) {
     }
     echo $snip;
     echo '</td></tr>';
-    if ($results ++ > ($maxdisplay - 2))
+    if ($results++ > ($maxdisplay - 2))
         break;
 }
 
@@ -359,10 +303,10 @@ echo $thispage;
 
 function get_body_search($group, $terms)
 {
-    GLOBAL $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
+    global $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
     $terms = preg_replace("/'/", ' ', $terms);
     $terms = trim($terms);
-    if ($terms[0] !== '"' || substr($terms, - 1) !== '"') {
+    if ($terms[0] !== '"' || substr($terms, -1) !== '"') {
         $terms = preg_replace('/"/', '', $terms);
         $terms = preg_replace("/\ /", '" "', $terms);
         $terms = preg_replace('/"NEAR"/', 'NEAR', $terms);
@@ -385,7 +329,7 @@ function get_body_search($group, $terms)
             continue;
         }
         $dbh = article_db_open($database);
-        if(!$dbh) {
+        if (!$dbh) {
             file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Failed to open database: " . $database . " in search.php", FILE_APPEND);
             continue;
         }
@@ -439,7 +383,7 @@ function show_search_sort_toggle()
 
 function get_header_search($group, $terms)
 {
-    GLOBAL $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
+    global $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
     $terms = preg_replace('/\%/', '\%', $terms);
     $searchterms = "%" . $terms . "%";
 
@@ -464,7 +408,7 @@ function get_header_search($group, $terms)
             continue;
         }
         $article_dbh = article_db_open($article_database);
-        if(!$article_dbh) {
+        if (!$article_dbh) {
             file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Failed to open database: " . $article_database . " in search.php", FILE_APPEND);
             continue;
         }
@@ -512,6 +456,98 @@ function get_header_search($group, $terms)
     return $overview;
 }
 
+function display_search_tools($home = true)
+{
+    global $CONFIG, $config_name, $search_group, $file_index, $file_thread;
+    echo '<h1 class="np_thread_headline">';
+    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    if ($search_group) {
+        echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+    }
+    echo 'search</h1>';
+    echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+    if (isset($search_group)) {
+        $searching = $search_group;
+    } else {
+        $searching = $config_name;
+    }
+    echo '<body>';
+    echo '<table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
+    echo '<tr>';
+    echo '<form name="form1" method="post" action="search.php">';
+    echo '<td>';
+    echo '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="1">';
+    echo '<tr>';
+    echo '<td colspan="3">Searching <strong>' . $searching . '</strong></td>';
+    echo '</tr>';
+    echo '<tr>';
+    if (! isset($_REQUEST['data'])) {
+        echo '<td>Search Terms:&nbsp';
+    } else {
+        echo '<td>Search Poster:&nbsp';
+    }
+    if (isset($_REQUEST['terms'])) {
+        echo '<input name="terms" type="text" id="terms" value="' . $_REQUEST['terms'] . '"></td>';
+    } else {
+        echo '<input name="terms" type="text" id="terms"></td>';
+    }
+    echo '</tr><tr><td>';
+
+    // Create radio buttons (prefilled if available)
+    if (isset($_REQUEST['searchpoint'])) {
+        if ($_REQUEST['searchpoint'] == 'Poster' || $_REQUEST['searchpoint'] == 'name') {
+            if ($CONFIG['article_database'] == '1') {
+                echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+            }
+            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name" checked="checked"/>Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+        } elseif ($_REQUEST['searchpoint'] == 'subject') {
+            if ($CONFIG['article_database'] == '1') {
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+            }
+            echo '<input type="radio" name="searchpoint" value="subject" checked="checked"/>Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+        } elseif ($_REQUEST['searchpoint'] == 'msgid') {
+            if ($CONFIG['article_database'] == '1') {
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+            }
+            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid" checked="checked"/>Message-ID';
+        } else {
+            if ($CONFIG['article_database'] == '1') {
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
+            }
+            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+        }
+    } else {
+        if ($CONFIG['article_database'] == '1') {
+            echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
+        }
+        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+    }
+
+    echo '</td></tr>';
+    echo '<tr>';
+    echo '<td><input name="command" type="hidden" id="command" value="Search" readonly="readonly"></td>';
+    if (isset($search_group)) {
+        echo '<input type="hidden" name="group" value="' . urlencode($search_group) . '">';
+    }
+    echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
+    if (isset($_REQUEST['data'])) {
+        echo '<input type="hidden" name="data" value="' . $_REQUEST['data'] . '">';
+    }
+    echo '</tr><tr>';
+    echo '<td><input type="submit" name="Submit" value="Search"></td>';
+    echo '</tr></table></td></form></tr></table>';
+}
+
 function highlightStr($haystack, $needle)
 {
     preg_match_all("/$needle+/i", $haystack, $matches);
@@ -524,4 +560,5 @@ function highlightStr($haystack, $needle)
 }
 ?>
 </body>
+
 </html>
