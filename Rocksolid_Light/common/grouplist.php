@@ -26,13 +26,9 @@ echo '<th>Description</th>';
 echo '<th>Messages</th>';
 echo '</tr>';
 
-$menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
+$menulist = get_section_menu_array();
 $groups_array = array();
 foreach ($menulist as $menu) {
-    if (($menu[0] == '#') || trim($menu) == "") {
-        continue;
-    }
     $menuitem = explode(':', $menu);
     if ($menuitem[0] == 'spoolnews') {
         continue;

@@ -9,7 +9,7 @@ include ($rootdir . 'common/config.inc.php');
 
 $CONFIG = include $config_file;
 
-$menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES);
+$menulist = get_section_menu_array();
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
 
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
@@ -34,7 +34,7 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . 'common/themes/' . $_S
 } else {
     $header_image = $rootdir . 'common/images/rocksolidlight.png';
 }
-
+echo '</head><body>';
 ?>
 
 	<table class="np_header_bar_top" width="100%" valign="middle">
@@ -99,9 +99,6 @@ if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
 echo '<p align="center" class="np_header_button_bar">';
 echo '<table cellpadding="0" cellspacing="0"><tr>';
 foreach ($menulist as $menu) {
-    if ($menu[0] == '#') {
-        continue;
-    }
     $menuitem = explode(':', $menu);
     if ($menuitem[1] == '0') {
         continue;

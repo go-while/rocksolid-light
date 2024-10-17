@@ -16,8 +16,7 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
     chown($logfile, $CONFIG['webserver_user']);
 }
 
-$menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
+$menulist = get_section_menu_array();
 # Start or verify NNTP server
 if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
     # Create group list for nntp.php
@@ -26,9 +25,6 @@ if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
     touch($fp1);
     $group_exists = array();
     foreach ($menulist as $menu) {
-        if (($menu[0] == '#') || trim($menu) == "") {
-            continue;
-        }
         $menuitem = explode(':', $menu);
         if ($menuitem[2] == '1') {
             $in_gl = file($config_dir . $menuitem[0] . "/groups.txt");

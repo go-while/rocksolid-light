@@ -108,7 +108,7 @@ if (is_file($sem)) {
 # Iterate through groups
 $enable_rslight = 0;
 # Refresh group list
-$menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+$menulist = get_section_menu_array();
 foreach ($menulist as $menu) {
     if (($menu[0] == '#') || (trim($menu) == "")) {
         continue;
