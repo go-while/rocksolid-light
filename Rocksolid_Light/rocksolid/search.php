@@ -202,12 +202,8 @@ if ($_POST['searchpoint'] == 'body') {
 
 foreach ($overview as $overviewline) {
     /* Find section for links */
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
+    $menulist = get_section_menu_array();
     foreach ($menulist as $menu) {
-        if ($menu[0] == '#') {
-            continue;
-        }
         $menuitem = explode(':', $menu);
         $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
         $section = "";

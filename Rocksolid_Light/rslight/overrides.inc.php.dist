@@ -16,6 +16,10 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
+    // Enable display of References when using short headers
+    // Default is false
+    'short_header_references' => false,
+
     // Log posts?
     'enable_post_log' => false,
     

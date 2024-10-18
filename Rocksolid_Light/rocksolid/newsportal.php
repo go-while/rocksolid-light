@@ -355,15 +355,13 @@ function testGroup($groupname)
 
 function get_section_by_group($groupname, $all_sections = false)
 {
-    global $CONFIG, $config_dir;
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    global $config_dir;
+
+    $menulist = get_section_menu_array();
     // Get first group in Newsgroups
     $groupname = preg_split("/( |\,)/", $groupname, 2);
     $groupname = $groupname[0];
     foreach ($menulist as $menu) {
-        if ($menu[0] == '#') {
-            continue;
-        }
         $menuitem = explode(':', $menu);
         if ($menuitem[1] == '0') {
             if (! $all_sections) {
@@ -614,7 +612,7 @@ function groups_show($gruppen)
             }
         }
     }
-    
+
     for ($i = 0; $i < $c; $i++) {
         unset($groupdisplay);
         $g = $gruppen[$i];
@@ -1675,6 +1673,22 @@ function repair_broken_group($group)
             wipe_newsportal_spool_info($group);
         }
     }
+}
+
+// Read <config_dir>/menu.conf and return as array
+function get_section_menu_array()
+{
+    global $config_dir;
+    $menudata = file($config_dir . '/menu.conf');
+    $newmenu = array();
+    foreach ($menudata as $menuentry) {
+        if (!preg_match("/^[a-zA-Z0-9]/", $menuentry)) { // Not an entry. Ignore
+            continue;
+        } else {
+            $newmenu[] = $menuentry;
+        }
+    }
+        return $newmenu;
 }
 
 function wipe_newsportal_spool_info($group)
@@ -3040,7 +3054,6 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     }
 
     /* Find section */
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($grouplist as $group) {
         $config_name = get_section_by_group($group, true);
         if (! $config_name) {
