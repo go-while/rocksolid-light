@@ -1,5 +1,6 @@
 <?php
 include "config.inc.php";
+include "../spoolnews/newsportal.php";
 include "alphabet.inc.php";
 
 $title .= ' - Register';
@@ -725,30 +726,6 @@ function create_new($username, $password, $user_email)
     echo '<br /><a href="' . $CONFIG['default_content'] . '">Back</a>';
 }
 
-function get_user_config($username, $request)
-{
-    global $config_dir;
-    $userconfigpath = $config_dir . "userconfig/";
-    $username = strtolower($username);
-    $userFilename = $userconfigpath . $username;
-
-    if ($userFileHandle = @fopen($userFilename, 'r')) {
-        while (!feof($userFileHandle)) {
-            $buffer = fgets($userFileHandle);
-            if (strpos($buffer, $request . ':') !== FALSE) {
-                $userdataline = $buffer;
-                fclose($userFileHandle);
-                $userdatafound = explode(':', $userdataline);
-                return trim($userdatafound[1]);
-            }
-        }
-        fclose($userFileHandle);
-        return FALSE;
-    } else {
-        return FALSE;
-    }
-}
-
 function make_key($username)
 {
     $key = openssl_random_pseudo_bytes(44);
@@ -762,27 +739,6 @@ function create_code($username)
     $userfile = sys_get_temp_dir() . "/" . $username;
     file_put_contents($userfile, $code);
     return $code;
-}
-
-function get_config_value($configfile, $request)
-{
-    global $config_dir;
-
-    if ($configFileHandle = @fopen($config_dir . '/' . $configfile, 'r')) {
-        while (!feof($configFileHandle)) {
-            $buffer = fgets($configFileHandle);
-            if (strpos($buffer, $request . ':') !== FALSE) {
-                $dataline = $buffer;
-                fclose($configFileHandle);
-                $datafound = explode(':', $dataline);
-                return $datafound[1];
-            }
-        }
-        fclose($configFileHandle);
-        return FALSE;
-    } else {
-        return FALSE;
-    }
 }
 
 function generateImage($text, $file)
@@ -826,13 +782,4 @@ function prepareCaptcha($captchaImage)
     $usedAlphabet = rand(0, 9);
     $code = $alphabet[$usedAlphabet] . $alphabetsForNumbers[$usedAlphabet][$expression->n1] . $alphabetsForNumbers[$usedAlphabet][$expression->n2];
     return ($code);
-}
-
-function format_log_date()
-{
-    return date('M d H:i:s');
-}
-
-function logging_prefix() {
-    return format_log_date() . " [" . $_SERVER['REMOTE_ADDR'] . "]";
 }

@@ -3,12 +3,13 @@
 /*
  * CHANGE THE LINE BELOW TO 'installed = true once you have edited this filter
  */
- $installed = false;
+ $installed = true;
 
 // Set this to your administrative email address
- $admin = "admin@example.com";
+ $admin = "admin@novabbs.com";
 
 include "config.inc.php";
+include "../spoolnews/newsportal.php";
 $title .= " - Privacy and FAQ";
 include "head.inc";
 
