@@ -402,11 +402,6 @@ function show_header($head, $group, $local_poster = false)
         return;
     }
 
-    if (isset($_COOKIE['tzo'])) {
-        $offset = $_COOKIE['tzo'];
-    } else {
-        $offset = intval($CONFIG['timezone']);
-    }
     echo '<div class="np_article_header">';
     if ($article_show["Subject"])
         echo $text_header["subject"] . htmlspecialchars($head->subject) . "<br>";
@@ -462,17 +457,10 @@ function show_header($head, $group, $local_poster = false)
     if ((isset($head->organization)) && ($article_show["Organization"]) && ($head->organization != ""))
         echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
     if ($article_show["Date"]) {
-        $ts = new DateTime(date($text_header["date_format"], $head->date), new DateTimeZone('UTC'));
-        $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
-        if ($offset != 0) {
-            echo $text_header["date"] . $ts->format('D, j M Y H:i') . "<br>\n";
-        } else {
-            echo $text_header["date"] . $ts->format($text_header["date_format"]) . "<br>\n";
-        }
-        unset($ts);
+        // Try to use client timezone else default to UTC
+        $displaydate = get_date_for_client_timezone($head->date);
+        echo $displaydate;
     }
-
-    // echo $text_header["date"].date($text_header["date_format"],$head->date)."<br>\n";
     if ($article_show["Message-ID"]) {
         echo ' ' . $text_header["message-id"] . htmlspecialchars($head->id) . "<br>\n";
     }
@@ -517,21 +505,15 @@ function show_header($head, $group, $local_poster = false)
 function show_header_short($head, $group, $local_poster = false)
 {
     global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
-    global $file_attachment, $anonym_address, $CONFIG, $config_name, $sitelink;
+    global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
 
-    if (isset($_COOKIE['tzo'])) {
-        $offset = $_COOKIE['tzo'];
-    } else {
-        $offset = intval($CONFIG['timezone']);
-    }
     echo '<div class="np_article_header">';
     echo '<b>';
     if ($article_show["Subject"]) {
         echo htmlspecialchars($head->subject) . "<br>";
     }
     echo '</b>';
-    $poster = address_decode($head->from, "nowhere");
     if ($head->name != "") {
         $displayname = create_name_link($head->name, $head->from);
     } else {
@@ -541,14 +523,10 @@ function show_header_short($head, $group, $local_poster = false)
             $displayname = htmlspecialchars($head->from);
         }
     }
-    $ts = new DateTime(date($text_header["date_format"], $head->date), new DateTimeZone('UTC'));
-    $ts->add(DateInterval::createFromDateString($offset . ' minutes'));
-    if ($offset != 0) {
-        $displaydate = $ts->format('D, j M Y H:i') . "<br>\n";
-    } else {
-        $displaydate = $ts->format($text_header["date_format"]) . "<br>\n";
-    }
-    unset($ts);
+
+    // Try to use client timezone else default to UTC
+    $displaydate = get_date_for_client_timezone($head->date);
+
     echo '<div class=np_ob_posted_date>';
 
     // Copy MID to clipboard (requires js)
