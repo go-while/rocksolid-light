@@ -163,10 +163,39 @@
   font-size: 0.5em;
 }
 
-.np_header_links {
+a.np_header_links {
   color: #777 !important;
+  border: 1px solid #FFF;
+  font-size: 1.333em;
+  padding: 2px;
+}
+
+a.np_header_links {
+  text-decoration: none;
+}
+
+a.np_header_links:link {
+  text-decoration: none;
+}
+
+a.np_header_links:visited {
+  text-decoration: none;
+}
+
+a.np_header_links:hover {
+  text-decoration: none;
+}
+
+a.np_header_links:active {
+  text-decoration: none;
+}
+
+a.np_header_links:hover {
+  color: var(--color-visited) !important;
+  border: 1px solid var(--color-visited);
   font-size: 1.333em
 }
+
 
 /* Mail buttons */
 .np_mail_button_link {
@@ -239,8 +268,8 @@
 }
 
 .np_header_button_link:hover {
-  color: var(--color-section-background);
-  background: var(--color-section-link);
+  color: #FFF !important;
+  background: var(--color-visited);
 }
 
 .np_username_button_link:hover {
@@ -787,11 +816,12 @@ a:visited {
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  color: RED;
 }
 
 a:active {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* custom styles for simple - minimal themes */
@@ -861,9 +891,10 @@ body {
 
 /* size the footer image */
 a img {
-  width: 20%;
-  min-width: 320px;
-  max-width: 320px;
+  width: 10%;
+  min-width: 160px;
+  max-width: 160px;
+  margin-top: 16px;
 }
 
 button,
@@ -1036,4 +1067,76 @@ a[title="Copy message-id to clipboard"] i {
 input[name="terms"] {
   width: 50%;
   max-width: 50% !important;
+}
+
+/* pager numbers */
+a.np_pages_unselected {
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #777;
+  background: #777;
+  color: #FFF !important;
+  padding: 3px;
+  padding-left: 8px;
+  padding-right: 8px;
+  width: 2em !important;
+  min-width: 2em !important;
+  text-align: center;
+}
+
+a.np_pages_unselected:hover {
+  border: 1px solid var(--color-visited);
+  background: var(--color-visited);
+}
+
+span.np_pages_selected {
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid RED;
+  background: #FFF;
+  color: RED !important;
+  padding: 3px;
+  padding-left: 8px;
+  padding-right: 8px;
+  width: 2em !important;
+  min-width: 2em !important;
+  text-align: center;
+}
+
+.np_pages {
+  text-align: right;
+}
+
+/* styles for screen sizes */
+
+@media only screen and (max-device-width: 480px) {
+* {
+  font-family: 'Noto Sans Mono', Monospace;
+  font-size: 10pt !important;
+}
+
+body {
+  margin-left: 8px;
+  margin-right: 8px;
+
+}
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 820px) {
+* {
+  font-family: 'Noto Sans Mono', Monospace;
+  font-size: 11pt !important;
+}
+
+body {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+}
+
+@media only screen and (min-device-width: 821px) {
+* {
+  font-family: 'Noto Sans Mono', Monospace;
+  font-size: 14pt !important;
+}
 }
