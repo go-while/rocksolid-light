@@ -12,6 +12,16 @@ $CONFIG = include $config_file;
 $menulist = get_section_menu_array();
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
 
+// Set tzo if possible
+?>
+   <script type="text/javascript">
+     if (navigator.cookieEnabled)
+       document.cookie = "tzo="+ (- new Date().getTimezoneOffset())+"; path=/";
+       var tzid = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+       document.cookie = "tzid=" + tzid + "; path=/";
+   </script>
+<?php
+
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     $user = strtolower($_COOKIE['mail_name']);
     if (! isset($_SESSION['theme']) && file_exists($config_dir . '/userconfig/' . $user . '.config')) {

@@ -1390,6 +1390,33 @@ function set_user_logged_in_cookies($name, $keys)
 <?php
     return true;
 }
+function get_date_for_client_timezone($date)
+{
+    global $text_header, $CONFIG, $OVERRIDES;
+    if (isset($_COOKIE['tzo'])) {
+        $offset = $_COOKIE['tzo'];
+    } else {
+        $offset = intval($CONFIG['timezone']);
+    }
+    if (isset($_COOKIE['tzid']) && (isset($OVERRIDES['timezone_to_local_format']) && $OVERRIDES['timezone_to_local_format'] == 'timezone')) {
+        $datetime = new DateTime(date($text_header["date_format"], $date));
+        $client_time = new DateTimeZone($_COOKIE['tzid']);
+        $datetime->setTimezone($client_time);
+        $displaydate =  $datetime->format('D, j M Y H:i T');
+    } else {
+        $datetime = new DateTime(date($text_header["date_format"], $date), new DateTimeZone('UTC'));
+        $datetime->add(DateInterval::createFromDateString($offset . ' minutes'));
+        if ($offset != 0) {
+            $offset_hours = ($offset / 60) * 100;
+            $displaydate = $datetime->format('D, j M Y H:i') . " " . sprintf('%05d', $offset_hours) . "<br>\n";
+        } else {
+            $offset_hours = ($offset / 60) * 100;
+            $displaydate = $datetime->format($text_header["date_format"]) . "<br>\n";
+        }
+    }
+    unset($datetime);
+    return $displaydate;
+}
 
 function check_bbs_auth($username, $password, $sockip = null)
 {
@@ -1688,7 +1715,7 @@ function get_section_menu_array()
             $newmenu[] = $menuentry;
         }
     }
-        return $newmenu;
+    return $newmenu;
 }
 
 function wipe_newsportal_spool_info($group)
