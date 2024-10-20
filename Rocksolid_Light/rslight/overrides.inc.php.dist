@@ -73,6 +73,12 @@ return [
     // Set to false to NOT add '>' to quotes for blank lines
     // Default is true
     'quote_blank_lines' => true,
+
+    // Show timezone converted to local (client) time as
+    // 'offset' (-0400) or 'timezone' (EST)
+    // Default is 'offset', which should be more reliable
+    // as 'timezone' may have issues with daylight savings time
+    'timezone_to_local_format' => 'offset',
    
     // How to format 'who wrote' quoting in reply:
     // 'On 4, Jan 2024, John Doe wrote:'

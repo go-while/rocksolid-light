@@ -1392,13 +1392,13 @@ function set_user_logged_in_cookies($name, $keys)
 }
 function get_date_for_client_timezone($date)
 {
-    global $text_header, $CONFIG;
+    global $text_header, $CONFIG, $OVERRIDES;
     if (isset($_COOKIE['tzo'])) {
         $offset = $_COOKIE['tzo'];
     } else {
         $offset = intval($CONFIG['timezone']);
     }
-    if (isset($_COOKIE['tzid'])) {
+    if (isset($_COOKIE['tzid']) && (isset($OVERRIDES['timezone_to_local_format']) && $OVERRIDES['timezone_to_local_format'] == 'timezone')) {
         $datetime = new DateTime(date($text_header["date_format"], $date));
         $client_time = new DateTimeZone($_COOKIE['tzid']);
         $datetime->setTimezone($client_time);
