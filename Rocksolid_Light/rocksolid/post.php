@@ -610,13 +610,14 @@ if ($show == 1) {
         echo '<br> <textarea cols="' . $wrap_width . '"';
         echo 'class="postbody" id="postbody" cols="72"';
         echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
-        
+
         $bodyzeile = wrap_post($bodyzeile);
         if ((isset($bodyzeile)) && ($post_autoquote))
             echo htmlspecialchars(rtrim($bodyzeile) . "\n");
         if (is_string($body))
             echo htmlspecialchars(rtrim($body) . "\n");
         echo '</textarea></td></tr><tr><td>';
+
         if (! $post_autoquote) {
             echo '<input type="hidden" id="hidebody"';
             echo 'value="';
@@ -639,15 +640,25 @@ if ($show == 1) {
         <?php } ?>
 
         <input type="submit" value="<?php echo $text_post["button_post"]; ?>">
-        <?php if ($setcookies == true) { ?>
-            &nbsp;
-            <input tabindex="100" type="Button" name="quote"
-                value="<?php echo $text_post["quote"] ?>"
-                onclick="quoten(); this.style.visibility= 'hidden';">
-            &nbsp;
+        <?php
+
+        // Quote button (or not)
+        if (isset($type) && $type == 'reply') {
+        ?>
+            <?php if ($setcookies == true) { ?>
+                &nbsp;
+                <input tabindex="100" type="Button" name="quote"
+                    value="<?php echo $text_post["quote"] ?>"
+                    onclick="quoten(); this.style.visibility= 'hidden';">
+                &nbsp;
 
         <?php
+            }
+        } else {
+            echo '<button disabled>' . $text_post["quote"] . '</button>';
         }
+        // END Quote button
+
         if (! isset($OVERRIDES['disable_attach'])) {
             $OVERRIDES['disable_attach'] = array();
         }
