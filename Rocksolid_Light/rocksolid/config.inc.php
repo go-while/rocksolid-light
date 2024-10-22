@@ -46,6 +46,9 @@ $script_path = $config_dir . "/scripts/";
 $CONFIG = include ($config_file);
 $OVERRIDES = include ($config_dir . '/overrides.inc.php');
 
+/* Version */
+$rslight_version = file_get_contents('../common/version.txt');
+
 // Spool directory size and minimum in Gigabytes
 if ($OVERRIDES['min_spool_disk_space'] > 0) {
     $min_spool_disk_space = $OVERRIDES['min_spool_disk_space'];
