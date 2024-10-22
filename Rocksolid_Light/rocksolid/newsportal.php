@@ -33,6 +33,9 @@ if (file_exists("lib/post.inc.php"))
 
 $CONFIG = include($config_file);
 
+$keyfile = $spooldir.'/keys.dat';
+$keys = unserialize(file_get_contents($keyfile));
+
 /*
  * opens the connection to the NNTP-Server
  *
@@ -3224,7 +3227,7 @@ function wrap_post($body)
         }
         if ($line[0] == '>') {
             $depth = 0;
-            while ($line[$depth] == '>') {
+            while (isset($line[$depth]) && $line[$depth] == '>') {
                 $depth++;
                 if ($depth > 30) {
                     break;

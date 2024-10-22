@@ -157,7 +157,7 @@ if (isset($_REQUEST['fgroups'])) {
 }
 
 $newsgroups = $thisgroup;
-if ($_REQUEST['returngroup']) {
+if (isset($_REQUEST['returngroup'])) {
     $returngroup = $_REQUEST['returngroup'];
 } else {
     $returngroup = $thisgroup;
@@ -332,6 +332,13 @@ if ($type == "post") {
             // Wrap long lines in message body
             $body = wrap_post($body);
 
+            if(!isset($_POST['encryptthis'])) {
+                $_POST['encryptthis'] = null;
+            }
+            if(!isset($_POST['encrypto'])) {
+                $_POST['encrypto'] = null;
+            }
+
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
                 $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
@@ -420,13 +427,13 @@ if ($type == "reply") {
 
             // Quote blank lines? YES by default
             if (! isset($OVERRIDES['quote_blank_lines']) || $OVERRIDES['quote_blank_lines'] == true) {
-                if ($body[$i][0] == '>')
+                if (isset($body[$i][0]) && $body[$i][0] == '>')
                     $bodyzeile .= ">" . $body[$i] . "\n";
                 else
                     $bodyzeile .= "> " . $body[$i] . "\n";
             } else {
                 if (trim($body[$i]) != "") {
-                    if ($body[$i][0] == '>')
+                    if (isset($body[$i][0]) && $body[$i][0] == '>')
                         $bodyzeile .= ">" . $body[$i] . "\n";
                     else
                         $bodyzeile .= "> " . $body[$i] . "\n";
@@ -508,7 +515,7 @@ if ($show == 1) {
         echo 'size="40" maxlength="' . $thread_maxSubject . '"></td>';
         echo '</tr><tr>';
 
-        if ($has_followup) {
+        if (isset($has_followup) && $has_followup !== false) {
             echo '<td align="right"><b>Newsgroups:&nbsp;</b>';
             echo '</td><td>';
 
@@ -591,14 +598,18 @@ if ($show == 1) {
                 }
             }
         }
-        echo '<input class="post" type="hidden" name="fromname" value="' . $fromname . '">';
+        if (isset($fromname)) {
+            echo '<input class="post" type="hidden" name="fromname" value="' . $fromname . '">';
+        }
         echo '</td></tr>';
         // May we post encrypted messages to this group?
         if (check_encryption_groups($newsgroups)) {
             echo '<tr>';
             echo '<td align="left"><input type="checkbox" name="encryptthis"';
             echo 'value="encrypt"> <b>Encrypt to:</b></td>';
-            echo '<td><input type="text" name="encryptto" value="' . $fromname . '"></td>';
+            if (isset($fromname)) {
+                echo '<td><input type="text" name="encryptto" value="' . $fromname . '"></td>';
+            }
             echo '</tr>';
         }
         echo '</table></div>';
