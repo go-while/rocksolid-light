@@ -33,7 +33,7 @@ if (file_exists("lib/post.inc.php"))
 
 $CONFIG = include($config_file);
 
-$keyfile = $spooldir.'/keys.dat';
+$keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
 
 /*
@@ -767,8 +767,11 @@ function groups_show($gruppen)
             }
             /* Display article count */
             $groupdisplay .= '</td><td class="' . $lineclass . '">';
-            if ($gl_age && isset($g->age))
+            if ($gl_age && isset($g->age)) {
                 $datecolor = thread_format_date_color($g->age);
+            } else {
+                $datecolor = "";
+            }
             $groupdisplay .= '<small>';
             if ($datecolor != "")
                 $groupdisplay .= '<font color="' . $datecolor . '">' . $g->count . '</font>';
