@@ -686,6 +686,16 @@ table.np_results_table {
 	font-size: 0.8em;
 }
 
+/* notices displayed above message body */
+.article_header_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+/	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+}
+
 /* posted_date */
 .np_posted_date {
 	float: right;

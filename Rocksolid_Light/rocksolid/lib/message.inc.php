@@ -829,7 +829,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
 
         // Any header checks to display notice in article display
-        $notice = display_header_notice($head);
+        $notice = display_header_notice($head, $body);
         if (isset($head->content_type[0])) {
             if (!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
@@ -1066,12 +1066,24 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     return $return;
 }
 
-function display_header_notice($head)
+function display_header_notice($head, $body = null)
 {
+    global $OVERRIDES;
     $notice = false;
+
+    // Header checks
     if (stripos($head->subject, "Re: ") === 0) {
         if (!isset($head->references)) {
-            $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
+            $notice = '<hr><p class=article_header_notice>(article missing references header)</p><hr>';
+        }
+    }
+
+    // Body checks
+    if ($body && is_array($OVERRIDES['display_notice_for_body_checks'])) {
+        foreach ($OVERRIDES['display_notice_for_body_checks'] as $check) {
+            if (preg_match($check['regex'], $body)) {
+                $notice .= '<hr><p class=article_header_notice>(' . $check['notice'] . ')</p><hr>';
+            }
         }
     }
     return $notice;
