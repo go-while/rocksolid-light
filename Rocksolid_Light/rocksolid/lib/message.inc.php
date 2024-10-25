@@ -510,7 +510,7 @@ function show_header_short($head, $group, $local_poster = false)
 
     echo '<div class="np_article_header">';
     echo '<b>';
-    
+
     echo '</b>';
     if ($head->name != "") {
         $displayname = create_name_link($head->name, $head->from);
@@ -542,7 +542,7 @@ function show_header_short($head, $group, $local_poster = false)
     echo 'window.getSelection().removeAllRanges();';
     echo '}';
     echo '</script> ';
-    
+
     echo '<b>Date: </b>' . $displaydate;
 
     echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
@@ -557,21 +557,22 @@ function show_header_short($head, $group, $local_poster = false)
         }
     }
     echo "<br />";
-    
+
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
         echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
     }
+
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>headers';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
     }
 
-    ?>
-    <p id="<?php echo $head->id; ?>"
+?>
+    <p id="<?php echo $head->id . 'copy'; ?>"
         style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
     &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
-        onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
+        onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
 
@@ -584,20 +585,20 @@ function show_header_short($head, $group, $local_poster = false)
             link</i></a>
 <?php
     echo '</div>';
-
+    echo '<div class=np_ob_posted_date>';
     // Display References in short headers if enabled in overrides.inc.php
     if ((isset($OVERRIDES['short_header_references'])) && ($OVERRIDES['short_header_references'] == true) && (isset($head->references[0]))) {
-        echo '<div class=np_ob_posted_date>';
+
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
             echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
-        echo "</div>";
+        //  echo "</div>";
     }
 
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
-        echo '<div class=np_ob_posted_date>';
+        //   echo '<div class=np_ob_posted_date>';
         echo $text_header["attachments"];
         for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
@@ -609,8 +610,9 @@ function show_header_short($head, $group, $local_poster = false)
             if ($i < count($head->content_type) - 1)
                 echo ', ';
         }
-        echo '</div>';
+        //  echo '</div>';
     }
+    echo '&nbsp;</div>';
     echo '</p>';
     echo '</div>';
 }
