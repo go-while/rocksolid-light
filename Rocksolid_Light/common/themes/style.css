@@ -228,6 +228,8 @@
 
 .np_header_button_checkbox {
     transform: scale(0.8);
+	display: inline-block;
+    vertical-align: middle;
 }
 
 .np_header_button_link:hover {

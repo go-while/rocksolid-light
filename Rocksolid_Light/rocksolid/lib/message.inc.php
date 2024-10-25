@@ -458,7 +458,7 @@ function show_header($head, $group, $local_poster = false)
         echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
     if ($article_show["Date"]) {
         // Try to use client timezone else default to UTC
-        $displaydate = get_date_for_client_timezone($head->date);
+        $displaydate = get_date_for_client_timezone($head->date) . "<br />";
         echo $displaydate;
     }
     if ($article_show["Message-ID"]) {
@@ -510,9 +510,7 @@ function show_header_short($head, $group, $local_poster = false)
 
     echo '<div class="np_article_header">';
     echo '<b>';
-    if ($article_show["Subject"]) {
-        echo htmlspecialchars($head->subject) . "<br>";
-    }
+    
     echo '</b>';
     if ($head->name != "") {
         $displayname = create_name_link($head->name, $head->from);
@@ -522,6 +520,9 @@ function show_header_short($head, $group, $local_poster = false)
         } else {
             $displayname = htmlspecialchars($head->from);
         }
+    }
+    if ($article_show["Subject"]) {
+        echo htmlspecialchars($head->subject) . " (" . $displayname . ")<br>";
     }
 
     // Try to use client timezone else default to UTC
@@ -541,7 +542,31 @@ function show_header_short($head, $group, $local_poster = false)
     echo 'window.getSelection().removeAllRanges();';
     echo '}';
     echo '</script> ';
-?>
+    
+    echo '<b>Date: </b>' . $displaydate;
+
+    echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
+    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
+    $ngroups = explode("\t", $ngroups);
+    // echo "&nbsp;";
+    foreach ($ngroups as $onegroup) {
+        if ($s = get_section_by_group($onegroup)) {
+            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+        } else {
+            echo " " . $onegroup . " ";
+        }
+    }
+    echo "<br />";
+    
+    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
+    }
+    if ($article_show["trigger_headers"]) {
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>headers';
+        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+    }
+
+    ?>
     <p id="<?php echo $head->id; ?>"
         style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
     &nbsp;
@@ -558,32 +583,6 @@ function show_header_short($head, $group, $local_poster = false)
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
 <?php
-    echo '&nbsp;&nbsp;Newsgroups: ';
-    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
-    $ngroups = explode("\t", $ngroups);
-    // echo "&nbsp;";
-    foreach ($ngroups as $onegroup) {
-        if ($s = get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
-        } else {
-            echo " " . $onegroup . " ";
-        }
-    }
-    echo "<br />";
-
-    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
-        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
-    }
-    if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" />';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
-    }
-    if ($local_poster) {
-        echo "&nbsp;by: <i>" . $displayname . "</i> ";
-    } else {
-        echo "&nbsp;by: " . $displayname . " ";
-    }
-    echo '- ' . $displaydate;
     echo '</div>';
 
     // Display References in short headers if enabled in overrides.inc.php

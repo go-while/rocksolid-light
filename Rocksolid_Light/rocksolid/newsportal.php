@@ -1414,10 +1414,10 @@ function get_date_for_client_timezone($date)
         $datetime->add(DateInterval::createFromDateString($offset . ' minutes'));
         if ($offset != 0) {
             $offset_hours = ($offset / 60) * 100;
-            $displaydate = $datetime->format('D, j M Y H:i') . " " . sprintf('%05d', $offset_hours) . "<br>\n";
+            $displaydate = $datetime->format('D, j M Y H:i') . " " . sprintf('%05d', $offset_hours);
         } else {
             $offset_hours = ($offset / 60) * 100;
-            $displaydate = $datetime->format($text_header["date_format"]) . "<br>\n";
+            $displaydate = $datetime->format($text_header["date_format"]);
         }
     }
     unset($datetime);
