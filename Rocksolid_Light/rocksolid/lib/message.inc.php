@@ -458,7 +458,7 @@ function show_header($head, $group, $local_poster = false)
         echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
     if ($article_show["Date"]) {
         // Try to use client timezone else default to UTC
-        $displaydate = get_date_for_client_timezone($head->date);
+        $displaydate = get_date_for_client_timezone($head->date) . "<br />";
         echo $displaydate;
     }
     if ($article_show["Message-ID"]) {
@@ -510,9 +510,7 @@ function show_header_short($head, $group, $local_poster = false)
 
     echo '<div class="np_article_header">';
     echo '<b>';
-    if ($article_show["Subject"]) {
-        echo htmlspecialchars($head->subject) . "<br>";
-    }
+
     echo '</b>';
     if ($head->name != "") {
         $displayname = create_name_link($head->name, $head->from);
@@ -522,6 +520,9 @@ function show_header_short($head, $group, $local_poster = false)
         } else {
             $displayname = htmlspecialchars($head->from);
         }
+    }
+    if ($article_show["Subject"]) {
+        echo htmlspecialchars($head->subject) . " (" . $displayname . ")<br>";
     }
 
     // Try to use client timezone else default to UTC
@@ -541,24 +542,10 @@ function show_header_short($head, $group, $local_poster = false)
     echo 'window.getSelection().removeAllRanges();';
     echo '}';
     echo '</script> ';
-?>
-    <p id="<?php echo $head->id; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
-    &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
-        onclick="CopyToClipboard('<?php echo $head->id; ?>');return false;"
-        style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
-            mid</i></a>
 
-    <p id="<?php echo $head->number . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
-    &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
-        onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
-        style="text-decoration: none" title="Copy article link to clipboard"><i>copy
-            link</i></a>
-<?php
-    echo '&nbsp;&nbsp;Newsgroups: ';
+    echo '<b>Date: </b>' . $displaydate;
+
+    echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
     // echo "&nbsp;";
@@ -572,33 +559,46 @@ function show_header_short($head, $group, $local_poster = false)
     echo "<br />";
 
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
-        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
+        echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
     }
+
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" />';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>headers';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
     }
-    if ($local_poster) {
-        echo "&nbsp;by: <i>" . $displayname . "</i> ";
-    } else {
-        echo "&nbsp;by: " . $displayname . " ";
-    }
-    echo '- ' . $displaydate;
-    echo '</div>';
 
+?>
+    <p id="<?php echo $head->id . 'copy'; ?>"
+        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
+        onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
+            mid</i></a>
+
+    <p id="<?php echo $head->number . 'copy'; ?>"
+        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+        onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy article link to clipboard"><i>copy
+            link</i></a>
+<?php
+    echo '</div>';
+    echo '<div class=np_ob_posted_date>';
     // Display References in short headers if enabled in overrides.inc.php
     if ((isset($OVERRIDES['short_header_references'])) && ($OVERRIDES['short_header_references'] == true) && (isset($head->references[0]))) {
-        echo '<div class=np_ob_posted_date>';
+
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
             echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
-        echo "</div>";
+        //  echo "</div>";
     }
 
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
-        echo '<div class=np_ob_posted_date>';
+        //   echo '<div class=np_ob_posted_date>';
         echo $text_header["attachments"];
         for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
@@ -610,8 +610,9 @@ function show_header_short($head, $group, $local_poster = false)
             if ($i < count($head->content_type) - 1)
                 echo ', ';
         }
-        echo '</div>';
+        //  echo '</div>';
     }
+    echo '&nbsp;</div>';
     echo '</p>';
     echo '</div>';
 }
@@ -829,7 +830,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
 
         // Any header checks to display notice in article display
-        $notice = display_header_notice($head);
+        $notice = display_header_notice($head, $body);
         if (isset($head->content_type[0])) {
             if (!strpos($head->content_type[0], "/")) {
                 echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
@@ -1066,12 +1067,24 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     return $return;
 }
 
-function display_header_notice($head)
+function display_header_notice($head, $body = null)
 {
+    global $OVERRIDES;
     $notice = false;
+
+    // Header checks
     if (stripos($head->subject, "Re: ") === 0) {
         if (!isset($head->references)) {
-            $notice = '<hr><p class=np_ob_posted_date>(article missing references header)</p><hr>';
+            $notice = '<hr><p class=article_header_notice>(article missing references header)</p><hr>';
+        }
+    }
+
+    // Body checks
+    if ($body && is_array($OVERRIDES['display_notice_for_body_checks'])) {
+        foreach ($OVERRIDES['display_notice_for_body_checks'] as $check) {
+            if (preg_match($check['regex'], $body)) {
+                $notice .= '<hr><p class=article_header_notice>(' . $check['notice'] . ')</p><hr>';
+            }
         }
     }
     return $notice;

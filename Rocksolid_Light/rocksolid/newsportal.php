@@ -33,6 +33,9 @@ if (file_exists("lib/post.inc.php"))
 
 $CONFIG = include($config_file);
 
+$keyfile = $spooldir . '/keys.dat';
+$keys = unserialize(file_get_contents($keyfile));
+
 /*
  * opens the connection to the NNTP-Server
  *
@@ -764,8 +767,11 @@ function groups_show($gruppen)
             }
             /* Display article count */
             $groupdisplay .= '</td><td class="' . $lineclass . '">';
-            if ($gl_age && isset($g->age))
+            if ($gl_age && isset($g->age)) {
                 $datecolor = thread_format_date_color($g->age);
+            } else {
+                $datecolor = "";
+            }
             $groupdisplay .= '<small>';
             if ($datecolor != "")
                 $groupdisplay .= '<font color="' . $datecolor . '">' . $g->count . '</font>';
@@ -1408,10 +1414,10 @@ function get_date_for_client_timezone($date)
         $datetime->add(DateInterval::createFromDateString($offset . ' minutes'));
         if ($offset != 0) {
             $offset_hours = ($offset / 60) * 100;
-            $displaydate = $datetime->format('D, j M Y H:i') . " " . sprintf('%05d', $offset_hours) . "<br>\n";
+            $displaydate = $datetime->format('D, j M Y H:i') . " " . sprintf('%05d', $offset_hours);
         } else {
             $offset_hours = ($offset / 60) * 100;
-            $displaydate = $datetime->format($text_header["date_format"]) . "<br>\n";
+            $displaydate = $datetime->format($text_header["date_format"]);
         }
     }
     unset($datetime);
@@ -3224,7 +3230,7 @@ function wrap_post($body)
         }
         if ($line[0] == '>') {
             $depth = 0;
-            while ($line[$depth] == '>') {
+            while (isset($line[$depth]) && $line[$depth] == '>') {
                 $depth++;
                 if ($depth > 30) {
                     break;

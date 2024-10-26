@@ -35,7 +35,7 @@ function thread_pageselect($group, $article_count, $first)
     $pages = ceil($article_count / $articles_per_page);
     if ($article_count > $articles_per_page)
         echo $text_thread["pages"];
-    for ($i = 0; $i < $pages; $i ++) {
+    for ($i = 0; $i < $pages; $i++) {
         // echo '[';
         if ($first != $i * $articles_per_page + 1) {
             echo '<a class="np_pages_unselected" href="' . $file_thread . '?group=' . urlencode($group) . '&amp;first=' . ($i * $articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articles_per_page . '">';
@@ -68,7 +68,7 @@ function thread_pageselect($group, $article_count, $first)
 function thread_cache_load($group)
 {
     global $spooldir, $config_dir, $logdir, $compress_spoolfiles;
-    
+
     $headers = unserialize(file_get_contents($spooldir . '/' . $group . '-data.dat'));
     return ($headers);
 }
@@ -156,11 +156,11 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
     $overviewfmt = explode("\t", $overviewformat);
     echo " "; // keep the connection to the webbrowser alive
     flush(); // while generating the message-tree
-             // $over=explode("\t",$line,count($overviewfmt)-1);
+    // $over=explode("\t",$line,count($overviewfmt)-1);
     $over = explode("\t", $line);
     // $article=new headerType;
     $article = (object) [];
-    for ($i = 0; $i < count($overviewfmt) - 1; $i ++) {
+    for ($i = 0; $i < count($overviewfmt) - 1; $i++) {
         if ($overviewfmt[$i] == "Subject:") {
             $subject = preg_replace('/\[doctalk\]/i', '', headerDecode($over[$i + 1]));
             // $article->isReply = splitSubject($subject);
@@ -190,9 +190,11 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
             $article->references = explode(" ", $over[$i + 1]);
         }
     }
-    foreach ($article->references as &$refs) {
-        if (! strcmp($article->id, $refs)) {
-            $refs = "";
+    if (isset($article->references)) {
+        foreach ($article->references as &$refs) {
+            if (! strcmp($article->id, $refs)) {
+                $refs = "";
+            }
         }
     }
     $article->number = $over[0];
@@ -240,11 +242,11 @@ function thread_mycompare($a, $b)
 {
     global $thread_sort_order, $thread_sort_type;
     if ($thread_sort_type != "thread") {
-        $r = ($a->date < $b->date) ? - 1 : 1;
+        $r = ($a->date < $b->date) ? -1 : 1;
         if ($a->date == $b->date)
             $r = 0;
     } else {
-        $r = ($a->date_thread < $b->date_thread) ? - 1 : 1;
+        $r = ($a->date_thread < $b->date_thread) ? -1 : 1;
         if ($a->date_thread == $b->date_thread)
             $r = 0;
     }
@@ -362,9 +364,9 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
         }
         if ($spoolopenmodus == 't') {
             $count = 0;
-            for ($i = $oldgroupinfo[0]; $i < $groupinfo[2]; $i ++) {
+            for ($i = $oldgroupinfo[0]; $i < $groupinfo[2]; $i++) {
                 thread_cache_removearticle($groupname, $i);
-                $count ++;
+                $count++;
             }
             // Save the info-file
             $oldinfo = file($infofilename);
@@ -392,7 +394,12 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
                     // parse the output of the server...
                     $article = thread_overview_interpret($line, $overviewformat, $groupname);
                     // ... and save it in our data structure
-                    $article->threadsize ++;
+
+                    if (isset($article->threadsize)) {
+                        $article->threadsize++;
+                    } else {
+                        $article->threadsize = 1;
+                    }
                     $article->date_thread = $article->date;
                     $headers[$article->id] = $article;
                     // if we are in poll-mode: print status information and
@@ -417,8 +424,8 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
             if ((isset($headers)) && (count($headers) > 0)) {
                 foreach ($headers as $c) {
                     if (($c->isAnswer == false) && (isset($c->references))) { // is the article an answer to an
-                                                                              // other article?
-                                                                              // try to find a matching article to one of the references
+                        // other article?
+                        // try to find a matching article to one of the references
                         $refmatch = false;
                         foreach ($c->references as $reference) {
                             if (isset($headers[$reference])) {
@@ -610,7 +617,7 @@ function thread_show_treegraphic($newtree)
 {
     global $imgdir;
     $return = "";
-    for ($o = 0; $o < strlen($newtree); $o ++) {
+    for ($o = 0; $o < strlen($newtree); $o++) {
         $return .= '<img src="' . $imgdir . '/';
         $k = substr($newtree, $o, 1);
         $alt = $k;
@@ -721,7 +728,7 @@ function thread_format_date_color($date)
     $return = "";
     $currentTime = time();
     if ($age_count > 0)
-        for ($t = $age_count; $t >= 1; $t --) {
+        for ($t = $age_count; $t >= 1; $t--) {
             if ($currentTime - $date < $age_time[$t])
                 $color = $age_color[$t];
         }
@@ -747,7 +754,7 @@ function thread_format_date($c)
     else
         $date = $c->date;
     if ($age_count > 0)
-        for ($t = $age_count; $t >= 1; $t --)
+        for ($t = $age_count; $t >= 1; $t--)
             if ($currentTime - $date < $age_time[$t])
                 $color = $age_color[$t];
     if ($color != "")
@@ -807,8 +814,7 @@ function thread_format_lastmessage($c, $group = '')
             $stmt->execute();
             if ($found = $stmt->fetch()) {
                 $ovfound = 1;
-            }
-            ;
+            };
             $dbh = null;
         }
     } else {
@@ -822,8 +828,7 @@ function thread_format_lastmessage($c, $group = '')
         $stmt->execute();
         if ($found = $stmt->fetch()) {
             $ovfound = 1;
-        }
-        ;
+        };
         $dbh = null;
     }
     $fromline = address_decode(headerDecode($found['name']), "nowhere");
@@ -870,19 +875,19 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
     $output = "";
     if ($thread_treestyle == 3)
         $output .= "\n<UL>\n";
-    for ($i = 0; $i < count($liste); $i ++) {
+    for ($i = 0; $i < count($liste); $i++) {
         // CSS class for the actual line
         $lineclass = "np_thread_line" . (($article_count % 2) + 1);
         // read the first article
         $c = $headers[$liste[$i]];
-         $last_thread = $c->date_thread;
-        
+        $last_thread = $c->date_thread;
+
         // Avoid listing if error (fixme)
         // if (preg_match('/\D/', $c->number)) {
         if (! is_numeric($c->number) || ! isset($c->id) || $c->date < 1) {
             continue;
         }
-        $article_count ++;
+        $article_count++;
         // Render the graphical tree
         switch ($thread_treestyle) {
             case 4: // thread
@@ -1080,7 +1085,7 @@ function thread_show(&$headers, $group, $article_first = 0, $article_last = 0, $
             $output = "";
             reset($headers);
             $c = current($headers);
-            for ($i = 0; $i <= count($headers) - 1; $i ++) { // create the array $liste
+            for ($i = 0; $i <= count($headers) - 1; $i++) { // create the array $liste
                 if ($c->isAnswer == false) { // where are all the articles
                     $liste[] = $c->id; // in that don't have
                 } // references
@@ -1157,5 +1162,3 @@ function thread_getsubthreadids($id, $thread)
     $subthread = thread_getsubthreadids_recursive($id);
     return $subthread;
 }
-
-?>

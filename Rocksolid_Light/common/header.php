@@ -7,6 +7,7 @@ if (basename(getcwd()) == 'mods') {
 
 include ($rootdir . 'common/config.inc.php');
 
+global $OVERRIDES;
 $CONFIG = include $config_file;
 
 $menulist = get_section_menu_array();
@@ -126,7 +127,7 @@ echo '</tr></table></p><p>';
 
 $config_name = basename(getcwd());
 
-if (!$OVERRIDES['disable_msgid_search']) {
+if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
     if ($config_name != "common" && $config_name != 'spoolnews') {
         echo '<table align="right">';
         echo '<form name="form1" method="get" action="article-flat.php">';

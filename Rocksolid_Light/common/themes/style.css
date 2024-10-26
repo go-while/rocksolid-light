@@ -228,6 +228,8 @@
 
 .np_header_button_checkbox {
     transform: scale(0.8);
+	display: inline-block;
+    vertical-align: middle;
 }
 
 .np_header_button_link:hover {
@@ -684,6 +686,16 @@ table.np_results_table {
 /*	text-align: left; */
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
+}
+
+/* notices displayed above message body */
+.article_header_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+/	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
 }
 
 /* posted_date */

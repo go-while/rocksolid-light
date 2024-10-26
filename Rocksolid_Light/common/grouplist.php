@@ -11,7 +11,9 @@ echo '<h3>List of Available Newsgroups:</h3>';
 // Use cache if new enough
 if (filemtime($grouplist_cache_filename) > (time() - $grouplist_cache_time)) {
     // Allow refresh from cron.php
-    if($argv[1] != '.RELOAD') {
+    if (isset($argv[1]) && $argv[1] == '.RELOAD') {
+        // Do not use cache, instead rebuild grouplist
+    } else {
         echo file_get_contents($grouplist_cache_filename);
         exit();
     }

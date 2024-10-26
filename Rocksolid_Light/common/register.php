@@ -13,8 +13,6 @@ $mail_log = $spooldir . '/log/mail.log';
 $workpath = $config_dir . "users/";
 $keypath = $config_dir . "userconfig/";
 
-$keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
 $email_registry = $spooldir . '/email_registry.dat';
 
 if (!file_exists($config_dir . '/phpmailer.inc.php')) {
@@ -43,9 +41,15 @@ if ((password_verify($keys[0], $_POST['key'])) || (password_verify($keys[1], $_P
     unset($_POST['command']);
 }
 
-$username = $_POST['username'];
-$password = $_POST['password'];
-$user_email = $_POST['user_email'];
+if (isset($_POST['username'])) {
+    $username = $_POST['username'];
+}
+if (isset($_POST['password'])) {
+    $password = $_POST['password'];
+}
+if (isset($_POST['user_email'])) {
+    $user_email = $_POST['user_email'];
+}
 
 echo '<center>';
 
@@ -465,7 +469,7 @@ function send_reset_email($username, $user_email)
         unset($reset_log[$email]);
     }
 
-    if(isset($reset_log[$email]['count'])) {
+    if (isset($reset_log[$email]['count'])) {
         $retry_delay = $retry_delay * $reset_log[$email]['count'];
     }
     $retry_seconds = $retry_delay * 60;
@@ -520,8 +524,10 @@ function send_reset_email($username, $user_email)
 
     $mail->Subject = "Confirmation code for " . $_SERVER['HTTP_HOST'];
 
-    foreach ($mail_custom_header as $key => $value) {
-        $mail->addCustomHeader($key, $value);
+    if (isset($mail_custom_header)) {
+        foreach ($mail_custom_header as $key => $value) {
+            $mail->addCustomHeader($key, $value);
+        }
     }
 
     $mycode = create_code($username);
@@ -532,7 +538,7 @@ function send_reset_email($username, $user_email)
     $msg .= "Note: replies to this email address are checked daily.";
     $mail->Body = wordwrap($msg, 70);
 
-     if (!$mail->send()) {
+    if (!$mail->send()) {
         echo 'The message could not be sent.';
         echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
         file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
@@ -555,7 +561,7 @@ function send_reset_email($username, $user_email)
         echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
 
         $reset_log[$email]['time'] = time();
-        if(isset($reset_log[$email]['count'])) {
+        if (isset($reset_log[$email]['count'])) {
             $reset_log[$email]['count'] = $reset_log[$email]['count'] * 2;
         } else {
             $reset_log[$email]['count'] = 1;
@@ -622,8 +628,10 @@ function create_account($username, $password, $user_email)
 
         $mail->Subject = "Confirmation code for " . $_SERVER['HTTP_HOST'];
 
-        foreach ($mail_custom_header as $key => $value) {
-            $mail->addCustomHeader($key, $value);
+        if (isset($mail_custom_header)) {
+            foreach ($mail_custom_header as $key => $value) {
+                $mail->addCustomHeader($key, $value);
+            }
         }
 
         $mycode = create_code($username);
@@ -646,17 +654,17 @@ function create_account($username, $password, $user_email)
             echo 'Please enter the code from the email below:<br />';
         }
     }
-        echo '<form name="create1" method="post" action="register.php">';
-        if ($CONFIG['verify_email'] == true) {
-            echo '<input name="code" type="text" id="code">&nbsp;';
-        }
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-        echo '<input name="password" type="hidden" id="password" value="' . $password . '" readonly="readonly">';
-        echo '<input name="command" type="hidden" id="command" value="CreateNew" readonly="readonly">';
-        echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
-        echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-        echo '<input type="submit" name="Submit" value="Click Here to Create"></td>';
-        echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+    echo '<form name="create1" method="post" action="register.php">';
+    if ($CONFIG['verify_email'] == true) {
+        echo '<input name="code" type="text" id="code">&nbsp;';
+    }
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+    echo '<input name="password" type="hidden" id="password" value="' . $password . '" readonly="readonly">';
+    echo '<input name="command" type="hidden" id="command" value="CreateNew" readonly="readonly">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
+    echo '<input type="submit" name="Submit" value="Click Here to Create"></td>';
+    echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
 }
 
 function create_new($username, $password, $user_email)
