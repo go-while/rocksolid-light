@@ -13,9 +13,11 @@ $CONFIG = include $config_file;
 $menulist = get_section_menu_array();
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
 
+echo '<meta charset="utf-8">';
+
 // Set tzo if possible
 ?>
-   <script type="text/javascript">
+   <script>
      if (navigator.cookieEnabled)
        document.cookie = "tzo="+ (- new Date().getTimezoneOffset())+"; path=/";
        var tzid = new Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -33,34 +35,32 @@ if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     unset($user);
 }
 
+// Get theme
+$default_theme = "Default Theme";
 if (isset($_SESSION['theme'])) {
-    // if(trim($_SESSION['theme']) !== '') {
-    echo '<link rel="stylesheet" type="text/css" href="../common/themes/' . $_SESSION['theme'] . '/style.css">';
+    $do_theme = preg_replace("/ /", "%20", $_SESSION['theme']);
 } else {
-    echo '<link rel="stylesheet" type="text/css" href="' . $rootdir . 'common/themes/Default Theme/style.css">';
+    $do_theme = preg_replace("/ /", "%20", $default_theme);
 }
+echo '<link rel="stylesheet" type="text/css" href="' . $rootdir . '/common/themes/' . $do_theme . '/style.css">';
 
-if ((isset($_SESSION['theme'])) && file_exists($rootdir . 'common/themes/' . $_SESSION['theme'] . '/images/rocksolidlight.png')) {
-    $header_image = $rootdir . 'common/themes/' . $_SESSION['theme'] . '/images/rocksolidlight.png';
+if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $do_theme . '/images/rocksolidlight.png')) {
+    $header_image = $rootdir . '/common/themes/' . $do_theme . '/images/rocksolidlight.png';
 } else {
     $header_image = $rootdir . 'common/images/rocksolidlight.png';
 }
+
 echo '</head><body>';
 ?>
 
-	<table class="np_header_bar_top" width="100%" valign="middle">
+	<table class="np_header_bar_top" valign="middle">
 		<tr>
-			<td width="30%"><a href="<?php echo $CONFIG['default_content'];?>"><img
+			<td class="np_td_header_bar_logo_image"><a href="<?php echo $CONFIG['default_content'];?>"><img
 					src="<?php echo $header_image ?>" alt="Rocksolid Light"
 					class="responsive_image"></a></td>
-			<td>
-
-
-				<p align="left">
-					<small> <font class="np_title">
+			<td class="header_page_title_top">
 	<?php echo $CONFIG['rslight_title']; ?>	
-	</font>
-					</small>
+
 				</p>
 			</td>
 			<td align="right">
@@ -80,10 +80,10 @@ foreach ($linklist as $link) {
     }
     if ($unread && (strpos($linkitem[1], 'spoolnews/mail.php') !== false)) {
         echo '<strong>';
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp';
+        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
         echo '</strong>';
     } else {
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp';
+        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
     }
 }
 echo '<a class="np_header_links" href="../spoolnews/user.php">';
@@ -107,8 +107,7 @@ if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
     $motd = file_get_contents($config_dir . '/' . $config_name . '-motd.txt');
 }
 
-echo '<p align="center" class="np_header_button_bar">';
-echo '<table cellpadding="0" cellspacing="0"><tr>';
+echo '<table class="np_header_button_bar"><tr>';
 foreach ($menulist as $menu) {
     $menuitem = explode(':', $menu);
     if ($menuitem[1] == '0') {
@@ -123,7 +122,7 @@ foreach ($menulist as $menu) {
     echo '</form>';
     echo '</td>';
 }
-echo '</tr></table></p><p>';
+echo '</tr></table>';
 
 $config_name = basename(getcwd());
 
@@ -140,13 +139,11 @@ if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_sear
     }
 }
 
-echo '<table cellpadding="0" cellspacing="0" class="np_header_bar_small"><tr>';
+// Soup...Uh, Message of the Day
 if ($unread) {
     $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';
 }
-echo '<div class="np_last_posted_date"><h1 class="np_thread_headline">' . $motd . '</h1></div>';
-echo '</tr></table>';
-echo '</p>';
+echo '<div class="np_display_motd">' . $motd . '</div>';
 
 function check_unread_mail()
 {
@@ -178,7 +175,7 @@ function head_mail_db_open($database, $table = 'messages')
 {
     try {
         $dbh = new PDO('sqlite:' . $database);
-    } catch (PDOExeption $e) {
+    } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         exit();
     }

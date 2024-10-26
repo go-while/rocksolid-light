@@ -16,6 +16,10 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
+    // Display From to the right of Subject in short_headers
+    // Default is false, will show separately (below)
+    'short_header_show_from_in_subject' => false,
+
     // Enable display of References when using short headers
     // Default is false
     'short_header_references' => false,

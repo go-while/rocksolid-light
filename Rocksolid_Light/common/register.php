@@ -1,5 +1,6 @@
 <?php
 include "config.inc.php";
+include "../spoolnews/config.inc.php";
 include "../spoolnews/newsportal.php";
 include "alphabet.inc.php";
 
