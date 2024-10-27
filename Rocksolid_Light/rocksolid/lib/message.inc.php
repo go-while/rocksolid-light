@@ -530,19 +530,19 @@ function show_header($head, $group, $local_poster = false)
         }
         echo '</div>';
     }
-?>
-    <p id="<?php echo $head->id . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
-    <p id="<?php echo $head->number . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
-    <?php
+
+    echo '<p id="' . $head->id . 'copy"';
+    echo 'style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo '<p id="' . $head->number . 'copy"';
+    echo 'style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+
     echo '<div class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
-    ?>
+?>
     &nbsp;
     <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
@@ -610,9 +610,11 @@ function show_header_short($head, $group, $local_poster = false)
     echo '}';
     echo '</script> ';
 
-    echo '<div class="short_header_date">';
+    echo '<span class="short_header_date">';
     echo '<b>Date: </b>' . $displaydate;
+    echo '</span>';
 
+    echo '<span class="short_header_newsgroups">';
     echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
@@ -624,26 +626,26 @@ function show_header_short($head, $group, $local_poster = false)
             echo " " . $onegroup . " ";
         }
     }
-    echo "<br>";
+    echo '</span>';
 
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo '<div class="short_header_followup-to">';
         echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
+        echo '</div>';
     }
-    echo '</div>';
 
-?>
-    <p id="<?php echo $head->id . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
-    <p id="<?php echo $head->number . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
-    <?php
+    echo '<p id="' . $head->id . 'copy"';
+    echo 'style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo '<p id="' . $head->number . 'copy"';
+    echo 'style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+
     echo '<div class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>';
         echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
-    ?>
+?>
     &nbsp;
     <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"

@@ -416,6 +416,26 @@
 	font-size: 0.8em;
 }
 
+/* short header Newsgroups: */
+.short_header_newsgroups {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+/* short header Followup-To: */
+.short_header_followup-to {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
 /* short header References: */
 .short_header_references {
 	margin-top: 0;
