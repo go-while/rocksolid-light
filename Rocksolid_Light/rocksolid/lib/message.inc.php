@@ -582,9 +582,11 @@ function show_header_short($head, $group, $local_poster = false)
 
     // Where to show From in short_headers
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
-        echo '<div class="short_header_subject">';
-        echo htmlspecialchars($head->subject) . " (" . $displayname . ")<br>";
-        echo '</div>';
+        echo '<span class="short_header_subject">';
+        echo htmlspecialchars($head->subject);
+        echo '</span><span class="short_header_from_with_subject">';
+        echo '&nbsp;&nbsp;(<b>From: </b>' . $displayname . ')<br>';
+        echo '</span>';
     } else {
         echo '<div class="short_header_subject">';
         echo htmlspecialchars($head->subject) . "<br>";

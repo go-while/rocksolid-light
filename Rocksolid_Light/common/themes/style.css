@@ -393,10 +393,21 @@
 	text-decoration: none;
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.1em;
+	font-size: 1.2em;
 }
 
-/* short header From: */
+/* short header From: (next to Subject) */
+.short_header_from_with_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-style: italic;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* short header From: (on it's own line) */
 .short_header_from {
 	margin-top: 0;
 	margin-bottom: 0;
