@@ -5,8 +5,7 @@ include "../spoolnews/newsportal.php";
 $title .= ' - Available Newsgroups';
 include "head.inc";
 
-echo '<center>';
-echo '<h3>List of Available Newsgroups:</h3>';
+echo '<div class="grouplist_header_title">List of Available Newsgroups:</div>';
 
 // Use cache if new enough
 if (filemtime($grouplist_cache_filename) > (time() - $grouplist_cache_time)) {
@@ -20,12 +19,12 @@ if (filemtime($grouplist_cache_filename) > (time() - $grouplist_cache_time)) {
 }
 
 ob_start();
-echo '<table border="1">';
+echo '<table class="grouplist_table">';
 echo '<tr>';
-echo '<th>Section</th>';
-echo '<th>Group</th>';
-echo '<th>Description</th>';
-echo '<th>Messages</th>';
+echo '<th class="grouplist_title_section_name">Section</th>';
+echo '<th class="grouplist_title_newsgroup_name">Group</th>';
+echo '<th class="grouplist_title_newsgroup_desc">Description</th>';
+echo '<th class="grouplist_title_newsgroup_artnum">Messages</th>';
 echo '</tr>';
 
 $menulist = get_section_menu_array();
@@ -46,7 +45,6 @@ foreach ($menulist as $menu) {
         }
     }
 }
-//ksort($groups_array);
 
 $ns = nntp_open();
 foreach ($groups_array as $thisgroup) {
@@ -58,13 +56,13 @@ foreach ($groups_array as $thisgroup) {
     } else {
         $title = '';
     }
-    echo '<tr><td style="text-align: center">';
-    echo '&nbsp;<font size=4>' . $section[0] . '</font>&nbsp;';
-    echo '</td><td>';
-    echo '<font size=5><a href="/' . $thisgroup . '">' . urldecode($group[1]) . "</a></font><br />\r\n";
+    echo '<tr><td class="grouplist_row_section_name">';
+    echo '&nbsp;' . $section[0];
+    echo '</td><td class="grouplist_row_newsgroup_name">';
+    echo '<a href="/' . $thisgroup . '">' . urldecode($group[1]) . "</a><br>\r\n";
     echo '</td>';
-    echo '<td>' . $title . '</td>';
-    echo '<td>';
+    echo '<td class="grouplist_row_newsgroup_desc">' . $title . '</td>';
+    echo '<td class="grouplist_row_newsgroup_artnum">';
     # Check if group exists. Open it if it does
     fputs($ns, "group " . urldecode($group[1]) . "\r\n");
     $response = line_read($ns);
@@ -77,9 +75,8 @@ foreach ($groups_array as $thisgroup) {
 }
 nntp_close($ns);
 echo '</table>';
-echo '<br />';
+echo '<br>';
 include "../spoolnews/tail.inc";
-echo '</center>';
 echo '</body></html>';
 file_put_contents($grouplist_cache_filename, ob_get_contents());
 ob_end_flush();

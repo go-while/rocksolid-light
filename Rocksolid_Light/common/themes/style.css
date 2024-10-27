@@ -244,6 +244,10 @@
 	background: var(--color-visited);
 }
 
+.header_links_text {
+	text-align:right
+}
+
 .np_header_bar_top {
 	background: var(--color-header-background);
 	padding: 1px;
@@ -391,6 +395,105 @@ textarea.configuration {
 	border: none;
 	color: var(--color-text);
 	resize: none;
+}
+
+/* Footer */
+.tail_footer {
+	text-align: center;
+}
+
+.tail_server_pubkey_txt {
+	font-size: 0.5em;
+}
+
+.tail_links_text {
+	font-size: 0.4em;
+}
+
+/* Grouplist */
+
+.grouplist_table {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: collapse;
+	border-top: 1px;
+}
+
+.grouplist_header_title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+    font-style: italic;
+	text-align: center;
+	font-size: 1.2em;
+}
+
+.grouplist_title_section_name {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_title_newsgroup_name {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_title_newsgroup_desc {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_title_newsgroup_artnum {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_row_section_name {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_row_newsgroup_name {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_row_newsgroup_desc {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.grouplist_row_newsgroup_artnum {
+	font-size: 1.2em;
+	border: 1px solid var(--color-text);
+    border-collapse: collapse;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 /* Mobile Styles */
@@ -834,6 +937,19 @@ table.np_results_table {
 	font-weight: bold;
 	color: var(--color-highlight);
 	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.55em;
+}
+
+/* display motd (new mail) */
+.np_display_motd_new_mail {
+	margin-top: 10;
+	margin-bottom: 10;
+	margin-right: 10;
+	text-decoration: none;
+	font-weight: bold;
+	color: var(--color-highlight);
+	text-align: center;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.55em;
 }

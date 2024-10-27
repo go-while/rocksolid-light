@@ -60,10 +60,8 @@ echo '</head><body>';
 					class="responsive_image"></a></td>
 			<td class="header_page_title_top">
 	<?php echo $CONFIG['rslight_title']; ?>	
-
-				</p>
 			</td>
-			<td align="right">
+			<td class="header_links_text">
 <?php
 if (isset($user) && $user && check_unread_mail() == true) {
     $unread = true;
@@ -135,15 +133,19 @@ if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_sear
         echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
         echo '<input type="submit" name="Submit" value="Lookup"></form></td>';
         echo '</tr>';
-        echo '</table><br />';
+        echo '</table><br>';
     }
 }
 
 // Soup...Uh, Message of the Day
 if ($unread) {
-    $motd = '<center>*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***</center>';
+    $motd = '*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***';
+    echo '<div class="np_display_motd_new_mail">';;
+} else {
+    echo '<div class="np_display_motd">';
 }
-echo '<div class="np_display_motd">' . $motd . '</div>';
+echo $motd;
+echo '</div>';
 
 function check_unread_mail()
 {
