@@ -274,6 +274,118 @@
 	font-size: 0.6em;
 }
 
+/* ***** PLAIN HEADERS ***** */
+/* plain header Subject: */
+.plain_header_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+}
+
+/* plain header From: */
+.plain_header_from {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Date: */
+.plain_header_date {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Newsgroups: */
+.plain_header_newsgroups {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Followup-To: */
+.plain_header_followup-to {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Organization: */
+.plain_header_organization {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Message-ID: */
+.plain_header_message-id {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header User-Agent: */
+.plain_header_user-agent {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header References: */
+.plain_header_references {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Attachments: */
+.plain_header_attachments {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* plain header Javascript links */
+.plain_header_javascript_links {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+/* ***** SHORT HEADERS ***** */
 /* short header Subject: */
 .short_header_subject {
 	margin-top: 0;
