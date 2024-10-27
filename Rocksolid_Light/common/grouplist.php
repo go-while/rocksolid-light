@@ -22,7 +22,7 @@ ob_start();
 echo '<table class="grouplist_table">';
 echo '<tr>';
 echo '<th class="grouplist_title_section_name">Section</th>';
-echo '<th class="grouplist_title_newsgroup_name">Group</th>';
+echo '<th class="grouplist_title_newsgroup_name">Newsgroup</th>';
 echo '<th class="grouplist_title_newsgroup_desc">Description</th>';
 echo '<th class="grouplist_title_newsgroup_artnum">Messages</th>';
 echo '</tr>';
