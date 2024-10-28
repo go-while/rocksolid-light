@@ -19,6 +19,9 @@ if (isset($_REQUEST['group'])) {
 if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
     unset($_REQUEST['data']);
 }
+
+
+
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
     include "head.inc";
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
@@ -300,7 +303,7 @@ echo $thispage;
 function get_body_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
-    $terms = preg_replace("/'/", ' ', $terms);
+    $terms = preg_replace("/'/", ' ', urldecode($terms));
     $terms = trim($terms);
     if ($terms[0] !== '"' || substr($terms, -1) !== '"') {
         $terms = preg_replace('/"/', '', $terms);
@@ -380,7 +383,7 @@ function show_search_sort_toggle()
 function get_header_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
-    $terms = preg_replace('/\%/', '\%', $terms);
+    $terms = preg_replace('/\%/', '\%', urldecode($terms));
     $searchterms = "%" . $terms . "%";
 
     if (isset($group)) {

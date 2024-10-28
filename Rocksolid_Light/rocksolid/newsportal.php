@@ -746,23 +746,24 @@ function groups_show($gruppen)
             if ($new) {
                 echo '</i></b>';
             }
+            $groupdisplay .= '</span>';
             if ($g->description != "-") {
-                $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
+                $groupdisplay .= '<br><p class="np_group_desc">' . $g->description . '</p>';
             }
             if (isset($userdata[$g->name])) {
-                $groupdisplay .= '</span><p class="np_group_user_tools">';
+                $groupdisplay .= '<p class="np_group_user_tools">';
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
                     $groupdisplay .= '<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
                 }
-                $groupdisplay .= '</p';
+                $groupdisplay .= '</p>';
             } else {
                 if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
                     continue;
                 } else {
-                    $groupdisplay .= '</span><p class="np_group_user_tools">';
+                    $groupdisplay .= '<p class="np_group_user_tools">';
                     $groupdisplay .= '<a class="np_group_user_tools" href="index.php?subscribe=' . urlencode($g->name) . '">(subscribe)</a>';
-                    $groupdisplay .= '</p';
+                    $groupdisplay .= '</p>';
                 }
             }
             /* Display article count */
@@ -813,17 +814,20 @@ function groups_show($gruppen)
                         break;
                     }
                 }
-                $groupdisplay .= '<font class="np_last_posted_date">by: ';
+                $groupdisplay .= '<font class="np_last_posted_date">';
+                $groupdisplay .= 'by: ';
+
                 if ($block) {
                     $groupdisplay .= "(blocked user)";
                 } else {
                     $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 }
-
+                $groupdisplay .= '</font>';
                 $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
             }
+            $groupdisplay .= '</div>';
         }
         if (isset($groupdisplay)) {
             $groupdisplay .= "\n";
@@ -1759,9 +1763,9 @@ function create_name_link($name, $data = null, $truncate = true)
         $return = '<span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span>';
     } else {
         if (isset($_COOKIE['mail_name'])) {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . $name . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
+            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         } else {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . $name . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
+            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         }
     }
     return ($return);
