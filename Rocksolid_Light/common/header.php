@@ -126,14 +126,15 @@ $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
     if ($config_name != "common" && $config_name != 'spoolnews') {
-        echo '<table align="right">';
         echo '<form name="form1" method="get" action="article-flat.php">';
+        echo '<table align="right">';
         echo '<tr>';
         echo '<td>Message-ID: ';
         echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
-        echo '<input type="submit" name="Submit" value="Lookup"></form></td>';
-        echo '</tr>';
-        echo '</table><br>';
+        echo '<input type="submit" name="Submit" value="Lookup">';
+        echo '</td></tr></table>';
+        echo '</form>';
+        echo '<br>';
     }
 }
 
