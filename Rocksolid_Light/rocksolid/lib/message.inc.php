@@ -453,7 +453,7 @@ function show_header($head, $group, $local_poster = false)
                 echo '<i>';
             }
             if ($head->name != "") {
-                echo create_name_link($head->name, $head->from);
+                echo create_name_link($head->name, $head->from, false);
             } else {
                 if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
                     echo truncate_email($head->from);
@@ -568,10 +568,13 @@ function show_header_short($head, $group, $local_poster = false)
     global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
 
+    // If Subject: is longer than this, place From: below Subject: in short short_header
+    $maxsubjectlength = 70;
+
     echo '<div class="np_article_header">';
 
     if ($head->name != "") {
-        $displayname = create_name_link($head->name, $head->from);
+        $displayname = create_name_link($head->name, $head->from, false);
     } else {
         if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
             $displayname = truncate_email($head->from);
@@ -581,7 +584,7 @@ function show_header_short($head, $group, $local_poster = false)
     }
 
     // Where to show From in short_headers
-    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true && strlen($head->subject) < $maxsubjectlength) {
         echo '<span class="short_header_subject">';
         echo htmlspecialchars($head->subject);
         echo '</span><span class="short_header_from_with_subject">';
