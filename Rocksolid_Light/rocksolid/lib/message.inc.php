@@ -587,7 +587,7 @@ function show_header_short($head, $group, $local_poster = false)
     }
 
     if ($local_poster) {
-       $displayname = '<span class="short_header_from_with_subject_local_poster">' . $displayname . '</span>';
+       $displayname = '<span class="short_header_from_local_poster">' . $displayname . '</span>';
     }
 
     // Where to show From in short_headers
