@@ -712,9 +712,9 @@ function thread_format_subject($c, $group, $highlightids = false)
         } else {
             $started = $fromoutput[0];
         }
-        $return .= '<div id="datebox">';
-        $return .= '<p class=np_posted_date_left>By: ' . create_name_link($started, $c->from) . ' on <i>' . date("D, j M Y", $newdate) . '</i></p>';
-        $return .= '</div>';
+        $return .= '<span class="thread_datebox">';
+        $return .= '<span class=thread_start_author_info>By: ' . create_name_link($started, $c->from) . ' on <i>' . date("D, j M Y", $newdate) . '</i></span>';
+        $return .= '</span>';
     }
     return ($return);
 }
@@ -851,11 +851,11 @@ function thread_format_lastmessage($c, $group = '')
     }
     if ($ovfound == 1) {
         $url = 'article-flat.php?id=' . $found['number'] . '&group=' . urlencode($group) . '#' . $found['number'];
-        $return = '<p class=np_posted_date_left><a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</a>';
+        $return = '<span class=np_posted_date_left><a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</a></span>';
     } else {
-        $return = '<p class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</p>';
+        $return = '<span class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</span>';
     }
-    $return .= '<p class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from) . '</p>';
+    $return .= '<span class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from) . '</span>';
     return ($return);
 }
 

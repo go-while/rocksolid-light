@@ -74,8 +74,8 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     }
     $_SESSION['return_page'] = $_SERVER['REQUEST_URI'] . $_SERVER['REQUEST_STRING'];
 
-    echo '<a name="top"></a>';
-    echo '<h1 class="np_thread_headline">';
+ //   echo '<a name="top"></a>';
+    echo '<h1 id="top" class="np_thread_headline">';
 
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo htmlspecialchars(group_display_name($group)) . '</h1>';
@@ -85,7 +85,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     if (isset($overboard) && ($overboard == true)) {
         echo '<td>';
         echo '<form action="overboard.php">';
-        echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '"/>';
+        echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '">';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
         echo '</form>';
         echo '</td>';
@@ -94,7 +94,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
         // New Thread button
         echo '<td>';
         echo '<form action="' . $file_post . '">';
-        echo '<input type="hidden" name="group" value="' . urlencode($group) . '"/>';
+        echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_write"] . '</button>';
         echo '</form>';
         echo '</td>';
@@ -103,7 +103,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" action="search.php">';
     echo '<button class="np_button_link" type="submit">' . $text_thread["button_search"] . '</button>';
-    echo '<input type="hidden" name="group" value="' . urlencode($group) . '"/>';
+    echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
     echo '</form>';
     echo '</td>';
     // Newsgroups button (hidden)

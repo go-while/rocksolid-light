@@ -814,7 +814,7 @@ function groups_show($gruppen)
                         break;
                     }
                 }
-                $groupdisplay .= '<font class="np_last_posted_date">';
+                $groupdisplay .= '<span class="np_last_posted_date">';
                 $groupdisplay .= 'by: ';
 
                 if ($block) {
@@ -822,7 +822,7 @@ function groups_show($gruppen)
                 } else {
                     $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 }
-                $groupdisplay .= '</font>';
+                $groupdisplay .= '</span>';
                 $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
@@ -1760,7 +1760,7 @@ function create_name_link($name, $data = null, $truncate = true)
         $data = urlencode(base64_encode($data));
     }
     if ((strpos($name, '...@') !== false && (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true)) && ! $data) {
-        $return = '<span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span>';
+        $return = '<span class="create_name_link">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span>';
     } else {
         if (isset($_COOKIE['mail_name'])) {
             $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';

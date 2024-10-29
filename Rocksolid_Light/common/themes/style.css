@@ -513,6 +513,32 @@
 	margin: 100px;
 }
 
+/* thread.php view */
+
+.thread_datebox {
+	display: flex;
+	justify-content: space-between;
+}
+
+.create_name_link {
+	color: var(--color-visited);
+}
+
+/* Attribution below Subject */
+.thread_start_author_info {
+	float: left;
+	margin-top: 5;
+	margin-bottom: 0;
+	margin-right: 10;
+	margin-left: 10;
+	text-decoration: none;
+	color: var(--color-highlight);
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em; 
+	width: 50%;
+}
+
 div.ellipsis {
 	white-space: nowrap;
 	overflow: hidden;
@@ -1041,11 +1067,6 @@ table.np_results_table {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em; 
 	width: 50%;
-}
-
-#datebox {
-	display: flex;
-	justify-content: space-between;
 }
 
 /* last posted_date */
