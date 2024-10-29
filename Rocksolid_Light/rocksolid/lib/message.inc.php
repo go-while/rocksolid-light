@@ -532,19 +532,19 @@ function show_header($head, $group, $local_poster = false)
     }
 
     echo '<p id="' . $head->id . 'copy"';
-    echo 'style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
     echo '<p id="' . $head->number . 'copy"';
-    echo 'style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
 
-    echo '<div class="short_header_javascript_links">';
+    echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
 ?>
     &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
@@ -556,9 +556,8 @@ function show_header($head, $group, $local_poster = false)
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
 <?php
+    echo '</span></form>';
     echo '</div>';
-    echo '</div>';
-
     echo '</div>';
 }
 
@@ -640,19 +639,19 @@ function show_header_short($head, $group, $local_poster = false)
     }
 
     echo '<p id="' . $head->id . 'copy"';
-    echo 'style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
     echo '<p id="' . $head->number . 'copy"';
-    echo 'style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
 
-    echo '<div class="short_header_javascript_links">';
+    echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
 ?>
     &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
@@ -664,7 +663,7 @@ function show_header_short($head, $group, $local_poster = false)
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
 <?php
-    echo '</div>';
+    echo '</span></form>';
 
     // Display References in short headers if enabled in overrides.inc.php
     if ((isset($OVERRIDES['short_header_references'])) && ($OVERRIDES['short_header_references'] == true) && (isset($head->references[0]))) {
@@ -693,8 +692,8 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</div>';
     }
     echo '</div>';
-    echo '</p>';
-    echo '</div>';
+  //  echo '</p>';
+  //  echo '</div>';
 }
 
 function copy_messageid()
@@ -824,7 +823,7 @@ function text2html($text)
     return $text;
 }
 
-function nl2p($string, $line_breaks = true, $xml = true)
+function nl2p($string, $line_breaks = true, $xml = false)
 {
     $string = str_replace(array(
         '<p>',
@@ -942,7 +941,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
                 if (file_exists($pngfile)) {
-                    echo '<img align="right" src="' . $pngfile . '">';
+                    echo '<img align="right" src="' . $pngfile . '" alt="x-face">';
                 } else {
                     $facefile = tempnam('../tmp', 'face-');
                     file_put_contents($facefile, $face);
@@ -966,7 +965,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             if ((isset($article_data->header->rslight_to)) && (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site))) {
                 echo 'This is an encrypted message for <b>' . $article_data->header->rslight_to . ' </b>';
                 echo '<form action="decrypt.php?id=' . $id . '&group=' . $group . '" method="post">';
-                echo '<p>Enter Password: <input type="password" name="decryptpass" />&nbsp;';
+                echo '<p>Enter Password: <input type="password" name="decryptpass" >&nbsp;';
                 echo '<input type="hidden" name="decryptuser" value="' . $article_data->header->rslight_to . '">';
                 echo '<input type="submit" value="Decrypt"></p>';
                 echo '</form>';
