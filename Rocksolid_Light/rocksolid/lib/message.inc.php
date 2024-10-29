@@ -570,6 +570,10 @@ function show_header_short($head, $group, $local_poster = false)
     // If Subject: is longer than this, place From: below Subject: in short short_header
     $maxsubjectlength = 70;
 
+    if (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site)) {
+        $local_poster = true;
+    }
+
     echo '<div class="np_article_header">';
 
     if ($head->name != "") {
@@ -582,13 +586,16 @@ function show_header_short($head, $group, $local_poster = false)
         }
     }
 
+    if ($local_poster) {
+       $displayname = '<span class="short_header_from_with_subject_local_poster">' . $displayname . '</span>';
+    }
+
     // Where to show From in short_headers
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true && strlen($head->subject) < $maxsubjectlength) {
         echo '<span class="short_header_subject">';
         echo htmlspecialchars($head->subject);
         echo '</span><span class="short_header_from_with_subject">';
-        echo '&nbsp;&nbsp;(<b>From: </b>' . $displayname . ')<br>';
-        echo '</span>';
+        echo '&nbsp;&nbsp;</span>(<span class="short_header_from_with_subject"><b>From: </b></span>' . $displayname . ')<br>';
     } else {
         echo '<div class="short_header_subject">';
         echo htmlspecialchars($head->subject) . "<br>";

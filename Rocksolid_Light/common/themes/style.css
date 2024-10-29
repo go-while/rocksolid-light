@@ -407,6 +407,12 @@
 	font-size: 1.0em;
 }
 
+.short_header_from_with_subject_local_poster {
+	font-style: italic;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
 /* short header From: (on it's own line) */
 .short_header_from {
 	margin-top: 0;
