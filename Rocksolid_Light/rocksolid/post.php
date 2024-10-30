@@ -504,19 +504,19 @@ if ($show == 1) {
             echo "<p>$error</p>";
 
         echo '<form action="' . $file_post . '" method="post" name="postform"';
-        echo 'enctype="multipart/form-data">';
+        echo ' enctype="multipart/form-data">';
 
         echo '<div class="np_post_header">';
         echo '<table><tr>';
-        echo '<td align="right"><b>' . $text_header["subject"] . '</b></td>';
-        echo '<td><input class="post" type="text" ';
-        echo 'name="' . md5($fieldencrypt . "subject") . '" ';
-        echo 'value="' . htmlspecialchars($subject) . '" ';
-        echo 'size="40" maxlength="' . $thread_maxSubject . '"></td>';
-        echo '</tr><tr>';
+        echo '<td class="np_post_header_subject"><b>' . $text_header["subject"] . '</b></td>';
+        echo '<td class="np_post_header_instructions"><input class="post" type="text" ';
+        echo ' name="' . md5($fieldencrypt . "subject") . '" ';
+        echo ' value="' . htmlspecialchars($subject) . '" ';
+        echo ' size="40" maxlength="' . $thread_maxSubject . '"></td>';
+        echo '<td></td></tr><tr>';
 
         if (isset($has_followup) && $has_followup !== false) {
-            echo '<td align="right"><b>Newsgroups:&nbsp;</b>';
+            echo '<td class="np_post_header_newsgroups"><b>Newsgroups:&nbsp;</b>';
             echo '</td><td>';
 
             echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
@@ -527,7 +527,7 @@ if ($show == 1) {
             }
             echo ')</label></td>';
             echo '</tr><tr>';
-            echo '<td align="right"><b>or:&nbsp;</b>';
+            echo '<td class="np_post_header_or"><b>or:&nbsp;</b>';
             echo '</td><td>';
             echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
             echo '&nbsp;';
@@ -535,78 +535,80 @@ if ($show == 1) {
             echo '</tr><tr>';
         } else {
             if (!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
-                echo '<td align="right"><b>Newsgroups:</b></td>';
-                echo '<td>';
+                echo '<td class="np_post_header_newsgroups"><b>Newsgroups:</b></td>';
+                echo '<td class="np_post_header_instructions">';
                 if ($allow_ngs_edit) {
-                    echo '<input tclass="post" type="text" name="fgroups" size="40" maxlength="240" value="' . $newsgroups . '">';
+                    echo '<input class="post" type="text" name="fgroups" size="40" maxlength="240" value="' . $newsgroups . '">';
                     echo "&nbsp;(max $max_crosspost groups)";
                     echo '</td><td>';
                     echo '</tr><tr>';
-                    echo '<td align="right"><b>Followup-To:</b></td>';
-                    echo '<td>';
-                    echo '<input tclass="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of one group to redirect replies">';
+                    echo '<td class="np_post_header_followupto"><b>Followup-To:</b></td>';
+                    echo '<td class="np_post_header_instructions">';
+                    echo '<input class="post" type="text" name="followupto" size="40" value="' . $followupto . '" maxlength="80" placeholder="name of one group to redirect replies">';
                     echo "&nbsp;(optional)";
                 } else {
-                    echo '<input tclass="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
+                    echo '<input class="post" type="text" name="fgroups" size="40" value="' . $newsgroups . '" readonly>';
                 }
             } else {
-                echo '<input tclass="post" type="hidden" name="fgroups" value="' . $newsgroups . '">';
+                echo '<input class="post" type="hidden" name="fgroups" value="' . $newsgroups . '">';
             }
             echo '</td><td>';
             echo '</tr><tr>';
         }
 
-        echo '<td align="right"><b>' . $text_post["name"] . '</b></td>';
-        echo '<td align="left">';
+        echo '<td class="np_post_header_name"><b>' . $text_post["name"] . '</b></td>';
+        echo '<td class="np_post_header_instructions">';
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
         echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
         if (isset($name))
-            echo 'value="' . htmlspecialchars($name) . '"';
+            echo ' value="' . htmlspecialchars($name) . '"';
         if ($logged_in && isset($name)) {
-            echo 'size="40" maxlength="40" readonly>';
+            echo ' size="40" maxlength="40" readonly>';
             file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH SET for: " . $name, FILE_APPEND);
         } else {
-            echo 'size="40" maxlength="40">';
+            echo ' size="40" maxlength="40">';
             file_put_contents($auth_log, "\n" . logging_prefix() . " AUTH NOT SET for: " . $name, FILE_APPEND);
         }
-        if ($CONFIG['anonuser'])
+        if ($CONFIG['anonuser']) {
             echo '&nbsp;or "' . $CONFIG['anonusername'] . '" with no password';
-        echo '</td></tr><tr>';
-        echo '<td align="right"><b>' . $text_post["password"] . '</b></td>';
-        echo '<td align="left">';
-
+        }
+        echo '<td></td>';
+        echo '</tr><tr>';
+        echo '<td class="np_post_header_password"><b>' . $text_post["password"] . '</b></td>';
+        echo '<td class = "np_post_header_instructions">';
         if ($logged_in && isset($name)) {
-            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"value="**********"';
-            echo 'size="40" maxlength="40" readonly>';
+            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '" value="**********"';
+            echo ' size="40" maxlength="40" readonly>';
         } else {
             echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
-            echo 'size="40" maxlength="40">';
+            echo ' size="40" maxlength="40">';
         }
+        echo '</td>';
         // Check for custom name/email from user configuration
         if ($OVERRIDES['disable_change_name'] != true) {
             $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
             if (isset($user_config['display_name']) && trim($user_config['display_name']) != '') {
                 if (isset($user_config['display_email']) && trim($user_config['display_email']) != '') {
-                    echo '<tr><td align="right">';
+                    echo '<td></td><tr><td class="np_post_header_from">';
                     echo '<b>From: </b></td>';
                     $showemail = '<' . $user_config['display_email'] . '>';
-                    echo '<td align="left">';
+                    echo '<td class="np_post_header_instructions">';
                     echo '<input class="post" type="text" value="' . $user_config['display_name'] . ' ' . htmlspecialchars($showemail) . '" size="40" maxlength="40" readonly>';
                     // echo $user_config['display_name'] . ' ' . htmlspecialchars($showemail);
-                    echo '</td></tr>';
+                    echo '</td><td></td></tr>';
                 }
             }
         }
         if (isset($fromname)) {
             echo '<input class="post" type="hidden" name="fromname" value="' . $fromname . '">';
         }
-        echo '</td></tr>';
+        echo '<td></td></tr>';
         // May we post encrypted messages to this group?
         if (check_encryption_groups($newsgroups)) {
             echo '<tr>';
-            echo '<td align="left"><input type="checkbox" name="encryptthis"';
-            echo 'value="encrypt"> <b>Encrypt to:</b></td>';
+            echo '<td np_post_header_input_encryptthis"><input type="checkbox" name="encryptthis"';
+            echo ' value="encrypt"> <b>Encrypt to:</b></td>';
             if (isset($fromname)) {
                 echo '<td><input type="text" name="encryptto" value="' . $fromname . '"></td>';
             }
@@ -617,10 +619,10 @@ if ($show == 1) {
         echo '<div class="np_post_body">';
         echo '<table><tr>';
         echo '<td><b>' . $text_post["message"] . '</b>';
-        echo '&nbsp;&nbsp;<font size="2em">(Lines will wrap at ' . $wrap_width . ' characters after posting)</font>';
+        echo '&nbsp;&nbsp;<span class="np_post_body_notification">(Lines will wrap at ' . $wrap_width . ' characters after posting)</span>';
         echo '<br> <textarea cols="' . $wrap_width . '"';
-        echo 'class="postbody" id="postbody" cols="72"';
-        echo 'name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
+        echo ' class="postbody" id="postbody"';
+        echo ' name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
         $bodyzeile = wrap_post($bodyzeile);
         if ((isset($bodyzeile)) && ($post_autoquote))
@@ -631,14 +633,14 @@ if ($show == 1) {
 
         if (! $post_autoquote) {
             echo '<input type="hidden" id="hidebody"';
-            echo 'value="';
+            echo ' value="';
             if (isset($bodyzeile)) {
                 echo htmlspecialchars(rtrim($bodyzeile) . "\n");
             }
             echo '">';
 
 ?>
-            <script language="JavaScript">
+            <script>
                 <!--
                 function quoten() {
                     document.getElementById("postbody").value = document.getElementById("hidebody").value;
@@ -675,7 +677,8 @@ if ($show == 1) {
         }
         if (! in_array($config_name, $OVERRIDES['disable_attach'])) {
             echo '&nbsp;';
-            echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
+            echo '<input type="file" name="photo" id="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
+          //  echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
             echo '</td></tr>';
         }
         if ($post_captcha) {
