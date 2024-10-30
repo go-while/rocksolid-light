@@ -489,12 +489,14 @@
 	vertical-align: middle;
 }
 
+/* The link checkbox to display article headers */
 .display_headers:active .display_headers_on {
 	display: block;
 }
 
-#trigger_headers:checked+.display_headers_on {
+input[id^=trigger_headers]:checked+.display_headers_on {
 	display: block;
+
 }
 
 .display_headers_on {

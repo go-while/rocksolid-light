@@ -538,7 +538,7 @@ function show_header($head, $group, $local_poster = false)
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
         echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
@@ -652,7 +652,7 @@ function show_header_short($head, $group, $local_poster = false)
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
         echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
         echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
