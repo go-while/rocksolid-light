@@ -53,7 +53,7 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $d
 echo '</head><body>';
 ?>
 
-	<table class="np_header_bar_top" valign="middle">
+	<table class="np_header_bar_top">
 		<tr>
 			<td class="np_td_header_bar_logo_image"><a href="<?php echo $CONFIG['default_content'];?>"><img
 					src="<?php echo $header_image ?>" alt="Rocksolid Light"
@@ -127,14 +127,13 @@ $config_name = basename(getcwd());
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
     if ($config_name != "common" && $config_name != 'spoolnews') {
         echo '<form name="form1" method="get" action="article-flat.php">';
-        echo '<table align="right">';
+        echo '<table class="header_message_id_search">';
         echo '<tr>';
-        echo '<td>Message-ID: ';
+        echo '<td class="header_message_id_search_prompt">Message-ID: ';
         echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
         echo '<input type="submit" name="Submit" value="Lookup">';
         echo '</td></tr></table>';
         echo '</form>';
-        echo '<br>';
     }
 }
 

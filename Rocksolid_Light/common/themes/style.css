@@ -248,13 +248,24 @@
 	text-align:right
 }
 
+.header_message_id_search {
+	width: auto;
+	margin-left: auto;
+    margin-right: 0px;
+}
+
+.header_message_id_search_prompt {
+	font-size: 0.6em;
+}
+
 .np_header_bar_top {
 	background: var(--color-header-background);
-	padding: 1px;
+	padding: 0px;
 	margin-bottom: 0px;
 	color: black;
 	font-size: 0.5em;
 	width: 100%;
+	vertical-align: middle;
 }
 
 .np_header_bar_large {
@@ -535,10 +546,9 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 /* Attribution below Subject */
 .thread_start_author_info {
 	float: left;
-	margin-top: 5;
+	box-sizing: border-box;
+    padding: 6px;
 	margin-bottom: 0;
-	margin-right: 10;
-	margin-left: 10;
 	text-decoration: none;
 	color: var(--color-highlight);
 	text-align: left;
@@ -881,6 +891,34 @@ tr.np_thread_head, td.np_thread_head {
 	margin: 0px;
 }
 
+td.np_thread_head_date {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 1%;
+}
+
+td.np_thread_head_threadsize {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 70px;
+}
+
+td.np_thread_head_lastmessage {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 15%;
+}
+
+td.np_thread_head_author {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 15%;
+}
+
 /* Even line numbers in the thread */
 tr.np_thread_line1, td.np_thread_line1 {
 	padding-left: 3px;
@@ -891,6 +929,9 @@ tr.np_thread_line1, td.np_thread_line1 {
 	border-bottom: 1px solid var(--color-row-border);
 	border-right: 1px solid var(--color-row-border);
 	margin: 0px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* Odd line numbers in the thread */
@@ -904,13 +945,19 @@ tr.np_thread_line2, td.np_thread_line2 {
 	border-bottom: 1px solid var(--color-row-border);
 	border-right: 1px solid var(--color-row-border);
 	margin: 0px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* Text inside a Line */
-span.np_thread_line_text {
+span.np_thread_line_text, td.np_thread_line_text {
 	font-size: 1em;
 	font-weight: bold;
 	font-family: Arial, Helvetica, sans-serif;
+	overflow: hidden;
+    text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* The small images, a thread consists of */
@@ -1102,9 +1149,9 @@ table.np_results_table {
 
 /* display motd (fortunes) */
 .np_display_motd {
-	margin-top: 10;
-	margin-bottom: 10;
-	margin-right: 10;
+	box-sizing: border-box;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	text-decoration: none;
 	font-weight: bold;
 	color: var(--color-highlight);
@@ -1115,9 +1162,9 @@ table.np_results_table {
 
 /* display motd (new mail) */
 .np_display_motd_new_mail {
-	margin-top: 10;
-	margin-bottom: 10;
-	margin-right: 10;
+	box-sizing: border-box;
+	padding-top: 10px;
+	padding-bottom: 10px;
 	text-decoration: none;
 	font-weight: bold;
 	color: var(--color-highlight);
@@ -1248,6 +1295,8 @@ a.np_button {
 
 .np_pages {
 	color: var(--color-visited);
+	width: 100%;
+	text-align: right;
 }
 
 .np_pages_selected {

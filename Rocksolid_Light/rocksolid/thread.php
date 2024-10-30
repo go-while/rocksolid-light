@@ -80,7 +80,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo htmlspecialchars(group_display_name($group)) . '</h1>';
 
-    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    echo '<table class="np_buttonbar"><tr>';
     // View Latest button
     if (isset($overboard) && ($overboard == true)) {
         echo '<td>';
@@ -130,7 +130,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
                 $last = $article_count;
             }
         }
-        echo '<td class="np_pages" width="100%" align="right">';
+        echo '<td class="np_pages">';
         // Show the replies to an article in the thread view?
         if ($thread_show["replies"]) {
             // yes, so the counting of the shown articles is very easy
@@ -154,8 +154,8 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     }
     echo '</tr></table>';
     thread_show($headers, $group, $first, $last);
-    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
-    echo '<td class="np_pages" width="100%" align="right">';
+    echo '<table class="np_buttonbar"><tr>';
+    echo '<td class="np_pages">';
     thread_pageselect($group, $pagecount, $first);
     echo '</td></tr></table>';
 } else {
