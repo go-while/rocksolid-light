@@ -148,25 +148,10 @@ if (isset($search_group)) {
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
     echo 'search results for: ' . $_POST['terms'] . '</h1>';
-    // Newsgroups button (hidden)
-    echo '<td>';
-    echo '<form action="' . $file_index . '">';
-    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-    echo '</form>';
-    echo '</td>';
-    echo '</tr></table>';
 } else {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo 'search results for: ' . $_POST['terms'] . '</h1>';
-    echo '<form action="' . $file_index . '">';
-    echo '<table class="np_buttonbar"><tr>';
-    // Newsgroups button (hidden)
-    echo '<td>';
-    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-    echo '</td>';
-    echo '</tr></table>';
-    echo '</form>';
 }
 echo '<table class="np_buttonbar"><tr>';
 echo '<td class="np_search_sort_toggle">';
