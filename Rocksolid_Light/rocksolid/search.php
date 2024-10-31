@@ -20,8 +20,6 @@ if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
     unset($_REQUEST['data']);
 }
 
-
-
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
     include "head.inc";
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
@@ -457,7 +455,7 @@ function get_header_search($group, $terms)
 
 function display_search_tools($home = true)
 {
-    global $CONFIG, $config_name, $search_group, $file_index, $file_thread;
+    global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread;
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
@@ -470,20 +468,17 @@ function display_search_tools($home = true)
     } else {
         $searching = $config_name;
     }
-    echo '<body>';
-    echo '<table width=100% border="0" align="center" cellpadding="0" cellspacing="1">';
     echo '<tr>';
     echo '<form name="form1" method="post" action="search.php">';
     echo '<td>';
-    echo '<table width="100%" align="center" border="0" cellpadding="3" cellspacing="1">';
     echo '<tr>';
     echo '<td colspan="3">Searching <strong>' . $searching . '</strong></td>';
     echo '</tr>';
     echo '<tr>';
     if (! isset($_REQUEST['data'])) {
-        echo '<td>Search Terms:&nbsp';
+        echo '<td>Search Terms:&nbsp;';
     } else {
-        echo '<td>Search Poster:&nbsp';
+        echo '<td>Search Poster:&nbsp;';
     }
     if (isset($_REQUEST['terms'])) {
         echo '<input name="terms" type="text" id="terms" value="' . $_REQUEST['terms'] . '"></td>';
@@ -496,40 +491,40 @@ function display_search_tools($home = true)
     if (isset($_REQUEST['searchpoint'])) {
         if ($_REQUEST['searchpoint'] == 'Poster' || $_REQUEST['searchpoint'] == 'name') {
             if ($CONFIG['article_database'] == '1') {
-                echo '<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+                echo '<input type="radio" name="searchpoint" value="body">Body&nbsp;';
             }
-            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="name" checked="checked"/>Poster&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+            echo '<input type="radio" name="searchpoint" value="subject">Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name" checked="checked">Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid">Message-ID';
         } elseif ($_REQUEST['searchpoint'] == 'subject') {
             if ($CONFIG['article_database'] == '1') {
-                echo '&nbsp;<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body">Body&nbsp;';
             }
-            echo '<input type="radio" name="searchpoint" value="subject" checked="checked"/>Subject&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+            echo '<input type="radio" name="searchpoint" value="subject" checked="checked">Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name">Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid">Message-ID';
         } elseif ($_REQUEST['searchpoint'] == 'msgid') {
             if ($CONFIG['article_database'] == '1') {
-                echo '&nbsp;<input type="radio" name="searchpoint" value="body"/>Body&nbsp;';
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body">Body&nbsp;';
             }
-            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="msgid" checked="checked"/>Message-ID';
+            echo '<input type="radio" name="searchpoint" value="subject">Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name">Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid" checked="checked">Message-ID';
         } else {
             if ($CONFIG['article_database'] == '1') {
-                echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
+                echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked">Body&nbsp;';
             }
-            echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-            echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+            echo '<input type="radio" name="searchpoint" value="subject">Subject&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="name">Poster&nbsp;';
+            echo '<input type="radio" name="searchpoint" value="msgid">Message-ID';
         }
     } else {
         if ($CONFIG['article_database'] == '1') {
-            echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked"/>Body&nbsp;';
+            echo '&nbsp;<input type="radio" name="searchpoint" value="body" checked="checked">Body&nbsp;';
         }
-        echo '<input type="radio" name="searchpoint" value="subject"/>Subject&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="name"/>Poster&nbsp;';
-        echo '<input type="radio" name="searchpoint" value="msgid"/>Message-ID';
+        echo '<input type="radio" name="searchpoint" value="subject">Subject&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="name">Poster&nbsp;';
+        echo '<input type="radio" name="searchpoint" value="msgid">Message-ID';
     }
 
     echo '</td></tr>';
