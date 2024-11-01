@@ -76,11 +76,11 @@ if (isset($_POST['command']) && $_POST['command'] == 'Message') {
     echo '</form>';
     echo '</td>';
 }
-echo '<td width=100%></td></tr></table>';
+echo '<td</td></tr></table>';
 
 if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-    echo '<table border="0" align="center" >';
+    echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login<br ></strong></td><td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password">';

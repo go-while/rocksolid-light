@@ -39,7 +39,7 @@ if ($logmeout) {
     echo "<center>";
     echo "<hr><p>You have been logged out</p>";
     echo '</center>';
-    echo '<br />';
+    echo '<br >';
     include "tail.inc";
     exit(0);
 }
@@ -108,7 +108,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
     echo '<input name="command" type="hidden" id="command" value="Mail" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo '<button class="np_button_link" type="submit">Mail</button>';
     echo '</form>';
     echo '</td>';
@@ -116,7 +116,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="files.php">';
     echo '<input name="command" type="hidden" id="command" value="Files" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo '<button class="np_button_link" type="submit">Files</button>';
     echo '</form>';
     echo '</td>';
@@ -124,7 +124,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo '<button class="np_button_link" type="submit">Configuration</button>';
     echo '</form>';
     echo '</td>';
@@ -134,7 +134,7 @@ if ((isset($_COOKIE["mail_name"]))) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Logout" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo '<button class="np_button_link" type="submit">Logout</button>';
     echo '</form>';
     echo '</td>';
@@ -157,9 +157,9 @@ if (isset($_POST['username'])) {
     }
 }
 if ($logged_in !== true) {
-    echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-    echo '<tr><td><strong>Please Login<br /></strong></td></tr>';
+    echo '<table class="user_table_login">';
+    echo '<tr><td><strong>Please Login<br ></strong></td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $name . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
@@ -167,8 +167,8 @@ if ($logged_in !== true) {
     echo '<td>&nbsp;</td>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
-    echo '</form>';
     echo '</table>';
+    echo '</form>';
     exit(0);
 }
 
@@ -202,7 +202,7 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     // Confirm password
     if (! check_bbs_auth($user, $_POST['confirm_password'])) {
-        $message = '<b>Password Incorrect</b><br />Please try again';
+        $message = '<b>Password Incorrect</b><br >Please try again';
         retry_configuration($message);
     }
     if ($OVERRIDES['disable_change_name'] != true) {
@@ -238,19 +238,19 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         foreach ($reserved_names as $name) {
             if (strtolower($_POST['display_name']) == strtolower($name)) {
                 // It's a reserved alias
-                $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+                $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br >Please try again";
                 retry_configuration($message);
             }
         }
         if ($value && (strtolower($_POST['display_name']) != $user)) {
             // It's someone else's username or alias
-            $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br />Please try again";
+            $message = '<b>' . $_POST['display_name'] . "</b> is unavailable.<br >Please try again";
             retry_configuration($message);
         }
         // Validate email format
         if (filter_var($_POST['display_email'], FILTER_VALIDATE_EMAIL) == false) {
             // Email address format invalid. Format is important but does not need to be a real address
-            $message = '</b> Display email format appears incorrect:<br><b>' . $_POST['display_email'] . '</b><br />Please try again';
+            $message = '</b> Display email format appears incorrect:<br><b>' . $_POST['display_email'] . '</b><br >Please try again';
             retry_configuration($message);
         }
         // Check if email already exists in user database
@@ -258,13 +258,13 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
             // Email exists in database
             if (strtolower($user) != strtolower($founduser)) {
                 // It's someone else's email
-                $message = '<b>' . $_POST['display_email'] . "</b> is unavailable.<br />Please try again";
+                $message = '<b>' . $_POST['display_email'] . "</b> is unavailable.<br >Please try again";
                 retry_configuration($message);
             }
         }
         // New passwords do not match
         if ($_POST['password'] !== $_POST['password2']) {
-            $message = '<b> New password entries do not match</b><br />Please try again';
+            $message = '<b> New password entries do not match</b><br >Please try again';
             retry_configuration($message);
         }
         $user_config['display_name'] = trim($_POST['display_name']);
@@ -409,14 +409,14 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
                     } else {
                         echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="true">';
                     }
-                    echo '<label for="send_mail_to_email"> Yes, Forward Mail to my Email</label><br />';
+                    echo '<label for="send_mail_to_email"> Yes, Forward Mail to my Email</label><br >';
 
                     if ($user_config['send_mail_to_email'] == 'false') {
                         echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false" checked="checked">';
                     } else {
                         echo '<input type="radio" name="send_mail_to_email" id="send_mail_to_email" value="false">';
                     }
-                    echo '<label for="send_mail_to_email"> No, Do Not Forward Mail to my Email</label><br />';
+                    echo '<label for="send_mail_to_email"> No, Do Not Forward Mail to my Email</label><br >';
 
                     echo '</tr>';
                 }
@@ -464,14 +464,14 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     }
     echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscriptions:</h3></td>';
     echo '<tr><td class="np_result_line1" style="word-wrap:break-word";>';
-    echo '&nbsp;While viewing section pages:<br />';
+    echo '&nbsp;While viewing section pages:<br >';
 
     if ($user_config['hide_unsub'] == 'hide') {
         echo '<input type="radio" name="hide_unsub" id="hide" value="hide" checked="checked">';
     } else {
         echo '<input type="radio" name="hide_unsub" id="hide" value="hide">';
     }
-    echo '<label for="hide_unsub"> Hide Unsubscribed Groups</label><br />';
+    echo '<label for="hide_unsub"> Hide Unsubscribed Groups</label><br >';
 
     if ($user_config['hide_unsub'] == 'show') {
         echo '<input type="radio" name="hide_unsub" id="show" value="show" checked="checked">';
@@ -549,29 +549,30 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '</td></tr>';
     echo '<input name="command" type="hidden" id="command" value="SaveConfig" readonly="readonly">';
     echo '</form>';
-    echo '</tbody></table><br />';
+    echo '</tbody></table><br >';
 } else {
-    echo '<br />';
+    echo '<br >';
 }
 include "tail.inc";
 
 function retry_configuration($message)
 {
+    global $frame;
     echo '<center>';
     echo $message;
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-    echo "<input type='hidden' name='retry' value='retry' />";
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-    echo "<input type='hidden' name='display_name' value='" . $_POST['display_name'] . "' />";
-    echo "<input type='hidden' name='display_email' value='" . $_POST['display_email'] . "' />";
-    echo "<input type='hidden' name='signature' value='" . $_POST['signature'] . "' />";
-    echo "<input type='hidden' name='xface' value='" . urlencode($_POST['xface']) . "' />";
-    echo "<input type='hidden' name='hide_unsub' value='" . $_POST['hide_unsub'] . "' />";
-    echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' />";
-    echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' />";
-    echo "<input type='hidden' name='blocked_users_config' value'" . $_POST['blocked_users_config'] . "' />";
-    echo "<input type='hidden' name='send_mail_to_email' value'" . $_POST['send_mail_to_email'] . "' />";
+    echo "<input type='hidden' name='retry' value='retry' >";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='display_name' value='" . $_POST['display_name'] . "' >";
+    echo "<input type='hidden' name='display_email' value='" . $_POST['display_email'] . "' >";
+    echo "<input type='hidden' name='signature' value='" . $_POST['signature'] . "' >";
+    echo "<input type='hidden' name='xface' value='" . urlencode($_POST['xface']) . "' >";
+    echo "<input type='hidden' name='hide_unsub' value='" . $_POST['hide_unsub'] . "' >";
+    echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' >";
+    echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' >";
+    echo "<input type='hidden' name='blocked_users_config' value'" . $_POST['blocked_users_config'] . "' >";
+    echo "<input type='hidden' name='send_mail_to_email' value'" . $_POST['send_mail_to_email'] . "' >";
     echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
     echo '</center>';
     exit();

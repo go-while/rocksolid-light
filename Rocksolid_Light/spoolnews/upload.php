@@ -83,7 +83,7 @@ if (isset($_FILES['photo'])) {
         } else {
             echo 'Authentication Failed';
         }
-        echo '<br /><br />';
+        echo '<br ><br >';
     }
 }
 
@@ -96,8 +96,9 @@ if (! isset($_POST['password'])) {
 }
 if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-    echo '<tr><td><strong>Please Login<br /></strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<table class="upload_table_login">';
+    echo '<tr><td><strong>Please Login<br ></strong></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $name . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
     echo '<td><input name="source" type="hidden" id="source" value="Upload:upload.php" readonly="readonly"></td>';
@@ -105,11 +106,11 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '<td>&nbsp;</td>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
-    echo '</form>';
+    echo '</table>';
     echo '</form>';
 } else {
     echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
-    echo '<tr><td><strong>Logged in as ' . $_POST['username'] . '<br />(max size=2MB)</strong></td></tr>';
+    echo '<tr><td><strong>Logged in as ' . $_POST['username'] . '<br >(max size=2MB)</strong></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Upload" readonly="readonly"></td>';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
     echo '<input type="hidden" name="username" value="' . $_POST['username'] . '">';
