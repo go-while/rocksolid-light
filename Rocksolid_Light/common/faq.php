@@ -3,7 +3,7 @@
 /*
  * CHANGE THE LINE BELOW TO 'installed = true once you have edited this filter
  */
- $installed = true;
+ $installed = false;
 
 // Set this to your administrative email address
  $admin = "admin@novabbs.com";
