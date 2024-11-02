@@ -592,8 +592,10 @@ function groups_show($gruppen)
     }
     $c = count($gruppen);
     $acttype = "keins";
-    echo '<table class="np_groups_table" cellspacing="0"><tr class="np_thread_head"><td width="45px" class="np_thread_head">';
-    echo 'Latest</td><td style="text-align: center;">Newsgroup</td><td width="8%" class="np_thread_head">Messages</td><td width="20%" class="np_thread_head" >Last Message</td></tr>';
+    echo '<table class="np_groups_table"><tr class="np_thread_head"><td class="grouplist_thread_head_latest">Latest</td>';
+    echo '<td class="grouplist_thread_head_subject">Newsgroup</td>';
+    echo '<td class="grouplist_thread_head_messages">Messages</td>';
+    echo '<td class="grouplist_thread_head_lastarticle" >Last Message</td></tr>';
     $subs = array();
     $nonsubs = array();
     $user = null;
@@ -781,7 +783,7 @@ function groups_show($gruppen)
             $groupdisplay .= '</small>';
 
             /* Display latest article info */
-            $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
+            $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="grouplist_td_thread_start_author_info">';
 
             if ($found == 1) {
                 $fromline = address_decode(headerDecode($lastarticleinfo['name']), "nowhere");
@@ -803,9 +805,6 @@ function groups_show($gruppen)
                 }
                 $lastarticleinfo['name'] = $poster_name;
 
-                $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
-                $groupdisplay .= '<table><tr><td>';
-
                 $block = false;
                 foreach ($blocked_user_config as $key => $value) {
                     $blockme = '/' . addslashes($key) . '/';
@@ -814,16 +813,20 @@ function groups_show($gruppen)
                         break;
                     }
                 }
-                $groupdisplay .= '<span class="np_last_posted_date">';
-                $groupdisplay .= 'by: ';
 
+                $groupdisplay .= '<span class="grouplist_thread_start_author_info">';
                 if ($block) {
+                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
+                    $groupdisplay .= '<br>by: ';
                     $groupdisplay .= "(blocked user)";
                 } else {
+                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $groupdisplay .= '<a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date'])) . '</a>';
+                    $groupdisplay .= '<br>by: ';
                     $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 }
                 $groupdisplay .= '</span>';
-                $groupdisplay .= '</td></tr></table>';
             } else {
                 unset($lastarticleinfo);
             }
@@ -1330,7 +1333,6 @@ function verify_logged_in($name)
     //  if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
     //      return false;
     // }
-
 
     // For checking session expire stuff
     if (!isset($_SESSION['start_stamp'])) {

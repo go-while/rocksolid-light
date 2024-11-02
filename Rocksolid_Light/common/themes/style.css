@@ -135,6 +135,7 @@
 	background: var(--color-dark);
 	border-radius: 5px;
 }
+
 /* Header buttons */
 .np_header_button_link {
 	padding-left: 5px;
@@ -155,7 +156,7 @@
 	color: black;
 	font-size: 0.5em;
 	margin-left: auto;
-    margin-right: auto;
+	margin-right: auto;
 }
 
 .np_header_links {
@@ -229,9 +230,9 @@
 }
 
 .np_header_button_checkbox {
-    transform: scale(0.8);
+	transform: scale(0.8);
 	display: inline-block;
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 .np_header_button_link:hover {
@@ -245,13 +246,13 @@
 }
 
 .header_links_text {
-	text-align:right
+	text-align: right
 }
 
 .header_message_id_search {
 	width: auto;
 	margin-left: auto;
-    margin-right: 0px;
+	margin-right: 0px;
 }
 
 .header_message_id_search_prompt {
@@ -511,7 +512,8 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 }
 
 .display_headers_on {
-	display: none; /* NEW */
+	display: none;
+	/* NEW */
 	background: var(--color-dark);
 	padding: 3px;
 	color: var(--color-text);
@@ -547,13 +549,13 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 .thread_start_author_info {
 	float: left;
 	box-sizing: border-box;
-    padding: 6px;
+	padding: 6px;
 	margin-bottom: 0;
 	text-decoration: none;
 	color: var(--color-highlight);
 	text-align: left;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em; 
+	font-size: 0.8em;
 	width: 50%;
 }
 
@@ -574,7 +576,7 @@ textarea.postbody {
 	border: none;
 	color: var(--color-text);
 	height: calc(1em * 40);
-    width: auto;
+	width: auto;
 }
 
 textarea.configuration {
@@ -609,6 +611,7 @@ textarea.configuration {
 
 /* Grouplist */
 
+/* grouplist.php */
 .grouplist_table {
 	text-align: center;
 	margin-left: auto;
@@ -620,7 +623,7 @@ textarea.configuration {
 .grouplist_header_title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
-    font-style: italic;
+	font-style: italic;
 	text-align: center;
 	font-size: 1.1em;
 }
@@ -628,7 +631,7 @@ textarea.configuration {
 .grouplist_title_section_name {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -636,7 +639,7 @@ textarea.configuration {
 .grouplist_title_newsgroup_name {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -644,7 +647,7 @@ textarea.configuration {
 .grouplist_title_newsgroup_desc {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -652,7 +655,7 @@ textarea.configuration {
 .grouplist_title_newsgroup_artnum {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	padding-left: 10px;
 	padding-right: 10px;
 }
@@ -660,7 +663,7 @@ textarea.configuration {
 .grouplist_row_section_name {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	text-align: center;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -669,7 +672,7 @@ textarea.configuration {
 .grouplist_row_newsgroup_name {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	text-align: left;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -678,7 +681,7 @@ textarea.configuration {
 .grouplist_row_newsgroup_desc {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	text-align: left;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -687,10 +690,65 @@ textarea.configuration {
 .grouplist_row_newsgroup_artnum {
 	font-size: 0.7em;
 	border: 1px solid var(--color-text);
-    border-collapse: collapse;
+	border-collapse: collapse;
 	text-align: left;
 	padding-left: 10px;
 	padding-right: 10px;
+}
+
+/* newsportal.php groups_show() */
+.grouplist_thread_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.grouplist_thread_head_latest {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 45px;
+	font-weight: bold;
+}
+
+.grouplist_thread_head_subject {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.grouplist_thread_head_messages {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 8%;
+	font-weight: bold;
+}
+
+.grouplist_thread_head_lastarticle {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	width: 20%;
+	font-weight: bold;
+}
+
+.grouplist_thread_start_author_info {
+	float: left;
+	box-sizing: border-box;
+	padding: 1px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.0em;
+}
+
+.grouplist_td_thread_start_author_info {
+	margin: 0px;
 }
 
 /* Mobile Styles */
@@ -701,79 +759,96 @@ textarea.configuration {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: calc(1em + 2vw);
 	}
+
 	.header {
 		margin: 5px;
 		height: 10%;
 	}
+
 	.menu {
 		margin: 0px;
 		width: 0%;
 		height: 0%
 	}
+
 	.content {
 		margin: 10px;
 		width: 100%;
 		height: 89%;
 	}
+
 	.title {
 		font-size: 0em;
 	}
+
 	.title_small {
 		font-size: 1.2em;
 	}
+
 	.header_menu {
 		font-size: 0.7em;
 	}
+
 	.np_header_button_link {
 		font-size: 1em;
 	}
+
 	.np_header_bar_large {
 		display: none;
 	}
+
 	.np_title {
 		font-size: 1em;
 	}
+
 	textarea.postbody {
 		height: calc(1em * 1.5 * 10);
 		width: 100%;
 	}
+
 	input.post {
 		width: 90%;
 	}
 }
 
 /* Tablet Styles */
-@media only screen and (min-device-width: 481px) and (max-device-width:
-	820px) {
+@media only screen and (min-device-width: 481px) and (max-device-width: 820px) {
 	body {
 		color: var(--color-text);
 		background: var(--color-light);
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: calc(1em + 1vw);
 	}
+
 	.header {
 		margin: 5px;
 		height: 10%;
 	}
+
 	.menu {
 		margin: 0px;
 		width: 0%;
 		height: 0%
 	}
+
 	.content {
 		margin: 10px;
 		width: 100%;
 		height: 89%;
 	}
+
 	.title {
 		font-size: 1.2em;
 	}
+
 	.header_menu {
 		font-size: 0.8em;
 	}
+
 	.np_header_button_link {
 		font-size: 1.5em;
 	}
+
 	.np_header_bar_large {
 		display: none;
 	}
@@ -789,24 +864,30 @@ textarea.configuration {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: calc(1em + 1vw);
 	}
+
 	.header {
 		margin: 0px;
 		height: 8%;
 	}
+
 	.menu {
 		width: 20%;
 		height: 92%
 	}
+
 	.content {
 		width: 80%;
 		height: 92%;
 	}
+
 	.title {
 		font-size: 1.5em;
 	}
+
 	.header_menu {
 		font-size: 0.8em;
 	}
+
 	.np_button_hidden {
 		padding-left: 0px;
 		padding-right: 0px;
@@ -814,6 +895,7 @@ textarea.configuration {
 		color: transparent;
 		font-size: 0em;
 	}
+
 	.np_header_bar_small {
 		display: none;
 	}
@@ -895,7 +977,8 @@ table.np_thread_table {
 }
 
 /* Head of the table */
-tr.np_thread_head, td.np_thread_head {
+tr.np_thread_head,
+td.np_thread_head {
 	color: var(--color-visited);
 	background: var(--color-light);
 	margin: 0px;
@@ -930,7 +1013,8 @@ td.np_thread_head_author {
 }
 
 /* Even line numbers in the thread */
-tr.np_thread_line1, td.np_thread_line1 {
+tr.np_thread_line1,
+td.np_thread_line1 {
 	padding-left: 3px;
 	padding-top: 3px;
 	padding-right: 0px;
@@ -940,33 +1024,35 @@ tr.np_thread_line1, td.np_thread_line1 {
 	border-right: 1px solid var(--color-row-border);
 	margin: 0px;
 	overflow: hidden;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
 /* Odd line numbers in the thread */
-tr.np_thread_line2, td.np_thread_line2 {
+tr.np_thread_line2,
+td.np_thread_line2 {
 	padding-left: 3px;
 	padding-top: 3px;
 	padding-right: 0px;
 	padding-bottom: 3px;
 	background: var(--color-light);
-/*	border-top: 1px solid var(--color-row-border); */
+	/*	border-top: 1px solid var(--color-row-border); */
 	border-bottom: 1px solid var(--color-row-border);
 	border-right: 1px solid var(--color-row-border);
 	margin: 0px;
 	overflow: hidden;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
 /* Text inside a Line */
-span.np_thread_line_text, td.np_thread_line_text {
+span.np_thread_line_text,
+td.np_thread_line_text {
 	font-size: 1em;
 	font-weight: bold;
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
@@ -1034,50 +1120,57 @@ h1.np_post_headline {
 
 .np_post_header_subject {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_newsgroups {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_followupto {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_name {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_password {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_from {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.6em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	;
 	text-align: right;
 }
 
 .np_post_header_or {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.7em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
+	;
 	text-align: right;
 }
 
@@ -1088,8 +1181,9 @@ h1.np_post_headline {
 
 .np_post_body_notification {
 	color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.5em;;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+	;
 	text-align: right;
 }
 
@@ -1103,13 +1197,13 @@ h1.np_post_headline {
 
 /* show or hide groups toggle */
 .np_show_hide_toggle {
-    margin-top: 0;
-    margin-bottom: 0;
-    text-decoration: none;
-    text-align: center;
-    color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.7em;
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	text-align: center;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
 }
 
 /* =========== specifically for rocksolid overboard =========== */
@@ -1127,28 +1221,28 @@ table.np_results_table {
 
 /* overboard style toggle */
 .np_ob_style_toggle {
-    margin-top: 0;
-    margin-bottom: 0;
-    text-decoration: none;
-    color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .register_table_forgot_password {
 	border: 0;
 	align-items: center;
 	color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .register_table_register_username {
 	border: 0;
 	align-items: center;
 	color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .register_table_forgot_password_button {
@@ -1160,43 +1254,43 @@ table.np_results_table {
 	border: 0;
 	align-items: center;
 	color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .user_table_login {
 	border: 0;
 	align-items: center;
 	color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .mail_table_login {
 	border: 0;
 	align-items: center;
 	color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 .search_hide_posts {
 	margin-top: 0;
-    margin-bottom: 0;
-    text-decoration: none;
-    color: var(--color-text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.7em;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.7em;
 }
 
 /* search sort toggle */
 .np_search_sort_toggle {
-    margin-top: 0;
-    margin-bottom: 0;
-    text-decoration: none;
-    color: var(--color-highlight);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 0.8em;
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 /* overboard posted_date */
@@ -1205,7 +1299,7 @@ table.np_results_table {
 	margin-bottom: 0;
 	text-decoration: none;
 	color: var(--color-highlight);
-/*	text-align: left; */
+	/*	text-align: left; */
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 }
@@ -1245,7 +1339,7 @@ table.np_results_table {
 	color: var(--color-highlight);
 	text-align: left;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em; 
+	font-size: 0.8em;
 	width: 50%;
 }
 
@@ -1371,6 +1465,7 @@ table.np_results_table {
 .np_ob_tail {
 	font-size: 0.7em;
 }
+
 /* =========== navigation buttons on top of every page =========== */
 .np_buttonbar {
 	background: var(--color-dark);
