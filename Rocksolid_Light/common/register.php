@@ -534,6 +534,7 @@ function send_reset_email($username, $user_email)
     $msg .= "Note: replies to this email address are checked daily.";
     $mail->Body = wordwrap($msg, 70);
 
+    echo '<center>';
     if (!$mail->send()) {
         echo 'The message could not be sent.';
         echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
@@ -555,6 +556,7 @@ function send_reset_email($username, $user_email)
         echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
         echo '<br ><br ><input type="submit" name="Submit" value="Click Here to Create NEW Password"></td>';
         echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+        echo '</form>';
 
         $reset_log[$email]['time'] = time();
         if (isset($reset_log[$email]['count'])) {
@@ -564,6 +566,7 @@ function send_reset_email($username, $user_email)
         }
         file_put_contents($reset_file, serialize($reset_log));
     }
+    echo '</center>';
 }
 
 function create_account($username, $password, $user_email)
@@ -578,7 +581,8 @@ function create_account($username, $password, $user_email)
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
-
+    
+    echo '<center>';
     echo 'Create account: ' . $_POST['username'] . '<br><br >';
     /* Generate email */
     # only check for no verification if the field has been populated
@@ -661,6 +665,7 @@ function create_account($username, $password, $user_email)
     echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
     echo '<input type="submit" name="Submit" value="Click Here to Create"></td>';
     echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+    echo '</center>';
 }
 
 function create_new($username, $password, $user_email)
@@ -726,8 +731,10 @@ function create_new($username, $password, $user_email)
     if (file_exists(sys_get_temp_dir() . "/" . $username)) {
         unlink(sys_get_temp_dir() . "/" . $username);
     }
+    echo '<center>';
     echo "User:" . $username . " Created\r\n";
     echo '<br ><a href="' . $CONFIG['default_content'] . '">Back</a>';
+    echo '</center>';
 }
 
 function make_key($username)

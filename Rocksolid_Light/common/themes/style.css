@@ -597,6 +597,16 @@ textarea.configuration {
 	font-size: 0.4em;
 }
 
+.faq_titles {
+	color: var(--color-text);
+	font-size: 0.8em;
+}
+
+.faq_text {
+	color: var(--color-text);
+	font-size: 0.6em;
+}
+
 /* Grouplist */
 
 .grouplist_table {
@@ -612,11 +622,11 @@ textarea.configuration {
 	font-weight: bold;
     font-style: italic;
 	text-align: center;
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
 .grouplist_title_section_name {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	padding-left: 10px;
@@ -624,7 +634,7 @@ textarea.configuration {
 }
 
 .grouplist_title_newsgroup_name {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	padding-left: 10px;
@@ -632,7 +642,7 @@ textarea.configuration {
 }
 
 .grouplist_title_newsgroup_desc {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	padding-left: 10px;
@@ -640,7 +650,7 @@ textarea.configuration {
 }
 
 .grouplist_title_newsgroup_artnum {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	padding-left: 10px;
@@ -648,7 +658,7 @@ textarea.configuration {
 }
 
 .grouplist_row_section_name {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	text-align: center;
@@ -657,7 +667,7 @@ textarea.configuration {
 }
 
 .grouplist_row_newsgroup_name {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	text-align: left;
@@ -666,7 +676,7 @@ textarea.configuration {
 }
 
 .grouplist_row_newsgroup_desc {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	text-align: left;
@@ -675,7 +685,7 @@ textarea.configuration {
 }
 
 .grouplist_row_newsgroup_artnum {
-	font-size: 1.2em;
+	font-size: 0.7em;
 	border: 1px solid var(--color-text);
     border-collapse: collapse;
 	text-align: left;

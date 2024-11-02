@@ -1,4 +1,5 @@
 <?php 
+echo '<!DOCTYPE html>';
 echo '<html>';
 echo '<head>';
 echo '<title>'.htmlspecialchars($title).'</title>';
@@ -13,5 +14,4 @@ if (file_exists('mods/header.php')) {
 } else {
   include "header.php";
 }
-
 echo '<hr>';
