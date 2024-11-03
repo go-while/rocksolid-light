@@ -592,8 +592,10 @@ function groups_show($gruppen)
     }
     $c = count($gruppen);
     $acttype = "keins";
-    echo '<table class="np_groups_table" cellspacing="0"><tr class="np_thread_head"><td width="45px" class="np_thread_head">';
-    echo 'Latest</td><td style="text-align: center;">Newsgroup</td><td width="8%" class="np_thread_head">Messages</td><td width="20%" class="np_thread_head" >Last Message</td></tr>';
+    echo '<table class="np_groups_table"><tr class="np_thread_head"><td class="grouplist_thread_head_latest">Latest</td>';
+    echo '<td class="grouplist_thread_head_subject">Newsgroup</td>';
+    echo '<td class="grouplist_thread_head_messages">Messages</td>';
+    echo '<td class="grouplist_thread_head_lastarticle" >Last Message</td></tr>';
     $subs = array();
     $nonsubs = array();
     $user = null;
@@ -746,23 +748,24 @@ function groups_show($gruppen)
             if ($new) {
                 echo '</i></b>';
             }
+            $groupdisplay .= '</span>';
             if ($g->description != "-") {
-                $groupdisplay .= '</span><br><p class="np_group_desc">' . $g->description . '</p>';
+                $groupdisplay .= '<br><p class="np_group_desc">' . $g->description . '</p>';
             }
             if (isset($userdata[$g->name])) {
-                $groupdisplay .= '</span><p class="np_group_user_tools">';
+                $groupdisplay .= '<p class="np_group_user_tools">';
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
                     $groupdisplay .= '<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
                 }
-                $groupdisplay .= '</p';
+                $groupdisplay .= '</p>';
             } else {
                 if (isset($user_config['hide_unsub']) && $user_config['hide_unsub'] == 'hide') {
                     continue;
                 } else {
-                    $groupdisplay .= '</span><p class="np_group_user_tools">';
+                    $groupdisplay .= '<p class="np_group_user_tools">';
                     $groupdisplay .= '<a class="np_group_user_tools" href="index.php?subscribe=' . urlencode($g->name) . '">(subscribe)</a>';
-                    $groupdisplay .= '</p';
+                    $groupdisplay .= '</p>';
                 }
             }
             /* Display article count */
@@ -780,7 +783,7 @@ function groups_show($gruppen)
             $groupdisplay .= '</small>';
 
             /* Display latest article info */
-            $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="np_last_posted_date">';
+            $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="grouplist_td_thread_start_author_info">';
 
             if ($found == 1) {
                 $fromline = address_decode(headerDecode($lastarticleinfo['name']), "nowhere");
@@ -802,9 +805,6 @@ function groups_show($gruppen)
                 }
                 $lastarticleinfo['name'] = $poster_name;
 
-                $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
-                $groupdisplay .= '<table><tr><td>';
-
                 $block = false;
                 foreach ($blocked_user_config as $key => $value) {
                     $blockme = '/' . addslashes($key) . '/';
@@ -813,17 +813,24 @@ function groups_show($gruppen)
                         break;
                     }
                 }
-                $groupdisplay .= '<font class="np_last_posted_date">by: ';
+
+                $groupdisplay .= '<span class="grouplist_thread_start_author_info">';
                 if ($block) {
+                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
+                    $groupdisplay .= '<br>by: ';
                     $groupdisplay .= "(blocked user)";
                 } else {
+                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $groupdisplay .= '<a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date'])) . '</a>';
+                    $groupdisplay .= '<br>by: ';
                     $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);
                 }
-
-                $groupdisplay .= '</td></tr></table>';
+                $groupdisplay .= '</span>';
             } else {
                 unset($lastarticleinfo);
             }
+            $groupdisplay .= '</div>';
         }
         if (isset($groupdisplay)) {
             $groupdisplay .= "\n";
@@ -1327,7 +1334,6 @@ function verify_logged_in($name)
     //      return false;
     // }
 
-
     // For checking session expire stuff
     if (!isset($_SESSION['start_stamp'])) {
         $_SESSION['start_stamp'] = time();
@@ -1741,20 +1747,27 @@ function format_log_date()
     return date('M d H:i:s');
 }
 
-function create_name_link($name, $data = null)
+function create_name_link($name, $data = null, $truncate = true)
 {
     global $CONFIG;
     $name = preg_replace('/\"/', '', $name);
+
+    if ($truncate) {
+        $trimlength = 20;
+    } else {
+        $trimlength = null;
+    }
+
     if ($data) {
         $data = urlencode(base64_encode($data));
     }
     if ((strpos($name, '...@') !== false && (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true)) && ! $data) {
-        $return = '<span class="visited">' . substr(htmlspecialchars($name), 0, 20) . '</span>';
+        $return = '<span class="create_name_link">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span>';
     } else {
         if (isset($_COOKIE['mail_name'])) {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . $name . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, 20) . '</span></a>';
+            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         } else {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . $name . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, 20) . '</span></a>';
+            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         }
     }
     return ($return);
@@ -3072,6 +3085,29 @@ function send_admin_message($admin, $from, $subject, $message)
 
     $dbh = null;
     return true;
+}
+
+function check_remote_for_msgid($msgid)
+{
+    global $logfile, $debug_log, $CONFIG;
+    if ($ns = nntp2_open()) {
+        file_put_contents($debug_log, "\n" . format_log_date() . ' Searching ' . $CONFIG['remote_server'] . ':' . $CONFIG['remote_port'] . ' for ' . $msgid, FILE_APPEND);
+        fputs($ns, "head " . $msgid . "\r\n");
+        $response = line_read($ns);
+        if (strcmp(substr($response, 0, 3), "223") != 0) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " NOT Found " . $msgid . ' on ' . $CONFIG['remote_server'] . ':' . $CONFIG['remote_port'] . '', FILE_APPEND);
+            $return = false;
+        } else {
+            file_put_contents($debug_log, "\n" . format_log_date() . " Found " . $msgid . ' on ' . $CONFIG['remote_server'] . ':' . $CONFIG['remote_port'] . '', FILE_APPEND);
+            $return = true;
+        }
+        fputs($ns, "quit\r\n");
+        nntp_close($ns);
+    } else {
+        file_put_contents($debug_log, "\n" . format_log_date() . ' Cannot connect to ' . $CONFIG['remote_server'] . ':' . $CONFIG['remote_port'] . ' server', FILE_APPEND);
+        $return = false;
+    }
+    return ($return);
 }
 
 function delete_message($messageid, $group = null, $overview_dbh = null)

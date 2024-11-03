@@ -187,6 +187,7 @@ function get_articles($ns, $group)
     global $enable_rslight, $rslight_gpg, $config_name, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG;
     global $remote_groups_array_file, $OVERRIDES, $user_ban_file, $maxarticles_per_run, $maxfirstrequest, $workpath, $path;
     global $file_groups, $logdir, $config_name, $spamlog, $logfile, $debug_log;
+    global $OVERRIDES;
 
     if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
@@ -312,6 +313,7 @@ function get_articles($ns, $group)
             $ref = 0;
             $sub = 0;
             $ng = 0;
+            $supersedes = false;
             $banned = false;
             $integrity = false;
             $is_header = 1;
@@ -342,6 +344,10 @@ function get_articles($ns, $group)
                     if (stripos($response, "Injection-Date: ") === 0) {
                         $finddate = explode(': ', $response, 2);
                         $injectiondate = strtotime($finddate[1]);
+                    }
+                    if (stripos($response, "Supersedes: ") === 0) {
+                        $supersedes = explode(': ', $response, 2);
+                        $supersedes = $supersedes[1];
                     }
                     // Get overview data
                     if (stripos($response, "Message-ID: ") === 0) {
@@ -563,12 +569,20 @@ function get_articles($ns, $group)
                     break;
                 }
             }
+            if($supersedes !== false) {
+                if(isset($OVERRIDES['enable_supersedes_support']) && $OVERRIDES['enable_supersedes_support'] == true) {
+                    file_put_contents($debug_log, "\n" . format_log_date() . " Found Supersedes: " . $mid[1] . " for: " . $supersedes, FILE_APPEND);
+                    if(!check_remote_for_msgid($supersedes)) {
+                        file_put_contents($debug_log, "\n" . format_log_date() . " Will delete: " . $supersedes, FILE_APPEND);
+                   //     delete_message($supersedes);
+                    }
+                }
+            }
         }
     }
     // END GET INDIVIDUAL ARTICLE
-    //$article--;
-    // $local--;
-    // Update title
+
+    // Update group title
     if (! is_file($workpath . $group . "-title")) {
         fputs($ns, "XGTITLE " . $group . "\r\n");
         $response = line_read($ns);
