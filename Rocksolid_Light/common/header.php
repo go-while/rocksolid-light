@@ -43,6 +43,7 @@ if (isset($_SESSION['theme'])) {
     $do_theme = preg_replace("/ /", "%20", $default_theme);
 }
 echo '<link rel="stylesheet" type="text/css" href="' . $rootdir . '/common/themes/' . $do_theme . '/style.css">';
+echo '<link rel="icon" type="image/x-icon" href="/common/images/favicon.ico">';
 
 if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $do_theme . '/images/rocksolidlight.png')) {
     $header_image = $rootdir . '/common/themes/' . $do_theme . '/images/rocksolidlight.png';
