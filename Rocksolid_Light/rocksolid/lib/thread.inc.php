@@ -712,9 +712,9 @@ function thread_format_subject($c, $group, $highlightids = false)
         } else {
             $started = $fromoutput[0];
         }
-        $return .= '<div id="datebox">';
-        $return .= '<p class=np_posted_date_left>By: ' . create_name_link($started, $c->from) . ' on <i>' . date("D, j M Y", $newdate) . '</i></p>';
-        $return .= '</div>';
+        $return .= '<span class="thread_datebox">';
+        $return .= '<span class="thread_start_author_info">By: ' . create_name_link($started, $c->from) . ' on <i>' . date("D, j M Y", $newdate) . '</i></span>';
+        $return .= '</span>';
     }
     return ($return);
 }
@@ -851,11 +851,11 @@ function thread_format_lastmessage($c, $group = '')
     }
     if ($ovfound == 1) {
         $url = 'article-flat.php?id=' . $found['number'] . '&group=' . urlencode($group) . '#' . $found['number'];
-        $return = '<p class=np_posted_date_left><a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</a>';
+        $return = '<span class=np_posted_date_left><a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</a></span>';
     } else {
-        $return = '<p class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</p>';
+        $return = '<span class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</span>';
     }
-    $return .= '<p class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from) . '</p>';
+    $return .= '<br><span class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from) . '</span>';
     return ($return);
 }
 
@@ -925,10 +925,10 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                         $output .= '<td><span class="np_thread_line_text">' . thread_format_date($c) . ' </span></td>';
                     }
                     if ($thread_show["subject"]) {
-                        $output .= '<td nowrap="nowrap">' . '<span class="np_thread_line_text">' . thread_format_subject($c, $group, $highlight) . '</span></td>';
+                        $output .= '<td class="np_thread_line_text"">' . '<span class="np_thread_line_text">' . thread_format_subject($c, $group, $highlight) . '</span></td>';
                     }
                     if ($thread_show["author"]) {
-                        $output .= '<td></td>' . '<td nowrap="nowrap">' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></td>';
+                        $output .= '<td></td>' . '<td class="np_thread_line_text">' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></td>';
                     }
                     $output .= "</tr>\n";
                     break;
@@ -954,12 +954,12 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                     $output .= '</span></tt></nobr><br>';
                     break;
                 case 5: // thread, graphic
-                    $output .= '<table cellspacing="0"><tr>';
+                    $output .= '<table><tr>';
                     if ($thread_show["date"])
-                        $output .= '<td nowrap="nowrap">' . '<span class="np_thread_line_text">' . thread_format_date($c) . ' </span></td>';
+                        $output .= '<td class="np_thread_line_text">' . '<span class="np_thread_line_text">' . thread_format_date($c) . ' </span></td>';
                     $output .= '<td><span class="np_thread_line_text">' . thread_show_treegraphic($newtree) . '</span></td>';
                     if ($thread_show["subject"])
-                        $output .= '<td nowrap="nowrap">' . '<span class="np_thread_line_text">&nbsp;' . thread_format_subject($c, $group, $highlight) . " ";
+                        $output .= '<td class="np_thread_line_text">' . '<span class="np_thread_line_text">&nbsp;' . thread_format_subject($c, $group, $highlight) . " ";
                     if ($thread_show["author"])
                         $output .= '(' . thread_format_author($c, $group, $lastmessage) . ')</span></td>';
                     $output .= "</tr></table>";
@@ -967,21 +967,21 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                 case 6: // thread, table
                     $output .= "<tr>";
                     if ($thread_show["date"])
-                        $output .= '<td nowrap="nowrap"><tt>' . '<span class="np_thread_line_text">' . thread_format_date($c) . ' </span></tt></td>';
-                    $output .= '<td nowrap="nowrap"><tt>' . '<span class="np_thread_line_text">' . formatTreeText($newtree) . " ";
+                        $output .= '<td class="np_thread_line_text"><tt>' . '<span class="np_thread_line_text">' . thread_format_date($c) . ' </span></tt></td>';
+                    $output .= '<td class="np_thread_line_text"><tt>' . '<span class="np_thread_line_text">' . formatTreeText($newtree) . " ";
                     if ($thread_show["subject"]) {
                         $output .= thread_format_subject($c, $group, $highlight) . "</span></tt></td>";
                         $output .= "<td></td>";
                     }
                     if ($thread_show["author"])
-                        $output .= '<td nowrap="nowrap"><tt>' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></tt></td>';
+                        $output .= '<td class="np_thread_line_text"><tt>' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></tt></td>';
                     $output .= "</tr>";
                     break;
                 case 7: // thread, table, graphic
                     $output .= '<tr class="' . $lineclass;
                     $output .= '">';
                     if ($thread_show["date"])
-                        $output .= '<td class="' . $lineclass . '" nowrap="nowrap">' . '<span class="np_thread_line_text">' . thread_format_date($c) . " " . '</span></td>';
+                        $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_text">' . thread_format_date($c) . " " . '</span></td>';
                     $output .= '<td class="' . $lineclass . '">';
                     $output .= thread_show_treegraphic($newtree);
                     if ($thread_show["subject"]) {
@@ -990,7 +990,7 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                     $output .= '</td>';
                     if ($thread_show["threadsize"]) {
                         $replies_count = $c->threadsize - 1;
-                        $output .= '<td class="' . $lineclass . '" nowrap="nowrap">' . $replies_count . '</td>';
+                        $output .= '<td class="' . $lineclass . '">' . $replies_count . '</td>';
                     }
                     if ($thread_show["author"])
                         $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></td>';
@@ -1026,19 +1026,19 @@ function thread_show_head($lastmessage = 1)
     global $thread_show, $thread_showTable;
     global $text_thread, $thread_treestyle;
     if (($thread_treestyle == 2) || ($thread_treestyle == 6) || ($thread_treestyle == 7)) {
-        echo '<table cellspacing="0" class="np_thread_table">';
+        echo '<table class="np_thread_table">';
         echo '<tr class="np_thread_head">' . "\n";
         if ($thread_show["date"])
-            echo '<td width="1%" class="np_thread_head">' . $text_thread["date"] . "&nbsp;</td>";
+            echo '<td class="np_thread_head_date">' . $text_thread["date"] . "&nbsp;</td>";
         if ($thread_show["subject"])
             echo '<td class="np_thread_head">' . $text_thread["subject"] . "</td>";
         if ($thread_show["threadsize"])
-            echo '<td width="70em" class="np_thread_head">' . $text_thread["threadsize"] . "</td>";
+            echo '<td class="np_thread_head_threadsize">' . $text_thread["threadsize"] . "</td>";
         if ($thread_show["author"]) {
             if ($lastmessage == 1) {
-                echo '<td width="15%" class="np_thread_head">' . $text_thread["lastmessage"] . "</td>\n";
+                echo '<td class="np_thread_head_lastmessage">' . $text_thread["lastmessage"] . "</td>\n";
             } else {
-                echo '<td width="15%" class="np_thread_head">' . $text_thread["author"] . "</td>\n";
+                echo '<td class="np_thread_head_author">' . $text_thread["author"] . "</td>\n";
             }
         }
         echo "</tr>\n";

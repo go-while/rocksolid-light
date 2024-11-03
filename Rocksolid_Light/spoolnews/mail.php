@@ -54,13 +54,13 @@ if (!$logged_in) {
     }
 }
 
-echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+echo '<table class="np_buttonbar"><tr>';
 // New Message button
 if ($_POST['command'] !== 'Send') {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
-    echo '<input name="command" type="hidden" id="command" value="Send" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
+    echo '<input name="command" type="hidden" value="Send">';
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo '<button class="np_button_link" type="submit">New Message</button>';
     echo '</form>';
     echo '</td>';
@@ -69,30 +69,31 @@ if ($_POST['command'] !== 'Send') {
 if (isset($_POST['command']) && $_POST['command'] == 'Message') {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
-    echo '<input name="command" type="hidden" id="command" value="Delete" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-    echo "<input type='hidden' name='id' value='" . $_POST['id'] . "' />";
+    echo '<input name="command" type="hidden" value="Delete">';
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='id' value='" . $_POST['id'] . "' >";
     echo '<button class="np_button_link" type="submit">Delete This Message</button>';
     echo '</form>';
     echo '</td>';
 }
-echo '<td width=100%></td></tr></table>';
+echo '<td</td></tr></table>';
 
 if ($logged_in !== true) {
-    echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-    // echo '<form name="form1" method="post" action="mail.php" enctype="multipart/form-data">';
-    echo '<tr><td><strong>Please Login<br /></strong></td></tr>';
+    echo '<table class="mail_table_login">';
+    echo '<tr><td><strong>Please Login<br ></strong></td><td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
-    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
-    echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
-    echo '<td><input name="source" type="hidden" id="source" value="Mail:mail.php" readonly="readonly"></td>';
+    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password">';
+    echo '<input name="command" type="hidden" value="Login">';
+    echo '<input name="source" type="hidden" id="source" value="Mail:mail.php">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
-    echo '<td>&nbsp;</td>';
+    echo '</td>';
+
+    echo '</tr><tr><td></td>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
-    echo '</form>';
     echo '</table>';
+    echo '</form>';
     exit(0);
 }
 
@@ -148,21 +149,21 @@ if (isset($_POST['command']) && $_POST['command'] == 'Message') {
         if (($row['mail_from'] != $user) && ($row['rcpt_to'] != $user)) {
             continue;
         }
-        $body = rtrim($row['message']) . '<br /><br />';
+        $body = rtrim($row['message']) . '<br ><br >';
         echo '<div class="np_article_header">';
-        echo '<b>Subject:</b> ' . $row['subject'] . '<br />';
-        echo '<b>From:</b> ' . $row['mail_from'] . '<br />';
-        echo '<b>To:</b> ' . $row['rcpt_to'] . '<br />';
-        echo '<b>Date:</b> ' . $newdate . '<br />';
+        echo '<b>Subject:</b> ' . $row['subject'] . '<br >';
+        echo '<b>From:</b> ' . $row['mail_from'] . '<br >';
+        echo '<b>To:</b> ' . $row['rcpt_to'] . '<br >';
+        echo '<b>Date:</b> ' . $newdate . '<br >';
         echo '</div>';
 
         echo '<div class="np_article_body">';
         echo $body;
         echo '<form action="mail.php" method="post">';
         echo '<button class="np_button_link" type="submit">Reply</button>';
-        echo "<input type='hidden' name='id' value='" . $row['id'] . "' />";
-        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-        echo '<input name="command" type="hidden" id="command" value="Send" readonly="readonly">';
+        echo "<input type='hidden' name='id' value='" . $row['id'] . "' >";
+        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+        echo '<input name="command" type="hidden" value="Send">';
         echo '</form>';
         echo '</div>';
         if ($row['mail_from'] == $user) {
@@ -311,16 +312,16 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo '<h3>Send Message:</h3>';
     echo "<form action='mail.php' method='POST'>";
     echo '<table><tbody><tr>';
-    echo "<td>To: </td><td><input type='text' name='to' value='" . $mail_to . "'/></td>";
+    echo "<td>To: </td><td><input type='text' name='to' value='" . $mail_to . "'></td>";
     echo '</tr><tr>';
-    echo "<td>Subject: </td><td><input type='text' name='subject' value='" . htmlentities($subject) . "'/></td>";
+    echo "<td>Subject: </td><td><input type='text' name='subject' value='" . htmlentities($subject) . "'></td>";
     echo '</tr></table>';
 
     echo '<div class="np_post_body">';
     echo '<table><tr>';
 
     echo '<td><b>' . $text_post["message"] . '</b>';
-    echo '&nbsp;&nbsp;<font size="2em">(This is an interBBS or localBBS Mail Message. This is not Email)</font><br />';
+    echo '&nbsp;&nbsp;<font size="2em">(This is an interBBS or localBBS Mail Message. This is not Email)</font><br >';
 
 
     echo '<textarea cols="' . $wrap_width . '"';
@@ -330,9 +331,9 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo '</td></table></div><table><tbody><tr>';
 
     echo '</tr><tr>';
-    echo "<input type='hidden' name='from' value='" . $user . "' />";
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-    echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' /></td>";
+    echo "<input type='hidden' name='from' value='" . $user . "' >";
+    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' ></td>";
     echo '</tr></tbody></table></form>';
 }
 
@@ -345,7 +346,7 @@ function view_mailbox($user)
     $database = $spooldir . '/mail.db3';
     $dbh = mail_db_open($database);
     echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
-    echo '<table cellspacing="0" width="100%" class="np_results_table">';
+    echo '<table class="np_results_table">';
     $query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
     $query->execute([
         'mail_from' => $user
@@ -382,14 +383,14 @@ function view_mailbox($user)
         unset($ts);
         echo '<form action="mail.php" method="post">';
         echo '<button class="' . $button_link . '" type="submit">' . $row["subject"] . '</button>';
-        echo "<input type='hidden' name='id' value='" . $row['id'] . "' />";
-        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' />";
-        echo '<input name="command" type="hidden" id="command" value="Message" readonly="readonly">';
+        echo "<input type='hidden' name='id' value='" . $row['id'] . "' >";
+        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+        echo '<input name="command" type="hidden" value="Message">';
         echo '</form>';
         echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
         $i++;
     }
-    echo '</tbody></table><br />';
+    echo '</tbody></table><br >';
     include "tail.inc";
 }
 

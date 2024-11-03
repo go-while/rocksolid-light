@@ -67,9 +67,9 @@ function count_users()
     }
     if($count_bots) {
         $throttled_users = 'throttled';
-        $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online (including ' . $bot_count . ' ' . $bot_users . ' and ' . $throttled_count . ' ' . $throttled_users . ')<br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+        $session_info = 'There ' . $are . ' currently ' . $count . ' ' . $users . ' online (including ' . $bot_count . ' ' . $bot_users . ' and ' . $throttled_count . ' ' . $throttled_users . ')<br>Total messages: ' . number_format(count_articles()) . "\r\n";
     } else {
-        $session_info = '<h1 class="np_thread_headline">There ' . $are . ' currently ' . $count . ' ' . $users . ' online <br />Total messages: ' . number_format(count_articles()) . '</h1>' . "\r\n";
+        $session_info = 'There ' . $are . ' currently ' . $count . ' ' . $users . ' online <br>Total messages: ' . number_format(count_articles()) . "\r\n";
     }
     file_put_contents($session_save_file, $session_info);
 }

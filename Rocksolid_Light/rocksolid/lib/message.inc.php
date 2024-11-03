@@ -396,16 +396,34 @@ function show_header($head, $group, $local_poster = false)
 {
     global $article_show, $text_header, $file_article, $attachment_show;
     global $file_attachment, $anonym_address, $CONFIG, $OVERRIDES;
+    global $sitelink, $config_name;
 
-    if ($OVERRIDES['short_headers'] == true) {
+    if (isset($OVERRIDES['short_headers']) && $OVERRIDES['short_headers'] == true) {
         show_header_short($head, $group, $local_poster);
         return;
     }
 
+    // Copy MID to clipboard (requires js)
+    echo '<script>';
+    echo 'function CopyToClipboard(id)';
+    echo '{';
+    echo 'var r = document.createRange();';
+    echo 'r.selectNode(document.getElementById(id));';
+    echo 'window.getSelection().removeAllRanges();';
+    echo 'window.getSelection().addRange(r);';
+    echo "document.execCommand('copy');";
+    echo 'window.getSelection().removeAllRanges();';
+    echo '}';
+    echo '</script> ';
+
     echo '<div class="np_article_header">';
-    if ($article_show["Subject"])
+    if ($article_show["Subject"]) {
+        echo '<div class="plain_header_subject">';
         echo $text_header["subject"] . htmlspecialchars($head->subject) . "<br>";
+        echo '</div>';
+    }
     if ($article_show["From"]) {
+        echo '<div class="plain_header_from">';
         echo $text_header["from"];
         if ($head->from == $anonym_address) {
             // this is the anonymous address, so only show the name
@@ -435,7 +453,7 @@ function show_header($head, $group, $local_poster = false)
                 echo '<i>';
             }
             if ($head->name != "") {
-                echo create_name_link($head->name, $head->from);
+                echo create_name_link($head->name, $head->from, false);
             } else {
                 if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
                     echo truncate_email($head->from);
@@ -449,37 +467,56 @@ function show_header($head, $group, $local_poster = false)
             echo '</span>';
         }
         echo "<br>";
+        echo '</div>';
     }
-    if ($article_show["Newsgroups"])
-        echo $text_header["newsgroups"] . htmlspecialchars(str_replace(',', ', ', $head->newsgroups)) . "<br>\n";
-    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != ""))
-        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
-    if ((isset($head->organization)) && ($article_show["Organization"]) && ($head->organization != ""))
-        echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
     if ($article_show["Date"]) {
+        echo '<div class="plain_header_date">';
         // Try to use client timezone else default to UTC
-        $displaydate = get_date_for_client_timezone($head->date) . "<br />";
-        echo $displaydate;
+        $displaydate = get_date_for_client_timezone($head->date) . "<br>";
+        echo $text_header["date"] . $displaydate;
+        echo '</div>';
+    }
+    if ($article_show["Newsgroups"]) {
+        echo '<div class="plain_header_newsgroups">';
+        echo $text_header["newsgroups"] . htmlspecialchars(str_replace(',', ', ', $head->newsgroups)) . "<br>\n";
+        echo '</div>';
+    }
+    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo '<div class="plain_header_followup-to">';
+        echo $text_header["followup"] . htmlspecialchars($head->followup) . "<br>\n";
+        echo '</div>';
+    }
+    if ((isset($head->organization)) && ($article_show["Organization"]) && ($head->organization != "")) {
+        echo '<div class="plain_header_organization">';
+        echo $text_header["organization"] . html_parse(htmlspecialchars($head->organization)) . "<br>\n";
+        echo '</div>';
     }
     if ($article_show["Message-ID"]) {
+        echo '<div class="plain_header_message-id">';
         echo ' ' . $text_header["message-id"] . htmlspecialchars($head->id) . "<br>\n";
+        echo '</div>';
     }
     if (($article_show["References"]) && (isset($head->references[0]))) {
+        echo '<div class="plain_header_references">';
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
             echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
         echo "<br>";
+        echo '</div>';
     }
     if (isset($head->user_agent)) {
+        echo '<div class="plain_header_user-agent">';
         if ((isset($article_show["User-Agent"])) && ($article_show["User-Agent"])) {
             echo $text_header["user-agent"] . htmlspecialchars($head->user_agent) . "<br>\n";
         } else {
             echo "<!-- User-Agent: " . htmlspecialchars($head->user_agent) . " -->\n";
         }
+        echo '</div>';
     }
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
+        echo '<div class="plain_header_attachments">';
         echo $text_header["attachments"];
         for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
@@ -491,14 +528,36 @@ function show_header($head, $group, $local_poster = false)
             if ($i < count($head->content_type) - 1)
                 echo ', ';
         }
-    }
-    if ($article_show["trigger_headers"]) {
-        echo '<div>';
-        echo '<input type="checkbox" id="trigger_headers">';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
-        echo ' View all headers' . "<br>\n";
         echo '</div>';
     }
+
+    echo '<p id="' . $head->id . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo '<p id="' . $head->number . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+
+    echo '<form><span class="short_header_javascript_links">';
+    if ($article_show["trigger_headers"]) {
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
+        echo '<span class="display_headers_notice_short_header">show headers</span>';
+    }
+?>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . urlencode($head->id); ?>"
+        onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
+            mid</i></a>
+
+
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+        onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy article link to clipboard"><i>copy
+            link</i></a>
+<?php
+    echo '</span></form>';
+    echo '</div>';
     echo '</div>';
 }
 
@@ -508,12 +567,17 @@ function show_header_short($head, $group, $local_poster = false)
     global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
 
-    echo '<div class="np_article_header">';
-    echo '<b>';
+    // If Subject: is longer than this, place From: below Subject: in short short_header
+    $maxsubjectlength = 70;
 
-    echo '</b>';
+    if (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site)) {
+        $local_poster = true;
+    }
+
+    echo '<div class="np_article_header">';
+
     if ($head->name != "") {
-        $displayname = create_name_link($head->name, $head->from);
+        $displayname = create_name_link($head->name, $head->from, false);
     } else {
         if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
             $displayname = truncate_email($head->from);
@@ -521,14 +585,28 @@ function show_header_short($head, $group, $local_poster = false)
             $displayname = htmlspecialchars($head->from);
         }
     }
-    if ($article_show["Subject"]) {
-        echo htmlspecialchars($head->subject) . " (" . $displayname . ")<br>";
+
+    if ($local_poster) {
+       $displayname = '<span class="short_header_from_local_poster">' . $displayname . '</span>';
+    }
+
+    // Where to show From in short_headers
+    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true && strlen($head->subject) < $maxsubjectlength) {
+        echo '<span class="short_header_subject">';
+        echo htmlspecialchars($head->subject);
+        echo '</span><span class="short_header_from_with_subject">';
+        echo '&nbsp;&nbsp;</span>(<span class="short_header_from_with_subject"><b>From: </b></span>' . $displayname . ')<br>';
+    } else {
+        echo '<div class="short_header_subject">';
+        echo htmlspecialchars($head->subject) . "<br>";
+        echo '</div>';
+        echo '<div class="short_header_from">';
+        echo "<b>From: </b>" . $displayname;
+        echo '</div>';
     }
 
     // Try to use client timezone else default to UTC
     $displaydate = get_date_for_client_timezone($head->date);
-
-    echo '<div class=np_ob_posted_date>';
 
     // Copy MID to clipboard (requires js)
     echo '<script>';
@@ -543,62 +621,70 @@ function show_header_short($head, $group, $local_poster = false)
     echo '}';
     echo '</script> ';
 
+    echo '<span class="short_header_date">';
     echo '<b>Date: </b>' . $displaydate;
+    echo '</span>';
 
+    echo '<span class="short_header_newsgroups">';
     echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
     // echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
-        if ($s = get_section_by_group($onegroup)) {
+        if (get_section_by_group($onegroup)) {
             echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
         } else {
             echo " " . $onegroup . " ";
         }
     }
-    echo "<br />";
+    echo '</span>';
 
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo '<div class="short_header_followup-to">';
         echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
+        echo '</div>';
     }
 
+    echo '<p id="' . $head->id . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo '<p id="' . $head->number . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+
+    echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
-        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers" title="Show headers" name="showheaders" value="showheaders"/>headers';
-        echo '<div class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</div>';
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
+        echo '<span class="display_headers_notice_short_header">show headers</span>';
     }
-
 ?>
-    <p id="<?php echo $head->id . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo htmlspecialchars($head->id); ?></p>
     &nbsp;
-    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->id; ?>"
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
 
-    <p id="<?php echo $head->number . 'copy'; ?>"
-        style="position: absolute; z-index: -9999;"><?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?></p>
+
     &nbsp;
     <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
         onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
 <?php
-    echo '</div>';
-    echo '<div class=np_ob_posted_date>';
+    echo '</span></form>';
+
     // Display References in short headers if enabled in overrides.inc.php
     if ((isset($OVERRIDES['short_header_references'])) && ($OVERRIDES['short_header_references'] == true) && (isset($head->references[0]))) {
-
+        echo '<div class="short_header_references">';
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
             echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
-        //  echo "</div>";
+        echo '</div>';
     }
 
     if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
-        //   echo '<div class=np_ob_posted_date>';
+        echo '<div class="short_header_attachments">';
         echo $text_header["attachments"];
         for ($i = 1; $i < count($head->content_type); $i++) {
             if (! strcmp($head->content_type[$i], "text/html")) {
@@ -610,11 +696,11 @@ function show_header_short($head, $group, $local_poster = false)
             if ($i < count($head->content_type) - 1)
                 echo ', ';
         }
-        //  echo '</div>';
+        echo '</div>';
     }
-    echo '&nbsp;</div>';
-    echo '</p>';
     echo '</div>';
+  //  echo '</p>';
+  //  echo '</div>';
 }
 
 function copy_messageid()
@@ -672,10 +758,10 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
             if ($name != "") {
                 $return .= ' (' . htmlspecialchars($name) . ')';
             }
-            $return .= '<br />';
+            $return .= '<br>';
             continue;
         }
-        $return .= mb_decode_mimeheader(htmlspecialchars($line)) . '<br />';
+        $return .= mb_decode_mimeheader(htmlspecialchars($line)) . '<br>';
     }
     if ($getface) {
         if (isset($sendface)) {
@@ -744,13 +830,13 @@ function text2html($text)
     return $text;
 }
 
-function nl2p($string, $line_breaks = true, $xml = true)
+function nl2p($string, $line_breaks = true, $xml = false)
 {
     $string = str_replace(array(
         '<p>',
         '</p>',
         '<br>',
-        '<br />'
+        '<br>'
     ), '', $string);
 
     // It is conceivable that people might still want single line-breaks
@@ -862,7 +948,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             if (($face = display_full_headers($head->number, $group, $head->name, $head->from, true)) && ($OVERRIDES['disable_xface'] != true)) {
                 $pngfile = '../tmp/face-' . hash('ripemd160', $face);
                 if (file_exists($pngfile)) {
-                    echo '<img align="right" src="' . $pngfile . '">';
+                    echo '<img align="right" src="' . $pngfile . '" alt="x-face">';
                 } else {
                     $facefile = tempnam('../tmp', 'face-');
                     file_put_contents($facefile, $face);
@@ -886,7 +972,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             if ((isset($article_data->header->rslight_to)) && (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site))) {
                 echo 'This is an encrypted message for <b>' . $article_data->header->rslight_to . ' </b>';
                 echo '<form action="decrypt.php?id=' . $id . '&group=' . $group . '" method="post">';
-                echo '<p>Enter Password: <input type="password" name="decryptpass" />&nbsp;';
+                echo '<p>Enter Password: <input type="password" name="decryptpass" >&nbsp;';
                 echo '<input type="hidden" name="decryptuser" value="' . $article_data->header->rslight_to . '">';
                 echo '<input type="submit" value="Decrypt"></p>';
                 echo '</form>';
@@ -999,7 +1085,7 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
             $body = decode_textbody($body, $article_data->header->content_type_format[$attachment]);
             $depth = 0;
             echo '<div class="np_article_body">';
-            echo "(Copy text below to quote in reply)<br /><br />";
+            echo "(Copy text below to quote in reply)<br><br>";
             $currentlen = 0; // needed if $maxlen is set
             for ($i = 0; $i <= count($body) && (($currentlen < $maxlen) || ($maxlen == false)); $i++) {
                 // HTMLized Quotings instead of boring > ?

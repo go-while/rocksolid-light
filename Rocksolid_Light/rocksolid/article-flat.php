@@ -154,13 +154,12 @@ if ($message) {
         message_thread($message->header->id, $group, $thread, false);
     }
     echo '<br>';
-    echo '<a name="start"></a>';
     // navigation line
-    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    echo '<table id="start" cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
     echo '<form action="' . $file_thread . '">';
-    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '"/>';
+    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '">';
     echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
     echo '</form>';
     echo '</td>';
@@ -168,10 +167,11 @@ if ($message) {
     echo '<td class="np_pages" width="100%" align="center">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
+
     foreach ($pageids as $subid) {
         flush();
         $message = message_read($subid, 0, $group);
-        echo '<a name="' . $subid . '"> </a>';
+        echo '<p id="' . $subid . '"> </p>';
         $is_blocked = message_show($group, $subid, 0, $message, $articleflat_chars_per_articles);
         if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
             echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
@@ -186,7 +186,7 @@ if ($message) {
     // Article List button
     echo '<td>';
     echo '<form action="' . $file_thread . '">';
-    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '"/>';
+    echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '">';
     echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
     echo '</form>';
     echo '</td>';

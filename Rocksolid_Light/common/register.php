@@ -1,5 +1,6 @@
 <?php
 include "config.inc.php";
+include "../spoolnews/config.inc.php";
 include "../spoolnews/newsportal.php";
 include "alphabet.inc.php";
 
@@ -51,22 +52,21 @@ if (isset($_POST['user_email'])) {
     $user_email = $_POST['user_email'];
 }
 
-echo '<center>';
-
 // Nothing in $_POST. Show main form
 if (!isset($_POST['command'])) {
     if (isset($_COOKIE["ts_limit"])) {
-        echo "It appears you already have an active account<br/>";
-        echo "More than one account may not be created in 30 days<br/>";
-        echo '<br/><a href="/">Return to Home Page</a>';
+        echo "It appears you already have an active account<br>";
+        echo "More than one account may not be created in 30 days<br>";
+        echo '<br><a href="/">Return to Home Page</a>';
     } else {
         $captchaImage = '../tmp/captcha' . time() . '.png';
         $captchacode = prepareCaptcha($captchaImage);
-        echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
-        echo '<tr>';
+        echo '<center>';
         echo '<form name="form1" method="post" action="register.php">';
-        echo '<td><tr>';
+        echo '<table class="register_table_register_username">';
+        echo '<tr>';
         echo '<td><strong>Register Username </strong></td>';
+        echo '<td></td>';
         echo '</tr><tr>';
         echo '<td>Username: </td>';
         echo '<td><input name="username" type="text" id="username"value="' . $_POST['username'] . '" maxlength="30"></td>';
@@ -80,32 +80,32 @@ if (!isset($_POST['command'])) {
         echo '<td>Re-enter Password: </td>';
         echo '<td><input name="password2" type="password" id="password2"></td>';
         echo '</tr><tr>';
-        echo '<td><img src="' . $captchaImage . '" /></td>';
+        echo '<td><img src="' . $captchaImage . '" ></td>';
         echo '<td><input name="captcha" type="text" id="captcha"></td>';
-        echo '</tr><tr>';
-        echo '<td><input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '" readonly="readonly"></td>';
-        echo '<td><input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '" readonly="readonly"></td>';
-        echo '<td><input name="command" type="hidden" id="command" value="Create" readonly="readonly"></td>';
-        echo '<td><input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '"></td>';
-        echo '</tr><tr>';
-        echo '<td>&nbsp;</td>';
-        echo '<td><input type="submit" name="Submit" value="Create"></td></form>';
-        echo '</tr>';
-        echo '<tr>';
-
-        // RESET Password 
-        echo '<form name="resetpw" method="post" action="register.php">';
-        echo '<td><input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '" readonly="readonly"></td>';
-        echo '<td><input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '" readonly="readonly"></td>';
-        echo '<input name="command" type="hidden" id="command" value="ResetPW" readonly="readonly">';
-        echo '<td><input name="pwcommand" type="hidden" id="pwcommand" value="new" readonly="readonly"></td>';
+        echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '">';
+        echo '<input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '">';
+        echo '<input name="command" type="hidden" id="command" value="Create"">';
         echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
         echo '</tr><tr>';
-        echo '<td>&nbsp;';
-        echo '<input type="submit" name="Submit" value="I forgot my password"></td></form>';
-
+        echo '<td>&nbsp;</td>';
+        echo '<td><input type="submit" name="Submit" value="Create"></td>';
+        echo '<td></td></tr>';
+        echo '</table></form>';
+ 
+        // RESET Password 
+        echo '<form name="resetpw" method="post" action="register.php">';
+        echo '<table class="register_table_forgot_password_button">';
+        echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '">';
+        echo '<input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '">';
+        echo '<input name="command" type="hidden" id="command" value="ResetPW">';
+        echo '<input name="pwcommand" type="hidden" id="pwcommand" value="new"">';
+        echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
+        echo '<tr>';
+        echo '<td>';
+        echo '<input type="submit" name="Submit" value="I forgot my password"></td>';
         echo '</tr>';
-        echo '</table>';
+        echo '</table></form>';
+        echo '</center>';
     }
     echo '</body>';
     echo '</html>';
@@ -145,8 +145,6 @@ $password = $_POST['password'];
 $command = $_POST['command'];
 $user_email = $_POST['user_email'];
 
-echo '<center>';
-
 $thisusername = $username;
 $username = trim(strtolower($username));
 $userFilename = $workpath . $username;
@@ -156,26 +154,26 @@ $keyFilename = $keypath . $username;
 if (empty($_POST['username'])) {
     echo "Please enter a Username\r\n";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input type="submit" name="Submit" value="Back"></td></form>';
     exit(2);
 }
 
 if (strlen($clean_username) > 30) {
-    echo "The maximum username length is 30 characters. You entered " . $clean_username . " which is " . strlen($cleanusername) . " characters long.<br />";
+    echo "The maximum username length is 30 characters. You entered " . $clean_username . " which is " . strlen($cleanusername) . " characters long.<br >";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $clean_username . '" readonly="readonly" maxlength="22">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $clean_username . '" maxlength="22">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input type="submit" name="Submit" value="Please try again"></td></form>';
     exit(2);
 }
 
 if ($clean_username != $_POST['username']) {
-    echo "The username entered contains disallowed characters.<br />";
-    echo "Allowed characters:<br />letters, numbers, underscore, hypen, full stop<br /><br />";
+    echo "The username entered contains disallowed characters.<br >";
+    echo "Allowed characters:<br >letters, numbers, underscore, hypen, full stop<br ><br >";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $clean_username . '" readonly="readonly">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $clean_username . '">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input type="submit" name="Submit" value="Please try again"></td></form>';
     exit(2);
 }
@@ -183,7 +181,7 @@ if ($clean_username != $_POST['username']) {
 if (filter_var($user_email, FILTER_VALIDATE_EMAIL) == false) {
     echo "Email address format appears incorrect\n";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
     echo '<input type="submit" name="Submit" value="Back"></td></form>';
     exit(2);
 }
@@ -193,7 +191,7 @@ if ($CONFIG['verify_email']) {
     if ((checkdnsrr($user_domain[1] . '.', "MX") == false) && (checkdnsrr($user_domain[1] . '.', "A") == false)) {
         echo "Email domain appears to not exist\n";
         echo '<form name="return1" method="post" action="register.php">';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
         echo '<input type="submit" name="Submit" value="Back"></td></form>';
         exit(2);
     }
@@ -202,8 +200,8 @@ if ($CONFIG['verify_email']) {
 if (($_POST['password'] !== $_POST['password2']) || $_POST['password'] == '') {
     echo "Your passwords entered do not match\r\n";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input type="submit" name="Submit" value="Back"></td></form>';
     exit(2);
 }
@@ -211,8 +209,8 @@ if (($_POST['password'] !== $_POST['password2']) || $_POST['password'] == '') {
 if (getExpressionResult($_POST['captchacode']) != $_POST['captcha']) {
     echo "Incorrect captcha response\r\n";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input type="submit" name="Submit" value="Back"></td></form>';
     exit(2);
 }
@@ -226,7 +224,7 @@ foreach ($users as $user) {
     if (strcmp(get_user_config($user, 'mail'), $user_email) == 0) {
         echo "Email exists in database\r\n";
         echo '<form name="return1" method="post" action="register.php">';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
         echo '<input type="submit" name="Submit" value="Back"></td></form>';
         exit(2);
     }
@@ -238,7 +236,7 @@ if (file_exists($email_registry)) {
     if (isset($tried_email[$user_email])) {
         echo "Email address already used\r\n";
         echo '<form name="return1" method="post" action="register.php">';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
         echo '<input type="submit" name="Submit" value="Back"></td></form>';
         exit(2);
     }
@@ -246,7 +244,7 @@ if (file_exists($email_registry)) {
 if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email)) {
     echo "Email must be in the form of an email address\r\n";
     echo '<form name="return1" method="post" action="register.php">';
-    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
     echo '<input type="submit" name="Submit" value="Back"></td></form>';
     exit(2);
 }
@@ -255,7 +253,7 @@ if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-
 if (($userFileHandle = @fopen($userFilename, 'r')) || (get_config_value('aliases.conf', strtolower($thisusername)) !== false)) {
     if ($command == "Create") {
         echo "User:" . $thisusername . " Already Exists\r\n";
-        echo '<br /><a href="register.php">Back</a>';
+        echo '<br ><a href="register.php">Back</a>';
         exit(2);
     }
     $userFileInfo = fread($userFileHandle, filesize($userFilename));
@@ -341,11 +339,12 @@ function reset_password($username = null, $user_email = null)
     }
     $captchaImage = '../tmp/captcha' . time() . '.png';
     $captchacode = prepareCaptcha($captchaImage);
-    echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
-    echo '<tr>';
+    echo '<center>';
     echo '<form name="form1" method="post" action="register.php">';
-    echo '<td><tr>';
+    echo '<table class="register_table_forgot_password">';
+    echo '<tr>';
     echo '<td><strong>Reset Password </strong></td>';
+    echo '<td></td>';
     echo '</tr><tr>';
     echo '<td>Username: </td>';
     echo '<td><input name="username" type="text" id="username"value="' . $username . '" maxlength="30"></td>';
@@ -353,23 +352,20 @@ function reset_password($username = null, $user_email = null)
     echo '<td>Email: </td>';
     echo '<td><input name="user_email" type="text" id="user_email" value="' . $user_email . '"></td>';
     echo '</tr><tr>';
-    echo '</tr><tr>';
-    echo '<td><img src="' . $captchaImage . '" /></td>';
+    echo '<td><img src="' . $captchaImage . '" ></td>';
     echo '<td><input name="captcha" type="text" id="captcha"></td>';
-    echo '</tr><tr>';
-    echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '" readonly="readonly">';
-    echo '<input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '" readonly="readonly">';
-    echo '<input name="command" type="hidden" id="command" value="ResetPW" readonly="readonly">';
-    echo '<input name="pwcommand" type="hidden" id="pwcommand" value="process" readonly="readonly">';
+    echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '">';
+    echo '<input name="captchaimage" type="hidden" id="captchaimage" value="' . $captchaImage . '">';
+    echo '<input name="command" type="hidden" id="command" value="ResetPW">';
+    echo '<input name="pwcommand" type="hidden" id="pwcommand" value="process">';
     echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
     echo '</tr><tr>';
     echo '<td>&nbsp;</td>';
-    echo '<td><input type="submit" name="Submit" value="Reset my password"></td></form>';
-    echo '</tr>';
-    echo '<tr>';
-
+    echo '<td><input type="submit" name="Submit" value="Reset my password"></td>';
     echo '</tr>';
     echo '</table>';
+    echo '</form>';
+    echo '</center>';
     return true;
 }
 
@@ -381,13 +377,13 @@ function verify_reset_password($username, $user_email)
         if (strcmp(trim(strtolower($get_userval)), trim(strtolower($user_email))) != 0) {
             echo "Username or Email Not Found\r\n";
             echo '<form name="return1" method="post" action="register.php">';
-            echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-            echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+            echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+            echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
             echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-            echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $_POST['captchacode'] . '" readonly="readonly">';
-            echo '<input name="captchaimage" type="hidden" id="captcha" value="' . $_POST['captcha'] . '" readonly="readonly">';
-            echo '<td><input name="pwcommand" type="hidden" id="pwcommand" value="retry" readonly="readonly"></td>';
-            echo '<input name="command" type="hidden" id="command" value="ResetPW" readonly="readonly">';
+            echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $_POST['captchacode'] . '">';
+            echo '<input name="captchaimage" type="hidden" id="captcha" value="' . $_POST['captcha'] . '">';
+            echo '<td><input name="pwcommand" type="hidden" id="pwcommand" value="retry"></td>';
+            echo '<input name="command" type="hidden" id="command" value="ResetPW">';
             echo '<input type="submit" name="Submit" value="Back"></td></form>';
             file_put_contents($logfile, "\n" . logging_prefix() . " CHANGE PASSWORD (Username or Email Not Found) for: " . $username, FILE_APPEND);
             return false;
@@ -408,25 +404,25 @@ function accept_new_password($username, $password)
     $saved_code = file_get_contents(sys_get_temp_dir() . "/" . $username);
     $fail = false;
     if ((strcmp(trim($password), trim($password2))) !== 0) {
-        $fail = "Your passwords entered do not match<br />";
+        $fail = "Your passwords entered do not match<br >";
     }
     if ((strcmp(trim($code), trim($saved_code))) !== 0) {
-        $fail = "Code does not match. Try again.<br />";
+        $fail = "Code does not match. Try again.<br >";
     }
 
     if ($fail) {
         echo $fail;
         echo '<form name="create1" method="post" action="register.php">';
-        echo '<br />Enter CODE: ';
+        echo '<br >Enter CODE: ';
         echo '<input name="code" type="text" id="code" value="' . $code . '">&nbsp;';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-        echo '<br /><br />NEW Password: ';
+        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+        echo '<br ><br >NEW Password: ';
         echo '<input name="password" type="password" id="password" value="' . $password . '">';
-        echo '<br />Re-Enter Password: ';
+        echo '<br >Re-Enter Password: ';
         echo '<input name="password2" type="password" id="password2" value="' . $password2 . '">';
-        echo '<input name="command" type="hidden" id="command" value="ChangePW" readonly="readonly">';
+        echo '<input name="command" type="hidden" id="command" value="ChangePW">';
         echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-        echo '<br /><br /><input type="submit" name="Submit" value="Click Here to Create NEW Password"></td></form>';
+        echo '<br ><br ><input type="submit" name="Submit" value="Click Here to Create NEW Password"></td></form>';
         exit;
     }
     change_user_password($username, $password);
@@ -443,7 +439,7 @@ function change_user_password($username, $password)
         return;
     } else {
         file_put_contents($userfile, password_hash($password, PASSWORD_DEFAULT));
-        echo "Password Changed for User: " . $username . "\n<br />";
+        echo "Password Changed for User: " . $username . "\n<br >";
         echo "NEW Password: " . $password . "\n";
         file_put_contents($logfile, "\n" . logging_prefix() . " Changed PASSWORD for: " . $username, FILE_APPEND);
     }
@@ -475,17 +471,17 @@ function send_reset_email($username, $user_email)
     $retry_seconds = $retry_delay * 60;
 
     if (isset($reset_log[$email]['time']) && $reset_log[$email]['time'] > time() - $retry_seconds) {
-        echo "Email may only be re-sent after " . $retry_delay . " minutes<br />";
+        echo "Email may only be re-sent after " . $retry_delay . " minutes<br >";
         $remain = (($reset_log[$email]['time'] + $retry_seconds) - time());
         $remain = round($remain / 60, 1);
-        echo "Please wait " . $remain . " minutes to re-send<br />";
+        echo "Please wait " . $remain . " minutes to re-send<br >";
         exit(0);
     }
 
     if ($username != null && $user_email != null) {
         $get_useremail = get_config_value('userconfig/' . trim(strtolower($username)), 'email');
         if (trim(strtolower($get_useremail)) != trim(strtolower($user_email))) {
-            echo 'Username or Email address not found<br /><br />';
+            echo 'Username or Email address not found<br ><br >';
             echo $username . " : " . $get_useremail . " : " . $user_email;
             return false;
         }
@@ -496,7 +492,7 @@ function send_reset_email($username, $user_email)
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
-    echo 'Request Password Reset for: ' . $username . '<br/><br />';
+    echo 'Request Password Reset for: ' . $username . '<br><br >';
 
     $mail->SMTPOptions = array(
         'ssl' => array(
@@ -538,27 +534,29 @@ function send_reset_email($username, $user_email)
     $msg .= "Note: replies to this email address are checked daily.";
     $mail->Body = wordwrap($msg, 70);
 
+    echo '<center>';
     if (!$mail->send()) {
         echo 'The message could not be sent.';
         echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
         file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
     } else {
         file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email, FILE_APPEND);
-        echo 'An email has been sent to ' . $user_email . '<br />';
-        echo 'Please enter the code from the email below:<br />';
+        echo 'An email has been sent to ' . $user_email . '<br >';
+        echo 'Please enter the code from the email below:<br >';
         echo '<form name="create1" method="post" action="register.php">';
-        echo '<br />Enter CODE: ';
+        echo '<br >Enter CODE: ';
         echo '<input name="code" type="text" id="code">&nbsp;';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-        echo '<br /><br />NEW Password: ';
+        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+        echo '<br ><br >NEW Password: ';
         echo '<input name="password" type="password" id="password" value="' . $password . '">';
-        echo '<br />Re-Enter Password: ';
+        echo '<br >Re-Enter Password: ';
         echo '<input name="password2" type="password" id="password2" value="' . $password . '">';
-        echo '<input name="command" type="hidden" id="command" value="ChangePW" readonly="readonly">';
-        echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+        echo '<input name="command" type="hidden" id="command" value="ChangePW">';
+        echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
         echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-        echo '<br /><br /><input type="submit" name="Submit" value="Click Here to Create NEW Password"></td>';
-        echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+        echo '<br ><br ><input type="submit" name="Submit" value="Click Here to Create NEW Password"></td>';
+        echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+        echo '</form>';
 
         $reset_log[$email]['time'] = time();
         if (isset($reset_log[$email]['count'])) {
@@ -568,6 +566,7 @@ function send_reset_email($username, $user_email)
         }
         file_put_contents($reset_file, serialize($reset_log));
     }
+    echo '</center>';
 }
 
 function create_account($username, $password, $user_email)
@@ -582,8 +581,9 @@ function create_account($username, $password, $user_email)
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
-
-    echo 'Create account: ' . $_POST['username'] . '<br/><br />';
+    
+    echo '<center>';
+    echo 'Create account: ' . $_POST['username'] . '<br><br >';
     /* Generate email */
     # only check for no verification if the field has been populated
     if (!empty($CONFIG['no_verify'])) {
@@ -646,25 +646,26 @@ function create_account($username, $password, $user_email)
             file_put_contents($mail_log, "\n" . format_log_date() . ' FAILED to send mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email . 'Error: ' . $mail->ErrorInfo, FILE_APPEND);
             echo 'The message could not be sent.';
             echo '<p>Error: ' . htmlentities($mail->ErrorInfo);
-            echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+            echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
             exit(1);
         } else {
             file_put_contents($mail_log, "\n" . format_log_date() . ' SENT mail from: ' . $mail_user . '@' . $mail_domain . ' to: ' . $user_email, FILE_APPEND);
-            echo 'An email has been sent to ' . $user_email . '<br />';
-            echo 'Please enter the code from the email below:<br />';
+            echo 'An email has been sent to ' . $user_email . '<br >';
+            echo 'Please enter the code from the email below:<br >';
         }
     }
     echo '<form name="create1" method="post" action="register.php">';
     if ($CONFIG['verify_email'] == true) {
         echo '<input name="code" type="text" id="code">&nbsp;';
     }
-    echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-    echo '<input name="password" type="hidden" id="password" value="' . $password . '" readonly="readonly">';
-    echo '<input name="command" type="hidden" id="command" value="CreateNew" readonly="readonly">';
-    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+    echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+    echo '<input name="password" type="hidden" id="password" value="' . $password . '">';
+    echo '<input name="command" type="hidden" id="command" value="CreateNew">';
+    echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
     echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
     echo '<input type="submit" name="Submit" value="Click Here to Create"></td>';
-    echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+    echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+    echo '</center>';
 }
 
 function create_new($username, $password, $user_email)
@@ -690,16 +691,16 @@ function create_new($username, $password, $user_email)
     if ($CONFIG['verify_email'] == true) {
         $saved_code = file_get_contents(sys_get_temp_dir() . "/" . $username);
         if ((strcmp(trim($code), trim($saved_code))) !== 0) {
-            echo "Code does not match. Try again.<br />";
+            echo "Code does not match. Try again.<br >";
             echo '<form name="create1" method="post" action="register.php">';
             echo '<input name="code" type="text" id="code">&nbsp;';
-            echo '<input name="username" type="hidden" id="username" value="' . $username . '" readonly="readonly">';
-            echo '<input name="password" type="hidden" id="password" value="' . $password . '" readonly="readonly">';
-            echo '<input name="command" type="hidden" id="command" value="CreateNew" readonly="readonly">';
-            echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '" readonly="readonly">';
+            echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
+            echo '<input name="password" type="hidden" id="password" value="' . $password . '">';
+            echo '<input name="command" type="hidden" id="command" value="CreateNew">';
+            echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
             echo '<input type="submit" name="Submit" value="Click Here to Create"></td>';
             echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-            echo '<br/><br/><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
+            echo '<br><br><a href="' . $CONFIG['default_content'] . '">Cancel and return to home page</a>';
             exit(2);
         }
         $verified = 1;
@@ -730,8 +731,10 @@ function create_new($username, $password, $user_email)
     if (file_exists(sys_get_temp_dir() . "/" . $username)) {
         unlink(sys_get_temp_dir() . "/" . $username);
     }
+    echo '<center>';
     echo "User:" . $username . " Created\r\n";
-    echo '<br /><a href="' . $CONFIG['default_content'] . '">Back</a>';
+    echo '<br ><a href="' . $CONFIG['default_content'] . '">Back</a>';
+    echo '</center>';
 }
 
 function make_key($username)

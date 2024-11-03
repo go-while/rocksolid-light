@@ -346,9 +346,9 @@ function display_threads($threads, $oldest)
             $skip = '';
             if ($nohead) {
                 if (($style % 2) == 0) {
-                    $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+                    $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word">';
                 } else {
-                    $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+                    $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word">';
                 }
                 if ($target_head) {
                     $display .= '<center>';
@@ -371,7 +371,7 @@ function display_threads($threads, $oldest)
                             }
                         }
                         if ($block) {
-                            $display .= '<br /><br />';
+                            $display .= '<br><br>';
                             $display .= '<p class=np_ob_subject>';
                             $display .= '<b><span>(message #' . $target_head['number'] . ' hidden by your blocklist)</span></a></b>';
                         } else {
@@ -381,7 +381,7 @@ function display_threads($threads, $oldest)
 
                                 $text = $article['search_snippet'];
                                 $text = rewrite_body($text);
-                                $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br />\n", true));
+                                $display .= strip_tags(wordwrap(substr($text, 0, $snippetlength), ($snippetlength / 2), "<br>\n", true));
                             }
                         }
                         $skip = $target_head['number'];
@@ -402,13 +402,13 @@ function display_threads($threads, $oldest)
                     }
                 }
                 if ($block) {
-                    $display .= '<br /><br />';
+                    $display .= '<br><br>';
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b>';
                 } else {
                     $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
                     $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
-                    $display .= '<br /><br />';
+                    $display .= '<br><br>';
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
                     $display .= '</p>';
@@ -518,9 +518,9 @@ function display_flat($threads, $oldest)
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
         $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
         if (($results % 2) == 0) {
-            $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+            $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word">';
         } else {
-            $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+            $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word">';
         }
         $block = false;
         foreach ($blocked_user_config as $bkey => $bvalue) {
@@ -552,8 +552,7 @@ function display_flat($threads, $oldest)
                     $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target_head['number'] . '&group=' . rawurlencode($target_head['newsgroup']) . '#' . $target_head['number'] . '"> (full thread)</a></font>';
                 }
             }
-            $display .= '</p>';
-            $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</a></p>';
+            $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a></p>';
             if ($CONFIG['article_database'] == '1') {
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $text = $article['search_snippet'];
@@ -590,7 +589,7 @@ function show_overboard_header($grouplist)
         echo '<td>';
         echo '<div style="float:left;">';
         echo '<form action="overboard.php">';
-        echo '<input type="hidden" name="thisgroup" value="' . $_GET['thisgroup'] . '"/>';
+        echo '<input type="hidden" name="thisgroup" value="' . $_GET['thisgroup'] . '">';
         if (isset($user_time)) {
             echo '<button class="np_button_link" type="submit">overboard</button>';
         } else {
@@ -601,7 +600,7 @@ function show_overboard_header($grouplist)
         echo '</div>';
         // Article List button
         echo '<form action="' . $file_thread . '">';
-        echo '<input type="hidden" name="group" value="' . $grouplist[0] . '"/>';
+        echo '<input type="hidden" name="group" value="' . $grouplist[0] . '">';
         echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($grouplist[0])) . '</button>';
         echo '</form>';
         echo '</td>';
@@ -633,7 +632,7 @@ function show_overboard_header($grouplist)
             echo '</td>';
         }
     }
-    echo '</div><td></td>';
+    echo '<td></td>';
     echo '<td class="np_ob_style_toggle">';
 
     echo '<div style="float:right;">';
@@ -709,7 +708,6 @@ function show_overboard_footer($stats, $results, $iscached)
     } else {
         $arts = 'articles';
     }
-    echo '</table>';
     echo "<p class=np_ob_tail><b>" . $results . "</b> " . $recent . " " . $arts . " found.</p>\r\n";
     # echo "<center><i>Rocksolid Overboard</i> version ".$version;
     include "tail.inc";
