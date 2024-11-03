@@ -487,7 +487,7 @@ function process_post($message, $group)
 
     @mkdir($spooldir . "/" . $section . "/outgoing", 0755, 'recursive');
     $postfilename = $spooldir . '/' . $section . '/outgoing/' . $msgid . '.msg';
-    if(file_exists($postfilename)) {
+    if (file_exists($postfilename)) {
         $postfilename_previous = true;
     } else {
         $postfilename_previous = false;
@@ -550,7 +550,7 @@ function process_post($message, $group)
         // else only add to local database for next group
         if ($previously_posted) {
             file_put_contents($logfile, "\n" . format_log_date() . " NOT adding article to: " . $section . "/outgoing - Already Posted", FILE_APPEND);
-            if(!$postfilename_previous) {
+            if (!$postfilename_previous) {
                 unlink($postfilename);
             } else {
                 file_put_contents($logfile, "\n" . format_log_date() . " NOT DELETING: " . $section . "/outgoing - Already Exists", FILE_APPEND);
@@ -579,8 +579,8 @@ function get_next($nntp_group)
         $nntp_article++;
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
-        $dbh = overview_db_open($database, $table);
-        $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
+        $overview_dbh = overview_db_open($database, $table);
+        $stmt = $overview_dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
         $stmt->bindParam(':newsgroup', $nntp_group);
         $stmt->bindParam(':number', $nntp_article);
         $stmt->execute();
@@ -588,7 +588,7 @@ function get_next($nntp_group)
             $msgid = $found['msgid'];
             break;
         }
-        $dbh = null;
+        $overview_dbh = null;
         $response = "223 " . $nntp_article . " " . $msgid . " Article retrieved; request text separately\r\n";
     }
     return $response;
@@ -610,8 +610,8 @@ function get_last($nntp_group)
         $nntp_article--;
         $database = $spooldir . '/articles-overview.db3';
         $table = 'overview';
-        $dbh = overview_db_open($database, $table);
-        $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
+        $overview_dbh = overview_db_open($database, $table);
+        $stmt = $overview_dbh->prepare("SELECT * FROM $table WHERE newsgroup=:newsgroup AND number=:number");
         $stmt->bindParam(':newsgroup', $nntp_group);
         $stmt->bindParam(':number', $nntp_article);
         $stmt->execute();
@@ -619,7 +619,7 @@ function get_last($nntp_group)
             $msgid = $found['msgid'];
             break;
         }
-        $dbh = null;
+        $overview_dbh = null;
         $response = "223 " . $nntp_article . " " . $msgid . " Article retrieved; request text separately\r\n";
     }
     return $response;
@@ -781,9 +781,9 @@ function get_xover($articles, $msgsock)
 
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
-    $dbh = overview_db_open($database, $table);
+    $overview_dbh = overview_db_open($database, $table);
 
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number=:number"); // Why doesn't BETWEEN work properly here?
+    $stmt = $overview_dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup AND number=:number"); // Why doesn't BETWEEN work properly here?
     for ($i = $first; $i <= $last; $i++) {
         $stmt->execute([
             'thisgroup' => $nntp_group,
@@ -793,22 +793,41 @@ function get_xover($articles, $msgsock)
             $msg .= $row['number'] . "\t" . $row['subject'] . "\t" . $row['name'] . "\t" . $row['datestring'] . "\t" . $row['msgid'] . "\t" . $row['refs'] . "\t" . $row['bytes'] . "\t" . $row['lines'] . "\t" . $row['xref'] . "\r\n";
         }
     }
-    $dbh = null;
+    $overview_dbh = null;
     $msg .= ".\r\n";
     return $msg;
 }
 
 function get_stat($article)
 {
-    global $nntp_group, $nntp_article, $workpath, $path;
-    if ($nntp_group == '') {
-        $msg = "412 Not in a newsgroup\r\n";
-        return $msg;
-    }
+    global $nntp_group, $nntp_article, $spooldir;
+
     // Use article pointer
     if (! isset($article) && is_numeric($nntp_article)) {
         $article = $nntp_article;
     }
+
+    // By Message-ID
+    if (preg_match("/\<.*\@.*\>/", $article)) {
+        $found = find_article_by_msgid($article);
+        $nntp_group = $found['newsgroup'];
+        $article = $found['number'];
+        if (!$found) {
+            $msg = "430 No such article\r\n";
+            return $msg;
+        }
+    } else {
+        if (! is_numeric($article)) {
+            $msg = "501 Syntax error in Message-ID\r\n";
+            return $msg;
+        }
+    }
+
+    if ($nntp_group == '') {
+        $msg = "412 Not in a newsgroup\r\n";
+        return $msg;
+    }
+
     if (! is_numeric($article)) {
         $msg = "423 No article number selected\r\n";
         return $msg;
@@ -818,8 +837,8 @@ function get_stat($article)
     if (! is_file($database)) {
         return false;
     }
-    $dbh = overview_db_open($database);
-    $query = $articles_dbh->prepare('SELECT * FROM overview WHERE number=:number AND newsgroup=:newsgroup');
+    $overview_dbh = overview_db_open($database);
+    $query = $overview_dbh->prepare('SELECT * FROM overview WHERE number=:number AND newsgroup=:newsgroup');
     $query->execute([
         'number' => $article,
         'newsgroup' => $nntp_group
@@ -829,7 +848,7 @@ function get_stat($article)
         $found = 1;
         break;
     }
-    $dbh = null;
+    $overview_dbh = null;
     if ($found == 1) {
         $msg = "223 " . $article . " " . $row['msgid'] . " status\r\n";
     } else {
@@ -1069,7 +1088,7 @@ function get_group($change_group)
     $articlestats = explode(" ", $msg);
     $savestats = $articlestats[2] . " " . $articlestats[3] . " " . $articlestats[1];
     file_put_contents($spooldir . '/' . $nntp_group . '-rslight_info.txt', $savestats);
-    
+
     repair_broken_group($nntp_group);
     return $msg;
 }
@@ -1354,8 +1373,8 @@ function find_article_by_msgid($msgid)
     global $spooldir;
     $database = $spooldir . '/articles-overview.db3';
     $table = 'overview';
-    $dbh = overview_db_open($database, $table);
-    $stmt = $dbh->prepare("SELECT * FROM $table WHERE msgid like :terms");
+    $overview_dbh = overview_db_open($database, $table);
+    $stmt = $overview_dbh->prepare("SELECT * FROM $table WHERE msgid like :terms");
     $stmt->bindParam(':terms', $msgid);
     $stmt->execute();
     while ($found = $stmt->fetch()) {
@@ -1364,7 +1383,7 @@ function find_article_by_msgid($msgid)
         $return['msgid'] = $found['msgid'];
         break;
     }
-    $dbh = null;
+    $overview_dbh = null;
     return $return;
 }
 
