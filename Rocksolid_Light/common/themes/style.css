@@ -559,6 +559,31 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 	width: 50%;
 }
 
+/* Article age colors. Set these at top of this file */
+.group_display_message_count_1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	color: red;
+}
+
+.group_display_message_count_2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	color: darkgoldenrod;
+}
+
+.group_display_message_count_3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	color: darkgreen;
+}
+
+.group_display_message_count_old {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.9em;
+	color: var(--color-text);
+}
+
 div.ellipsis {
 	white-space: nowrap;
 	overflow: hidden;

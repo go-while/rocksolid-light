@@ -775,12 +775,10 @@ function groups_show($gruppen)
             } else {
                 $datecolor = "";
             }
-            $groupdisplay .= '<small>';
             if ($datecolor != "")
-                $groupdisplay .= '<font color="' . $datecolor . '">' . $g->count . '</font>';
+                $groupdisplay .= '<div class="' . $datecolor . '">' . $g->count . '</div>';
             else
-                $groupdisplay .= $g->count;
-            $groupdisplay .= '</small>';
+                $groupdisplay .= '<div class="group_display_message_count_old">' . $g->count . '</div>';
 
             /* Display latest article info */
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="grouplist_td_thread_start_author_info">';

@@ -169,12 +169,14 @@ $maxfetch = 1000;
 $maxarticles = 0;
 $maxarticles_extra = 0;
 $age_count = 3;
+
+// $age_color[x] is class name in style.css
 $age_time[1] = 86400; // 24 hours
-$age_color[1] = "red";
+$age_color[1] = "group_display_message_count_1";
 $age_time[2] = 259200; // 3 days
-$age_color[2] = "darkgoldenrod";
+$age_color[2] = "group_display_message_count_2";
 $age_time[3] = 604800; // 7 days
-$age_color[3] = "darkgreen";
+$age_color[3] = "group_display_message_count_3";
 $thread_sort_order = - 1;
 $thread_sort_type = "thread";
 $articles_per_page = 200;
