@@ -5,7 +5,7 @@ if (basename(getcwd()) == 'mods') {
     $rootdir = "../";
 }
 
-include ($rootdir . 'common/config.inc.php');
+include($rootdir . 'common/config.inc.php');
 
 global $OVERRIDES;
 $CONFIG = include $config_file;
@@ -17,12 +17,12 @@ echo '<meta charset="utf-8">';
 
 // Set tzo if possible
 ?>
-   <script>
-     if (navigator.cookieEnabled)
-       document.cookie = "tzo="+ (- new Date().getTimezoneOffset())+"; path=/";
-       var tzid = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-       document.cookie = "tzid=" + tzid + "; path=/";
-   </script>
+<script>
+    if (navigator.cookieEnabled)
+        document.cookie = "tzo=" + (-new Date().getTimezoneOffset()) + "; path=/";
+    var tzid = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.cookie = "tzid=" + tzid + "; path=/";
+</script>
 <?php
 
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
@@ -52,18 +52,17 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $d
 }
 
 echo '</head><body>';
-?>
 
-	<table class="np_header_bar_top">
-		<tr>
-			<td class="np_td_header_bar_logo_image"><a href="<?php echo $CONFIG['default_content'];?>"><img
-					src="<?php echo $header_image ?>" alt="Rocksolid Light"
-					class="responsive_image"></a></td>
-			<td class="header_page_title_top">
-	<?php echo $CONFIG['rslight_title']; ?>	
-			</td>
-			<td class="header_links_text">
-<?php
+echo '<table class="np_header_table_top">';
+echo '<tr class="np_header_bar_top">';
+echo '<td class="np_td_header_bar_logo_image"><a href="' . $CONFIG['default_content'] . '">';
+echo '<img src="' . $header_image . '" alt="Rocksolid Light"';
+echo ' class="responsive_image"></a></td>';
+echo '<td class="header_page_title_top">';
+echo $CONFIG['rslight_title'];
+echo '</td>';
+echo '<td class="header_links_text">';
+
 if (isset($user) && $user && check_unread_mail() == true) {
     $unread = true;
 } else {
@@ -95,7 +94,7 @@ echo '</a>';
 echo '</td></tr>';
 echo '</table>';
 
-include ($config_dir . '/fortunes.conf');
+include($config_dir . '/fortunes.conf');
 
 // If $config_dir/motd.txt is not blank, show it
 if (file_exists($config_dir . '/motd.txt')) {
