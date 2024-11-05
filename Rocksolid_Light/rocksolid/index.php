@@ -28,7 +28,7 @@ $title .= ' - ' . basename(getcwd());
 include "head.inc";
 
 echo '<h1 class="np_thread_headline">' . basename(getcwd()) . '</h1>';
-echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+echo '<table class="np_buttonbar"><tr>';
 
 // If logged in: button for new only
 if (isset($_COOKIE['mail_name'])) {
