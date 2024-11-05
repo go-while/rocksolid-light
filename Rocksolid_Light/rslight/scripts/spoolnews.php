@@ -42,7 +42,7 @@ $spamlog = $logdir . '/spam.log';
 @mkdir($spooldir . "/" . $config_name, 0755, 'recursive');
 
 # Put this here for version 0.9.157 for a while to clean up dir
-if(file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
+if (file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
     $section_dir = $spooldir . '/' . $config_name . '/';
     @mkdir($section_dir . 'OLD');
     $files = scandir($section_dir);
@@ -52,7 +52,7 @@ if(file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
             copy($file_name, $section_dir . 'OLD/' . $file);
             unlink($file_name);
         }
-    }  
+    }
 }
 
 // Defaults
@@ -218,7 +218,7 @@ function get_articles($ns, $group)
     } else {
         $remote_groups_array = array();
     }
-    if(isset($remote_groups_array[$group])) {
+    if (isset($remote_groups_array[$group])) {
         $article = $remote_groups_array[$group];
     } else {
         $article = 1;
@@ -314,6 +314,7 @@ function get_articles($ns, $group)
             $sub = 0;
             $ng = 0;
             $supersedes = false;
+            $boundary = false;
             $banned = false;
             $integrity = false;
             $is_header = 1;
@@ -414,6 +415,10 @@ function get_articles($ns, $group)
                     if (stripos($response, "Content-Type: ") === 0) {
                         preg_match('/.*charset=.*/', $response, $te);
                         $content_type = explode("Content-Type: text/plain; charset=", $te[0]);
+                        if (preg_match('/.*boundary=.*/', $response, $be)) {
+                            $boundary = explode("boundary=", $response, 2);
+                            $boundary = trim($boundary[1], '\";');
+                        }
                     }
                     if (stripos($response, "References: ") === 0) {
                         $this_references = explode('References: ', $response);
@@ -456,9 +461,9 @@ function get_articles($ns, $group)
             // Some newsreaders (PiaoHong) produce a Date header that php does not like
             if (isset($injectiondate)) {
                 $artdate = $injectiondate;
-                  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
+                file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Injection-Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
             } else {
-                  file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
+                file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " Used Date " . $artdate . " for: " . $mid[1], FILE_APPEND);
             }
 
             // Check if date matches exactly another article and handle else sorting doesn't like it
@@ -504,7 +509,36 @@ function get_articles($ns, $group)
                 if ($CONFIG['article_database'] == '1') {
                     unlink($articleHandle);
                     // CREATE SEARCH SNIPPET
-                    $this_snippet = get_search_snippet($body, $content_type[1], $content_transfer_encoding);
+                    if ($boundary !== false) {
+                        $body_array = explode("\n", $body);
+                        $found = false;
+                        $start = false;
+                        foreach ($body_array as $line) {
+                            if ($found === false) {
+                                if (strpos($line, $boundary) !== false) {
+                                    $found = true;
+                                    continue;
+                                } else {
+                                    continue;
+                                }
+                            }
+                            if (trim($line != '') && $start === false) {
+                                continue;
+                            } else {
+                                if ($start === false) {
+                                    $start = true;
+                                    continue;
+                                }
+                            }
+                            $newbody .= $line . "\n";
+                        }
+                        file_put_contents($debug_log, "\n".format_log_date()." Created snippet from multipart article: " . $mid[1], FILE_APPEND);
+                    } else {
+                        $newbody = $body;
+                    }
+
+                    $this_snippet = get_search_snippet($newbody, $content_type[1], $content_transfer_encoding);
+                    unset($newbody);
                 } else {
                     touch($articleHandle, $article_date);
                 }
@@ -569,10 +603,10 @@ function get_articles($ns, $group)
                     break;
                 }
             }
-            if($supersedes !== false) {
-                if(isset($OVERRIDES['enable_supersedes_support']) && $OVERRIDES['enable_supersedes_support'] == true) {
+            if ($supersedes !== false) {
+                if (isset($OVERRIDES['enable_supersedes_support']) && $OVERRIDES['enable_supersedes_support'] == true) {
                     file_put_contents($debug_log, "\n" . format_log_date() . " Found Supersedes: " . $mid[1] . " for: " . $supersedes, FILE_APPEND);
-                    if(!check_remote_for_msgid($supersedes)) {
+                    if (!check_remote_for_msgid($supersedes)) {
                         file_put_contents($debug_log, "\n" . format_log_date() . " Will delete: " . $supersedes, FILE_APPEND);
                         delete_message($supersedes);
                     }
