@@ -116,6 +116,10 @@ return [
     // Disable toggle to send interBBS Mail to email
     'disable_mail_to_email' => true,
 
+    // Enable Supersedes. This is dependent on your 'remote' server
+    // Default is false (Superseded articles will NOT be deleted)
+    'enable_supersedes_support' => false,
+
     // Disable New Articles link on groups page
     'overboard_disable_new_link' => false,
 

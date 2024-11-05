@@ -574,7 +574,7 @@ function get_articles($ns, $group)
                     file_put_contents($debug_log, "\n" . format_log_date() . " Found Supersedes: " . $mid[1] . " for: " . $supersedes, FILE_APPEND);
                     if(!check_remote_for_msgid($supersedes)) {
                         file_put_contents($debug_log, "\n" . format_log_date() . " Will delete: " . $supersedes, FILE_APPEND);
-                   //     delete_message($supersedes);
+                        delete_message($supersedes);
                     }
                 }
             }
