@@ -267,13 +267,6 @@ if (isset($spoolnews) && ($spoolnews === true)) {
 $www_charset = "utf-8";
 // Use the iconv extension for improved charset conversions
 $iconv_enable = true;
-/*
- * Group specific config
- */
-// $group_config=array(
-// '^de\.alt\.fan\.aldi$' => "aldi.inc",
-// '^de\.' => "german.inc"
-// );
 
 // Get server protocol etc. into string
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
@@ -289,15 +282,6 @@ if (isset($_SERVER["HTTP_HOST"])) {
 /*
  * Do not edit anything below this line
  */
-// Load group specifig config files
-if ((isset($group)) && (isset($group_config))) {
-    foreach ($group_config as $key => $value) {
-        if (ereg($key, $group)) {
-            include $value;
-            break;
-        }
-    }
-}
 
 // load the english language definitions first because some of the other
 // definitions are incomplete
