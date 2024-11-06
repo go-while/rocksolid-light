@@ -756,7 +756,7 @@ function groups_show($gruppen)
                 $groupdisplay .= '<p class="np_group_user_tools">';
                 $groupdisplay .= '<a class="np_group_user_tools" href="index.php?unsub=' . urlencode($g->name) . '">(unsubscribe)</a>';
                 if ($new) {
-                    $groupdisplay .= '<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
+                    $groupdisplay .= '&nbsp;<a class="np_group_user_tools" href="index.php?mark_read=' . urlencode($g->name) . '">(mark read)</a>';
                 }
                 $groupdisplay .= '</p>';
             } else {
