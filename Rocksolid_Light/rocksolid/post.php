@@ -63,7 +63,7 @@ $max_followupto = 1;
 
 // Check some header strings for bad characters
 $newsgroups = sanitize_header($newsgroups);
-$subject = sanitize_header($subject);
+$subject = trim(sanitize_header($subject));
 $email = sanitize_header($email);
 
 // Load name from cookies
