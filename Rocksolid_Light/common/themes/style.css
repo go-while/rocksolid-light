@@ -553,20 +553,6 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 	color: var(--color-visited);
 }
 
-/* Attribution below Subject */
-.thread_start_author_info {
-	float: left;
-	box-sizing: border-box;
-	padding: 6px;
-	margin-bottom: 0;
-	text-decoration: none;
-	color: var(--color-highlight);
-	text-align: left;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
-	width: 50%;
-}
-
 /* Article age colors. Set these at top of this file */
 .group_display_message_count_1 {
 	font-family: Arial, Helvetica, sans-serif;
@@ -1078,10 +1064,63 @@ td.np_thread_line2 {
 	white-space: nowrap;
 }
 
-/* Text inside a Line */
-span.np_thread_line_text,
-td.np_thread_line_text {
-	font-size: 1em;
+/* Attribution below Subject */
+.thread_start_author_info {
+	float: left;
+	box-sizing: border-box;
+	padding: 6px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	text-align: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+	width: 50%;
+}
+
+/* Text inside a Line in threads.php */
+span.np_thread_line_lastmessage_text_author,
+td.np_thread_line_text_author {
+	float: left;
+	box-sizing: border-box;
+	padding: 1px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-size: 1.1em;
+	
+	font-family: Arial, Helvetica, sans-serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+span.np_thread_line_lastmessage_text_date,
+td.np_thread_line_text_date {
+	float: left;
+	box-sizing: border-box;
+	padding: 1px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-size: 2em;
+	
+	font-family: Arial, Helvetica, sans-serif;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+span.np_thread_line_text_subject,
+td.np_thread_line_text_subject {
+	width: 100%;
+	float: left;
+	box-sizing: border-box;
+	padding: 1px;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	font-size: 1.1em;
 	font-weight: bold;
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;

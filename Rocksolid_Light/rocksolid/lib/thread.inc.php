@@ -977,15 +977,15 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                         $output .= '<td class="np_thread_line_text"><tt>' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></tt></td>';
                     $output .= "</tr>";
                     break;
-                case 7: // thread, table, graphic
+                case 7: // thread, table, graphic THIS RSLIGHT IS DEFAULT and is only case currently supported
                     $output .= '<tr class="' . $lineclass;
                     $output .= '">';
-                    if ($thread_show["date"])
-                        $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_text">' . thread_format_date($c) . " " . '</span></td>';
+              //      if ($thread_show["date"])
+              //          $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_lastmessage_text_date">' . thread_format_date($c) . " " . '</span></td>';
                     $output .= '<td class="' . $lineclass . '">';
-                    $output .= thread_show_treegraphic($newtree);
+                    $output .= '<span class="np_thread_line_text_subject">' . thread_show_treegraphic($newtree);
                     if ($thread_show["subject"]) {
-                        $output .= '<span class="np_thread_line_text">&nbsp;' . thread_format_subject($c, $group, $highlight) . '</span>';
+                        $output .= '&nbsp;' . thread_format_subject($c, $group, $highlight) . '</span>';
                     }
                     $output .= '</td>';
                     if ($thread_show["threadsize"]) {
@@ -993,7 +993,7 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
                         $output .= '<td class="' . $lineclass . '">' . $replies_count . '</td>';
                     }
                     if ($thread_show["author"])
-                        $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_text">' . thread_format_author($c, $group, $lastmessage) . '</span></td>';
+                        $output .= '<td class="' . $lineclass . '">' . '<span class="np_thread_line_lastmessage_text_author">' . thread_format_author($c, $group, $lastmessage) . '</span></td>';
                     $output .= "</tr>";
                     break;
             }
