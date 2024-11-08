@@ -140,6 +140,11 @@ if ($CONFIG['remote_server'] != '') {
         exit();
     }
     $grouplist = file($config_dir . '/' . $config_name . '/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    $ns_local = nntp_open();
+    echo "\nOPENING Local server: " . $ns_local . "\n";
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " OPENING Local server: " . $ns_local, FILE_APPEND);
+
     foreach ($grouplist as $findgroup) {
         if ($findgroup[0] == ":") {
             continue;
@@ -152,11 +157,11 @@ if ($CONFIG['remote_server'] != '') {
         if ($enable_rslight == 1) {
             $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
             if (filemtime($timer_file) + 600 < time()) {
-                touch($timer_file);
-                if (! $ns_local) {
-                    $ns_local = nntp_open();
-                    echo "\nOPENING Local server: " . $ns_local . "\n";
-                }
+                
+                $ns_local = nntp_open();
+                echo "\nOPENING Local server: " . $ns_local . "\n";
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " OPENING Local server: " . $ns_local, FILE_APPEND);
+
                 if (! $ns_local) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
                     // exit();
@@ -166,16 +171,18 @@ if ($CONFIG['remote_server'] != '') {
                         thread_load_newsserver($ns_local, $name[0], 0);
                     } catch (Exception $exc) {
                         echo "\nFatal exception caught: " . $exc->getMessage();
+                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Fatal exception caught: " . $exc->getMessage() . " trying to run thread_load_newsserver", FILE_APPEND);
                     } catch (Error $err) {
                         echo "\nFatal error caught: " . $err->getMessage();
+                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Fatal error caught: " . $err->getMessage() . " trying to run thread_load_newsserver", FILE_APPEND);
                     }
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Threads updated for: " . $name[0], FILE_APPEND);
                 }
+                touch($timer_file);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " CLOSING Local server: " . $ns_local, FILE_APPEND);
+                nntp_close($ns_local);
             }
         }
-    }
-    if ($ns_local) {
-        nntp_close($ns_local);
     }
     nntp_close($ns);
 }
@@ -208,7 +215,8 @@ function get_articles($ns, $group)
     fputs($ns, "group " . $group . "\r\n");
     $response = line_read($ns);
     if (strcmp(substr($response, 0, 3), "211") != 0) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response to group command for " . $group . ": " . $response, FILE_APPEND);
+        $remote_disp = $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'];
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " " . $group . ": " . $response, FILE_APPEND);
         echo "\n" . $response;
         return (1);
     }
@@ -532,7 +540,7 @@ function get_articles($ns, $group)
                             }
                             $newbody .= $line . "\n";
                         }
-                        file_put_contents($debug_log, "\n".format_log_date()." Created snippet from multipart article: " . $mid[1], FILE_APPEND);
+                        file_put_contents($debug_log, "\n" . format_log_date() . " Created snippet from multipart article: " . $mid[1], FILE_APPEND);
                     } else {
                         $newbody = $body;
                     }
