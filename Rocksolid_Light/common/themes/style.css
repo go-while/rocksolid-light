@@ -1325,7 +1325,7 @@ table.np_results_table {
 .upload_table_login {
 	border: 0;
 	align-items: center;
-	color: var(--color-highlight);
+	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 }
@@ -1333,7 +1333,7 @@ table.np_results_table {
 .user_table_login {
 	border: 0;
 	align-items: center;
-	color: var(--color-highlight);
+	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 }
@@ -1341,7 +1341,7 @@ table.np_results_table {
 .mail_table_login {
 	border: 0;
 	align-items: center;
-	color: var(--color-highlight);
+	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 }
