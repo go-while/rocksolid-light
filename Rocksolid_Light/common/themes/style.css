@@ -1588,7 +1588,7 @@ a.np_button {
 .np_pages {
 	color: var(--color-visited);
 	width: 100%;
-	text-align: right;
+	text-align: center;
 }
 
 .np_pages_selected {

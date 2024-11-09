@@ -191,7 +191,7 @@ if ($message) {
     echo '</form>';
     echo '</td>';
     // Pages
-    echo '<td class="np_pages" width="100%" align="center">';
+    echo '<td class="np_pages">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
 }
