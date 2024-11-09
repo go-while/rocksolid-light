@@ -155,18 +155,18 @@ if ($message) {
     }
     echo '<br>';
     // navigation line
-    echo '<table id="start" cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    echo '<form action="' . $file_thread . '">';
+    echo '<table id="start" class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
-    echo '<form action="' . $file_thread . '">';
     echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '">';
     echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
-    echo '</form>';
     echo '</td>';
     // Pages
-    echo '<td class="np_pages" width="100%" align="center">';
+    echo '<td class="np_pages">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
+    echo '</form>';
 
     foreach ($pageids as $subid) {
         flush();
@@ -182,18 +182,18 @@ if ($message) {
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
     // navigation line
-    echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
+    echo '<form action="' . $file_thread . '">';
+    echo '<table class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
-    echo '<form action="' . $file_thread . '">';
     echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '">';
     echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
-    echo '</form>';
     echo '</td>';
     // Pages
     echo '<td class="np_pages">';
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
+    echo '</form>';
 }
 include "tail.inc";
 ?>
