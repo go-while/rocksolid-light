@@ -582,7 +582,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
 
 function groups_show($gruppen)
 {
-    global $gl_age, $frame, $spooldir, $config_dir, $logdir, $CONFIG, $OVERRIDES, $spoolnews;
+    global $gl_age, $frame, $spooldir, $config_dir, $config_name, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir;
     if ($gruppen == false)
         return;
     global $file_thread, $text_groups;
@@ -639,7 +639,13 @@ function groups_show($gruppen)
             // Get last article info from article database
             // First check memcache
             if ($enable_cache) {
+                $groups_cache_file = $spooldir . '/tmp/' . $g->name . '-groups-cache.dat';
+                $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
+                $cache_time = filemtime($groups_cache_file);
+                $groupfile_time = filemtime($groupfile);
                 $memcache_key = $cache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
+            }
+            if ($enable_cache && ($cache_time > $groupfile_time)) { // Use cache if newer than last group data.dat update
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
                 $lar = cache_get($memcache_key, $memcacheD);
                 if ($lar) {
@@ -700,6 +706,7 @@ function groups_show($gruppen)
                         }
                     }
                 }
+                touch($groups_cache_file);
             }
             $new = false;
             $new_style_on = '';
@@ -794,7 +801,7 @@ function groups_show($gruppen)
                     $poster_name = $fromline[0]["personal"];
                 }
                 if (trim($poster_name) == '') {
-                    $fromoutput = explode("<", html_entity_decode($c->name));
+                    $fromoutput = explode("<", html_entity_decode($lastarticleinfo['name']));
                     if (strlen($fromoutput[0]) < 1) {
                         $poster_name = $fromoutput[1];
                     } else {
@@ -2757,7 +2764,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     global $CONFIG, $config_name, $config_dir, $spooldir, $logdir;
     $logfile = $logdir . '/spoolnews.log';
     $group = $this_article['group'];
-    $grouppath = $path . preg_replace('/\./', '/', $group);
+    $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $group);
 
     if ($check_duplicates) {
         if (check_duplicate_msgid($this_article['mid'], $group)) {
@@ -3334,6 +3341,7 @@ function delete_message_from_overboard($config_name, $group, $messageid)
 function cache_add($cache_key, $data, $cache_ttl, $memcacheD = null)
 {
     global $enable_cache, $cache_dir, $cache_log, $low_spool_disk_space;
+    global $config_name, $min_spool_disk_space;
     $cache_key = base64_encode($cache_key);
     if ($enable_cache == 'memcached') {
         if ($memcacheD) {
