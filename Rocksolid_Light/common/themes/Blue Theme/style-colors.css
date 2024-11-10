@@ -19,4 +19,21 @@
 
   --color-border: #828282;
   --color-row-border: #0000A5;
+
+     /* Quote levels when displaying posts */
+     --color-quote-level-0: #D0BDBD;
+     --color-quote-level-1: #6495ed;
+     --color-quote-level-2: #df73ff;
+     --color-quote-level-3: #778899;
+     --color-quote-level-4: #daa520;
+     --color-quote-level-5: #9932cc;
+     --color-quote-level-6: #648c11;
+     --color-quote-level-7: #009698;
+     --color-quote-level-8: #9c7c38;
+   
+     /* Message count display */
+     --color-message-age-1: red;
+     --color-message-age-2: darkgoldenrod;
+     --color-message-age-3: green;
+     --color-message-age-old: #0C090A;
 }

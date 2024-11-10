@@ -2,11 +2,11 @@
   --color-dark: #9499A1;
   --color-medium: #989CA2;
   --color-light: #9AA3AF;
-  
+
   --color-header-background: #9AA3AF;
   --color-header-background-light: #9499A1;
   --color-header-link: #0D0FE0;
-  
+
   --color-section-background: #9499A1;
   --color-section-link: #1B3D8E;
 
@@ -19,4 +19,21 @@
 
   --color-border: #828282;
   --color-row-border: #8D918D;
+
+  /* Quote levels when displaying posts */
+  --color-quote-level-0: black;
+  --color-quote-level-1: #0000cd;
+  --color-quote-level-2: #a52a2a;
+  --color-quote-level-3: #65000b;
+  --color-quote-level-4: #004953;
+  --color-quote-level-5: #9932cc;
+  --color-quote-level-6: #4b5320;
+  --color-quote-level-7: #003399;
+  --color-quote-level-8: #654321;
+
+  /* Message count display */
+  --color-message-age-1: red;
+  --color-message-age-2: darkgoldenrod;
+  --color-message-age-3: green;
+  --color-message-age-old: #0C090A;
 }

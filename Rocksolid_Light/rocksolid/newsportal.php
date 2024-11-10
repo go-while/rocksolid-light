@@ -1184,10 +1184,6 @@ function display_links_in_body($text)
     global $config_dir;
     preg_match_all('/(https?|ftp|scp|news|gopher|gemini|telnet):\/\/[a-zA-Z0-9.?%=\-\+\;\:\,\~\@\!\(\)\$\#&_\/]+/', $text, $matches);
     $isquote = false;
-    if (strpos($text, ">") == 0) {
-        $isquote = true;
-        echo '<blockquote class="np_article_quote">';
-    }
     foreach ($matches[0] as $match) {
         if (! $match) {
             continue;
@@ -1202,9 +1198,29 @@ function display_links_in_body($text)
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
     }
     $text = rewrite_body($text);
-    echo $text;
-    if ($isquote) {
-        echo '</blockquote>';
+
+    $vlad = explode('<br>', $text);
+    foreach ($vlad as $line) {
+        $line = preg_replace("/<\/?p>/", "", $line);
+        $line = preg_replace("/\&gt;/", ">", $line);
+        $line = trim($line);
+        $depth = 0;
+        for ($i = 0; $i < strlen($line); $i++) {
+            if ($line[$i] == ' ') {
+                continue;
+            }
+            if ($line[$i] == '>') {
+                $depth++;
+                continue;
+            }
+            break;
+        }
+        if ($depth < 9) {
+            echo '<span class="quote_level_' . $depth . '">';
+        } else {
+            echo '<span class="quote_level_' . $depth - 7 . '">';
+        }
+        echo $line . '</span><br>';
     }
 }
 

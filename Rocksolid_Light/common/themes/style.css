@@ -553,29 +553,29 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 	color: var(--color-visited);
 }
 
-/* Article age colors. Set these at top of this file */
+/* Message counts display change colors based on age */
 .group_display_message_count_1 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.9em;
-	color: red;
+	color: var(--color-message-age-1);
 }
 
 .group_display_message_count_2 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.9em;
-	color: darkgoldenrod;
+	color: var(--color-message-age-2);
 }
 
 .group_display_message_count_3 {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.9em;
-	color: darkgreen;
+	color: var(--color-message-age-3);
 }
 
 .group_display_message_count_old {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.9em;
-	color: var(--color-text);
+	color: var(--color-message-age-old);
 }
 
 div.ellipsis {
@@ -1174,6 +1174,42 @@ blockquote.np_article_quote {
 	padding-left: 5px;
 	color: var(--color-text-quote);
 	margin: 0px;
+}
+
+.quote_level_0 {
+	color: var(--color-quote-level-0);
+}
+
+.quote_level_1 {
+	color: var(--color-quote-level-1);
+}
+
+.quote_level_2 {
+	color: var(--color-quote-level-2);
+}
+
+.quote_level_3 {
+	color: var(--color-quote-level-3);
+}
+
+.quote_level_4 {
+	color: var(--color-quote-level-4);
+}
+
+.quote_level_5 {
+	color: var(--color-quote-level-5);
+}
+
+.quote_level_6 {
+	color: var(--color-quote-level-6);
+}
+
+.quote_level_7 {
+	color: var(--color-quote-level-7);
+}
+
+.quote_level_8 {
+	color: var(--color-quote-level-8);
 }
 
 /* =========== Post layout =========== */
