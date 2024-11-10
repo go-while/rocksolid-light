@@ -16,7 +16,7 @@ return [
     // Display short view of headers (only subject, name, date)
     'short_headers' => true,
 
-    // Display From to the right of Subject in short_headers
+    // Display From and Date to the right of Subject in short_headers
     // Default is false, will show separately (below)
     'short_header_show_from_in_subject' => false,
 

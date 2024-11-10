@@ -587,15 +587,21 @@ function show_header_short($head, $group, $local_poster = false)
     }
 
     if ($local_poster) {
-       $displayname = '<span class="short_header_from_local_poster">' . $displayname . '</span>';
+        $displayname = '<span class="short_header_from_local_poster">' . $displayname . '</span>';
     }
 
+    // Try to use client timezone else default to UTC
+    $displaydate = get_date_for_client_timezone($head->date);
+
     // Where to show From in short_headers
-    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true && strlen($head->subject) < $maxsubjectlength) {
+    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+        echo '<span class="short_header_subject_title">';
+        echo 'Subject: ';
+        echo '</span>';
         echo '<span class="short_header_subject">';
         echo htmlspecialchars($head->subject);
-        echo '</span><span class="short_header_from_with_subject">';
-        echo '&nbsp;&nbsp;</span>(<span class="short_header_from_with_subject"><b>From: </b></span>' . $displayname . ')<br>';
+        echo '</span>';
+        echo '<span class="short_header_from_with_subject"><b>From: </b>' . $displayname . '</span><br>';
     } else {
         echo '<div class="short_header_subject">';
         echo htmlspecialchars($head->subject) . "<br>";
@@ -603,10 +609,25 @@ function show_header_short($head, $group, $local_poster = false)
         echo '<div class="short_header_from">';
         echo "<b>From: </b>" . $displayname;
         echo '</div>';
+        // Try to use client timezone else default to UTC
+        echo '<span class="short_header_date">';
+        echo '<b>Date: </b>' . $displaydate;
+        echo '</span><br>';
     }
 
-    // Try to use client timezone else default to UTC
-    $displaydate = get_date_for_client_timezone($head->date);
+    echo '<span class="short_header_newsgroups">';
+    echo '<b>Newsgroups: </b>';
+    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
+    $ngroups = explode("\t", $ngroups);
+    // echo "&nbsp;";
+    foreach ($ngroups as $onegroup) {
+        if (get_section_by_group($onegroup)) {
+            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+        } else {
+            echo " " . $onegroup . " ";
+        }
+    }
+    echo '</span>';
 
     // Copy MID to clipboard (requires js)
     echo '<script>';
@@ -621,23 +642,15 @@ function show_header_short($head, $group, $local_poster = false)
     echo '}';
     echo '</script> ';
 
-    echo '<span class="short_header_date">';
-    echo '<b>Date: </b>' . $displaydate;
-    echo '</span>';
-
-    echo '<span class="short_header_newsgroups">';
-    echo '&nbsp;&nbsp;<b>Newsgroups: </b>';
-    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
-    $ngroups = explode("\t", $ngroups);
-    // echo "&nbsp;";
-    foreach ($ngroups as $onegroup) {
-        if (get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
-        } else {
-            echo " " . $onegroup . " ";
-        }
+    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+        echo '<span class="short_header_date_with_subject">';
+        echo '<span class="short_header_date_title_with_subject">';
+        echo 'Date: ';
+        echo '</span>';
+        echo $displaydate;
+        echo '</span>';
     }
-    echo '</span>';
+
 
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
         echo '<div class="short_header_followup-to">';
@@ -699,8 +712,8 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</div>';
     }
     echo '</div>';
-  //  echo '</p>';
-  //  echo '</div>';
+    //  echo '</p>';
+    //  echo '</div>';
 }
 
 function copy_messageid()
