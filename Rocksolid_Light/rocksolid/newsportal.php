@@ -1189,7 +1189,7 @@ function display_links_in_body($text)
             continue;
         }
         // Get rid of unwanted trailing characters
-        $match = rtrim(htmlspecialchars_decode($match), '/>,"');
+        $match = rtrim(htmlspecialchars_decode($match), '/>,".');
         $match = htmlspecialchars($match);
         $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
         $url = preg_replace("/(<|>)/", ' ', $match);
