@@ -500,13 +500,14 @@
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
+	font-size: 0.9em;
 }
 
 /* short header Followup-To: */
 .short_header_followup-to {
 	margin-top: 0;
 	margin-bottom: 0;
+	margin-left: 0.4em;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
@@ -517,6 +518,7 @@
 .short_header_references {
 	margin-top: 0;
 	margin-bottom: 0;
+	margin-left: 0.4em;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
@@ -527,6 +529,7 @@
 .short_header_attachments {
 	margin-top: 0;
 	margin-bottom: 0;
+	margin-left: 0.4em;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
@@ -537,6 +540,7 @@
 .short_header_javascript_links {
 	margin-top: 0;
 	margin-bottom: 0;
+	margin-left: 0.4em;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
@@ -1274,11 +1278,16 @@ h1.np_post_headline {
 	text-align: right;
 }
 
+.post_followup-to_notice {
+	color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+}
+
 .np_post_header_newsgroups {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
@@ -1286,7 +1295,6 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
@@ -1294,7 +1302,6 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
@@ -1302,7 +1309,6 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
@@ -1310,15 +1316,13 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
 .np_post_header_or {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.7em;
-	;
+	font-size: 0.6em;
 	text-align: right;
 }
 
@@ -1331,7 +1335,6 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.5em;
-	;
 	text-align: right;
 }
 

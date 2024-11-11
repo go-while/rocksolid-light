@@ -651,10 +651,18 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</span>';
     }
 
-
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
         echo '<div class="short_header_followup-to">';
-        echo '<b>' . $text_header["followup"] . '</b>' . htmlspecialchars($head->followup) . "<br>\n";
+        echo '<b>' . $text_header["followup"] . '</b>';
+        $ngroups = preg_replace("/\,|\ /", "\t", $head->followup);
+        $ngroups = explode("\t", $ngroups);
+        foreach ($ngroups as $onegroup) {
+            if (get_section_by_group($onegroup)) {
+                echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+            } else {
+                echo " " . $onegroup . " ";
+            }
+        }
         echo '</div>';
     }
 

@@ -517,7 +517,8 @@ if ($show == 1) {
 
         if (isset($has_followup) && $has_followup !== false) {
             echo '<td class="np_post_header_newsgroups"><b>Newsgroups:&nbsp;</b>';
-            echo '</td><td>';
+            echo '</td>';
+            echo '<td class="post_followup-to_notice">';
 
             echo '<input type="radio" id="hasfollowup" name="fgroups" value="' . $head->followup . '" checked>';
             echo '&nbsp;';
@@ -528,10 +529,12 @@ if ($show == 1) {
             echo ')</label></td>';
             echo '</tr><tr>';
             echo '<td class="np_post_header_or"><b>or:&nbsp;</b>';
-            echo '</td><td>';
+            echo '</td>';
+            echo '<td class="post_followup-to_notice">';
             echo '<input type="radio" id="nofollowup" name="fgroups" value="' . $head->newsgroups . '">';
             echo '&nbsp;';
             echo '<label for="newsgroups">' . $head->newsgroups . '</label>';
+            echo '</td>';
             echo '</tr><tr>';
         } else {
             if (!isset($OVERRIDES['disable_ngs_edit']) || $OVERRIDES['disable_ngs_edit'] == false) {
