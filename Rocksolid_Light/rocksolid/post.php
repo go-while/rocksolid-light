@@ -45,8 +45,8 @@ $logfile = $logdir . '/post.log';
 @$group = $_REQUEST["group"];
 @$type = $_REQUEST["type"];
 @$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
-@$name = $_POST[md5($fieldnamedecrypt . "name")];
-@$email = $_POST[md5($fieldnamedecrypt . "email")];
+@$name = $_POST["username"];
+@$password = $_POST[md5($fieldnamedecrypt . "password")];
 @$body = $_POST[md5($fieldnamedecrypt . "body")];
 @$abspeichern = $_REQUEST["abspeichern"];
 @$references = $_REQUEST["references"];
@@ -64,7 +64,7 @@ $max_followupto = 1;
 // Check some header strings for bad characters
 $newsgroups = sanitize_header($newsgroups);
 $subject = trim(sanitize_header($subject));
-$email = sanitize_header($email);
+$password = sanitize_header($password);
 
 // Load name from cookies
 if ($setcookies) {
@@ -186,22 +186,12 @@ if ((function_exists("npreg_group_has_read_access") && ! npreg_group_has_read_ac
     die("access denied");
 }
 
-// Load name and email from the registration system, if available
-if (function_exists("npreg_get_name")) {
-    $name = npreg_get_name();
-}
-
-if (function_exists("npreg_get_email")) {
-    $email = npreg_get_email();
-    $form_noemail = true;
-}
-
 if (! strcmp($name, $CONFIG['anonusername']) && (isset($CONFIG['anonuser']))) {
     $userpass = $CONFIG['anonuserpass'];
     $email = $name . $CONFIG['email_tail'];
     $_SESSION['pass'] = false;
 } else {
-    $userpass = $email;
+    $userpass = $password;
     $request = "email";
     $get_email = get_user_config($name, $request);
     if ($get_email === FALSE) {
@@ -563,7 +553,7 @@ if ($show == 1) {
         echo '<td class="np_post_header_instructions">';
         if (! isset($name) && $CONFIG['anonuser'])
             $name = $CONFIG['anonusername'];
-        echo '<input class="post" type="text" name="' . md5($fieldencrypt . "name") . '"';
+        echo '<input class="post" type="text" name="username"';
         if (isset($name))
             echo ' value="' . htmlspecialchars($name) . '"';
         if ($logged_in && isset($name)) {
@@ -581,10 +571,10 @@ if ($show == 1) {
         echo '<td class="np_post_header_password"><b>' . $text_post["password"] . '</b></td>';
         echo '<td class = "np_post_header_instructions">';
         if ($logged_in && isset($name)) {
-            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '" value="**********"';
+            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "password") . '" value="**********"';
             echo ' size="40" maxlength="40" readonly>';
         } else {
-            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "email") . '"';
+            echo '<input class="post" type="password" name="' . md5($fieldencrypt . "password") . '"';
             echo ' size="40" maxlength="40">';
         }
         echo '</td>';
