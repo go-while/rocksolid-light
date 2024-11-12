@@ -550,7 +550,6 @@
 .display_headers_notice_short_header {
 	font-size: 1.0em;
 	color: var(--color-link);
-	vertical-align: middle;
 }
 
 /* The link checkbox to display article headers */
