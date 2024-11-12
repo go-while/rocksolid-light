@@ -1431,11 +1431,11 @@ function get_date_for_client_timezone($date)
     } else {
         $offset = intval($CONFIG['timezone']);
     }
-    if (isset($_COOKIE['tzid']) && (isset($OVERRIDES['timezone_to_local_format']) && $OVERRIDES['timezone_to_local_format'] == 'timezone')) {
+    if (isset($_COOKIE['tzid']) && (isset($OVERRIDES['timezone_to_local_format']) && $OVERRIDES['timezone_to_local_format'] == 'none')) {
         $datetime = new DateTime(date($text_header["date_format"], $date));
         $client_time = new DateTimeZone($_COOKIE['tzid']);
         $datetime->setTimezone($client_time);
-        $displaydate =  $datetime->format('D, j M Y H:i T');
+        $displaydate =  $datetime->format('D, j M Y H:i');
     } else {
         $datetime = new DateTime(date($text_header["date_format"], $date), new DateTimeZone('UTC'));
         $datetime->add(DateInterval::createFromDateString($offset . ' minutes'));
