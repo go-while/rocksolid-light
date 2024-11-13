@@ -492,6 +492,18 @@
 	font-size: 1.1em;
 }
 
+/* short header Date: */
+.short_header_date_interval_with_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right: 0;
+	text-decoration: none;
+	float: right;
+	color: var(--color-highlight);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
 /* short header Newsgroups: */
 .short_header_newsgroups {
 	margin-top: 0;

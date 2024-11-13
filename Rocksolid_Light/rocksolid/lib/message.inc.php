@@ -643,12 +643,15 @@ function show_header_short($head, $group, $local_poster = false)
     echo '</script> ';
 
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+        
         echo '<span class="short_header_date_with_subject">';
         echo '<span class="short_header_date_title_with_subject">';
         echo 'Date: ';
         echo '</span>';
         echo $displaydate;
-        echo '</span>';
+        echo '<br><span class="short_header_date_interval_with_subject">';
+        echo 'posted: ' . get_date_interval(date("D, j M Y H:i T", $head->date));
+        echo '</span></span>';
     }
 
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
