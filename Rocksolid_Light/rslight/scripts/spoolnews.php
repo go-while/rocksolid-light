@@ -135,15 +135,11 @@ if ($CONFIG['remote_server'] == '') {
 if ($CONFIG['remote_server'] != '') {
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Connecting: " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
     $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
-    if (! $ns) {
+    if ($ns == false) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
         exit();
     }
     $grouplist = file($config_dir . '/' . $config_name . '/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    $ns_local = nntp_open();
-    echo "\nOPENING Local server: " . $ns_local . "\n";
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " OPENING Local server: " . $ns_local, FILE_APPEND);
 
     foreach ($grouplist as $findgroup) {
         if ($findgroup[0] == ":") {
@@ -152,17 +148,21 @@ if ($CONFIG['remote_server'] != '') {
         $name = preg_split("/( |\t)/", $findgroup, 2);
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
-        get_articles($ns, $name[0]);
+        if ($ns == false) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to: " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
+            break;
+        }
+        $groupstat = get_articles($ns, $name[0]);
 
-        if ($enable_rslight == 1) {
+        if ($enable_rslight == 1 && $groupstat != false) {
             $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
             if (filemtime($timer_file) + 600 < time()) {
-                
+
                 $ns_local = nntp_open();
                 echo "\nOPENING Local server: " . $ns_local . "\n";
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " OPENING Local server: " . $ns_local, FILE_APPEND);
 
-                if (! $ns_local) {
+                if ($ns_local == false) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
                     // exit();
                 } else {
@@ -177,10 +177,12 @@ if ($CONFIG['remote_server'] != '') {
                         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Fatal error caught: " . $err->getMessage() . " trying to run thread_load_newsserver", FILE_APPEND);
                     }
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Threads updated for: " . $name[0], FILE_APPEND);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " CLOSING Local server: " . $ns_local, FILE_APPEND);
+                    if ($ns_local != false) {
+                        nntp_close($ns_local);
+                    }
                 }
                 touch($timer_file);
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " CLOSING Local server: " . $ns_local, FILE_APPEND);
-                nntp_close($ns_local);
             }
         }
     }
@@ -214,9 +216,10 @@ function get_articles($ns, $group)
     # Check if group exists. Open it if it does
     fputs($ns, "group " . $group . "\r\n");
     $response = line_read($ns);
+    $remote_disp = $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'];
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " " . $group . ": " . $response, FILE_APPEND);
+
     if (strcmp(substr($response, 0, 3), "211") != 0) {
-        $remote_disp = $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'];
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " " . $group . ": " . $response, FILE_APPEND);
         echo "\n" . $response;
         return (1);
     }
@@ -239,6 +242,10 @@ function get_articles($ns, $group)
     # Split group response line to get last article number
     # $article is the next number we want, not the last we retrieved
     $detail = explode(" ", $response);
+    if ($detail[1] < 1) { // Remote server contains no articles for this group
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " contains no articles for " . $group . " Skipping", FILE_APPEND);
+        return false;
+    }
     $latest_remote_article = $detail[3];
     if (! isset($article)) {
         $article = $detail[2];
@@ -250,7 +257,7 @@ function get_articles($ns, $group)
         $article = $detail[2];
     }
     if ($article > $detail[3]) {
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $CONFIG['remote_server'] . " for " . $group . " We are up to date", FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " for " . $group . " We are up to date", FILE_APPEND);
         // Just in case we have an error and $article is too large:
         $article = $detail[3] + 1;
     } else {
@@ -272,6 +279,8 @@ function get_articles($ns, $group)
         if ((substr($response, 0, 3) != "224")) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group . " (requested: xover " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
             return false;
+        } else {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $CONFIG['remote_server'] . " " . $group . " (requested: overview " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
         }
         while (rtrim($response = line_read($ns)) !== '.') {
             $ov = preg_split("/\t/", $response);
