@@ -595,6 +595,7 @@ function show_header_short($head, $group, $local_poster = false)
 
     // Where to show From in short_headers
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+        $shn = "short_header_newsgroups_with_subject";
         echo '<span class="short_header_subject_title">';
         echo 'Subject: ';
         echo '</span>';
@@ -603,6 +604,7 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</span>';
         echo '<span class="short_header_from_with_subject"><b>From: </b>' . $displayname . '</span><br>';
     } else {
+        $shn = "short_header_newsgroups";
         echo '<div class="short_header_subject">';
         echo htmlspecialchars($head->subject) . "<br>";
         echo '</div>';
@@ -615,7 +617,7 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</span><br>';
     }
 
-    echo '<span class="short_header_newsgroups">';
+    echo '<span class="' . $shn . '">';
     echo '<b>Newsgroups: </b>';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
