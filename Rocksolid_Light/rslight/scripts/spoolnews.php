@@ -654,4 +654,5 @@ function get_articles($ns, $group)
     }
     $remote_groups_array[$group] = $article;
     file_put_contents($remote_groups_array_file, serialize($remote_groups_array));
+    return true;
 }

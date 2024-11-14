@@ -2701,7 +2701,7 @@ function is_moderated($newsgroups)
 function get_next_article_number($group)
 {
     $ok_article = get_article_list($group);
-    if($ok_article == false) {
+    if(!is_array($ok_article)) {
         return 1;
     }
     sort($ok_article);
@@ -2726,21 +2726,15 @@ function get_article_list($thisgroup)
     $table = 'overview';
     $dbh = overview_db_open($database, $table);
     $stmt = $dbh->prepare("SELECT * FROM $table WHERE newsgroup=:thisgroup ORDER BY number");
-    $found = false;
     $stmt->execute([
         'thisgroup' => $thisgroup
     ]);
     $ok_article = array();
     while ($found = $stmt->fetch()) {
         $ok_article[] = $found['number'];
-        $found = true;
     }
     $dbh = null;
-    if ($found) {
         return (array_unique($ok_article));
-    } else {
-        return false;
-    }
 }
 
 function check_duplicate_msgid($msgid, $group)
