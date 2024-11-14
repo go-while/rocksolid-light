@@ -22,6 +22,10 @@ chdir($spoolnews_path);
 include "config.inc.php";
 include("$file_newsportal");
 
+if (! isset($argv[1])) {
+    $argv[1] = "-help";
+}
+
 if ($argv[1] != '-newsection') {
     // Change to webserver user if root
     $uinfo = posix_getpwnam($CONFIG['webserver_user']);
@@ -56,9 +60,6 @@ if ($argv[1] != '-newsection') {
     }
 }
 
-if (! isset($argv[1])) {
-    $argv[1] = "-help";
-}
 if ($argv[1][0] == '-') {
     switch ($argv[1]) {
         case "-version":
@@ -73,6 +74,14 @@ if ($argv[1][0] == '-') {
             echo "Reset: " . $argv[2] . "\n";
             remove_articles($argv[2]);
             reset_group($argv[2], 0);
+            break;
+        case "-reset-section":
+            if (!isset($argv[2])) {
+                echo "Please provide a section name\n";
+                exit;
+            }
+            echo "Reset Section: " . $argv[2] . "\n";
+            reset_section($argv[2]);
             break;
         case "-import":
             if (isset($argv[2])) {
@@ -105,6 +114,8 @@ if ($argv[1][0] == '-') {
             echo "-remove: Remove all data for a group (-remove alt.test)\n";
             echo "         You must also remove group name from <config_dir>/<section>/groups.txt manually\n";
             echo "-reset: Reset a group to restart from zero messages (-reset alt.test)\n";
+            echo "-reset-section: Reset ALL GROUPS in a Section to restart from zero messages\n";
+            echo "         (-reset-section rocksolid) THIS CAN TAKE A LOT OF TIME TO RUN\n";
             break;
     }
     exit();
@@ -241,6 +252,23 @@ function get_group_list()
         }
     }
     return $grouplist;
+}
+
+function reset_section($section = "") {
+    global $config_dir;
+    $section = trim($section);
+
+    $gldata = file($config_dir . $section . "/groups.txt");
+        foreach ($gldata as $gl) {
+            if (($gl[0] == ':') || (trim($gl) == "")) {
+                continue;
+            }
+            $group_name = preg_split("/( |\t)/", $gl, 2);
+            $group = trim($group_name[0]);
+            echo "START Reset " . $group . "\n";
+            remove_articles($group);
+            reset_group($group, 0);
+        }
 }
 
 function reset_group($group, $remove = 0)
