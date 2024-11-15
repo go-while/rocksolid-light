@@ -21,6 +21,7 @@ include("paths.inc.php");
 chdir($spoolnews_path);
 include "config.inc.php";
 include("$file_newsportal");
+include "spool-lib.php";
 
 if (! isset($argv[1])) {
     $argv[1] = "-help";
@@ -38,6 +39,7 @@ if ($argv[1] != '-newsection') {
         exit();
     }
     /* Everything below runs as $CONFIG['webserver_user'] */
+    echo "You are running as user: " . $processUser['name'] . "\n";
 
     $processUser = posix_getpwuid(posix_geteuid());
     if ($processUser['name'] != $CONFIG['webserver_user']) {
@@ -64,6 +66,17 @@ if ($argv[1][0] == '-') {
     switch ($argv[1]) {
         case "-version":
             echo 'Version ' . $rslight_version . "\n";
+            break;
+        case "-clear-diskcache":
+            clear_disk_cache();
+            break;
+        case "-refill":
+            if (!isset($argv[2]) || !isset($argv[3])) {
+                echo "Please provide a group name followed by number of articles to poll\n";
+                exit;
+            }
+            echo "Refilling: " . $argv[2] . " going back " . $argv[3] . " articles\n";
+            refill_group($argv[2], $argv[3]);
             break;
         case "-remove":
             echo "Removing: " . $argv[2] . "\n";
@@ -108,9 +121,13 @@ if ($argv[1][0] == '-') {
             echo "*** PLEASE DISABLE cron.php WHEN RUNNING THIS SCRIPT ***\n";
             echo "********************************************************\n";
             echo "-clean: Remove extraneous group db3 files\n";
+            echo "-clear-diskcache: Remove all cache files if using Disk Caching\n";
             echo "-import: Import articles from a .db3 file (-import alt.test-articles)\n";
             echo "         You must first add group name to <config_dir>/<section>/groups.txt manually\n";
             echo "-newsection: Create a new section for groups\n";
+            echo "-refill: Go back x articles and retrieve missing from remote server\n";
+            echo "         -refill alt.test 3000 will retrive missing articles for alt.test\n";
+            echo "         starting 3000 articles earlier than latest remote article number\n";
             echo "-remove: Remove all data for a group (-remove alt.test)\n";
             echo "         You must also remove group name from <config_dir>/<section>/groups.txt manually\n";
             echo "-reset: Reset a group to restart from zero messages (-reset alt.test)\n";
@@ -121,6 +138,30 @@ if ($argv[1][0] == '-') {
     exit();
 } else {
     exit();
+}
+
+function clear_disk_cache()
+{
+    global $config_dir;
+    if (file_exists($config_dir . '/cache.inc.php')) {
+        include $config_dir . '/cache.inc.php';
+    } else {
+        echo "Disk Cache not configured in " . $config_dir . '/cache.inc.php' . "\n";
+        exit;
+    }
+    if ($enable_cache != 'diskcache' || !isset($cache_dir)) {
+        echo "Disk Cache not configured in " . $config_dir . '/cache.inc.php' . "\n";
+        exit;
+    }
+    echo "Clearing Disk Cache in " . $cache_dir . "\n";
+    foreach (glob($cache_dir . "/*") as $filename) {
+        if (is_file($filename)) {
+            echo "Deleting " . $filename . "\n";
+            unlink($filename);
+        } else {
+            echo "NOT Deleting: " . $filename . "\n";
+        }
+    }
 }
 
 function create_section($section = false)
@@ -156,7 +197,7 @@ function create_section($section = false)
     $menudata = file($config_dir . '/menu.conf');
     $newmenu = array();
     foreach ($menudata as $menuentry) {
-        if(trim($menuentry) == '') {
+        if (trim($menuentry) == '') {
             continue;
         }
         if (strpos($menuentry, $section) !== false) {
@@ -254,21 +295,64 @@ function get_group_list()
     return $grouplist;
 }
 
-function reset_section($section = "") {
+function refill_group($group, $start)
+{
+    global $spooldir, $config_dir, $remote_groups_array_file, $workpath, $CONFIG, $config_name, $path;
+
+    $logfile = $spooldir . '/log/import.log';
+    $workpath = $spooldir . "/";
+    $path = $workpath . "articles/";
+
+    $config_name = get_section_by_group($group);
+    if (file_exists($config_dir . $config_name . '.inc.php')) {
+        $config_file = $config_dir . $config_name . '.inc.php';
+    } else {
+        $config_file = $config_dir . 'rslight.inc.php';
+    }
+    $CONFIG = include($config_file);
+
+    $remote_groups_array_file = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . "-remote_groups.dat";
+    if (file_exists($remote_groups_array_file)) {
+        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+    } else {
+        $remote_groups_array = array();
+    }
+
+    foreach ($remote_groups_array as $key => $value) {
+        if ($key == $group) {
+            $newarray[$key] = $remote_groups_array[$key] - $start;
+        } else {
+            $newarray[$key] = $remote_groups_array[$key];
+        }
+    }
+    file_put_contents($remote_groups_array_file, serialize($newarray));
+
+    $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
+    if ($ns == false) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        exit();
+    }
+
+    echo "Finding missing articles from Remote Server for: " . $group . " starting -" . $start . " articles\n";
+    get_articles($ns, $group, $start);
+}
+
+function reset_section($section = "")
+{
     global $config_dir;
     $section = trim($section);
 
     $gldata = file($config_dir . $section . "/groups.txt");
-        foreach ($gldata as $gl) {
-            if (($gl[0] == ':') || (trim($gl) == "")) {
-                continue;
-            }
-            $group_name = preg_split("/( |\t)/", $gl, 2);
-            $group = trim($group_name[0]);
-            echo "START Reset " . $group . "\n";
-            remove_articles($group);
-            reset_group($group, 0);
+    foreach ($gldata as $gl) {
+        if (($gl[0] == ':') || (trim($gl) == "")) {
+            continue;
         }
+        $group_name = preg_split("/( |\t)/", $gl, 2);
+        $group = trim($group_name[0]);
+        echo "START Reset " . $group . "\n";
+        remove_articles($group);
+        reset_group($group, 0);
+    }
 }
 
 function reset_group($group, $remove = 0)

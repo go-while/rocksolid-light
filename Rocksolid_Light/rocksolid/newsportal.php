@@ -1203,7 +1203,7 @@ function display_links_in_body($text)
     foreach ($vlad as $line) {
         $line = preg_replace("/<\/?p>/", "", $line);
         $line = preg_replace("/\&gt;/", ">", $line);
-        $line = trim($line);
+        $line = rtrim($line);
         $depth = 0;
         for ($i = 0; $i < strlen($line); $i++) {
             if ($line[$i] == ' ') {
