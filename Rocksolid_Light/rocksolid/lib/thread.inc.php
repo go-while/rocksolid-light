@@ -713,7 +713,7 @@ function thread_format_subject($c, $group, $highlightids = false)
             $started = $fromoutput[0];
         }
         $return .= '<span class="thread_datebox">';
-        $return .= '<span class="thread_start_author_info">By: ' . create_name_link($started, $c->from) . ' on <i>' . date("D, j M Y", $newdate) . '</i></span>';
+        $return .= '<span class="thread_start_author_info">By: ' . create_name_link($started, $c->from, false) . ' on <i>' . date("D, j M Y", $newdate) . '</i></span>';
         $return .= '</span>';
     }
     return ($return);
@@ -855,7 +855,7 @@ function thread_format_lastmessage($c, $group = '')
     } else {
         $return = '<span class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</span>';
     }
-    $return .= '<br><span class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from) . '</span>';
+    $return .= '<br><span class=np_posted_date_left>By: ' . create_name_link($poster_name, $name_from, false) . '</span>';
     return ($return);
 }
 
