@@ -540,7 +540,7 @@ function show_header($head, $group, $local_poster = false)
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
         echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
-        echo '<span class="display_headers_notice_short_header">show headers</span>';
+        echo '<span class="display_headers_notice_short_header"> show headers</span>';
     }
 ?>
     &nbsp;
@@ -567,8 +567,10 @@ function show_header_short($head, $group, $local_poster = false)
     global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
 
-    // If Subject: is longer than this, place From: below Subject: in short short_header
-    $maxsubjectlength = 70;
+    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
+        show_header_short_with_subject($head, $group, $local_poster);
+        return;
+    }
 
     if (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site)) {
         $local_poster = true;
@@ -593,31 +595,18 @@ function show_header_short($head, $group, $local_poster = false)
     // Try to use client timezone else default to UTC
     $displaydate = get_date_for_client_timezone($head->date);
 
-    // Where to show From in short_headers
-    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
-        $shn = "short_header_newsgroups_with_subject";
-        echo '<span class="short_header_subject_title">';
-        echo 'Subject: ';
-        echo '</span>';
-        echo '<span class="short_header_subject">';
-        echo htmlspecialchars($head->subject);
-        echo '</span>';
-        echo '<span class="short_header_from_with_subject"><b>From: </b>' . $displayname . '</span><br>';
-    } else {
-        $shn = "short_header_newsgroups";
-        echo '<div class="short_header_subject">';
-        echo htmlspecialchars($head->subject) . "<br>";
-        echo '</div>';
-        echo '<div class="short_header_from">';
-        echo "<b>From: </b>" . $displayname;
-        echo '</div>';
-        // Try to use client timezone else default to UTC
-        echo '<span class="short_header_date">';
-        echo '<b>Date: </b>' . $displaydate;
-        echo '</span><br>';
-    }
+    echo '<div class="short_header_subject">';
+    echo htmlspecialchars($head->subject) . "<br>";
+    echo '</div>';
+    echo '<div class="short_header_from">';
+    echo "<b>From: </b>" . $displayname;
+    echo '</div>';
+    // Try to use client timezone else default to UTC
+    echo '<span class="short_header_date">';
+    echo '<b>Date: </b>' . $displaydate;
+    echo '</span><br>';
 
-    echo '<span class="' . $shn . '">';
+    echo '<span class="short_header_newsgroups">';
     echo '<b>Newsgroups: </b>';
     $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
     $ngroups = explode("\t", $ngroups);
@@ -644,18 +633,6 @@ function show_header_short($head, $group, $local_poster = false)
     echo '}';
     echo '</script> ';
 
-    if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
-        
-        echo '<span class="short_header_date_with_subject">';
-        echo '<span class="short_header_date_title_with_subject">';
-        echo 'Date: ';
-        echo '</span>';
-        echo $displaydate;
-        echo '<br><span class="short_header_date_interval_with_subject">';
-        echo 'posted: ' . get_date_interval(date("D, j M Y H:i T", $head->date));
-        echo '</span></span>';
-    }
-
     if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
         echo '<div class="short_header_followup-to">';
         echo '<b>' . $text_header["followup"] . '</b>';
@@ -680,7 +657,7 @@ function show_header_short($head, $group, $local_poster = false)
     if ($article_show["trigger_headers"]) {
         echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
         echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
-        echo '<span class="display_headers_notice_short_header">show headers</span>';
+        echo '<span class="display_headers_notice_short_header"> show headers</span>';
     }
 ?>
     &nbsp;
@@ -695,7 +672,7 @@ function show_header_short($head, $group, $local_poster = false)
         onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
-<?php
+    <?php
     echo '</span></form>';
 
     // Display References in short headers if enabled in overrides.inc.php
@@ -727,6 +704,178 @@ function show_header_short($head, $group, $local_poster = false)
     echo '</div>';
     //  echo '</p>';
     //  echo '</div>';
+}
+
+function show_header_short_with_subject($head, $group, $local_poster = false)
+{
+    global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
+    global $file_attachment, $CONFIG, $config_name, $sitelink;
+    global $OVERRIDES;
+
+    if (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site)) {
+        $local_poster = true;
+    }
+
+    echo '<div class="np_article_header">';
+
+    // Display javascript links and time interval
+    echo '<p id="' . $head->id . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
+    echo '<p id="' . $head->number . 'copy"';
+    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+
+    echo '<table class="show_header_short_with_subject_table">';
+
+    if ($head->name != "") {
+        $displayname = create_name_link($head->name, $head->from, false);
+    } else {
+        if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
+            $displayname = truncate_email($head->from);
+        } else {
+            $displayname = htmlspecialchars($head->from);
+        }
+    }
+
+    if ($local_poster) {
+        $displayname = '<span class="short_header_from_local_poster">' . $displayname . '</span>';
+    }
+
+    // Try to use client timezone else default to UTC
+    $displaydate = get_date_for_client_timezone($head->date);
+
+    // Display Subject and From
+    echo '<tr><td class="short_header_with_subject_left">';
+    //        echo '<span class="short_header_subject_title_with_subject">';
+    //        echo 'Subject: ';
+    //        echo '</span>';
+    echo '<span class="short_header_subject_with_subject">';
+    echo htmlspecialchars($head->subject);
+    echo '</span>';
+    echo '</td><td class="short_header_with_subject_right">';
+    echo '<span class="short_header_from_with_subject"><b>From: </b>' . $displayname . '</span>';
+    echo '</td>';
+
+    // Display Newsgroups and Date
+    echo '<tr><td class="short_header_with_subject_left">';
+    echo '<span class="short_header_newsgroups_with_subject">';
+    echo 'Newsgroups: ';
+    $ngroups = preg_replace("/\,|\ /", "\t", $head->newsgroups);
+    $ngroups = explode("\t", $ngroups);
+    // echo "&nbsp;";
+    foreach ($ngroups as $onegroup) {
+        if (get_section_by_group($onegroup)) {
+            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+        } else {
+            echo " " . $onegroup . " ";
+        }
+    }
+    echo '</span>';
+    echo '</td>';
+    echo '<td class="short_header_with_subject_right">';
+    echo '<span class="short_header_date_title_with_subject">';
+    echo 'Date: ';
+    //   echo '</span>';
+    echo '<span class="short_header_date_with_subject">';
+    //   echo '<b>Date: </b>';
+    //   echo '</span>';
+    echo $displaydate;
+    echo '</span></span>';
+    echo '</td></tr>';
+
+    // Copy MID to clipboard (requires js)
+    echo '<script>';
+    echo 'function CopyToClipboard(id)';
+    echo '{';
+    echo 'var r = document.createRange();';
+    echo 'r.selectNode(document.getElementById(id));';
+    echo 'window.getSelection().removeAllRanges();';
+    echo 'window.getSelection().addRange(r);';
+    echo "document.execCommand('copy');";
+    echo 'window.getSelection().removeAllRanges();';
+    echo '}';
+    echo '</script> ';
+
+    // Display Followup-To
+    if (isset($head->followup) && ($article_show["Followup"]) && ($head->followup != "")) {
+        echo '<tr><td class="short_header_with_subject_left">';
+        echo '<div class="short_header_followup-to">';
+        echo 'Followup-To: ';
+        $ngroups = preg_replace("/\,|\ /", "\t", $head->followup);
+        $ngroups = explode("\t", $ngroups);
+        foreach ($ngroups as $onegroup) {
+            if (get_section_by_group($onegroup)) {
+                echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+            } else {
+                echo " " . $onegroup . " ";
+            }
+        }
+        echo '</div>';
+        echo '</td><td></td></tr>';
+    }
+
+    // Display References in short headers if enabled in overrides.inc.php
+    if ((isset($OVERRIDES['short_header_references'])) && ($OVERRIDES['short_header_references'] == true) && (isset($head->references[0]))) {
+        echo '<tr><td class="short_header_with_subject_left">';
+        echo '<div class="short_header_references_with_subject">';
+        echo 'References: ';
+        for ($i = 0; $i <= count($head->references) - 1; $i++) {
+            $ref = $head->references[$i];
+            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
+        }
+        echo '</div>';
+        echo '</td><td></td></tr>';
+    }
+
+    if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
+        echo '<tr><td class="short_header_with_subject_left">';
+        echo '<div class="short_header_attachments_with_subject">';
+        echo 'Attachments: ';
+        for ($i = 1; $i < count($head->content_type); $i++) {
+            if (! strcmp($head->content_type[$i], "text/html")) {
+                $contype = "HTML Version";
+            } else {
+                $contype = $head->content_type_name[$i];
+            }
+            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+            if ($i < count($head->content_type) - 1)
+                echo ', ';
+        }
+        echo '</div>';
+        echo '</td></tr>';
+    }
+
+    // Display javascript tools
+    echo '<tr><td class="short_header_with_subject_left">';
+    echo '<span class="short_header_javascript_with_subject">';
+    if ($article_show["trigger_headers"]) {
+        echo '<input type="checkbox" class="np_header_button_checkbox" id="trigger_headers_' . $head->id . '" title="Show headers" name="showheaders" value="showheaders">';
+        echo '<span class="display_headers_on">' . display_full_headers($head->number, $group, $head->name, $head->from) . '</span>';
+        echo '<span class="display_headers_notice_short_header"> show headers</span>';
+    }
+    ?>
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . urlencode($head->id); ?>"
+        onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
+            mid</i></a>
+
+
+    &nbsp;
+    <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+        onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
+        style="text-decoration: none" title="Copy article link to clipboard"><i>copy
+            link</i></a>
+<?php
+    echo '</span>';
+    echo '</td>';
+    echo '<td class="short_header_with_subject_right">';
+    echo '<span class="short_header_date_interval_with_subject">';
+    echo '<b>posted: </b>' . get_date_interval(date("D, j M Y H:i T", $head->date));
+    echo '</span>';
+    echo '</td></tr>';
+
+    echo '</table>';
+    echo '</div>';
 }
 
 function copy_messageid()
