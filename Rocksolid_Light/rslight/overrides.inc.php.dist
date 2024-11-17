@@ -44,6 +44,15 @@ return [
     // Must be 'show' or 'hide'  
     'hide_unsub' => 'hide',
 
+    // Restrict 'NEW' users to this many posts per hour after
+    // account is created. After that, limit will be lifted.
+    // Comment out '//' to disable
+    'new_users_rate_limit' => 2,
+
+    // Number of hours to consider an account as 'NEW'
+    // Comment out '//' to disable
+    'new_account_life' => 2,
+
     // Show thread tree above articles in thread view
     // Default is false
     'show_thread_tree' => false,

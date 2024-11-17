@@ -1569,6 +1569,7 @@ function check_encryption_groups($request)
     }
 }
 
+// Sets a user's config value. $newval = false removes the setting entirely
 function set_user_config($username, $request, $newval)
 {
     global $config_dir;
@@ -1581,7 +1582,9 @@ function set_user_config($username, $request, $newval)
     $found = 0;
     foreach ($userData as $data) {
         if (strpos($data, $request . ':') !== FALSE) {
+            if($newval !== false) {
             fputs($userFileHandle, $request . ':' . $newval . "\r\n");
+            }
             $found = 1;
         } else {
             fputs($userFileHandle, $data . "\r\n");

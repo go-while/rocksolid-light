@@ -91,7 +91,7 @@ if (!isset($_POST['command'])) {
         echo '<td><input type="submit" name="Submit" value="Create"></td>';
         echo '<td></td></tr>';
         echo '</table></form>';
- 
+
         // RESET Password 
         echo '<form name="resetpw" method="post" action="register.php">';
         echo '<table class="register_table_forgot_password_button">';
@@ -581,7 +581,7 @@ function create_account($username, $password, $user_email)
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
-    
+
     echo '<center>';
     echo 'Create account: ' . $_POST['username'] . '<br><br >';
     /* Generate email */
@@ -670,7 +670,7 @@ function create_account($username, $password, $user_email)
 
 function create_new($username, $password, $user_email)
 {
-    global $config_dir, $CONFIG, $keys, $workpath, $keypath, $logfile;
+    global $config_dir, $CONFIG, $OVERRIDES, $keys, $workpath, $keypath, $logfile;
     include $config_dir . '/synchronet.conf';
     if (isset($_POST['code'])) {
         $code = $_POST['code'];
@@ -725,6 +725,14 @@ function create_new($username, $password, $user_email)
         if ($verified == 1) {
             fwrite($userFileHandle, "email_verified:true\r\n");
         }
+
+        // Save creation date and restrict rate_limit for new users if configured
+        fwrite($userFileHandle, 'created:' . time() . "\r\n");
+        fwrite($userFileHandle, "new_account:true\r\n");
+        if (isset($OVERRIDES['new_users_rate_limit']) && $OVERRIDES['new_users_rate_limit'] > 0) {
+            fwrite($userFileHandle, 'rate_limit:' . $OVERRIDES['new_users_rate_limit'] . "\r\n");
+        }
+
         fclose($userFileHandle);
         chmod($userFilename, 0666);
     }
@@ -732,7 +740,12 @@ function create_new($username, $password, $user_email)
         unlink(sys_get_temp_dir() . "/" . $username);
     }
     echo '<center>';
-    echo "User:" . $username . " Created\r\n";
+    echo "User: " . $username . " Created<br>";
+    if (isset($OVERRIDES['new_account_life'])) {
+        echo "<br>Account Posting Limit per Hour<br>";
+        echo " will be limited for the first<br>";
+        echo $OVERRIDES['new_account_life'] . ' hour(s) after account creation<br>';
+    }
     echo '<br ><a href="' . $CONFIG['default_content'] . '">Back</a>';
     echo '</center>';
 }

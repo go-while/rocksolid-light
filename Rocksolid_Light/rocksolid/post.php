@@ -305,16 +305,31 @@ if ($type == "post") {
                 $nemail = $anonym_address;
             else
                 $nemail = $email;
+
+            // Does user have their own rate limit?
+            $new_user_notice = '';
             $rate_limit = get_user_config($name, 'rate_limit');
             if (($rate_limit !== FALSE) && ($rate_limit > 0)) {
-                $CONFIG['rate_limit'] = $rate_limit;
+                $is_new = get_user_config($name, 'new_account');
+                if ($is_new == true) {
+                    $create_date = get_user_config($name, 'created');
+                    if (isset($OVERRIDES['new_account_life']) && $create_date > (time() - ($OVERRIDES['new_account_life'] * 3600))) {  // Account is new
+                        $CONFIG['rate_limit'] = $rate_limit;
+                        $new_user_notice = '<br><br>(posting is limited for ' . $OVERRIDES['new_account_life'] . ' hour(s) after account creation)<br>';
+                    } else {
+                        set_user_config($name, 'new_account', false);
+                        set_user_config($name, 'rate_limit', false);
+                    }
+                }
             }
+
             if ($CONFIG['rate_limit'] == true) {
                 $postsremaining = check_rate_limit($name);
                 if ($postsremaining < 1) {
                     $wait = check_rate_limit($name, 0, 1);
                     echo 'You have reached the limit of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />Please wait ' . round($wait) . ' minutes before posting again.';
-                    echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
+                    echo $new_user_notice;
+                    echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
                     return;
                 }
             }
@@ -322,10 +337,10 @@ if ($type == "post") {
             // Wrap long lines in message body
             $body = wrap_post($body);
 
-            if(!isset($_POST['encryptthis'])) {
+            if (!isset($_POST['encryptthis'])) {
                 $_POST['encryptthis'] = null;
             }
-            if(!isset($_POST['encrypto'])) {
+            if (!isset($_POST['encrypto'])) {
                 $_POST['encrypto'] = null;
             }
 
@@ -353,10 +368,11 @@ if ($type == "post") {
                     echo 'You have ' . $postsremaining . ' posts remaining of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />';
                     if ($postsremaining < 1) {
                         $wait = check_rate_limit($name, 0, 1);
-                        echo 'Please wait ' . round($wait) . ' minutes before posting again.<br />';
+                        echo 'Please wait ' . round($wait) . ' minutes before posting again.<br>';
+                        echo $new_user_notice;
                     }
                 }
-                echo '<p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
+                echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";
@@ -671,7 +687,7 @@ if ($show == 1) {
         if (! in_array($config_name, $OVERRIDES['disable_attach'])) {
             echo '&nbsp;';
             echo '<input type="file" name="photo" id="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
-          //  echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
+            //  echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
             echo '</td></tr>';
         }
         if ($post_captcha) {
