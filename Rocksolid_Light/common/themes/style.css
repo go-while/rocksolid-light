@@ -781,6 +781,23 @@ textarea.configuration {
 	font-size: 0.6em;
 }
 
+/* POST */
+.post_rate_limit_notice {
+	text-align: left;
+	font-size: 1.0em;
+}
+
+.post_rate_limit_notice_limit_reached {
+	text-align: center;
+	font-size: 1.0em;
+}
+
+.post_new_user_notice {
+	font-size: 0.9em;
+	font-style: italic;
+	color: var(--color-highlight);
+}
+
 /* Grouplist */
 
 /* grouplist.php */

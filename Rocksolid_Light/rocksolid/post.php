@@ -308,15 +308,18 @@ if ($type == "post") {
 
             // Does user have their own rate limit?
             $new_user_notice = '';
+            $is_new = false;
             $rate_limit = get_user_config($name, 'rate_limit');
             if (($rate_limit !== FALSE) && ($rate_limit > 0)) {
                 $is_new = get_user_config($name, 'new_account');
                 if ($is_new == true) {
                     $create_date = get_user_config($name, 'created');
                     if (isset($OVERRIDES['new_account_life']) && $create_date > (time() - ($OVERRIDES['new_account_life'] * 3600))) {  // Account is new
+                        $is_new = ($create_date - (time() - ($OVERRIDES['new_account_life'] * 3600))) / 60;  // Time left before is NOT new
                         $CONFIG['rate_limit'] = $rate_limit;
-                        $new_user_notice = '<br><br>(posting is limited for ' . $OVERRIDES['new_account_life'] . ' hour(s) after account creation)<br>';
+                        $new_user_notice = '<br><br><div class="post_new_user_notice">(posting is limited for ' . $OVERRIDES['new_account_life'] . ' hour(s) after account creation)</div>';
                     } else {
+                        $is_new = false;
                         set_user_config($name, 'new_account', false);
                         set_user_config($name, 'rate_limit', false);
                     }
@@ -326,10 +329,17 @@ if ($type == "post") {
             if ($CONFIG['rate_limit'] == true) {
                 $postsremaining = check_rate_limit($name);
                 if ($postsremaining < 1) {
+                    $postsremaining = 0;
                     $wait = check_rate_limit($name, 0, 1);
-                    echo 'You have reached the limit of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />Please wait ' . round($wait) . ' minutes before posting again.';
+                    if ($is_new != false && ($is_new < $wait)) {
+                        $wait = $is_new;
+                    }
+                    echo '<div class = "post_rate_limit_notice_limit_reached">';
+                    echo 'You have reached the limit of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />Please wait ' . round($wait, 1) . ' minutes before posting again.';
                     echo $new_user_notice;
                     echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
+                    echo '</div>';
+                    file_put_contents($logfile, "\n" . logging_prefix() . " POST Limit REACHED for: " . $name . ': ' . $postsremaining . ' posts remaining of ' . $CONFIG['rate_limit'], FILE_APPEND);
                     return;
                 }
             }
@@ -365,12 +375,15 @@ if ($type == "post") {
                 }
                 if ($CONFIG['rate_limit'] == true) {
                     $postsremaining = check_rate_limit($name, 1);
+                    echo '<div class = "post_rate_limit_notice">';
                     echo 'You have ' . $postsremaining . ' posts remaining of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />';
+                    file_put_contents($logfile, "\n" . logging_prefix() . " POST Limit Checked for: " . $name . ': ' . $postsremaining . ' posts remaining of ' . $CONFIG['rate_limit'], FILE_APPEND);
                     if ($postsremaining < 1) {
                         $wait = check_rate_limit($name, 0, 1);
-                        echo 'Please wait ' . round($wait) . ' minutes before posting again.<br>';
+                        echo 'Please wait ' . round($wait, 1) . ' minutes before posting again.<br>';
                         echo $new_user_notice;
                     }
+                    echo '</div>';
                 }
                 echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
             } else {
