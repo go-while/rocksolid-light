@@ -345,6 +345,9 @@ function display_threads($threads, $oldest)
             $results++;
             $skip = '';
             if ($nohead) {
+                if(!isset($target_head['number'])) {
+                    $target_head = $target;
+                }
                 if (($style % 2) == 0) {
                     $display .= '<tr class="overboard_result_line2"><td class="overboard_result_line2" style="word-wrap:break-word">';
                 } else {
