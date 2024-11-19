@@ -34,7 +34,7 @@ function get_articles($ns, $group, $refill_start = false)
 
     if (strcmp(substr($response, 0, 3), "211") != 0) {
         echo "\n" . $response;
-        return (1);
+        return false;
     }
     # Get config
     if (file_exists($remote_groups_array_file)) {
