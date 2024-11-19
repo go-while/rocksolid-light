@@ -211,10 +211,10 @@ foreach ($grouplist as $findgroup) {
                 $ref = preg_split("/[\s]+/", $overviewline['refs']);
                 $this_overboard['threadlink'][$thismsgid] = $ref[0];
             }
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Adding: " . $thismsgid, FILE_APPEND);
             if ($results++ > ($maxdisplay - 2)) {
                 break;
             }
-            // }
         }
     }
 }
@@ -248,7 +248,7 @@ function expire_overboard($cachefile)
         $prune = true;
         foreach ($this_overboard['threads'] as $key => $value) {
             if ($key < (time() - (86400 * $article_age))) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Expiring: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Expiring: " . $value, FILE_APPEND);
                 unset($this_overboard['threads'][$key]);
                 unset($this_overboard['msgids'][$value]);
                 unset($this_overboard['threadlink'][$value]);
