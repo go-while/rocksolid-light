@@ -266,7 +266,7 @@ function display_threads($threads, $oldest)
     global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $config_name, $spooldir, $config_dir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
-    $display = '<table cellspacing="0" width="100%" class="np_results_table">';
+    $display = '<table class="overboard_results_table">';
     if (! isset($threads)) {
         $threads = (object) [];
     } else {
@@ -346,15 +346,15 @@ function display_threads($threads, $oldest)
             $skip = '';
             if ($nohead) {
                 if (($style % 2) == 0) {
-                    $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word">';
+                    $display .= '<tr class="overboard_result_line2"><td class="overboard_result_line2" style="word-wrap:break-word">';
                 } else {
-                    $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word">';
+                    $display .= '<tr class="overboard_result_line1"><td class="overboard_result_line1" style="word-wrap:break-word">';
                 }
                 if ($target_head) {
-                    $display .= '<center>';
+                    $display .= '<div class="overboard_threadhead_result">';
                     $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
                     $display .= '<p class=np_ob_subject>';
-                    $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target_head['subject']) . '</span></a></b></p>';
+                    $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target_head['subject'])) . '</span></a></b></p>';
                     $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
                     $timetest = $oldest;
                     if ($newonly) {
@@ -372,8 +372,8 @@ function display_threads($threads, $oldest)
                         }
                         if ($block) {
                             $display .= '<br><br>';
-                            $display .= '<p class=np_ob_subject>';
-                            $display .= '<b><span>(message #' . $target_head['number'] . ' hidden by your blocklist)</span></a></b>';
+                            $display .= '<p class="overboard_blocked_user_notice">';
+                            $display .= '<b><span>(message #' . $target_head['number'] . ' hidden by your blocklist)</span></a></b></p>';
                         } else {
                             $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target_head['date'])) . ' by: ' . create_name_link($poster['name'], $poster['from']) . '</p>';
                             if ($CONFIG['article_database'] == '1') {
@@ -386,7 +386,7 @@ function display_threads($threads, $oldest)
                         }
                         $skip = $target_head['number'];
                     }
-                    $display .= '</center>';
+                    $display .= '</div>';
                     $style++;
                     $nohead = false;
                 }
@@ -403,14 +403,14 @@ function display_threads($threads, $oldest)
                 }
                 if ($block) {
                     $display .= '<br><br>';
-                    $display .= '<p class=np_ob_subject>';
-                    $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b>';
+                    $display .= '<p class="overboard_blocked_user_notice">';
+                    $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b></p>';
                 } else {
                     $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
                     $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
                     $display .= '<br><br>';
                     $display .= '<p class=np_ob_subject>';
-                    $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
+                    $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target['subject'])) . '</span></a></b>';
                     $display .= '</p>';
                     $display .= '<p class=np_ob_body>';
                     $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
@@ -448,7 +448,7 @@ function display_flat($threads, $oldest)
     global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
-    $display = '<table cellspacing="0" width="100%" class="np_results_table">';
+    $display = '<table class="overboard_results_table">';
     if (! isset($threads)) {
         $threads = (object) [];
     } else {
@@ -518,9 +518,9 @@ function display_flat($threads, $oldest)
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
         $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
         if (($results % 2) == 0) {
-            $display .= '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word">';
+            $display .= '<tr class="overboard_result_line2"><td class="overboard_result_line2" style="word-wrap:break-word">';
         } else {
-            $display .= '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word">';
+            $display .= '<tr class="overboard_result_line1"><td class="overboard_result_line1" style="word-wrap:break-word">';
         }
         $block = false;
         foreach ($blocked_user_config as $bkey => $bvalue) {
@@ -531,12 +531,12 @@ function display_flat($threads, $oldest)
             }
         }
         if ($block) {
-            $display .= '<p class=np_ob_subject>';
-            $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b>';
+            $display .= '<p class="overboard_blocked_user_notice">';
+            $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b></p>';
         } else {
             $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
             $display .= '<p class=np_ob_subject>';
-            $display .= '<b><a href="' . $url . '"><span>' . headerDecode($target['subject']) . '</span></a></b>';
+            $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target['subject'])) . '</span></a></b>';
             $display .= '<p class=np_ob_body>';
             $display .= 'by: <b><i><span class="visited">' . create_name_link($poster['name'], $poster['from']) . '</span></i></b>';
 
@@ -584,7 +584,7 @@ function show_overboard_header($grouplist)
         } else {
             echo ' latest</h1>';
         }
-        echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+        echo '<table class="np_buttonbar"><tr>';
         // Refresh button
         echo '<td>';
         echo '<div style="float:left;">';
@@ -616,7 +616,7 @@ function show_overboard_header($grouplist)
         echo '<h1 class="np_thread_headline">';
         echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
         echo 'latest messages</h1>';
-        echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
+        echo '<table class="np_buttonbar"><tr>';
         // Refresh button
         echo '<td>';
         echo '<form action="overboard.php">';
@@ -709,7 +709,6 @@ function show_overboard_footer($stats, $results, $iscached)
         $arts = 'articles';
     }
     echo "<p class=np_ob_tail><b>" . $results . "</b> " . $recent . " " . $arts . " found.</p>\r\n";
-    # echo "<center><i>Rocksolid Overboard</i> version ".$version;
     include "tail.inc";
     if ($iscached) {
         echo "<p class=np_ob_tail><font size='1em'>cached copy: " . date("D M j G:i:s T Y", $stats[9]) . "</font></p>\r\n";

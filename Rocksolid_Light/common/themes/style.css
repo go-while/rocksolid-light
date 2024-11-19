@@ -1258,7 +1258,7 @@ td.np_thread_line_text_author {
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-size: 1.1em;
-	
+
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1274,7 +1274,7 @@ td.np_thread_line_text_date {
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-size: 2em;
-	
+
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1485,8 +1485,69 @@ h1.np_post_headline {
 
 /* =========== specifically for rocksolid overboard =========== */
 
+.overboard_blocked_user_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+.np_ob_group {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+.np_ob_body {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+}
+
+.np_ob_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+/* The thread start article in overboard threads view */
+.overboard_threadhead_result {
+	text-align: center;
+}
+
+/* Even line numbers in the overboard */
+.overboard_result_line1 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+
+	background: var(--color-dark);
+	margin: 0px;
+}
+
+/* Odd line numbers in the overboard */
+.overboard_result_line2 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+
+	background: var(--color-light);
+	border-top: 1px solid var(--color-row-border);
+	border-bottom: 1px solid var(--color-row-border);
+	margin: 0px;
+}
+
 /* results table */
-table.np_results_table {
+table.overboard_results_table {
 	width: 100%;
 	table-layout: fixed;
 	border: none;
@@ -1591,6 +1652,16 @@ table.np_results_table {
 	font-size: 0.6em;
 }
 
+.message_show_header_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	/*	text-align: left; */
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
 /* posted_date */
 .np_posted_date {
 	float: right;
@@ -1691,30 +1762,6 @@ table.np_results_table {
 	text-align: left;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1em;
-}
-
-.np_ob_group {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
-}
-
-.np_ob_body {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1em;
-}
-
-.np_ob_subject {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 1.1em;
 }
 
 /* Even line numbers in the thread */
