@@ -1612,6 +1612,43 @@ table.overboard_results_table {
 	font-size: 0.8em;
 }
 
+/* search.php */
+
+.search_results_table {
+	width: 100%;
+	table-layout: fixed;
+	word-wrap: break-word;
+}
+
+.search_result_line1 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-dark);
+	margin: 0px;
+	font-size: 1.0em;
+}
+
+/* Odd line numbers in the thread */
+.search_result_line2 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	border-top: 1px solid var(--color-row-border);
+	border-bottom: 1px solid var(--color-row-border);
+	margin: 0px;
+	font-size: 1.0em;
+}
+
+.search_snippet {
+	font-size: 1.0em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
 .search_hide_posts {
 	margin-top: 0;
 	margin-bottom: 0;
@@ -1622,13 +1659,39 @@ table.overboard_results_table {
 }
 
 /* search sort toggle */
-.np_search_sort_toggle {
+.search_sort_toggle {
 	margin-top: 0;
 	margin-bottom: 0;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
+}
+
+.search_group {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
+.search_posted_date {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	/*	text-align: left; */
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
+.search_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 0.6em;
 }
 
 /* overboard posted_date */
