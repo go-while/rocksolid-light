@@ -81,14 +81,15 @@ echo '<td</td></tr></table>';
 if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
-    echo '<tr><td><strong>Please Login</strong></td></tr>';
+    echo '<tr><td><strong>Please Login<br ></strong></td><td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
-    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
+    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password">';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input name="source" type="hidden" id="source" value="Mail:mail.php">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
+    echo '</td>';
 
-    echo '<tr>';
+    echo '</tr><tr><td></td>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
     echo '</table>';
@@ -308,7 +309,6 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
         }
         $dbh = null;
     }
-    echo '<div class = "mail_post_page">';
     echo '<h3>Send Message:</h3>';
     echo "<form action='mail.php' method='POST'>";
     echo '<table><tbody><tr>';
@@ -335,7 +335,6 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' ></td>";
     echo '</tr></tbody></table></form>';
-    echo '</div>';
 }
 
 view_mailbox($user);
@@ -347,7 +346,7 @@ function view_mailbox($user)
     $database = $spooldir . '/mail.db3';
     $dbh = mail_db_open($database);
     echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
-    echo '<table class="mail_results_table">';
+    echo '<table class="np_results_table">';
     $query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
     $query->execute([
         'mail_from' => $user
