@@ -448,7 +448,7 @@ function display_search_tools($home = true)
     }
     echo 'search</h1>';
     echo '<form name="form1" method="post" action="search.php">';
-    echo '<table class="np_buttonbar"><tr>';
+    echo '<table class="search_form_table"><tr>';
     if (isset($search_group)) {
         $searching = $search_group;
     } else {

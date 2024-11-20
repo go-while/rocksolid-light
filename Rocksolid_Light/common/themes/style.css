@@ -1614,6 +1614,15 @@ table.overboard_results_table {
 
 /* search.php */
 
+.search_form_table {
+  background: var(--color-dark);
+  padding: 1px;
+  margin-bottom: 1px;
+  width: 100%;
+  color: var(--color-text);
+  font-size: 0.6em;
+}
+
 .search_results_table {
 	width: 100%;
 	table-layout: fixed;
