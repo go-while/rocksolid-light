@@ -23,7 +23,7 @@ if (! isset($_COOKIE['mail_auth'])) {
 }
 
 $logged_in = verify_logged_in(trim(strtolower($name)));
-if(!$logged_in) {
+if (!$logged_in) {
     if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     }
@@ -73,12 +73,12 @@ if (isset($_FILES['photo'])) {
                     echo 'There was an error saving ' . $_FILES['photo']['name'];
                 }
             }
-            ?>
-<script type="text/javascript">
-       if (navigator.cookieEnabled)
-         var savename = "<?php echo stripslashes($name); ?>";
-         document.cookie = "mail_name="+savename+"; path=/";
-      </script>
+?>
+            <script type="text/javascript">
+                if (navigator.cookieEnabled)
+                    var savename = "<?php echo stripslashes($name); ?>";
+                document.cookie = "mail_name=" + savename + "; path=/";
+            </script>
 <?php
         } else {
             echo 'Authentication Failed';
@@ -95,6 +95,23 @@ if (! isset($_POST['password'])) {
     $_POST['password'] = '';
 }
 if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
+
+    echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
+    echo '<table class="mail_table_login">';
+    echo '<tr><td><strong>Please Login</strong></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
+    echo '<input name="command" type="hidden" value="Login">';
+    echo '<input name="source" type="hidden" id="source" value="Mail:mail.php">';
+    echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
+
+    echo '<tr>';
+    echo '<td><input type="submit" name="Submit" value="Login"></td>';
+    echo '</tr>';
+    echo '</table>';
+    echo '</form>';
+
+    /*
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="upload_table_login">';
     echo '<tr><td><strong>Please Login<br ></strong></td></tr>';
@@ -108,6 +125,7 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '</tr>';
     echo '</table>';
     echo '</form>';
+    */
 } else {
     echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
     echo '<tr><td><strong>Logged in as ' . $_POST['username'] . '<br >(max size=2MB)</strong></td></tr>';

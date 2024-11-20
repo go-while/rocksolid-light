@@ -81,15 +81,14 @@ echo '<td</td></tr></table>';
 if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
-    echo '<tr><td><strong>Please Login<br ></strong></td><td></tr>';
+    echo '<tr><td><strong>Please Login</strong></td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
-    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password">';
+    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input name="source" type="hidden" id="source" value="Mail:mail.php">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
-    echo '</td>';
 
-    echo '</tr><tr><td></td>';
+    echo '<tr>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
     echo '</table>';
