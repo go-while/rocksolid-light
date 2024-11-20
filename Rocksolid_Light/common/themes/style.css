@@ -1612,15 +1612,58 @@ table.overboard_results_table {
 	font-size: 0.8em;
 }
 
+/* config (user.php) */
+
+.config_results_table {
+	width: 100%;
+	table-layout: fixed;
+	border: none;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 1.0em;
+}
+
+.config_thread_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	font-size: 0.8em;
+}
+
+tr.config_table_row,
+td.config_table_row {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-dark);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.7em;
+}
+
+tr.config_table_row_alt,
+td.config_table_row_alt {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.7em;
+}
+
 /* search.php */
 
 .search_form_table {
-  background: var(--color-dark);
-  padding: 1px;
-  margin-bottom: 1px;
-  width: 100%;
-  color: var(--color-text);
-  font-size: 0.6em;
+	background: var(--color-dark);
+	padding: 1px;
+	margin-bottom: 1px;
+	width: 100%;
+	color: var(--color-text);
+	font-size: 0.6em;
 }
 
 .search_results_table {
