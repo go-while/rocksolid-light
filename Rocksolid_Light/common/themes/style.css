@@ -1612,8 +1612,24 @@ table.overboard_results_table {
 	font-size: 0.8em;
 }
 
-/* config (user.php) */
+/* mail.php */
+.mail_post_page {
+color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
 
+.mail_results_table {
+	width: 100%;
+	table-layout: fixed;
+	border: none;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 0.7em;
+}
+
+/* config (user.php) */
 .config_results_table {
 	width: 100%;
 	table-layout: fixed;

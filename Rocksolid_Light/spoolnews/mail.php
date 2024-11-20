@@ -309,6 +309,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
         }
         $dbh = null;
     }
+    echo '<div class = "mail_post_page">';
     echo '<h3>Send Message:</h3>';
     echo "<form action='mail.php' method='POST'>";
     echo '<table><tbody><tr>';
@@ -335,6 +336,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
     echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
     echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' ></td>";
     echo '</tr></tbody></table></form>';
+    echo '</div>';
 }
 
 view_mailbox($user);
@@ -346,7 +348,7 @@ function view_mailbox($user)
     $database = $spooldir . '/mail.db3';
     $dbh = mail_db_open($database);
     echo '<hr><h1 class="np_thread_headline">My Messages:</h1>';
-    echo '<table class="np_results_table">';
+    echo '<table class="mail_results_table">';
     $query = $dbh->prepare('SELECT * FROM messages WHERE mail_from=:mail_from OR rcpt_to=:mail_from ORDER BY date DESC');
     $query->execute([
         'mail_from' => $user
