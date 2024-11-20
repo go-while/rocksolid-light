@@ -1671,6 +1671,18 @@ td.config_table_row_alt {
 	font-size: 0.7em;
 }
 
+tr.config_table_row_submit,
+td.config_table_row_submit {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.8em;
+}
+
 /* search.php */
 
 .search_form_table {

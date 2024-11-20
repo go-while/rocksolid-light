@@ -558,15 +558,15 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
      * echo '</tr>';
      */
     // Password confirmation
-    echo '<tr class="config_table_row_alt">';
-    echo '<td class="config_table_row_alt" style="word-wrap:break-word";><h3>Current password: </h3><h4>(required)</h4>';
-    echo '<input name="confirm_password" type="password" id="confirm_password" maxlength="40"></td>';
-    echo '</tr>';
-    echo '<tr class="config_table_row"><td class="config_table_row">';
-    echo '</td></tr>';
-    echo '<tr class="config_table_row">';
-    echo '<td class="config_table_row" style="word-wrap:break-word";>';
-    echo '<button class="np_button_link" type="submit">Save Configuration</button>';
+    echo '<tr class="config_table_row_submit">';
+    echo '<td class="config_table_row_submit" style="word-wrap:break-word";><h3>Current password: </h3><h4>(required)</h4>';
+    echo '<input name="confirm_password" type="password" id="confirm_password" maxlength="40">';
+ //   echo '</tr>';
+ //   echo '<tr class="config_table_row_alt"><td class="config_table_row_alt">';
+ //   echo '</td></tr>';
+ //   echo '<tr class="config_table_row_submit">';
+ //   echo '<td class="config_table_row_submit" style="word-wrap:break-word";>';
+    echo '&nbsp;<button class="np_button_link" type="submit">Save Configuration</button>';
     echo '<a href="' . $_SERVER['PHP_SELF'] . '">Cancel</a>';
     echo '</td></tr>';
     echo '<input name="command" type="hidden" id="command" value="SaveConfig" readonly="readonly">';
