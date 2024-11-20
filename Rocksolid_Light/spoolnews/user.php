@@ -156,15 +156,17 @@ if (isset($_POST['username'])) {
         }
     }
 }
+
 if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
-    echo '<table class="user_table_login">';
-    echo '<tr><td><strong>Please Login<br ></strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $name . '"></td></tr>';
+    echo '<table class="mail_table_login">';
+    echo '<tr><td><strong>Please Login</strong></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
-    echo '<td><input name="command" type="hidden" id="command" value="Login" readonly="readonly"></td>';
+    echo '<input name="command" type="hidden" value="Login">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
-    echo '<td>&nbsp;</td>';
+
+    echo '<tr>';
     echo '<td><input type="submit" name="Submit" value="Login"></td>';
     echo '</tr>';
     echo '</table>';
@@ -383,24 +385,26 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     }
     // Show Config
     echo '<hr><h1 class="np_thread_headline"></h1>';
-    echo '<table cellspacing="0" width="100%" class="np_results_table">';
-    echo '<tr class="np_thread_head"><td class="np_thread_head"><h2>Settings for ' . $_POST['username'] . ':</h2></td></tr>';
+    echo '<table cellspacing="0" width="100%" class="config_results_table">';
+    echo '<tr class="config_thread_head"><td class="config_thread_head"><h2>Settings for ' . $_POST['username'] . ':</h2></td></tr>';
     echo '<form method="post" action="user.php">';
-    echo '<tr class="np_result_line1">';
+    echo '<tr class="config_table_row">';
     if ($OVERRIDES['disable_change_name'] != true) {
         // User Display Name
-        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Name for posts: </h3>';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Display Name for posts: </h3>';
         echo '<input name="display_name" type="text" id="username"value="' . $display_name . '" maxlength="40"></td>';
         echo '</tr>';
         // User Display Email
-        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
+        echo '<tr class="config_table_row">';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
         echo '<input name="display_email" type="text" id="username"value="' . $display_email . '" maxlength="40"></td>';
         echo '</tr>';
         // Send Mail by Email
         if ($OVERRIDES['disable_mail_to_email'] !== true) {
             if (get_user_config($_POST['username'], 'email_verified') == 'true') {
                 if ($email_address = get_user_config($_POST['username'], 'email')) {
-                    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Send Mail to my Internet Email: </h3>';
+                    echo '<tr class="config_table_row">';
+                    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Send Mail to my Internet Email: </h3>';
                     if (! isset($user_config['send_mail_to_email'])) {
                         $user_config['send_mail_to_email'] = 'false';
                     }
@@ -425,28 +429,36 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         echo '</td></tr>';
     }
     // Signature
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Signature:</h3></td>';
-    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="signature" name="signature" rows="6" cols="70">' . $user_config['signature'];
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Signature:</h3></td>';
+    echo '</tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><textarea class="configuration" id="signature" name="signature" rows="6" cols="70">' . $user_config['signature'];
     echo '</textarea></td>';
     echo '</tr>';
     // X-Face
     if ($OVERRIDES['disable_xface'] != true) {
-        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>X-Face:</h3></td>';
+        echo '<tr class="config_table_row">';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><h3>X-Face:</h3></td>';
         $xflink = $config_dir . 'xface.txt';
         if (file_exists($xflink)) {
-            echo '</tr><td class="np_result_line1" style="word-wrap:break-word";>' . file_get_contents($xflink) . '</td><tr>';
+            echo '</tr><td class="config_table_row" style="word-wrap:break-word";>' . file_get_contents($xflink) . '</td><tr>';
         }
-        echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="xface" name="xface" rows="4" cols="80">' . $user_config['xface'];
+        echo '</tr>';
+        echo '<tr class="config_table_row">';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><textarea class="configuration" id="xface" name="xface" rows="4" cols="80">' . $user_config['xface'];
         echo '</textarea></td>';
     }
-    echo '</tr>';
     // Theme
+    echo '<tr class="config_table_row">';
     if (isset($user_config['theme']) && trim($user_config['theme']) != '') {
-        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Theme: (' . $user_config['theme'] . ')</h3></td>';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Theme: (' . $user_config['theme'] . ')</h3></td>';
     } else {
-        echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Theme:</h3></td>';
+        echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Theme:</h3></td>';
     }
-    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word">';
+    echo '</tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word">';
     echo '<select name="theme" class="theme_listbox" size="10">';
     foreach ($themes as $theme) {
         if ($theme == $user_config['theme']) {
@@ -462,8 +474,11 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     if (! isset($user_config['hide_unsub'])) {
         $user_config['hide_unsub'] = 'show';
     }
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscriptions:</h3></td>';
-    echo '<tr><td class="np_result_line1" style="word-wrap:break-word";>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Subscriptions:</h3></td>';
+    echo '</tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";>';
     echo '&nbsp;While viewing section pages:<br >';
 
     if ($user_config['hide_unsub'] == 'hide') {
@@ -481,8 +496,11 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<label for="hide_unsub"> Show All Groups</label>';
     echo '</td></tr>';
 
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Subscribed groups:</h3></td>';
-    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Subscribed groups:</h3></td>';
+    echo '</tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><textarea class="configuration" id="subscribed" name="subscribed" rows="10" cols="40">';
 
     if (isset($user_config['subscribed'])) {
         $userdata = $user_config['subscribed'];
@@ -497,7 +515,6 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     }
     echo '</textarea></td>';
     echo '</tr>';
-    echo '</td></tr>';
 
     // Blocklist
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
@@ -508,8 +525,11 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
             $blocked_users_config = null;
         }
     }
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Blocklist:</h3> (you may only remove from this list)</td>';
-    echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><textarea class="configuration" id="blocked_users_config" name="blocked_users_config" rows="10" cols="40">';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Blocklist:</h3> (you may only remove from this list)</td>';
+    echo '</tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><textarea class="configuration" id="blocked_users_config" name="blocked_users_config" rows="10" cols="40">';
     if (isset($blocked_users_config)) {
         $blockdata = $user_config['blocked_users_config'];
         foreach ($blocked_users_config as $key => $value) {
@@ -521,29 +541,31 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '</tr>';
 
     // User Display Name
-    echo '<tr>';
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>New password: </h3>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>New password: </h3>';
     echo '<input name="password" type="password" id="password" maxlength="40"></td>';
     echo '</tr>';
     // User Display Email
-    echo '<tr>';
-    echo '<td class="np_result_line1" style="word-wrap:break-word";><h3>Re-enter new password: </h3>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Re-enter new password: </h3>';
     echo '<input name="password2" type="password" id="password2" maxlength="40"></td>';
     echo '</tr>';
 
     /*
      * // Timezone
-     * echo '<td class="np_result_line1" style="word-wrap:break-word";>Timezone offset (+/- hours from UTC):</td>';
-     * echo '</tr><tr><td class="np_result_line1" style="word-wrap:break-word";><input type="text" name="timezone" value="'.$user_config[timezone].'"></td>';
+     * echo '<td class="config_table_row" style="word-wrap:break-word";>Timezone offset (+/- hours from UTC):</td>';
+     * echo '</tr><tr><td class="config_table_row" style="word-wrap:break-word";><input type="text" name="timezone" value="'.$user_config[timezone].'"></td>';
      * echo '</tr>';
      */
     // Password confirmation
-    echo '<tr>';
-    echo '<td class="np_result_line2" style="word-wrap:break-word";><h3>Current password: </h3><h4>(required)</h4>';
+    echo '<tr class="config_table_row_alt">';
+    echo '<td class="config_table_row_alt" style="word-wrap:break-word";><h3>Current password: </h3><h4>(required)</h4>';
     echo '<input name="confirm_password" type="password" id="confirm_password" maxlength="40"></td>';
     echo '</tr>';
-
-    echo '<td class="np_result_line2" style="word-wrap:break-word";>';
+    echo '<tr class="config_table_row"><td class="config_table_row">';
+    echo '</td></tr>';
+    echo '<tr class="config_table_row">';
+    echo '<td class="config_table_row" style="word-wrap:break-word";>';
     echo '<button class="np_button_link" type="submit">Save Configuration</button>';
     echo '<a href="' . $_SERVER['PHP_SELF'] . '">Cancel</a>';
     echo '</td></tr>';

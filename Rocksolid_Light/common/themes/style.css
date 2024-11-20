@@ -781,6 +781,23 @@ textarea.configuration {
 	font-size: 0.6em;
 }
 
+/* POST */
+.post_rate_limit_notice {
+	text-align: left;
+	font-size: 1.0em;
+}
+
+.post_rate_limit_notice_limit_reached {
+	text-align: center;
+	font-size: 1.0em;
+}
+
+.post_new_user_notice {
+	font-size: 0.9em;
+	font-style: italic;
+	color: var(--color-highlight);
+}
+
 /* Grouplist */
 
 /* grouplist.php */
@@ -1241,7 +1258,7 @@ td.np_thread_line_text_author {
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-size: 1.1em;
-	
+
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1257,7 +1274,7 @@ td.np_thread_line_text_date {
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-size: 2em;
-	
+
 	font-family: Arial, Helvetica, sans-serif;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1468,8 +1485,69 @@ h1.np_post_headline {
 
 /* =========== specifically for rocksolid overboard =========== */
 
+.overboard_blocked_user_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+.np_ob_group {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+.np_ob_body {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+}
+
+.np_ob_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.1em;
+}
+
+/* The thread start article in overboard threads view */
+.overboard_threadhead_result {
+	text-align: center;
+}
+
+/* Even line numbers in the overboard */
+.overboard_result_line1 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+
+	background: var(--color-dark);
+	margin: 0px;
+}
+
+/* Odd line numbers in the overboard */
+.overboard_result_line2 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+
+	background: var(--color-light);
+	border-top: 1px solid var(--color-row-border);
+	border-bottom: 1px solid var(--color-row-border);
+	margin: 0px;
+}
+
 /* results table */
-table.np_results_table {
+table.overboard_results_table {
 	width: 100%;
 	table-layout: fixed;
 	border: none;
@@ -1534,6 +1612,111 @@ table.np_results_table {
 	font-size: 0.8em;
 }
 
+/* mail.php */
+.mail_post_page {
+color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+.mail_results_table {
+	width: 100%;
+	table-layout: fixed;
+	border: none;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 0.7em;
+}
+
+/* config (user.php) */
+.config_results_table {
+	width: 100%;
+	table-layout: fixed;
+	border: none;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 1.0em;
+}
+
+.config_thread_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+	font-size: 0.8em;
+}
+
+tr.config_table_row,
+td.config_table_row {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-dark);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.7em;
+}
+
+tr.config_table_row_alt,
+td.config_table_row_alt {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.7em;
+}
+
+/* search.php */
+
+.search_form_table {
+	background: var(--color-dark);
+	padding: 1px;
+	margin-bottom: 1px;
+	width: 100%;
+	color: var(--color-text);
+	font-size: 0.6em;
+}
+
+.search_results_table {
+	width: 100%;
+	table-layout: fixed;
+	word-wrap: break-word;
+}
+
+.search_result_line1 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-dark);
+	margin: 0px;
+	font-size: 1.0em;
+}
+
+/* Odd line numbers in the thread */
+.search_result_line2 {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	border-top: 1px solid var(--color-row-border);
+	border-bottom: 1px solid var(--color-row-border);
+	margin: 0px;
+	font-size: 1.0em;
+}
+
+.search_snippet {
+	font-size: 1.0em;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
 .search_hide_posts {
 	margin-top: 0;
 	margin-bottom: 0;
@@ -1544,13 +1727,39 @@ table.np_results_table {
 }
 
 /* search sort toggle */
-.np_search_sort_toggle {
+.search_sort_toggle {
 	margin-top: 0;
 	margin-bottom: 0;
 	text-decoration: none;
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
+}
+
+.search_group {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
+.search_posted_date {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	/*	text-align: left; */
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+}
+
+.search_subject {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 0.6em;
 }
 
 /* overboard posted_date */
@@ -1572,6 +1781,16 @@ table.np_results_table {
 	color: var(--color-highlight);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
+}
+
+.message_show_header_notice {
+	margin-top: 0;
+	margin-bottom: 0;
+	text-decoration: none;
+	color: var(--color-highlight);
+	/*	text-align: left; */
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
 }
 
 /* posted_date */
@@ -1674,30 +1893,6 @@ table.np_results_table {
 	text-align: left;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1em;
-}
-
-.np_ob_group {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
-}
-
-.np_ob_body {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1em;
-}
-
-.np_ob_subject {
-	margin-top: 0;
-	margin-bottom: 0;
-	text-decoration: none;
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 1.1em;
 }
 
 /* Even line numbers in the thread */

@@ -154,7 +154,7 @@ if (isset($search_group)) {
     echo 'search results for: ' . $_POST['terms'] . '</h1>';
 }
 echo '<table class="np_buttonbar"><tr>';
-echo '<td class="np_search_sort_toggle">';
+echo '<td class="search_sort_toggle">';
 
 echo '<div style="float:right;">';
 if ($_REQUEST['searchpoint'] == 'body') {
@@ -163,7 +163,7 @@ if ($_REQUEST['searchpoint'] == 'body') {
 echo '</div>';
 echo '</td>';
 echo '</tr></table>';
-echo '<table cellspacing="0" width="100%" class="np_results_table">';
+echo '<table class="search_results_table">';
 
 # Iterate through groups
 
@@ -227,14 +227,14 @@ foreach ($overview as $overviewline) {
     }
 
     if (($results % 2) != 0) {
-        echo '<tr class="np_result_line1"><td class="np_result_line1" style="word-wrap:break-word";>';
+        echo '<tr class="search_result_line1"><td class="search_result_line1">';
     } else {
-        echo '<tr class="np_result_line2"><td class="np_result_line2" style="word-wrap:break-word";>';
+        echo '<tr class="search_result_line2"><td class="search_result_line2">';
     }
 
-    echo '<p class=np_ob_subject>';
+    echo '<p class="search_subject">';
     echo '<b><a href="' . $url . '">' . htmlspecialchars(headerDecode($overviewline['subject'])) . "</a></b>\r\n";
-    echo '</p><p class=np_ob_group>';
+    echo '</p><p class="search_group">';
     echo '<a href="' . $groupurl . '">' . $overviewline['newsgroup'] . '</a>';
     echo '</p>';
 
@@ -257,14 +257,16 @@ foreach ($overview as $overviewline) {
         }
     }
     $poster_name = trim(mb_decode_mimeheader($poster_name), " \n\r\t\v\0\"");
-    echo '<p class=np_ob_posted_date>Posted: ' . $newdate . ' by: ' . create_name_link($poster_name, $name_from) . '</p>';
+    echo '<p class="search_posted_date">Posted: ' . $newdate . ' by: ' . create_name_link($poster_name, $name_from) . '</p>';
     if ($_POST['searchpoint'] == 'body') {
         $snip = strip_tags(quoted_printable_decode($overviewline['snippet']), '<strong><font><i>');
     } else {
         $snip = strip_tags(quoted_printable_decode($overviewline['search_snippet']), '<strong><font><i>');
         $snip = substr($snip, 0, $snippet_size);
     }
+    echo '<div class="search_snippet">';
     echo $snip;
+    echo '</div>';
     echo '</td></tr>';
     if ($results++ > ($maxdisplay - 2))
         break;
@@ -446,7 +448,7 @@ function display_search_tools($home = true)
     }
     echo 'search</h1>';
     echo '<form name="form1" method="post" action="search.php">';
-    echo '<table class="np_buttonbar"><tr>';
+    echo '<table class="search_form_table"><tr>';
     if (isset($search_group)) {
         $searching = $search_group;
     } else {
