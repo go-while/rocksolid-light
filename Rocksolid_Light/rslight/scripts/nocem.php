@@ -75,7 +75,7 @@ foreach ($messages as $message) {
             $allgroups = preg_split("/\ |\,/", $found[1]);
             foreach ($allgroups as $group_item) {
                 if ($status = get_history_status($found[0], $group_item)) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $found[0] . " appears as " . $status['status'] . ":" . $status['statusreason'] . " in history. Trying anyway...", FILE_APPEND);
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $found[0] . " appears as " . $status['status'] . ":" . $status['statusreason'] . " in history.", FILE_APPEND);
                 } else {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $found[0] . " not found in history database (this is not an error)", FILE_APPEND);
                 }
