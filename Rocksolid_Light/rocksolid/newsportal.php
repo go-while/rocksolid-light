@@ -1582,8 +1582,8 @@ function set_user_config($username, $request, $newval)
     $found = 0;
     foreach ($userData as $data) {
         if (strpos($data, $request . ':') !== FALSE) {
-            if($newval !== false) {
-            fputs($userFileHandle, $request . ':' . $newval . "\r\n");
+            if ($newval !== false) {
+                fputs($userFileHandle, $request . ':' . $newval . "\r\n");
             }
             $found = 1;
         } else {
@@ -2704,7 +2704,7 @@ function is_moderated($newsgroups)
 function get_next_article_number($group)
 {
     $ok_article = get_article_list($group);
-    if(!is_array($ok_article)) {
+    if (!is_array($ok_article)) {
         return 1;
     }
     sort($ok_article);
@@ -2737,7 +2737,7 @@ function get_article_list($thisgroup)
         $ok_article[] = $found['number'];
     }
     $dbh = null;
-        return (array_unique($ok_article));
+    return (array_unique($ok_article));
 }
 
 function check_duplicate_msgid($msgid, $group)
@@ -3176,7 +3176,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             $overview_dbh = overview_db_open($database);
             if (! $overview_dbh) {
                 file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
-                return;
+                return false;
             }
             $close_ovdb = true;
         }
@@ -3193,7 +3193,6 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
         $statusnotes = null;
         while ($row = $overview_query->fetch()) {
             if (isset($row['number'])) {
-                // echo "\nFOUND: " . $messageid . " IN: " . $group;
                 file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
             }
             if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
@@ -3223,7 +3222,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
     if ($close_ovdb) {
         $overview_dbh = null;
     }
-    return;
+    return true;
 }
 
 // This function returns FALSE if article is OK
