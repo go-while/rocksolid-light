@@ -1987,6 +1987,27 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
     return $mysnippet;
 }
 
+function get_history_status($msgid, $group) {
+    global $spooldir, $logfile;
+    $database = $spooldir . '/history.db3';
+    $table = 'history';
+    $history_dbh = history_db_open($database, $table);
+
+    $returnval = false;
+    $history_stmt = $history_dbh->prepare("SELECT * FROM $table WHERE msgid=:msgid AND newsgroup=:newsgroup");
+    $history_stmt->bindParam(':msgid', $msgid);
+    $history_stmt->bindParam(':newsgroup', $group);
+    $history_stmt->execute();
+    while ($row = $history_stmt->fetch()) {
+        if ($row['msgid'] == $msgid) {
+            $returnval = $row;
+            break;
+        }
+    }
+    $history_dbh = null;
+    return $returnval;
+}
+
 function mail_db_open($database, $table = 'messages')
 {
     try {
@@ -3191,10 +3212,12 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
         $statusdate = time();
         $statusreason = "nocem";
         $statusnotes = null;
+        $found = false;
         while ($row = $overview_query->fetch()) {
             if (isset($row['number'])) {
                 file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
             }
+            $found = true;
             if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
                 unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
             }
@@ -3217,6 +3240,11 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                     }
                 }
             }
+        }
+        if($found == true) {
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETED: " . $messageid . " IN: " . $group, FILE_APPEND);
+        } else {
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " " . $messageid . " not found in: " . $group, FILE_APPEND);
         }
     }
     if ($close_ovdb) {
