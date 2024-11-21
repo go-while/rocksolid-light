@@ -318,6 +318,7 @@ function log_rotate()
             @rename($logfile . '.1', $logfile . '.2');
             file_put_contents($logfile, "\nLog file rotated", FILE_APPEND);
             @rename($logfile, $logfile . '.1');
+            file_put_contents($logfile, "\nLog file started", FILE_APPEND);
             echo 'Rotated: ' . $logfile . "\n";
         }
         unlink($logdir . '/rotate');
