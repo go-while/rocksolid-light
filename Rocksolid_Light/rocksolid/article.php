@@ -37,16 +37,16 @@ $thread_show["lastdate"] = false;
 $thread_show["threadsize"] = false;
 
 if (isset($frames_on) && $frames_on === true) {
-    ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash;
-    if ( window.self !== window.top ) {
-        /* Great! now we move along */
-    } else {
-        window.location.href = '../index.php?content='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
+?>
+    <script>
+        var contentURL = window.location.pathname + window.location.search + window.location.hash;
+        if (window.self !== window.top) {
+            /* Great! now we move along */
+        } else {
+            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
+        }
+        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
+    </script>
 <?php
 }
 
@@ -91,12 +91,15 @@ if (! $message)
     // article not found
     echo $text_error["article_not_found"];
 else {
-    if ($article_showthread)
+    if ($article_showthread) {
         $thread = thread_cache_load($group);
-    // echo "<br>";
-    message_show($group, $id, 0, $message);
-    if ($article_showthread)
+    }
+    $is_blocked = message_show($group, $id, 0, $message);
+    if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
+        echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($id) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
+    }
+    if ($article_showthread) {
         message_thread($message->header->id, $group, $thread);
+    }
 }
 include "tail.inc";
-?>
