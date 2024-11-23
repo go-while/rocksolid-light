@@ -456,7 +456,7 @@ function show_header($head, $group, $local_poster = false)
                 echo create_name_link($head->name, $head->from, false);
             } else {
                 if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
-                    echo truncate_email($head->from);
+                    echo htmlspecialchars(truncate_email($head->from));
                 } else {
                     echo htmlspecialchars($head->from);
                 }
@@ -582,7 +582,7 @@ function show_header_short($head, $group, $local_poster = false)
         $displayname = create_name_link($head->name, $head->from, false);
     } else {
         if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
-            $displayname = truncate_email($head->from);
+            $displayname = htmlspecialchars(truncate_email($head->from));
         } else {
             $displayname = htmlspecialchars($head->from);
         }
@@ -730,7 +730,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
         $displayname = create_name_link($head->name, $head->from, false);
     } else {
         if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
-            $displayname = truncate_email($head->from);
+            $displayname = htmlspecialchars(truncate_email($head->from));
         } else {
             $displayname = htmlspecialchars($head->from);
         }
@@ -745,9 +745,6 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
 
     // Display Subject and From
     echo '<tr><td class="short_header_with_subject_left">';
-    //        echo '<span class="short_header_subject_title_with_subject">';
-    //        echo 'Subject: ';
-    //        echo '</span>';
     echo '<span class="short_header_subject_with_subject">';
     echo htmlspecialchars($head->subject);
     echo '</span>';
@@ -926,7 +923,7 @@ function display_full_headers($article, $group, $name, $from, $getface = false)
         if (stripos($line, 'From: ') === 0) {
             $return .= 'From: ';
             if (isset($CONFIG['hide_email']) && $CONFIG['hide_email'] == true) {
-                $return .= truncate_email($from);
+                $return .= htmlspecialchars(truncate_email($from));
             } else {
                 $return .= htmlspecialchars($from);
             }
@@ -1081,12 +1078,12 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             }
         }
         if ($block == true) {
-            echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
+            echo '<hr><p class="message_show_header_notice">(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
             return "blocked";
         }
 
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
-            echo '<hr><p class=np_ob_posted_date>' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
+            echo '<hr><p class="message_show_header_notice">' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
             return "no-archive";
         }
 
@@ -1094,7 +1091,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         $notice = display_header_notice($head, $body);
         if (isset($head->content_type[0])) {
             if (!strpos($head->content_type[0], "/")) {
-                echo '<hr><p class=np_ob_posted_date>(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
+                echo '<hr><p class="message_show_header_notice">(message #' . $head->number . ' not displayed - malformed header)</p><hr>';
                 return "blocked";
             }
         }
