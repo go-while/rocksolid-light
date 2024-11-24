@@ -800,6 +800,18 @@ textarea.configuration {
 
 /* Grouplist */
 
+.grouplist_header_search {
+	width: auto;
+	padding: 10px;
+	margin-left: 5%;
+	margin-right: auto;
+}
+
+.grouplist_header_search_prompt {
+	font-weight: bold;
+	font-size: 0.6em;
+}
+
 /* grouplist.php */
 .grouplist_table {
 	text-align: center;
