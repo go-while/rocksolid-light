@@ -64,7 +64,7 @@ echo '<th class="grouplist_title_newsgroup_artnum">Messages</th>';
 echo '</tr>';
 
 foreach ($groups_array as $key) {
-    
+
     $section = $key['section'];
     $group = $key['group'];
     $url = $key['url'];
@@ -80,7 +80,7 @@ foreach ($groups_array as $key) {
     echo '<tr><td class="grouplist_row_section_name">';
     echo '&nbsp;' . $section;
     echo '</td><td class="grouplist_row_newsgroup_name">';
-    echo '<a href="/' . $url . '">' . urldecode($group) . "</a><br>\r\n";
+    echo '<a href="/' . $url . '">' . htmlspecialchars($group) . "</a><br>\r\n";
     echo '</td>';
     echo '<td class="grouplist_row_newsgroup_desc">' . $title . '</td>';
     echo '<td class="grouplist_row_newsgroup_artnum">';
@@ -89,7 +89,6 @@ foreach ($groups_array as $key) {
 
     echo '</td>';
     echo '</tr>';
-    
 }
 
 echo '</table>';
@@ -139,8 +138,8 @@ function build_group_list()
                 $groups_array[$ok_group[0]]['url'] = $menuitem[0] . '/thread.php?group=' . urlencode($ok_group[0]);
 
                 // Get group title
-                if (is_file($spooldir . '/' . urldecode($ok_group[0]) . '-title')) {
-                    $title = file_get_contents($spooldir . '/' . urldecode($ok_group[0]) . '-title');
+                if (is_file($spooldir . '/' . $ok_group[0] . '-title')) {
+                    $title = file_get_contents($spooldir . '/' . $ok_group[0] . '-title');
                     $title = strrchr($title, "\t");
                 } else {
                     $title = '';
@@ -150,7 +149,7 @@ function build_group_list()
                 $groups_array[$ok_group[0]]['group'] = $ok_group[0];
 
                 // Get group message qty
-                fputs($ns, "group " . urldecode($ok_group[0]) . "\r\n");
+                fputs($ns, "group " . $ok_group[0] . "\r\n");
                 $response = line_read($ns);
                 $messages = explode(' ', $response);
                 if (strcmp(substr($response, 0, 3), "211") == 0) {
@@ -158,7 +157,6 @@ function build_group_list()
                 } else {
                     $groups_array[$ok_group[0]]['messages'] = 0;
                 }
-
             }
         }
     }
