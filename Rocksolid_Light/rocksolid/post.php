@@ -532,7 +532,7 @@ if ($show == 1) {
         echo '<td class="np_post_header_subject"><b>' . $text_header["subject"] . '</b></td>';
         echo '<td class="np_post_header_instructions"><input class="post" type="text" ';
         echo ' name="' . md5($fieldencrypt . "subject") . '" ';
-        echo ' value="' . htmlspecialchars($subject) . '" ';
+        echo ' value="' . trim(htmlspecialchars($subject)) . '" ';
         echo ' size="40" maxlength="' . $thread_maxSubject . '"></td>';
         echo '<td></td></tr><tr>';
 
