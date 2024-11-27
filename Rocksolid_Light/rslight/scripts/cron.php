@@ -180,7 +180,7 @@ if (file_exists($config_dir . '/cache.inc.php')) {
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
 # Reload grouplist
-if ((filemtime($grouplist_cache_filename) < (time() - 3600) || ! file_exists($grouplist_cache_filename))) {
+if ((filemtime($grouplist_cache_filename) < (time() - 14400) || ! file_exists($grouplist_cache_filename))) {
     exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
     echo "Refreshed grouplist\n";
 }
