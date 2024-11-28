@@ -2,6 +2,8 @@ Rocksolid Light (rslight) - a web based Usenet news client
 
 Visit https://www.novabbs.com to try Rocksolid Light
 
+Screenshots: https://www.novabbs.com/rocksolid-light/screenshots/
+
 ![ScreenShot](https://www.novabbs.com/images/rslight-480.png)
 
 Rocksolid Light is based on NewsPortal, which discontinued development in 2008, and was 
