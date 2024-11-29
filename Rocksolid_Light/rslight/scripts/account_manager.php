@@ -4,17 +4,28 @@ chdir($spoolnews_path);
 include "config.inc.php";
 include "newsportal.php";
 
+$processUser = posix_getpwuid(posix_geteuid());
+echo "You are running as user: " . $processUser['name'] . "\n";
+
 // Change to webserver user if root
 $uinfo = posix_getpwnam($CONFIG['webserver_user']);
 /* Change to non root user */
 change_identity($uinfo["uid"], $uinfo["gid"]);
 $processUser = posix_getpwuid(posix_geteuid());
 if ($processUser['name'] != $CONFIG['webserver_user']) {
-    echo "You are running as: " . $processUser['name'] . "\n";
-    echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+    echo "You are running as user: " . $processUser['name'] . "\n";
+    echo 'Please run this script as: ' . $CONFIG['webserver_user'] . "\n";
     exit();
 }
 /* Everything below runs as $CONFIG['webserver_user'] */
+echo "You are running as user: " . $processUser['name'] . "\n";
+
+$processUser = posix_getpwuid(posix_geteuid());
+if ($processUser['name'] != $CONFIG['webserver_user']) {
+    echo "You are running as user: " . $processUser['name'] . "\n";
+    echo 'Please run this script as: ' . $CONFIG['webserver_user'] . "\n";
+    exit();
+}
 
 $keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
@@ -128,7 +139,7 @@ function get_user_by_hash($postinghash)
         echo "Hash file not found\n";
         return;
     }
-    if(isset($posthash[$postinghash])) {
+    if (isset($posthash[$postinghash])) {
         echo $posthash[$postinghash] . ' : ' . $postinghash . "\n";
     } else {
         echo "$postinghash not found in database\n";
