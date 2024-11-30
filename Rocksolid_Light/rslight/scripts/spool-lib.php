@@ -103,6 +103,12 @@ function get_articles($ns, $group, $refill_start = false)
             $overview_msgid[$ov[0]] = $ov[4];
         }
 
+        // Get listgroup from remote
+        $artarray = get_listgroup_array_from_remote($ns, $group);
+        if($artarray == false) {
+            return false;
+        }
+
         # Pull articles and save them in our spool
         if (! is_dir($grouppath)) {
             mkdir($grouppath, 0755, 'recursive');
@@ -115,10 +121,8 @@ function get_articles($ns, $group, $refill_start = false)
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG This should show server group:article number: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
                 break;
             }
-            fputs($ns, "stat " . $article . "\r\n");
-            $response = line_read($ns);
-            if (strcmp(substr($response, 0, 3), "223") != 0) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " No such article: " . $group . ":" . $article . " " . $overview_msgid[$article], FILE_APPEND);
+            if (in_array($article, $artarray) == false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " No such article: " . $group . ":" . $article, FILE_APPEND);
                 $article++;
                 continue;
             }
@@ -508,4 +512,29 @@ function get_first_article_number_from_remote($ns, $group, $maxfirstrequest)
     } else {
         return $exists_array[$maxfirstrequest];
     }
+}
+
+function get_listgroup_array_from_remote($ns, $group)
+{
+    global $logfile, $config_name;
+    fputs($ns, "group " . $group . "\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot enter " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    fputs($ns, "listgroup\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot listgroup " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    $exists_array = array();
+    while ($line = line_read($ns)) {
+        if (trim($line) == '.') {
+            break;
+        }
+        $exists_array[] = trim($line);
+    }
+    return $exists_array;
 }
