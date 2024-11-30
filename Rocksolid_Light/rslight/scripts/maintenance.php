@@ -52,7 +52,7 @@ if ($argv[1] != '-newsection') {
         exit();
     }
 
-    $logfile = $logdir . '/import.log';
+    $logfile = $logdir . '/spoolnews.log';
     $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
 
     $pid = file_get_contents($lockfile);
@@ -303,9 +303,8 @@ function get_group_list()
 
 function refill_group($group, $start)
 {
-    global $spooldir, $config_dir, $remote_groups_array_file, $workpath, $CONFIG, $config_name, $path;
+    global $spooldir, $config_dir, $logfile, $remote_groups_array_file, $workpath, $CONFIG, $config_name, $path;
 
-    $logfile = $spooldir . '/log/import.log';
     $workpath = $spooldir . "/";
     $path = $workpath . "articles/";
 
