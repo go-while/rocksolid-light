@@ -419,7 +419,7 @@ function show_header($head, $group, $local_poster = false)
     echo '<div class="np_article_header">';
     if ($article_show["Subject"]) {
         echo '<div class="plain_header_subject">';
-        echo $text_header["subject"] . htmlspecialchars($head->subject) . "<br>";
+        echo $text_header["subject"] . htmlspecialchars(mb_substr($head->subject, 0, strlen($head->subject))) . "<br>";
         echo '</div>';
     }
     if ($article_show["From"]) {
@@ -596,7 +596,7 @@ function show_header_short($head, $group, $local_poster = false)
     $displaydate = get_date_for_client_timezone($head->date);
 
     echo '<div class="short_header_subject">';
-    echo htmlspecialchars($head->subject) . "<br>";
+    echo htmlspecialchars(mb_substr($head->subject, 0, strlen($head->subject))) . "<br>";
     echo '</div>';
     echo '<div class="short_header_from">';
     echo "<b>From: </b>" . $displayname;
@@ -746,7 +746,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
     // Display Subject and From
     echo '<tr><td class="short_header_with_subject_left">';
     echo '<span class="short_header_subject_with_subject">';
-    echo htmlspecialchars($head->subject);
+    echo htmlspecialchars(mb_substr($head->subject, 0, strlen($head->subject)));
     echo '</span>';
     echo '</td><td class="short_header_with_subject_right">';
     echo '<span class="short_header_from_with_subject"><b>From: </b>' . $displayname . '</span>';

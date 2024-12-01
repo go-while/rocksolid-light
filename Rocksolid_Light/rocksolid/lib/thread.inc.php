@@ -881,7 +881,6 @@ function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $artic
         // read the first article
         $c = $headers[$liste[$i]];
         $last_thread = $c->date_thread;
-
         // Avoid listing if error (fixme)
         // if (preg_match('/\D/', $c->number)) {
         if (! is_numeric($c->number) || ! isset($c->id) || $c->date < 1) {
