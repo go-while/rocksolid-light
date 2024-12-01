@@ -91,6 +91,7 @@ cp rslight/*.php $configpath/upgrade
 cp rslight/*.conf $configpath/upgrade
 cp rslight/*.dist $configpath/upgrade
 cp rslight/fortunes.conf.bsd $configpath/upgrade/fortunes.conf
+cp rslight/phpmailer.inc.php.bsd $configpath/upgrades/phpmailer.inc.php
 echo "done"
 echo
 echo -n "Setting permissions..."

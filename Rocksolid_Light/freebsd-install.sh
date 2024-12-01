@@ -86,6 +86,7 @@ cp -a rocksolid $webroot
 cp -a spoolnews $webroot
 cp -a rslight/* $configpath
 cp rslight/fortunes.conf.bsd $configpath/fortunes.conf
+cp rslight/phpmailer.inc.php.bsd $configpath/phpmailer.inc.php
 echo "done"
 echo
 echo -n "Setting permissions..."
