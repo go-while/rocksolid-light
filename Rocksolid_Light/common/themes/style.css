@@ -800,6 +800,18 @@ textarea.configuration {
 
 /* Grouplist */
 
+.grouplist_header_search {
+	width: auto;
+	padding: 10px;
+	margin-left: 5%;
+	margin-right: auto;
+}
+
+.grouplist_header_search_prompt {
+	font-weight: bold;
+	font-size: 0.6em;
+}
+
 /* grouplist.php */
 .grouplist_table {
 	text-align: center;
@@ -1400,7 +1412,6 @@ h1.np_post_headline {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
-	;
 	text-align: right;
 }
 
@@ -1669,6 +1680,18 @@ td.config_table_row_alt {
 	margin: 0px;
 	color: var(--color-text);
 	font-size: 0.7em;
+}
+
+tr.config_table_row_submit,
+td.config_table_row_submit {
+	padding-left: 3px;
+	padding-top: 6px;
+	padding-right: 0px;
+	padding-bottom: 6px;
+	background: var(--color-light);
+	margin: 0px;
+	color: var(--color-text);
+	font-size: 0.8em;
 }
 
 /* search.php */

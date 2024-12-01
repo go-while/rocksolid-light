@@ -11,7 +11,7 @@ function get_articles($ns, $group, $refill_start = false)
         exit();
     }
 
-    if($refill_start != false) {
+    if ($refill_start != false) {
         $maxfirstrequest = $refill_start;
         $maxarticles_per_run = $refill_start;
     }
@@ -45,7 +45,7 @@ function get_articles($ns, $group, $refill_start = false)
     if (isset($remote_groups_array[$group])) {
         $article = $remote_groups_array[$group];
     } else {
-        $article = 1;
+        $article = false;
     }
 
     if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
@@ -59,24 +59,27 @@ function get_articles($ns, $group, $refill_start = false)
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " contains no articles for " . $group . " Skipping", FILE_APPEND);
         return false;
     }
-    $latest_remote_article = $detail[3];
-    if (! isset($article)) {
-        $article = $detail[2];
-    }
-    if ($article < $detail[3] - $maxfirstrequest) {
+
+    if (! isset($article) || $article == false || $article < 2) {
         $article = $detail[3] - $maxfirstrequest;
+        if ($article < $detail[2]) {
+            $article = $detail[2];
+        }
+        $refill_start = true;
     }
-    if ($article < $detail[2]) {
-        $article = $detail[2];
+
+    // Get only articles that exist on server
+    if ($refill_start != false) {
+        $article = get_first_article_number_from_remote($ns, $group, $maxfirstrequest);
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Starting " . $group . " at article number " . $article, FILE_APPEND);
     }
+
     if ($article > $detail[3]) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " for " . $group . " We are up to date", FILE_APPEND);
         // Just in case we have an error and $article is too large:
         $article = $detail[3] + 1;
     } else {
         // Get overview from server
-        $server_overview = array();
-        $re = false;
         if (($detail[3] - $article) > $maxarticles_per_run) {
             $getlast = $article + $maxarticles_per_run;
         } else {
@@ -100,6 +103,12 @@ function get_articles($ns, $group, $refill_start = false)
             $overview_msgid[$ov[0]] = $ov[4];
         }
 
+        // Get listgroup from remote
+        $artarray = get_listgroup_array_from_remote($ns, $group);
+        if($artarray == false) {
+            return false;
+        }
+
         # Pull articles and save them in our spool
         if (! is_dir($grouppath)) {
             mkdir($grouppath, 0755, 'recursive');
@@ -111,6 +120,11 @@ function get_articles($ns, $group, $refill_start = false)
             if (! is_numeric($article)) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG This should show server group:article number: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
                 break;
+            }
+            if (in_array($article, $artarray) == false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " No such article: " . $group . ":" . $article, FILE_APPEND);
+                $article++;
+                continue;
             }
             // Create array for article, then send to insert_article_from_array()
             if (isset($current_article)) {
@@ -468,4 +482,59 @@ function get_articles($ns, $group, $refill_start = false)
     $remote_groups_array[$group] = $article;
     file_put_contents($remote_groups_array_file, serialize($remote_groups_array));
     return true;
+}
+
+function get_first_article_number_from_remote($ns, $group, $maxfirstrequest)
+{
+    global $logfile, $config_name;
+    fputs($ns, "group " . $group . "\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot enter " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    fputs($ns, "listgroup\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot listgroup " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    $exists_array = array();
+    while ($line = line_read($ns)) {
+        if (trim($line) == '.') {
+            break;
+        }
+        $exists_array[] = trim($line);
+    }
+    $exists_array = array_reverse($exists_array);
+    if ($maxfirstrequest > count($exists_array)) {
+        return $exists_array[1];
+    } else {
+        return $exists_array[$maxfirstrequest];
+    }
+}
+
+function get_listgroup_array_from_remote($ns, $group)
+{
+    global $logfile, $config_name;
+    fputs($ns, "group " . $group . "\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot enter " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    fputs($ns, "listgroup\r\n");
+    $response = line_read($ns);
+    if (substr($response, 0, 3) != "211") {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot listgroup " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        return false;
+    }
+    $exists_array = array();
+    while ($line = line_read($ns)) {
+        if (trim($line) == '.') {
+            break;
+        }
+        $exists_array[] = trim($line);
+    }
+    return $exists_array;
 }

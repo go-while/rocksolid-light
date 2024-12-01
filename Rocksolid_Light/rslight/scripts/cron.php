@@ -180,7 +180,7 @@ if (file_exists($config_dir . '/cache.inc.php')) {
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
 echo "RSS Feeds updated\n";
 # Reload grouplist
-if ((filemtime($grouplist_cache_filename) < (time() - ($grouplist_cache_time - 600)) || ! file_exists($grouplist_cache_filename))) {
+if ((filemtime($grouplist_cache_filename) < (time() - 14400) || ! file_exists($grouplist_cache_filename))) {
     exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
     echo "Refreshed grouplist\n";
 }
@@ -318,6 +318,7 @@ function log_rotate()
             @rename($logfile . '.1', $logfile . '.2');
             file_put_contents($logfile, "\nLog file rotated", FILE_APPEND);
             @rename($logfile, $logfile . '.1');
+            file_put_contents($logfile, "\nLog file started", FILE_APPEND);
             echo 'Rotated: ' . $logfile . "\n";
         }
         unlink($logdir . '/rotate');

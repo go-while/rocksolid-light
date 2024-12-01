@@ -1,6 +1,6 @@
 <?php
 include "config.inc.php";
-include ("$file_newsportal");
+include("$file_newsportal");
 include $config_dir . "/gpg.conf";
 
 if (! isset($CONFIG['enable_nocem']) || $CONFIG['enable_nocem'] != true) {
@@ -69,14 +69,15 @@ foreach ($messages as $message) {
         if ($nocem_line[0] == '#') {
             continue;
         }
+
         if (($nocem_line[0] == '<') && $start == 1) {
-            $found = preg_split("/\ |\,/", $nocem_line);
-            // $found = explode(' ', $nocem_line);
-            $i = 0;
-            foreach ($found as $group_item) {
-                if ($i == 0) {
-                    $i ++;
-                    continue;
+            $found = preg_split("/[ \t]/", $nocem_line, 2);
+            $allgroups = preg_split("/\ |\,/", $found[1]);
+            foreach ($allgroups as $group_item) {
+                if ($status = get_history_status($found[0], $group_item)) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $found[0] . " appears as " . $status['status'] . ":" . $status['statusreason'] . " in history.", FILE_APPEND);
+                } else {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $found[0] . " not found in history database (this is not an error)", FILE_APPEND);
                 }
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TRYING: " . $found[0] . " IN: " . $group_item, FILE_APPEND);
                 delete_message($found[0], trim($group_item), $overview_dbh);
@@ -101,7 +102,7 @@ function check_nocem_config($nocem_file)
     $nocem_list = file($nocem_file, FILE_IGNORE_NEW_LINES);
     $headers = 0;
     foreach ($nocem_list as $nocem_line) {
-        if (stripos($nocem_line, $ncmhead) == 0){
+        if (stripos($nocem_line, $ncmhead) == 0) {
             $headers = 1;
         }
         if ($headers != 1) {
@@ -125,10 +126,10 @@ function check_nocem_config($nocem_file)
     $all_types = explode(',', $config_val);
     foreach ($all_types as $one_type) {
         if (trim($type) == trim($one_type)) {
-            echo $issuer . ':'.$type . " Good Type \n";
+            echo $issuer . ':' . $type . " Good Type \n";
             $type_ok = true;
         } else {
-            echo $issuer . ':'.$type . ' : ' . $one_type . " Bad Type \n";
+            echo $issuer . ':' . $type . ' : ' . $one_type . " Bad Type \n";
         }
     }
     if ($type_ok && $name_ok) {

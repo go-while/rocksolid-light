@@ -1582,8 +1582,8 @@ function set_user_config($username, $request, $newval)
     $found = 0;
     foreach ($userData as $data) {
         if (strpos($data, $request . ':') !== FALSE) {
-            if($newval !== false) {
-            fputs($userFileHandle, $request . ':' . $newval . "\r\n");
+            if ($newval !== false) {
+                fputs($userFileHandle, $request . ':' . $newval . "\r\n");
             }
             $found = 1;
         } else {
@@ -1985,6 +1985,27 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
         $mysnippet = substr($mysnippet, 0);
     }
     return $mysnippet;
+}
+
+function get_history_status($msgid, $group) {
+    global $spooldir, $logfile;
+    $database = $spooldir . '/history.db3';
+    $table = 'history';
+    $history_dbh = history_db_open($database, $table);
+
+    $returnval = false;
+    $history_stmt = $history_dbh->prepare("SELECT * FROM $table WHERE msgid=:msgid AND newsgroup=:newsgroup");
+    $history_stmt->bindParam(':msgid', $msgid);
+    $history_stmt->bindParam(':newsgroup', $group);
+    $history_stmt->execute();
+    while ($row = $history_stmt->fetch()) {
+        if ($row['msgid'] == $msgid) {
+            $returnval = $row;
+            break;
+        }
+    }
+    $history_dbh = null;
+    return $returnval;
 }
 
 function mail_db_open($database, $table = 'messages')
@@ -2704,7 +2725,7 @@ function is_moderated($newsgroups)
 function get_next_article_number($group)
 {
     $ok_article = get_article_list($group);
-    if(!is_array($ok_article)) {
+    if (!is_array($ok_article)) {
         return 1;
     }
     sort($ok_article);
@@ -2737,7 +2758,7 @@ function get_article_list($thisgroup)
         $ok_article[] = $found['number'];
     }
     $dbh = null;
-        return (array_unique($ok_article));
+    return (array_unique($ok_article));
 }
 
 function check_duplicate_msgid($msgid, $group)
@@ -3176,7 +3197,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             $overview_dbh = overview_db_open($database);
             if (! $overview_dbh) {
                 file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " FAILED opening " . $database, FILE_APPEND);
-                return;
+                return false;
             }
             $close_ovdb = true;
         }
@@ -3191,11 +3212,12 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
         $statusdate = time();
         $statusreason = "nocem";
         $statusnotes = null;
+        $found = false;
         while ($row = $overview_query->fetch()) {
             if (isset($row['number'])) {
-                // echo "\nFOUND: " . $messageid . " IN: " . $group;
                 file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETING: " . $messageid . " IN: " . $group, FILE_APPEND);
             }
+            $found = true;
             if (is_file($spooldir . '/articles/' . $grouppath . '/' . $row['number'])) {
                 unlink($spooldir . '/articles/' . $grouppath . '/' . $row['number']);
             }
@@ -3219,11 +3241,16 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                 }
             }
         }
+        if($found == true) {
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETED: " . $messageid . " IN: " . $group, FILE_APPEND);
+        } else {
+            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " " . $messageid . " not found in: " . $group, FILE_APPEND);
+        }
     }
     if ($close_ovdb) {
         $overview_dbh = null;
     }
-    return;
+    return true;
 }
 
 // This function returns FALSE if article is OK

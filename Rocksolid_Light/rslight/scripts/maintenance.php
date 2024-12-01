@@ -28,14 +28,18 @@ if (! isset($argv[1])) {
 }
 
 if ($argv[1] != '-newsection') {
+    $processUser = posix_getpwuid(posix_geteuid());
+    echo "You are running as user: " . $processUser['name'] . "\n";
+
     // Change to webserver user if root
     $uinfo = posix_getpwnam($CONFIG['webserver_user']);
     /* Change to non root user */
     change_identity($uinfo["uid"], $uinfo["gid"]);
     $processUser = posix_getpwuid(posix_geteuid());
+    
     if ($processUser['name'] != $CONFIG['webserver_user']) {
-        echo "You are running as: " . $processUser['name'] . "\n";
-        echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+        echo "You are running as user: " . $processUser['name'] . "\n";
+        echo 'Please run this script as: ' . $CONFIG['webserver_user'] . "\n";
         exit();
     }
     /* Everything below runs as $CONFIG['webserver_user'] */
@@ -43,13 +47,12 @@ if ($argv[1] != '-newsection') {
 
     $processUser = posix_getpwuid(posix_geteuid());
     if ($processUser['name'] != $CONFIG['webserver_user']) {
-        echo "You are running as: " . $processUser['name'] . "\n";
-        echo 'Please run this scripts as: ' . $CONFIG['webserver_user'] . "\n";
+        echo "You are running as user: " . $processUser['name'] . "\n";
+        echo 'Please run this script as: ' . $CONFIG['webserver_user'] . "\n";
         exit();
     }
 
-    $logfile = $logdir . '/import.log';
-
+    $logfile = $logdir . '/spoolnews.log';
     $lockfile = $lockdir . '/' . $config_name . '-spoolnews.lock';
 
     $pid = file_get_contents($lockfile);
@@ -57,9 +60,12 @@ if ($argv[1] != '-newsection') {
         print "Starting Import...\n";
         file_put_contents($lockfile, getmypid()); // create lockfile
     } else {
-        print "Import currently running\n";
+        print "Spoolnews currently running\n";
         exit();
     }
+} else {
+    $processUser = posix_getpwuid(posix_geteuid());
+    echo "You are running as user: " . $processUser['name'] . "\n";
 }
 
 if ($argv[1][0] == '-') {
@@ -297,9 +303,8 @@ function get_group_list()
 
 function refill_group($group, $start)
 {
-    global $spooldir, $config_dir, $remote_groups_array_file, $workpath, $CONFIG, $config_name, $path;
+    global $spooldir, $config_dir, $logfile, $remote_groups_array_file, $workpath, $CONFIG, $config_name, $path;
 
-    $logfile = $spooldir . '/log/import.log';
     $workpath = $spooldir . "/";
     $path = $workpath . "articles/";
 
