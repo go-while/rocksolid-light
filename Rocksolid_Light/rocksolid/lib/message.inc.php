@@ -23,9 +23,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-?>
-
-<?php
 
 function message_parse($rawmessage)
 {
@@ -566,7 +563,6 @@ function show_header_short($head, $group, $local_poster = false)
     global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
     global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
-
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
         show_header_short_with_subject($head, $group, $local_poster);
         return;
