@@ -92,6 +92,7 @@ cp rslight/*.conf $configpath/upgrade
 cp rslight/*.dist $configpath/upgrade
 cp rslight/fortunes.conf.bsd $configpath/upgrade/fortunes.conf
 cp rslight/phpmailer.inc.php.bsd $configpath/upgrades/phpmailer.inc.php
+cp rslight/scripts/create_gpg_keys.sh.bsd $configpath/scripts/create_gpg_keys.sh
 echo "done"
 echo
 echo -n "Setting permissions..."

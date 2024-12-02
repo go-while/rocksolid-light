@@ -87,6 +87,7 @@ cp -a spoolnews $webroot
 cp -a rslight/* $configpath
 cp rslight/fortunes.conf.bsd $configpath/fortunes.conf
 cp rslight/phpmailer.inc.php.bsd $configpath/phpmailer.inc.php
+cp rslight/scripts/create_gpg_keys.sh.bsd $configpath/scripts/create_gpg_keys.sh
 echo "done"
 echo
 echo -n "Setting permissions..."
