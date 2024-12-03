@@ -562,6 +562,12 @@ function show_header_short($head, $group, $local_poster = false)
     global $article_show, $text_header, $file_article, $file_thread, $attachment_show;
     global $file_attachment, $CONFIG, $config_name, $sitelink;
     global $OVERRIDES;
+
+    /* Mobile specific settings */
+    if (get_client_user_agent_info() == 'mobile') {
+        $OVERRIDES['short_header_show_from_in_subject'] = false;
+    }
+
     if (isset($OVERRIDES['short_header_show_from_in_subject']) && $OVERRIDES['short_header_show_from_in_subject'] == true) {
         show_header_short_with_subject($head, $group, $local_poster);
         return;
