@@ -16,3 +16,4 @@ echo '&nbsp;';
 echo '<a href="http://git.fwfwqtpi2ofmehzdxe3e2htqfmhwfciwivpnsztv7dvpuamhr72ktlqd.onion/novabbs/rocksolid-light" target=_blank>tor</a>';
 echo '</div>';
 echo '</div>';
+echo '</div></body></html>';

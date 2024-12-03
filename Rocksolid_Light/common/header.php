@@ -52,6 +52,7 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $d
 }
 
 echo '</head><body>';
+echo '<div class="header_top">';
 
 echo '<table class="np_header_table_top">';
 echo '<tr class="np_header_bar_top">';
@@ -121,7 +122,7 @@ foreach ($menulist as $menu) {
     echo '</td>';
 }
 echo '</tr></table>';
-
+echo '</div><div class="scroll">';
 $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {

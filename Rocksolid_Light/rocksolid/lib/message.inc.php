@@ -528,10 +528,10 @@ function show_header($head, $group, $local_poster = false)
         echo '</div>';
     }
 
-    echo '<p id="' . $head->id . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
-    echo '<p id="' . $head->number . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+    echo '<textarea id="' . $head->id . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
+    echo '<textarea id="' . $head->number . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
@@ -554,7 +554,6 @@ function show_header($head, $group, $local_poster = false)
             link</i></a>
 <?php
     echo '</span></form>';
-    echo '</div>';
     echo '</div>';
 }
 
@@ -644,10 +643,10 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</div>';
     }
 
-    echo '<p id="' . $head->id . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
-    echo '<p id="' . $head->number . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+    echo '<textarea id="' . $head->id . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
+    echo '<textarea id="' . $head->number . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
@@ -698,8 +697,6 @@ function show_header_short($head, $group, $local_poster = false)
         echo '</div>';
     }
     echo '</div>';
-    //  echo '</p>';
-    //  echo '</div>';
 }
 
 function show_header_short_with_subject($head, $group, $local_poster = false)
@@ -715,10 +712,10 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
     echo '<div class="np_article_header">';
 
     // Display javascript links and time interval
-    echo '<p id="' . $head->id . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . htmlspecialchars($head->id) . '</p>';
-    echo '<p id="' . $head->number . 'copy"';
-    echo ' style="position: absolute; z-index: -9999;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</p>';
+    echo '<textarea id="' . $head->id . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
+    echo '<textarea id="' . $head->number . 'copy"';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<table class="show_header_short_with_subject_table">';
 
