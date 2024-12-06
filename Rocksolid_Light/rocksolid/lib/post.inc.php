@@ -414,7 +414,7 @@ function check_rate_limit($name, $set = 0, $gettime = 0)
  * $ref: The references of the article
  * $body: The article itself
  */
-function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis = null, $encryptto = null, $authname = null, $fromname, $followupto = null, $do_attach = null)
+function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $encryptto, $authname, $fromname, $followupto = null, $do_attach = null)
 {
     global $server, $port, $send_poster_host, $text_error, $CONFIG, $OVERRIDES;
     global $www_charset, $config_dir, $spooldir, $logdir, $enable_post_log, $name;

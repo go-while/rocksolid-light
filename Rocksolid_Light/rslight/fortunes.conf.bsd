@@ -6,8 +6,8 @@
 $enable_fortunes = true;
 
 // Uncomment (remove '//' for only one selection below)
-$fortune_command = '/usr/games/fortune -s -n 100'; // Debian
-// $fortune_command = '/usr/bin/fortune -s'; // BSD
+//$fortune_command = '/usr/games/fortune -s -n 100'; // Debian
+$fortune_command = '/usr/bin/fortune -s'; // BSD
 
 /* Creating a file: $config_dir.'/motd.txt' will override fortunes and display the file contents. */
 

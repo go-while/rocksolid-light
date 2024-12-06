@@ -25,13 +25,11 @@ synchronized with other rslight installs, or other nntp servers.
   * Tested with Claws Mail, Thunderbird, Knews, tin, Pan and some others
   * NoCeM and Spamassassin support
   * Message expiration by site or by group
-  
   * Send/Receive mail to/from users at other Rocksolid Light sites
   * Search article bodies
   * Display body snippet in overboard and search results
   * Email authentication if enabled
   * Protect poster email addresses if enabled
-  
   * Interface works reasonably well on small devices
   * Colors in CSS are in a separate file for easy testing and modification
   * Groups can be renamed for cleaner display

@@ -863,7 +863,7 @@ function thread_format_lastmessage($c, $group = '')
  * Displays a part of the thread. This function is recursively called
  * It is used by thread_show
  */
-function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $article_first = 0, $article_last = 0, &$article_count, $highlight = false, $lastmessage = 1)
+function thread_show_recursive(&$headers, &$liste, $depth, $tree, $group, $article_first, $article_last, &$article_count, $highlight = false, $lastmessage = 1)
 {
     global $thread_treestyle;
     global $thread_show, $imgdir;

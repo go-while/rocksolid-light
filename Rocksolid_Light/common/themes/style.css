@@ -159,6 +159,19 @@
 	margin-right: auto;
 }
 
+.header_display_group {
+	background: var(--color-light);
+	padding: none;
+	border: none;
+	margin-bottom: 1px;
+	color: var(--color-text);
+	font-size: 0.7em;
+	font-style: italic;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
 .np_header_links {
 	color: var(--color-header-link) !important;
 }
@@ -680,7 +693,7 @@ input[id^=trigger_headers]:checked+.display_headers_on {
 	color: var(--color-text);
 	border: solid 1px var(--color-link);
 	word-wrap: break-word;
-	position: absolute;
+
 	z-index: 1000;
 	font-size: 1.3em;
 	width: 98%;
@@ -1055,9 +1068,27 @@ textarea.configuration {
 	}
 }
 
+.header_top {
+	flex-grow: 0;
+}
+
+.scroll { 
+	flex-grow: 1;
+    overflow: auto; 
+}
+
 /* Desktop Styles */
 @media only screen and (min-device-width: 821px) {
 	body {
+		/* disabling body scrolling */ 
+		display: flex;
+		flex-direction: column;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+        margin: auto;
 		margin-left: 10px;
 		margin-right: 10px;
 		color: var(--color-text);

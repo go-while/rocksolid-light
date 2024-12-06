@@ -52,6 +52,7 @@ if ((isset($_SESSION['theme'])) && file_exists($rootdir . '/common/themes/' . $d
 }
 
 echo '</head><body>';
+echo '<div class="header_top">';
 
 echo '<table class="np_header_table_top">';
 echo '<tr class="np_header_bar_top">';
@@ -120,8 +121,23 @@ foreach ($menulist as $menu) {
     echo '</form>';
     echo '</td>';
 }
-echo '</tr></table>';
+echo '</td></tr></table>';
 
+if (preg_match("/thread.php|article.php|article-flat.php|overboard.php/", $_SERVER['REQUEST_URI'])) {
+    if (isset($_REQUEST["group"]) || isset($_GET['thisgroup'])) {
+        if (isset($_REQUEST["group"])) {
+            $display_group = $_REQUEST['group'];
+        } else {
+            $display_group = $_GET['thisgroup'];
+        }
+        echo '<table class="header_display_group">';
+        echo '<tr><td>';
+        echo '<span><a href="/' . $config_name . '">' . $config_name . '</a> /  <a href="' . $file_thread . '?group=' . rawurlencode($display_group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($display_group)) . '</a>';
+        echo '</td></tr></table>';
+    }
+}
+
+echo '</div><div class="scroll">';
 $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {

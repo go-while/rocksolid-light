@@ -22,17 +22,47 @@ php is required, and your web server must be configured to serve .php.
 
 php 8.2 or greater is required. Development and testing on Debian.
 
-php-mbstring (to support other character sets)
-sharutils (for uudecode)
-openssl
-php-gnupg
-php8.x-sqlite3 (or later version).
-phpmailer is required if email confirmation is to be used.
-php-xml to work with RSS feeds
-compface, php-gd and libgd3 for X-Face support
-memcached, php-memcached for memcached support
+Debian Requirements:
+  * php-mbstring (to support other character sets)
+  * sharutils (for uudecode)
+  * openssl
+  * php-gnupg
+  * php8.x-sqlite3 (or later version).
+  * phpmailer is required if email confirmation is to be used.
+  * php-xml (for RSS feed support)
+  * compface (for x-face display support)
+  * php-gd (for x-face display support)
+  * libgd3 (for x-face display support)
+  * memcached (for memory caching)
+  * php-memcached (for memory caching)
+  * fortunes (to display fortunes)
+  * fortunes-mod (some fortunes)
+  * fortunes-min (some more fortunes)
 These are the names for Debian packages. Other distributions should 
 also provide these in some way.
+
+FreeBSD Requirements:
+  * sharutils
+  * openssl
+  * pecl-gnupg
+  * php8x-pcntl
+  * php8x-pdo_sqlite
+  * php8x-session
+  * php8x-posix
+  * php8x-filter
+  * php8x-gd
+  * php8x-sqlite3
+  * php8x-mbstring
+  * php8x-iconv
+  * php8x-xml (for RSS feed support)
+  * phpmailer (for email)
+  * faces (for x-face display support)
+  * memcached (for memory caching)
+  * pecl-memcached (for memory caching)
+  * fortune-mod (some fortunes to get you started)
+      you may wish to manually remove any fortunes in
+      /usr/local/share/games/fortune you do not wish to display:
+      ex: limerick and *-o*
 
 If you wish to display UNIX fortunes in the header, install:
 fortunes, fortune-mod and fortunes-min
