@@ -123,11 +123,16 @@ foreach ($menulist as $menu) {
 }
 echo '</td></tr></table>';
 
-if (preg_match("/thread.php|article.php|article-flat.php/", $_SERVER['REQUEST_URI'])) {
-    if (isset($_REQUEST["group"])) {
+if (preg_match("/thread.php|article.php|article-flat.php|overboard.php/", $_SERVER['REQUEST_URI'])) {
+    if (isset($_REQUEST["group"]) || isset($_GET['thisgroup'])) {
+        if (isset($_REQUEST["group"])) {
+            $display_group = $_REQUEST['group'];
+        } else {
+            $display_group = $_GET['thisgroup'];
+        }
         echo '<table class="header_display_group">';
         echo '<tr><td>';
-        echo '<span><a href="/' . $config_name . '">' . $config_name . '</a> /  <a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a>';
+        echo '<span><a href="/' . $config_name . '">' . $config_name . '</a> /  <a href="' . $file_thread . '?group=' . rawurlencode($display_group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($display_group)) . '</a>';
         echo '</td></tr></table>';
     }
 }
