@@ -60,9 +60,11 @@ echo '<td class="np_td_header_bar_logo_image"><a href="' . $CONFIG['default_cont
 echo '<img src="' . $header_image . '" alt="Rocksolid Light"';
 echo ' class="responsive_image"></a></td>';
 echo '<td class="header_page_title_top">';
+echo '<p class="header_page_title_top">';
 echo $CONFIG['rslight_title'];
-echo '</td>';
-echo '<td class="header_links_text">';
+echo '</p></td>';
+echo '<td class="header_links">';
+echo '<div class="header_links_text">';
 
 if (isset($user) && $user && check_unread_mail() == true) {
     $unread = true;
@@ -79,20 +81,20 @@ foreach ($linklist as $link) {
     }
     if ($unread && (strpos($linkitem[1], 'spoolnews/mail.php') !== false)) {
         echo '<strong>';
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
+        echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
         echo '</strong>';
     } else {
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
+        echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
     }
 }
-echo '<a class="np_header_links" href="../spoolnews/user.php">';
+echo '<a class="header_links_text" href="../spoolnews/user.php">';
 if (isset($user)) {
     echo '(' . $_COOKIE['mail_name'] . ')';
 } else {
     echo 'login';
 }
 echo '</a>';
-echo '</td></tr>';
+echo '</div></td></tr>';
 echo '</table>';
 
 include($config_dir . '/fortunes.conf');
