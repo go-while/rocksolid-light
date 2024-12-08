@@ -123,12 +123,12 @@ foreach ($menulist as $menu) {
 }
 echo '</td></tr></table>';
 
-if (preg_match("/thread.php|article.php|article-flat.php|overboard.php/", $_SERVER['REQUEST_URI'])) {
-    if (isset($_REQUEST["group"]) || isset($_GET['thisgroup'])) {
+if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'])) {
+    if (isset($_REQUEST["group"]) || isset($_REQUEST['thisgroup'])) {
         if (isset($_REQUEST["group"])) {
             $display_group = $_REQUEST['group'];
         } else {
-            $display_group = $_GET['thisgroup'];
+            $display_group = $_REQUEST['thisgroup'];
         }
         echo '<table class="header_display_group">';
         echo '<tr><td>';
