@@ -989,7 +989,7 @@ textarea.configuration {
 /* Mobile Styles */
 @media only screen and (max-device-width: 480px) {
 	body {
-		/* disabling body scrolling */ 
+		/* disabling body scrolling */
 		display: flex;
 		flex-direction: column;
 		position: absolute;
@@ -997,7 +997,7 @@ textarea.configuration {
 		right: 0;
 		left: 0;
 		bottom: 0;
-        margin: auto;
+		margin: auto;
 		margin-left: 10px;
 		margin-right: 10px;
 		color: var(--color-text);
@@ -1053,11 +1053,19 @@ textarea.configuration {
 		display: block;
 		color: var(--color-header-link) !important;
 	}
-	
+
 	.header_links_text {
 		display: inline-block;
 		color: var(--color-header-link) !important;
 		text-align: right
+	}
+
+	.grouplist_thread_head_latest {
+		color: var(--color-visited);
+		background: var(--color-light);
+		margin: 0px;
+		width: 22px;
+		font-weight: bold;
 	}
 
 	.np_title {
@@ -1072,12 +1080,38 @@ textarea.configuration {
 	input.post {
 		width: 90%;
 	}
+
+	.np_thread_line1_icon {
+		max-width: 100%;
+            height: auto;
+		background: var(--color-dark);
+		border-bottom: 1px solid var(--color-row-border);
+		border-right: 1px solid var(--color-row-border);
+		margin: 0px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Odd line numbers in the thread */
+	.np_thread_line2_icon {
+		max-width: 100%;
+            height: auto;
+		background: var(--color-light);
+		/*	border-top: 1px solid var(--color-row-border); */
+		border-bottom: 1px solid var(--color-row-border);
+		border-right: 1px solid var(--color-row-border);
+		margin: 0px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 }
 
 /* Tablet Styles */
 @media only screen and (min-device-width: 481px) and (max-device-width: 820px) {
 	body {
-		/* disabling body scrolling */ 
+		/* disabling body scrolling */
 		display: flex;
 		flex-direction: column;
 		position: absolute;
@@ -1085,7 +1119,7 @@ textarea.configuration {
 		right: 0;
 		left: 0;
 		bottom: 0;
-        margin: auto;
+		margin: auto;
 		margin-left: 10px;
 		margin-right: 10px;
 		color: var(--color-text);
@@ -1128,15 +1162,15 @@ textarea.configuration {
 	}
 }
 
-.scroll { 
+.scroll {
 	flex-grow: 1;
-    overflow: auto; 
+	overflow: auto;
 }
 
 /* Desktop Styles */
 @media only screen and (min-device-width: 821px) {
 	body {
-		/* disabling body scrolling */ 
+		/* disabling body scrolling */
 		display: flex;
 		flex-direction: column;
 		position: absolute;
@@ -1144,7 +1178,7 @@ textarea.configuration {
 		right: 0;
 		left: 0;
 		bottom: 0;
-        margin: auto;
+		margin: auto;
 		margin-left: 10px;
 		margin-right: 10px;
 		color: var(--color-text);
@@ -1319,6 +1353,38 @@ td.np_thread_line1 {
 /* Odd line numbers in the thread */
 tr.np_thread_line2,
 td.np_thread_line2 {
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-right: 0px;
+	padding-bottom: 3px;
+	background: var(--color-light);
+	/*	border-top: 1px solid var(--color-row-border); */
+	border-bottom: 1px solid var(--color-row-border);
+	border-right: 1px solid var(--color-row-border);
+	margin: 0px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+tr.np_thread_line1_icon,
+td.np_thread_line1_icon {
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-right: 0px;
+	padding-bottom: 3px;
+	background: var(--color-dark);
+	border-bottom: 1px solid var(--color-row-border);
+	border-right: 1px solid var(--color-row-border);
+	margin: 0px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Odd line numbers in the thread */
+tr.np_thread_line2_icon,
+td.np_thread_line2_icon {
 	padding-left: 3px;
 	padding-top: 3px;
 	padding-right: 0px;
@@ -1712,7 +1778,7 @@ table.overboard_results_table {
 
 /* mail.php */
 .mail_post_page {
-color: var(--color-text);
+	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
 }

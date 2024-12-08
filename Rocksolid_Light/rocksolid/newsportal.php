@@ -740,9 +740,9 @@ function groups_show($gruppen)
                 } else {
                     $latest_image = '../common/images/new-articles.png';
                 }
-                $groupdisplay .= '<img src="' . $latest_image . '" title="New articles">';
+                $groupdisplay .= '<img class="' . $lineclass . '_icon" src="' . $latest_image . '" title="New articles">';
             } else {
-                $groupdisplay .= '<img src="' . $latest_image . '" title="Recent articles">';
+                $groupdisplay .= '<img class="' . $lineclass . '_icon" src="' . $latest_image . '" title="Recent articles">';
             }
             $groupdisplay .= '</a>';
             $groupdisplay .= '</td>';
