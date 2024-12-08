@@ -103,7 +103,7 @@ function display_search_tools($home = true)
     echo '<table class="grouplist_header_search">';
     echo '<tr>';
     echo '<td class="grouplist_header_search_prompt">Search Group Names and Descriptions: ';
-    echo '<input name="groupsearch" type="text" id="groupsearch" value="' . $terms . '" size="40" maxlength="120">&nbsp;';
+    echo '<input class="grouplist_search_form" name="groupsearch" type="text" id="groupsearch" value="' . $terms . '">&nbsp;';
     echo '<input type="submit" name="Submit" value="Search">';
 
     echo '&nbsp;<a href="grouplist.php">Show All Groups</a>';

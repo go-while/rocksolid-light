@@ -266,7 +266,7 @@
 .header_page_title_top {
 	text-decoration: none;
 	color: var(--color-header-link) !important;
-	font-size: 1.3em;
+	font-size: 1.2em;
 }
 
 .header_top {
@@ -846,6 +846,11 @@ textarea.configuration {
 	font-size: 0.6em;
 }
 
+.grouplist_search_form {
+	height: 1.5em;
+	width: 20em;
+}
+
 /* grouplist.php */
 .grouplist_table {
 	text-align: center;
@@ -1068,6 +1073,11 @@ textarea.configuration {
 		font-weight: bold;
 	}
 
+	.grouplist_search_form {
+		height: 1.5em;
+		width: 15em;
+	}
+
 	.np_title {
 		font-size: 1em;
 	}
@@ -1105,6 +1115,14 @@ textarea.configuration {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.grouplist_header_title {
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+		font-style: italic;
+		text-align: center;
+		font-size: 0.8em;
 	}
 }
 
