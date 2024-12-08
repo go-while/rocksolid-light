@@ -644,7 +644,7 @@ if ($show == 1) {
         echo '<table><tr>';
         echo '<td><b>' . $text_post["message"] . '</b>';
         echo '&nbsp;&nbsp;<span class="np_post_body_notification">(Lines will wrap at ' . $wrap_width . ' characters after posting)</span>';
-        echo '<br> <textarea cols="' . $wrap_width . '"';
+        echo '<br> <textarea cols="' . ($wrap_width + 8). '"';
         echo ' class="postbody" id="postbody"';
         echo ' name="' . md5($fieldencrypt . "body") . '" wrap="soft">';
 
