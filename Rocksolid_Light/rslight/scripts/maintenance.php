@@ -52,7 +52,7 @@ if ($argv[1] != '-newsection') {
         exit();
     }
 
-    if(isset($argv[2])) {
+    if (isset($argv[2])) {
         $config_name = get_section_by_group($argv[2]);
     } else {
         $config_name = null;
@@ -63,7 +63,7 @@ if ($argv[1] != '-newsection') {
 
     $pid = file_get_contents($lockfile);
     if (posix_getsid($pid) === false || ! is_file($lockfile)) {
-        print "Starting Import...\n";
+        print "Starting...\n";
         file_put_contents($lockfile, getmypid()); // create lockfile
     } else {
         print "Spoolnews currently running\n";
@@ -128,7 +128,7 @@ if ($argv[1][0] == '-') {
                 echo "Please provide a group name followed by full path to mbox file\n";
                 exit;
             }
-            if(!isset($config_name) {
+            if (!isset($config_name)) {
                 echo "Please add " . $argv[2] . " to groups.txt for a section\n";
                 exit;
             }
@@ -476,7 +476,7 @@ function mbox_import_articles($group, $mbox)
         if (preg_match("/^From /", $mbox_line)) {
             if ($article > 0) {
                 mbox_get_one_article($group, $mbox_article);
-                echo "Retrieving " . $article . "\n";
+                echo "\nRetrieving " . $article;
                 $mbox_article = array();
             }
             $article++;
@@ -512,7 +512,9 @@ function mbox_get_one_article($group, $article_array)
 
     $local = get_next_article_number($group);
     $articleHandle = $grouppath . "/" . $local;
-    unlink($articleHandle);
+    if (file_exists($articleHandle)) {
+        unlink($articleHandle);
+    }
     unset($references);
     $lines = 0;
     $bytes = 0;
@@ -558,28 +560,36 @@ function mbox_get_one_article($group, $article_array)
             // Get overview data
             if (stripos($response, "Message-ID: ") === 0) {
                 $mid = explode(': ', $response, 2);
-                if (preg_match($msgid_filter, $mid[1])) {
-                    $banned = "msgid_filter";
+                if ($msgid_filter != false) {
+                    if (preg_match($msgid_filter, $mid[1])) {
+                        $banned = "msgid_filter";
+                    }
                 }
             }
             if (stripos($response, "From: ") === 0) {
                 $from = explode(': ', $response, 2);
-                if (preg_match($from_filter, $from[1])) {
-                    $banned = "from_filter";
+                if ($from_filter != false) {
+                    if (preg_match($from_filter, $from[1])) {
+                        $banned = "from_filter";
+                    }
                 }
             }
             if (stripos($response, "Path: ") === 0) {
-                $msgpath = explode(': ', $response, 2);
-                if (preg_match($path_filter, $msgpath[1])) {
-                    $banned = "path_filter";
+                if ($path_filter != false) {
+                    $msgpath = explode(': ', $response, 2);
+                    if (preg_match($path_filter, $msgpath[1])) {
+                        $banned = "path_filter";
+                    }
                 }
             }
             if (stripos($response, "Subject: ") === 0) {
                 $this_subject = explode('Subject: ', $response, 2);
                 $subject = $this_subject[1];
                 $sub = 1;
-                if (preg_match($subject_filter, $subject)) {
-                    $banned = "subject_filter";
+                if ($subject_filter != false) {
+                    if (preg_match($subject_filter, $subject)) {
+                        $banned = "subject_filter";
+                    }
                 }
             }
             // Transfer encoding
@@ -695,7 +705,7 @@ function mbox_get_one_article($group, $article_array)
                 }
             }
         }
-        if ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1')) {
+        if (isset($rslight_gpg['nntp_group']) && ((strpos($rslight_gpg['nntp_group'], $group) !== false) && ($rslight_gpg['enable'] == '1'))) {
             if (strpos($subject, $bbsmail_check) !== false) {
                 $bbsmail_file = preg_replace('/@@RSL /', '', $subject);
                 $bbsmail_filename = $spooldir . "/bbsmail/in/bbsmail-" . $bbsmail_file;
@@ -733,8 +743,11 @@ function mbox_get_one_article($group, $article_array)
             } else {
                 $newbody = $body;
             }
-
-            $this_snippet = get_search_snippet($newbody, $content_type[1], $content_transfer_encoding);
+            if (isset($content_type[1])) {
+                $this_snippet = get_search_snippet($newbody, $content_type[1], $content_transfer_encoding);
+            } else {
+                $this_snippet = get_search_snippet($newbody, '', $content_transfer_encoding);
+            }
             unset($newbody);
         } else {
             touch($articleHandle, $article_date);
@@ -744,7 +757,9 @@ function mbox_get_one_article($group, $article_array)
         $current_article['stringdate'] = $finddate[1];
         $current_article['from'] = $from[1];
         $current_article['subject'] = $subject;
-        $current_article['references'] = $references;
+        if (isset($references)) {
+            $current_article['references'] = $references;
+        }
         $current_article['bytes'] = $bytes;
         $current_article['lines'] = $lines;
         $current_article['article'] = $this_article;
@@ -781,11 +796,11 @@ function mbox_get_one_article($group, $article_array)
                 }
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Preparing to spool " . $group . ":" . $mid[1], FILE_APPEND);
                 $tmp = insert_article_from_array($current_article, false);
-                if ($tmp[0] != "4") {
+                if ($tmp && $tmp[0] != "4") {
                     $pass = true;
-                } else {
-                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $tmp, FILE_APPEND);
                 }
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . rtrim($tmp), FILE_APPEND);
+
             }
         }
         $local++;

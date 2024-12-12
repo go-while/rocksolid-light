@@ -1987,7 +1987,8 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
     return $mysnippet;
 }
 
-function get_history_status($msgid, $group) {
+function get_history_status($msgid, $group)
+{
     global $spooldir, $logfile;
     $database = $spooldir . '/history.db3';
     $table = 'history';
@@ -2837,6 +2838,9 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $overview_stmt = $overview_dbh->prepare($overview_sql);
 
+    if(!isset($this_article['references'])) {
+        $this_article['references'] = "";
+    }
     // Overview
     $overview_stmt->execute([
         $group,
@@ -2865,7 +2869,9 @@ function insert_article_from_array($this_article, $check_duplicates = true)
             $this_article['article'],
             $this_article['snippet']
         ]);
-        unlink($grouppath . "/" . $this_article['local']);
+        if (file_exists($grouppath . "/" . $this_article['local'])) {
+            unlink($grouppath . "/" . $this_article['local']);
+        }
         $article_dbh = null;
     } else {
         $article_date = $this_article['epochdate'];
@@ -2880,6 +2886,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $statusreason = "imported";
     $statusnotes = '';
     add_to_history($group, $this_article['local'], $this_article['mid'], $status, $statusdate, $statusreason, $statusnotes);
+    return "240 Article Inserted " . $this_article['mid'] . "\r\n";
 }
 
 function is_deleted_post($group, $number)
@@ -3241,7 +3248,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
                 }
             }
         }
-        if($found == true) {
+        if ($found == true) {
             file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " DELETED: " . $messageid . " IN: " . $group, FILE_APPEND);
         } else {
             file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " " . $messageid . " not found in: " . $group, FILE_APPEND);
@@ -3266,6 +3273,9 @@ function check_article_integrity($rawmessage, $artdate = false)
     while ($rawmessage[$i] != "") {
         $rawheader[] = $rawmessage[$i];
         $i++;
+        if ($i > count($rawmessage) - 1) {
+            break;
+        }
     }
     // Parse the Header:
     $message->header = parse_header($rawheader);
