@@ -75,6 +75,27 @@
 	color: var(--color-highlight);
 }
 
+.search_suggestion_inline {
+	display: inline;
+  }
+  
+  .search_suggestion_link-button {
+	background: none;
+	border: none;
+	color: var(--color-link);
+	text-decoration: underline;
+	cursor: pointer;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.6em;
+	font-family: serif;
+  }
+  .search_suggestion_link-button:focus {
+	outline: none;
+  }
+  .search_suggestion_link-button:active {
+	color:red;
+  }
+
 .theme_listbox {
 	border: none;
 	padding: 0.2em;

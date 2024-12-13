@@ -8,6 +8,8 @@ header("Pragma: cache");
 include "config.inc.php";
 include "newsportal.php";
 
+$lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+
 $snippet_size = 100;
 
 if (isset($_REQUEST['group'])) {
@@ -140,6 +142,25 @@ if (isset($_POST['block_poster'])) {
 }
 
 display_search_tools();
+if ($lang == 'en') { // Display suggestions
+    if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && isset($_REQUEST['terms']) && trim($_REQUEST['terms']) != '') {
+        $suggestion = get_suggestion($_REQUEST['terms'], $lang);
+        if ($suggestion != false) {
+            echo '<form method="post" action="search.php" class="search_suggestion_inline">';
+
+            echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
+            echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
+            echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
+            echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
+            echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+
+            echo '<button type="submit" name="submit_param" value="submit_value" class="search_suggestion_link-button">';
+            echo 'Did you mean: <b><i>' . htmlentities($suggestion) . '</i></b>';
+            echo '</button>';
+            echo '</form>';
+        }
+    }
+}
 echo "<hr>";
 
 ob_start();
@@ -440,7 +461,7 @@ function get_header_search($group, $terms)
 
 function display_search_tools($home = true)
 {
-    global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread;
+    global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread, $suggestion;
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
@@ -463,7 +484,7 @@ function display_search_tools($home = true)
         echo '<td>Search Poster:&nbsp;';
     }
     if (isset($_REQUEST['terms'])) {
-        echo '<input name="terms" type="text" id="terms" value="' . $_REQUEST['terms'] . '"></td>';
+        echo '<input name="terms" type="text" id="terms" value="' . htmlentities($_REQUEST['terms']) . '"></td>';
     } else {
         echo '<input name="terms" type="text" id="terms"></td>';
     }
@@ -520,7 +541,55 @@ function display_search_tools($home = true)
     echo '</td></tr>';
     echo '<tr>';
     echo '<td><input type="submit" name="Submit" value="Search"></td>';
+    echo '<form method="post" action="some_page" class="inline">';
+
     echo '</tr></table></form>';
+}
+
+function get_suggestion($word, $lang)
+{
+    if ($lang != 'en') {
+        return false;
+    }
+    $pspell = pspell_new("en");
+
+    // Remove non alpha characters here
+    $word = preg_replace("/(\"\'\+\-\_)/", '', $word);
+
+    if (!preg_match("/ /", trim($word))) { // Just one word in search
+        if (!pspell_check($pspell, $word)) {
+            $suggestions = pspell_suggest($pspell, $word);
+            if (isset($suggestions[0])) {
+                if (strtolower($word) == strtolower($suggestions[0])) {
+                    return false;
+                } else {
+                    return $suggestions[0];
+                }
+            } else {
+                return false;
+            }
+        }
+    } else { // Multiple words in search
+        $return_string = '';
+        $words = explode(" ", $word);
+        foreach ($words as $one_word) {
+            if (!pspell_check($pspell, $one_word)) {
+                $suggestions = pspell_suggest($pspell, $one_word);
+                if (isset($suggestions[0])) {
+                    $return_string .= $suggestions[0] . " ";
+                } else {
+                    $return_string .= $one_word . " ";
+                }
+            } else {
+                $return_string .= $one_word . " ";
+            }
+        }
+        if (trim(strtolower($return_string)) != trim(strtolower($word))) {
+            return trim(strtolower($return_string));
+        } else {
+            return false;
+        }
+    }
 }
 
 function highlightStr($haystack, $needle)

@@ -33,6 +33,7 @@ Debian Requirements:
   * compface (for x-face display support)
   * php-gd (for x-face display support)
   * libgd3 (for x-face display support)
+  * php-pspell
   * memcached (for memory caching)
   * php-memcached (for memory caching)
   * fortunes (to display fortunes)
@@ -54,6 +55,7 @@ FreeBSD Requirements:
   * php8x-sqlite3
   * php8x-mbstring
   * php8x-iconv
+  * php8x-pspell
   * php8x-xml (for RSS feed support)
   * phpmailer (for email)
   * faces (for x-face display support)
