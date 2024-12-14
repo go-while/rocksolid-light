@@ -2443,6 +2443,7 @@ function throttle_hits($client_device = null)
 function get_client_user_agent_info()
 {
     global $config_dir, $logdir;
+
     // Try to get browser info to use for extra formatting of page
     $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
     $devices = array(
@@ -2838,7 +2839,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     $overview_sql = 'INSERT OR IGNORE INTO overview(newsgroup, number, msgid, date, datestring, name, subject, refs, bytes, lines, xref) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
     $overview_stmt = $overview_dbh->prepare($overview_sql);
 
-    if(!isset($this_article['references'])) {
+    if (!isset($this_article['references'])) {
         $this_article['references'] = "";
     }
     // Overview

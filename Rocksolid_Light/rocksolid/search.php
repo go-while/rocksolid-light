@@ -8,7 +8,7 @@ header("Pragma: cache");
 include "config.inc.php";
 include "newsportal.php";
 
-$lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+$logfile = $logdir . '/search.log';
 
 $snippet_size = 100;
 
@@ -142,25 +142,27 @@ if (isset($_POST['block_poster'])) {
 }
 
 display_search_tools();
-if ($lang == 'en') { // Display suggestions
-    if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && isset($_REQUEST['terms']) && trim($_REQUEST['terms']) != '') {
-        $suggestion = get_suggestion($_REQUEST['terms'], $lang);
-        if ($suggestion != false) {
-            echo '<form method="post" action="search.php" class="search_suggestion_inline">';
 
-            echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
-            echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
-            echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
-            echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
-            echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+// Display search suggestions
+if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && isset($_REQUEST['terms']) && trim($_REQUEST['terms']) != '') {
+    $suggestion = get_suggestion($_REQUEST['terms']);
+    if ($suggestion != false) {
+        echo '<form method="post" action="search.php" class="search_suggestion_inline">';
 
-            echo '<button type="submit" name="submit_param" value="submit_value" class="search_suggestion_link-button">';
-            echo 'Did you mean: <b><i>' . htmlentities($suggestion) . '</i></b>';
-            echo '</button>';
-            echo '</form>';
-        }
+        echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
+        echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
+        echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
+        echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
+        echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+
+        echo '<button type="submit" name="submit_param" value="submit_value" class="search_suggestion_link-button">';
+        echo 'Did you mean: <b><i>' . htmlentities($suggestion) . '</i></b>';
+        echo '</button>';
+        echo '</form>';
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $_REQUEST['terms'] . " SUGGESTING: " . $suggestion, FILE_APPEND);
     }
 }
+
 echo "<hr>";
 
 ob_start();
@@ -546,14 +548,19 @@ function display_search_tools($home = true)
     echo '</tr></table></form>';
 }
 
-function get_suggestion($word, $lang)
+function get_suggestion($word)
 {
-    if ($lang != 'en') {
-        return false;
-    }
-    $pspell = pspell_new("en");
+    global $OVERRIDES;
 
-    // Remove non alpha characters here
+    if (isset($OVERRIDES['lang_default'])) {
+        $lang = $OVERRIDES['lang_default'];
+    } else {
+        $lang = 'en';
+    }
+
+    $pspell = pspell_new($lang);
+
+    // Remove specific characters here
     $word = preg_replace("/(\"\'\+\-\_)/", '', $word);
 
     if (!preg_match("/ /", trim($word))) { // Just one word in search

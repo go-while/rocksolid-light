@@ -155,6 +155,12 @@ if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_sear
     }
 }
 
+// For debugging purposes
+if (isset($OVERRIDES['log_lang']) && $OVERRIDES['log_lang'] == true) {
+    $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    file_put_contents($debug_log, "\n" . logging_prefix() . " Browser Lang: " . $lang, FILE_APPEND);
+}
+
 // Soup...Uh, Message of the Day
 if ($unread) {
     $motd = '*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***';

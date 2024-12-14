@@ -143,6 +143,14 @@ return [
     // Rate per second that a 'bot' may load pages
     'throttle_hits_bot_loadrate' => '.1',
 
+    // Set 'log_lang' to true to log client browser language to debug.log
+    //'log_lang' => true,
+
+    // Set default language for search suggestions
+    // YOU MUST INSTALL aspell-xx for the language you wish to use
+    // Default is 'en' (english)
+    'lang_default' => 'en',
+
     // Use this to create notices for things identified in msg body
     // 'regex' must be a full regex, including delimiters
     'display_notice_for_body_checks' => array(
