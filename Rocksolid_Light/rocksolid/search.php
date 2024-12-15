@@ -160,6 +160,8 @@ if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && iss
         echo '</button>';
         echo '</form>';
         file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $_REQUEST['terms'] . " SUGGESTING: " . $suggestion, FILE_APPEND);
+    } else {
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $_REQUEST['terms'], FILE_APPEND);
     }
 }
 
@@ -550,7 +552,7 @@ function display_search_tools($home = true)
 
 function get_suggestion($word)
 {
-    global $OVERRIDES;
+    global $OVERRIDES, $logfile;
 
     if (isset($OVERRIDES['lang_default'])) {
         $lang = $OVERRIDES['lang_default'];
@@ -558,10 +560,13 @@ function get_suggestion($word)
         $lang = 'en';
     }
 
-    $pspell = pspell_new($lang);
+    if(($pspell = pspell_new($lang)) == false) {
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $lang . " dictionary not found", FILE_APPEND);
+        return false;
+    }
 
     // Remove specific characters here
-    $word = preg_replace("/(\"\'\+\-\_)/", '', $word);
+    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word);
 
     if (!preg_match("/ /", trim($word))) { // Just one word in search
         if (!pspell_check($pspell, $word)) {
@@ -580,6 +585,10 @@ function get_suggestion($word)
         $return_string = '';
         $words = explode(" ", $word);
         foreach ($words as $one_word) {
+            if(preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
+                $return_string .= $one_word . " ";
+                continue;
+            }
             if (!pspell_check($pspell, $one_word)) {
                 $suggestions = pspell_suggest($pspell, $one_word);
                 if (isset($suggestions[0])) {
@@ -592,7 +601,7 @@ function get_suggestion($word)
             }
         }
         if (trim(strtolower($return_string)) != trim(strtolower($word))) {
-            return trim(strtolower($return_string));
+            return trim($return_string);
         } else {
             return false;
         }
