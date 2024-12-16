@@ -77,9 +77,9 @@
 
 .search_suggestion_inline {
 	display: inline;
-  }
-  
-  .search_suggestion_link-button {
+}
+
+.search_suggestion_link-button {
 	background: none;
 	border: none;
 	color: var(--color-link);
@@ -88,13 +88,15 @@
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.6em;
 	font-family: serif;
-  }
-  .search_suggestion_link-button:focus {
+}
+
+.search_suggestion_link-button:focus {
 	outline: none;
-  }
-  .search_suggestion_link-button:active {
-	color:red;
-  }
+}
+
+.search_suggestion_link-button:active {
+	color: red;
+}
 
 .theme_listbox {
 	border: none;
@@ -1012,6 +1014,17 @@ textarea.configuration {
 	margin: 0px;
 }
 
+.scroll {
+	scroll-snap-type: y proximity;
+	flex-grow: 1;
+	overflow: auto;
+}
+
+section {
+	/* Snap align start. */
+	scroll-snap-align: start;
+}
+
 /* Mobile Styles */
 @media only screen and (max-device-width: 480px) {
 	body {
@@ -1114,7 +1127,7 @@ textarea.configuration {
 
 	.np_thread_line1_icon {
 		max-width: 100%;
-            height: auto;
+		height: auto;
 		background: var(--color-dark);
 		border-bottom: 1px solid var(--color-row-border);
 		border-right: 1px solid var(--color-row-border);
@@ -1127,7 +1140,7 @@ textarea.configuration {
 	/* Odd line numbers in the thread */
 	.np_thread_line2_icon {
 		max-width: 100%;
-            height: auto;
+		height: auto;
 		background: var(--color-light);
 		/*	border-top: 1px solid var(--color-row-border); */
 		border-bottom: 1px solid var(--color-row-border);
@@ -1199,11 +1212,6 @@ textarea.configuration {
 	.np_header_bar_large {
 		display: none;
 	}
-}
-
-.scroll {
-	flex-grow: 1;
-	overflow: auto;
 }
 
 /* Desktop Styles */
