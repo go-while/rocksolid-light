@@ -552,7 +552,12 @@ function display_search_tools($home = true)
 
 function get_suggestion($word)
 {
-    global $OVERRIDES, $logfile;
+    global $OVERRIDES, $logfile, $debug_log;
+
+    if (!function_exists('pspell_new')) {
+        file_put_contents($debug_log, "\n" . logging_prefix() . " PSPELL Missing: php-pspell support unavailable", FILE_APPEND);
+        return false;
+    }
 
     if (isset($OVERRIDES['lang_default'])) {
         $lang = $OVERRIDES['lang_default'];
@@ -560,7 +565,7 @@ function get_suggestion($word)
         $lang = 'en';
     }
 
-    if(($pspell = pspell_new($lang)) == false) {
+    if (($pspell = pspell_new($lang)) == false) {
         file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $lang . " dictionary not found", FILE_APPEND);
         return false;
     }
@@ -585,7 +590,7 @@ function get_suggestion($word)
         $return_string = '';
         $words = explode(" ", $word);
         foreach ($words as $one_word) {
-            if(preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
+            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
                 $return_string .= $one_word . " ";
                 continue;
             }
