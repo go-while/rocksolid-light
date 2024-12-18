@@ -122,6 +122,10 @@ return [
     // Default is false
     'send_admin_debug_messages' => false,
 
+    // Send Admin New Registration Emails
+    // Default is false
+    'send_admin_registration_email' => false,
+
     // Disable toggle to send interBBS Mail to email
     'disable_mail_to_email' => true,
 
