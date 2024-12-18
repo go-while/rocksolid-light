@@ -55,36 +55,27 @@ echo '<hr>';
 if (isset($_FILES['photo'])) {
     $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
     // Check auth here
-    if (isset($_POST['key']) && password_verify($CONFIG['thissitekey'] . $_POST['username'], $_POST['key'])) {
-        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
-            $userdir = $spooldir . '/upload/' . strtolower($_POST['username']);
-            $upload_to = $userdir . '/' . $_FILES['photo']['name'];
-            if (is_file($upload_to)) {
-                echo $_FILES['photo']['name'] . ' already exists in your folder';
-            } else {
-                if (! is_dir($userdir)) {
-                    mkdir($userdir);
-                }
-                $success = move_uploaded_file($_FILES['photo']['tmp_name'], $upload_to);
-                if ($success) {
-                    file_put_contents($logfile, "\n" . format_log_date() . " Saved: " . strtolower($_POST['username']) . "/" . $_FILES['photo']['name'], FILE_APPEND);
-                    echo 'Saved ' . $_FILES['photo']['name'] . ' to your files folder';
-                } else {
-                    echo 'There was an error saving ' . $_FILES['photo']['name'];
-                }
-            }
-?>
-            <script type="text/javascript">
-                if (navigator.cookieEnabled)
-                    var savename = "<?php echo stripslashes($name); ?>";
-                document.cookie = "mail_name=" + savename + "; path=/";
-            </script>
-<?php
+    if ($logged_in) {
+        $userdir = $spooldir . '/upload/' . strtolower($_POST['username']);
+        $upload_to = $userdir . '/' . $_FILES['photo']['name'];
+        if (is_file($upload_to)) {
+            echo $_FILES['photo']['name'] . ' already exists in your folder';
         } else {
-            echo 'Authentication Failed';
+            if (! is_dir($userdir)) {
+                mkdir($userdir);
+            }
+            $success = move_uploaded_file($_FILES['photo']['tmp_name'], $upload_to);
+            if ($success) {
+                file_put_contents($logfile, "\n" . format_log_date() . " Saved: " . strtolower($_POST['username']) . "/" . $_FILES['photo']['name'], FILE_APPEND);
+                echo 'Saved ' . $_FILES['photo']['name'] . ' to your files folder';
+            } else {
+                echo 'There was an error saving ' . $_FILES['photo']['name'];
+            }
         }
-        echo '<br ><br >';
+    } else {
+        echo 'Authentication Failed';
     }
+    echo '<br ><br >';
 }
 
 echo '<table border="0" align="center" cellpadding="0" cellspacing="1">';
