@@ -208,7 +208,7 @@
 	font-family: Arial, Helvetica, sans-serif;
 	background: var(--color-dark);
 	border-radius: 5px;
-	font-size: 1.2em;
+	font-size: 0.9em;
 }
 
 .np_mail_button_read {
@@ -220,7 +220,84 @@
 	font-family: Arial, Helvetica, sans-serif;
 	background: var(--color-dark);
 	border-radius: 5px;
-	font-size: 1em;
+	font-size: 0.8em;
+}
+
+.mail_table_login {
+	border: 0;
+	align-items: center;
+	color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+.mail_results {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.mail_results_subject_head {
+	width: 50%;
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.mail_results_from_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.mail_results_to_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.mail_results_date_head {
+	color: var(--color-visited);
+	background: var(--color-light);
+	margin: 0px;
+}
+
+.mail_results_from {
+	color: var(--color-text);
+	background: var(--color-light);
+	margin: 0px;
+	font-size: 0.8em;
+}
+
+.mail_results_to {
+	color: var(--color-text);
+	background: var(--color-light);
+	margin: 0px;
+	font-size: 0.8em;
+}
+
+.mail_results_date {
+	color: var(--color-text);
+	background: var(--color-light);
+	margin: 0px;
+	font-size: 0.8em;
+}
+
+/* mail.php */
+.mail_post_page {
+	color: var(--color-text);
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+.mail_results_table {
+	width: 100%;
+	table-layout: fixed;
+	border: none;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 0.7em;
 }
 
 .np_mail_button_link:hover {
@@ -1812,31 +1889,6 @@ table.overboard_results_table {
 	color: var(--color-text);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 0.8em;
-}
-
-.mail_table_login {
-	border: 0;
-	align-items: center;
-	color: var(--color-text);
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
-}
-
-/* mail.php */
-.mail_post_page {
-	color: var(--color-text);
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 0.8em;
-}
-
-.mail_results_table {
-	width: 100%;
-	table-layout: fixed;
-	border: none;
-	border-spacing: 0px;
-	margin: 0px;
-	padding: 0px;
-	font-size: 0.7em;
 }
 
 /* config (user.php) */
