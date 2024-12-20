@@ -518,7 +518,7 @@ function send_reset_email($username, $user_email)
     $mail->setFrom($mail_user . '@' . $mail_domain, $mail_name);
     $mail->addAddress($user_email);
 
-    $mail->Subject = "Confirmation code for " . $_SERVER['HTTP_HOST'];
+    $mail->Subject = "Confirmation code for " . gethostname();
 
     if (isset($mail_custom_header)) {
         foreach ($mail_custom_header as $key => $value) {
@@ -527,7 +527,7 @@ function send_reset_email($username, $user_email)
     }
 
     $mycode = create_code($username);
-    $msg = "A request to RESET YOUR PASSWORD on " . $_SERVER['HTTP_HOST'];
+    $msg = "A request to RESET YOUR PASSWORD on " . gethostname();
     $msg .= " has been made using " . $user_email . ".\n\n";
     $msg .= "IF YOU DID NOT REQUEST THIS, IGNORE THIS and the request will fail.\n\n";
     $msg .= "This is your PASSWORD CHANGE authorization code: " . $mycode . "\n\n";
@@ -626,7 +626,7 @@ function create_account($username, $password, $user_email)
         $mail->setFrom($mail_user . '@' . $mail_domain, $mail_name);
         $mail->addAddress($user_email);
 
-        $mail->Subject = "Confirmation code for " . $_SERVER['HTTP_HOST'];
+        $mail->Subject = "Confirmation code for " . gethostname();
 
         if (isset($mail_custom_header)) {
             foreach ($mail_custom_header as $key => $value) {
@@ -635,7 +635,7 @@ function create_account($username, $password, $user_email)
         }
 
         $mycode = create_code($username);
-        $msg = "A request to create an account on " . $_SERVER['HTTP_HOST'];
+        $msg = "A request to create an account on " . gethostname();
         $msg .= " has been made using " . $user_email . ".\n\n";
         $msg .= "If you did not request this, please ignore and the request will fail.\n\n";
         $msg .= "This is your account creation code: " . $mycode . "\n\n";
@@ -749,8 +749,8 @@ function create_new($username, $password, $user_email)
     echo '<br ><a href="' . $CONFIG['default_content'] . '">Back</a>';
     echo '</center>';
 
-    $mail_subject = '[' . $_SERVER['HTTP_HOST'] . '] New User Registration ';
-    $mail_body = 'New user registration on ' . $_SERVER['HTTP_HOST'] . "\n\nUsername: . " . $username . "\n\nEmail: " . $user_email;
+    $mail_subject = '[' . gethostname() . '] New User Registration ';
+    $mail_body = 'New user registration on ' . gethostname() . "\n\nUsername: " . $username . "\n\nEmail: " . $user_email;
     if(isset($OVERRIDES['send_admin_registration_email']) && $OVERRIDES['send_admin_registration_email'] == true) {
         send_internet_email($mail_subject, $mail_body);
     } else {
