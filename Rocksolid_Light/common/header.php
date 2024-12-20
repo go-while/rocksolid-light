@@ -9,7 +9,6 @@ include($rootdir . 'common/config.inc.php');
 
 global $OVERRIDES;
 $CONFIG = include $config_file;
-$keys = unserialize(file_get_contents($keyfile));
 
 $menulist = get_section_menu_array();
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
@@ -110,19 +109,6 @@ if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
 }
 
 echo '<table class="np_header_button_bar"><tr>';
-
-if (isset($_COOKIE['mail_name'])) {
-    $name = strtolower($_COOKIE['mail_name']);
-    $logged_in = verify_logged_in(trim(strtolower($name)));
-    if($logged_in) {
-        set_user_logged_in_cookies($_COOKIE['mail_name'], $keys);
-   //     echo '<td>';
-  //      echo 'MYGROUPS';
-  //      echo '</td>';
-    } else {
-  //      echo '<td>' . $name . '</td?';
-    }
-}
 
 foreach ($menulist as $menu) {
     $menuitem = explode(':', $menu);

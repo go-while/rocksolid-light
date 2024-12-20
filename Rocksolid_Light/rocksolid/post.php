@@ -38,6 +38,7 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
     $_SESSION['last_access'] = time();
 }
 
+$keyfile = $spooldir . '/keys.dat';
 $keys = unserialize(file_get_contents($keyfile));
 $logfile = $logdir . '/post.log';
 
