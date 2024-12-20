@@ -171,11 +171,12 @@ if ($message) {
     foreach ($pageids as $subid) {
         flush();
         $message = message_read($subid, 0, $group);
-        echo '<p id="' . $subid . '"> </p>';
+        echo '<section id="' . $subid . '">';
         $is_blocked = message_show($group, $subid, 0, $message, $articleflat_chars_per_articles);
         if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
             echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
         }
+        echo ' </section>';
     }
     // Display section/group/subject
     echo '<hr><h1 class="np_thread_headline">';

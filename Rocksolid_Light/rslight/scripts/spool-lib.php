@@ -508,7 +508,7 @@ function get_first_article_number_from_remote($ns, $group, $maxfirstrequest)
     }
     $exists_array = array_reverse($exists_array);
     if ($maxfirstrequest > count($exists_array)) {
-        return $exists_array[1];
+        return $exists_array[array_key_last($exists_array)];
     } else {
         return $exists_array[$maxfirstrequest];
     }

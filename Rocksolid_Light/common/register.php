@@ -748,6 +748,15 @@ function create_new($username, $password, $user_email)
     }
     echo '<br ><a href="' . $CONFIG['default_content'] . '">Back</a>';
     echo '</center>';
+
+    $mail_subject = '[' . $_SERVER['HTTP_HOST'] . '] New User Registration ';
+    $mail_body = 'New user registration on ' . $_SERVER['HTTP_HOST'] . "\n\nUsername: . " . $username . "\n\nEmail: " . $user_email;
+    if(isset($OVERRIDES['send_admin_registration_email']) && $OVERRIDES['send_admin_registration_email'] == true) {
+        send_internet_email($mail_subject, $mail_body);
+    } else {
+        send_admin_message('admin', 'admin', $mail_subject, $mail_body . "\n");
+    }
+    
 }
 
 function make_key($username)

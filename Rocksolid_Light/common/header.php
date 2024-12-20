@@ -60,9 +60,11 @@ echo '<td class="np_td_header_bar_logo_image"><a href="' . $CONFIG['default_cont
 echo '<img src="' . $header_image . '" alt="Rocksolid Light"';
 echo ' class="responsive_image"></a></td>';
 echo '<td class="header_page_title_top">';
+echo '<p class="header_page_title_top">';
 echo $CONFIG['rslight_title'];
-echo '</td>';
-echo '<td class="header_links_text">';
+echo '</p></td>';
+echo '<td class="header_links">';
+echo '<div class="header_links_text">';
 
 if (isset($user) && $user && check_unread_mail() == true) {
     $unread = true;
@@ -79,20 +81,20 @@ foreach ($linklist as $link) {
     }
     if ($unread && (strpos($linkitem[1], 'spoolnews/mail.php') !== false)) {
         echo '<strong>';
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
+        echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
         echo '</strong>';
     } else {
-        echo '<a class="np_header_links" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
+        echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
     }
 }
-echo '<a class="np_header_links" href="../spoolnews/user.php">';
+echo '<a class="header_links_text" href="../spoolnews/user.php">';
 if (isset($user)) {
     echo '(' . $_COOKIE['mail_name'] . ')';
 } else {
     echo 'login';
 }
 echo '</a>';
-echo '</td></tr>';
+echo '</div></td></tr>';
 echo '</table>';
 
 include($config_dir . '/fortunes.conf');
@@ -123,12 +125,12 @@ foreach ($menulist as $menu) {
 }
 echo '</td></tr></table>';
 
-if (preg_match("/thread.php|article.php|article-flat.php|overboard.php/", $_SERVER['REQUEST_URI'])) {
-    if (isset($_REQUEST["group"]) || isset($_GET['thisgroup'])) {
+if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'])) {
+    if (isset($_REQUEST["group"]) || isset($_REQUEST['thisgroup'])) {
         if (isset($_REQUEST["group"])) {
             $display_group = $_REQUEST['group'];
         } else {
-            $display_group = $_GET['thisgroup'];
+            $display_group = $_REQUEST['thisgroup'];
         }
         echo '<table class="header_display_group">';
         echo '<tr><td>';
@@ -151,6 +153,12 @@ if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_sear
         echo '</td></tr></table>';
         echo '</form>';
     }
+}
+
+// For debugging purposes
+if (isset($OVERRIDES['log_lang']) && $OVERRIDES['log_lang'] == true) {
+    $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    file_put_contents($debug_log, "\n" . logging_prefix() . " Browser Lang: " . $lang, FILE_APPEND);
 }
 
 // Soup...Uh, Message of the Day

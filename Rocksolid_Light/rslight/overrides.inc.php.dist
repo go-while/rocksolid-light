@@ -122,6 +122,10 @@ return [
     // Default is false
     'send_admin_debug_messages' => false,
 
+    // Send Admin New Registration Emails
+    // Default is false
+    'send_admin_registration_email' => false,
+
     // Disable toggle to send interBBS Mail to email
     'disable_mail_to_email' => true,
 
@@ -142,6 +146,14 @@ return [
 
     // Rate per second that a 'bot' may load pages
     'throttle_hits_bot_loadrate' => '.1',
+
+    // Set 'log_lang' to true to log client browser language to debug.log
+    //'log_lang' => true,
+
+    // Set default language for search suggestions
+    // YOU MUST INSTALL aspell-xx for the language you wish to use
+    // Default is 'en' (english)
+    'lang_default' => 'en',
 
     // Use this to create notices for things identified in msg body
     // 'regex' must be a full regex, including delimiters

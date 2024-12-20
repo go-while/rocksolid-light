@@ -8,6 +8,8 @@ header("Pragma: cache");
 include "config.inc.php";
 include "newsportal.php";
 
+$logfile = $logdir . '/search.log';
+
 $snippet_size = 100;
 
 if (isset($_REQUEST['group'])) {
@@ -140,6 +142,29 @@ if (isset($_POST['block_poster'])) {
 }
 
 display_search_tools();
+
+// Display search suggestions
+if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && isset($_REQUEST['terms']) && trim($_REQUEST['terms']) != '') {
+    $suggestion = get_suggestion($_REQUEST['terms']);
+    if ($suggestion != false) {
+        echo '<form method="post" action="search.php" class="search_suggestion_inline">';
+
+        echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
+        echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
+        echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
+        echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
+        echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+
+        echo '<button type="submit" name="submit_param" value="submit_value" class="search_suggestion_link-button">';
+        echo 'Did you mean: <b><i>' . htmlentities($suggestion) . '</i></b>';
+        echo '</button>';
+        echo '</form>';
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $_REQUEST['terms'] . " SUGGESTING: " . $suggestion, FILE_APPEND);
+    } else {
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $_REQUEST['terms'], FILE_APPEND);
+    }
+}
+
 echo "<hr>";
 
 ob_start();
@@ -440,7 +465,7 @@ function get_header_search($group, $terms)
 
 function display_search_tools($home = true)
 {
-    global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread;
+    global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread, $suggestion;
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
@@ -463,7 +488,7 @@ function display_search_tools($home = true)
         echo '<td>Search Poster:&nbsp;';
     }
     if (isset($_REQUEST['terms'])) {
-        echo '<input name="terms" type="text" id="terms" value="' . $_REQUEST['terms'] . '"></td>';
+        echo '<input name="terms" type="text" id="terms" value="' . htmlentities($_REQUEST['terms']) . '"></td>';
     } else {
         echo '<input name="terms" type="text" id="terms"></td>';
     }
@@ -520,7 +545,72 @@ function display_search_tools($home = true)
     echo '</td></tr>';
     echo '<tr>';
     echo '<td><input type="submit" name="Submit" value="Search"></td>';
+    echo '<form method="post" action="some_page" class="inline">';
+
     echo '</tr></table></form>';
+}
+
+function get_suggestion($word)
+{
+    global $OVERRIDES, $logfile, $debug_log;
+
+    if (!function_exists('pspell_new')) {
+        file_put_contents($debug_log, "\n" . logging_prefix() . " PSPELL Missing: php-pspell support unavailable", FILE_APPEND);
+        return false;
+    }
+
+    if (isset($OVERRIDES['lang_default'])) {
+        $lang = $OVERRIDES['lang_default'];
+    } else {
+        $lang = 'en';
+    }
+
+    if (($pspell = pspell_new($lang)) == false) {
+        file_put_contents($logfile, "\n" . logging_prefix() . " SEARCH: " . $lang . " dictionary not found", FILE_APPEND);
+        return false;
+    }
+
+    // Remove specific characters here
+    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word);
+
+    if (!preg_match("/ /", trim($word))) { // Just one word in search
+        if (!pspell_check($pspell, $word)) {
+            $suggestions = pspell_suggest($pspell, $word);
+            if (isset($suggestions[0])) {
+                if (strtolower($word) == strtolower($suggestions[0])) {
+                    return false;
+                } else {
+                    return $suggestions[0];
+                }
+            } else {
+                return false;
+            }
+        }
+    } else { // Multiple words in search
+        $return_string = '';
+        $words = explode(" ", $word);
+        foreach ($words as $one_word) {
+            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
+                $return_string .= $one_word . " ";
+                continue;
+            }
+            if (!pspell_check($pspell, $one_word)) {
+                $suggestions = pspell_suggest($pspell, $one_word);
+                if (isset($suggestions[0])) {
+                    $return_string .= $suggestions[0] . " ";
+                } else {
+                    $return_string .= $one_word . " ";
+                }
+            } else {
+                $return_string .= $one_word . " ";
+            }
+        }
+        if (trim(strtolower($return_string)) != trim(strtolower($word))) {
+            return trim($return_string);
+        } else {
+            return false;
+        }
+    }
 }
 
 function highlightStr($haystack, $needle)

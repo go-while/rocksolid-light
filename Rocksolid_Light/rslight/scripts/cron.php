@@ -303,8 +303,9 @@ function expire_files()
 function log_rotate()
 {
     global $logdir;
+    $rotate_days = 7;
     $rotate = filemtime($logdir . '/rotate');
-    if ((time() - $rotate) > 86400) {
+    if ((time() - $rotate) > ($rotate_days * 86400)) {
         $log_files = scandir($logdir);
         foreach ($log_files as $logfile) {
             if (substr($logfile, -4) != '.log') {
@@ -318,7 +319,6 @@ function log_rotate()
             @rename($logfile . '.1', $logfile . '.2');
             file_put_contents($logfile, "\nLog file rotated", FILE_APPEND);
             @rename($logfile, $logfile . '.1');
-            file_put_contents($logfile, "\nLog file started", FILE_APPEND);
             echo 'Rotated: ' . $logfile . "\n";
         }
         unlink($logdir . '/rotate');
