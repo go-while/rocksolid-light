@@ -1345,15 +1345,13 @@ function group_display_name($gname)
 
 function verify_logged_in($name)
 {
-    global $CONFIG, $auth_log, $debug_log;
+    global $CONFIG, $spooldir, $auth_log, $debug_log;
+
+    $keyfile = $spooldir . '/keys.dat';
+    $keys = unserialize(file_get_contents($keyfile));
 
     $logged_in = false;
     $ip_pass = false;
-
-    //  /* This may cause issues if cookies or javascript disabled
-    //  if(!isset($_COOKIE['mail_name']) || trim($_COOKIE['mail_name'] == '')) {
-    //      return false;
-    // }
 
     // For checking session expire stuff
     if (!isset($_SESSION['start_stamp'])) {

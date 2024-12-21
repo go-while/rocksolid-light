@@ -102,7 +102,7 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '</form>';
 } else {
     echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
-    echo '<tr><td><strong>Logged in as ' . $_POST['username'] . '<br >(max size=2MB)</strong></td></tr>';
+    echo '<tr><td class="upload_logged_in_msg"><strong>Logged in as ' . $_POST['username'] . '<br >(max size=2MB)</strong></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Upload" readonly="readonly"></td>';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
     echo '<input type="hidden" name="username" value="' . $_POST['username'] . '">';
