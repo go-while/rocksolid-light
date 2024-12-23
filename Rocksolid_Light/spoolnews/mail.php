@@ -352,7 +352,7 @@ function view_mailbox($user)
     $query->execute([
         'mail_from' => $user
     ]);
-    echo '<tr class="np_thread_head"><td class="np_thread_head">Subject</td><td class="np_thread_head">From</td><td class="np_thread_head">To</td><td class="np_thread_head">Date</td></tr>';
+    echo '<tr class="mail_results"><td class="mail_results_subject_head">Subject</td><td class="mail_results_from_head">From</td><td class="mail_results_to_head">To</td><td class="mail_results_date_head">Date</td></tr>';
     $i = 1;
     while (($row = $query->fetch()) !== false) {
         if (($row['mail_from'] == $user) && ($row['from_hide'] == 'true')) {
@@ -388,7 +388,7 @@ function view_mailbox($user)
         echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
         echo '<input name="command" type="hidden" value="Message">';
         echo '</form>';
-        echo '</td><td>' . $row["mail_from"] . '</td><td>' . $row["rcpt_to"] . '</td><td>' . $newdate . '</td></tr>';
+        echo '</td><td class="mail_results_from">' . $row["mail_from"] . '</td><td class="mail_results_to">' . $row["rcpt_to"] . '</td><td class="mail_results_date">' . $newdate . '</td></tr>';
         $i++;
     }
     echo '</tbody></table><br >';

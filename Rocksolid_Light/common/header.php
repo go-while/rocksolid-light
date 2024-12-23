@@ -109,6 +109,7 @@ if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
 }
 
 echo '<table class="np_header_button_bar"><tr>';
+
 foreach ($menulist as $menu) {
     $menuitem = explode(':', $menu);
     if ($menuitem[1] == '0') {

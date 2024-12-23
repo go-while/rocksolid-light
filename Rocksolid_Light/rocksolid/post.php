@@ -38,6 +38,8 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
     $_SESSION['last_access'] = time();
 }
 
+$keyfile = $spooldir . '/keys.dat';
+$keys = unserialize(file_get_contents($keyfile));
 $logfile = $logdir . '/post.log';
 
 @$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
@@ -72,14 +74,14 @@ if ($setcookies) {
         $name = $_COOKIE["mail_name"];
 }
 
-// Truncate username at 30 characters to avoid abuse
-$name = substr($name, 0, 30);
-$name = sanitize_header($name);
-
 $logged_in = false;
 if (trim($name) != '') {
     $logged_in = verify_logged_in(trim(strtolower($name)));
 }
+
+// Truncate username at 30 characters to avoid abuse
+$name = substr($name, 0, 30);
+$name = sanitize_header($name);
 
 // This will log user post info (group and username)
 $enable_post_log = false;
