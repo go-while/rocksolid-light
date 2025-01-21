@@ -52,13 +52,19 @@ foreach ($messages as $message) {
         rename($nocem_file, $nocem_path . "failed/" . $message);
         continue;
     }
-    $nocem_list = file($nocem_file, FILE_IGNORE_NEW_LINES);
+    unset($signed_text);
+    
+    $nocem_list = fopen($nocem_file, 'r');
     $start = 0;
 
     // Open overview database and process list
     $database = $spooldir . '/articles-overview.db3';
     $overview_dbh = overview_db_open($database);
-    foreach ($nocem_list as $nocem_line) {
+    while (($nocem_line = fgets($nocem_list)) !== false) {
+        $nocem_line = trim($nocem_line);
+        if ($nocem_line == '') {
+            continue;
+        }
         if (strpos($nocem_line, $begin) !== false) {
             $start = 1;
             continue;
@@ -84,6 +90,7 @@ foreach ($messages as $message) {
             }
         }
     }
+    fclose($nocem_list);
     $overview_dbh = null;
 
     rename($nocem_file, $nocem_path . "processed/" . $message);
@@ -99,9 +106,13 @@ function check_nocem_config($nocem_file)
     $name_ok = false;
     $type_ok = false;
     $ncmhead = '@@BEGIN NCM HEADERS';
-    $nocem_list = file($nocem_file, FILE_IGNORE_NEW_LINES);
+    $nocem_list = fopen($nocem_file, 'r');
     $headers = 0;
-    foreach ($nocem_list as $nocem_line) {
+    while (($nocem_line = fgets($nocem_list)) !== false) {
+        $nocem_line = trim($nocem_line);
+        if ($nocem_line == '') {
+            continue;
+        }
         if (stripos($nocem_line, $ncmhead) == 0) {
             $headers = 1;
         }
@@ -117,6 +128,7 @@ function check_nocem_config($nocem_file)
             $type = $type[1];
         }
     }
+    fclose($nocem_list);
     $config_val = get_config_file_value($nocem_config, $issuer);
     if ($config_val === false) {
         return false;
