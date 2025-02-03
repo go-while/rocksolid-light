@@ -240,12 +240,7 @@ expire_overboard($cachefile);
 function expire_overboard($cachefile)
 {
     global $article_age, $logfile, $config_name, $this_overboard;
-    if (! isset($this_overboard['expire'])) {
-        $this_overboard['expire'] = time();
-    }
-    $prune = false;
-    if ($this_overboard['expire'] < (time() - 86400)) {
-        $prune = true;
+    if ((! isset($this_overboard['expire'])) || ($this_overboard['expire'] < (time() - 1800))) {
         foreach ($this_overboard['threads'] as $key => $value) {
             if ($key < (time() - (86400 * $article_age))) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Expiring: " . $value, FILE_APPEND);
@@ -255,8 +250,7 @@ function expire_overboard($cachefile)
             }
         }
         $this_overboard['expire'] = time();
-    }
-    if ($prune) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Setting expire time to now", FILE_APPEND);
         file_put_contents($cachefile, serialize($this_overboard));
     }
 }
