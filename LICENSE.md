@@ -1,5 +1,9 @@
 Rocksolid Light (rslight). Web based Usenet client.
-Copyright (C) 2017-2023 Retro_Guy 
+
+Copyright (C) 2017-2025 Retro_Guy
+
+RIP Retro_Guy: Saturday, 2025-04-26 but Never Forgotten! Rest in Peace and Paradise! 
+
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
