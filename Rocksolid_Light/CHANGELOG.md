@@ -22,6 +22,7 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 **Files Secured:**
 - `common/register.php` - Fixed 3 critical `unserialize()` vulnerabilities
 - `common/header.php` - Fixed critical object injection in user data handling
+- `common/grouplist.php` - Fixed object injection in cache data handling
 - `spoolnews/user.php` - Fixed 6 critical `unserialize()` vulnerabilities
 - `rocksolid/newsportal.php` - Fixed 4+ critical `unserialize()` vulnerabilities
 - `rocksolid/auth.inc.php` - Fixed keys file object injection
@@ -280,6 +281,33 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 - **Major Issues Fixed:** Critical security vulnerabilities, PHP 8.2+ compatibility, PHPMailer upgrade, code modernization
 
 This comprehensive security review and modernization effort ensures that the RockSolid Light newsportal system remains secure, stable, and maintainable while honoring Retro Guy's excellent original architecture and defensive programming principles.
+
+---
+
+### 5. **LINGUISTIC FIXES & INTERNATIONALIZATION**
+
+#### **Character Encoding Corrections**
+**Files Fixed:**
+- `rocksolid/lang/spanish.lang` - Fixed improper character encoding for Spanish accents and special characters
+- `rocksolid/lang/francais.lang` - Fixed improper character encoding for French accents and special characters
+- `rocksolid/lang/bosanski.lang` - Fixed translation errors and incomplete translations
+
+**Specific Corrections:**
+- **Spanish**: Fixed "Mensage-ID" → "Mensaje-ID", replaced all `�` characters with proper HTML entities (`&oacute;`, `&iacute;`, `&aacute;`, etc.)
+- **French**: Fixed all accent characters with proper HTML entities (`&eacute;`, `&agrave;`, `&egrave;`, etc.)
+- **English**: Fixed typo "registrered" → "registered" in registration messages
+- **Bosnian**: Fixed header field translations from English to Bosnian, corrected "Datum" → "Subjekt" for subject field
+
+**Technical Improvements:**
+- Replaced all improper `�` characters with correct HTML entities for cross-platform compatibility
+- Ensured consistent character encoding across all language files
+- Fixed incomplete translations in smaller language files
+- Maintained UTF-8 compatibility while using HTML entities for special characters
+
+#### **Translation Quality Improvements**
+- Fixed logical errors in field mappings (e.g., date vs. subject confusion)
+- Improved consistency of terminology across language files
+- Enhanced readability and professional appearance of all interface text
 
 ---
 

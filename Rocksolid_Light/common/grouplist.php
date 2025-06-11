@@ -33,16 +33,36 @@ if (filemtime($grouplist_cache_filename) > (time() - 15000)) {
         if ($enable_cache) {
             $cache_time = filemtime($grouplist_cache_filename);
             $memcache_key = $cache_key_prefix . '_grouplist-cache';
-            $groups_array = unserialize(cache_get($memcache_key, $memcacheD));
+            $cached_data = cache_get($memcache_key, $memcacheD);
+            if ($cached_data !== false) {
+                $groups_array = @unserialize($cached_data);
+                // Validate that unserialize returned an array to prevent object injection
+                if (!is_array($groups_array)) {
+                    $groups_array = array();
+                    error_log("Warning: Invalid cached data in grouplist cache", 0);
+                }
+            } else {
+                $groups_array = array();
+            }
             if ($enable_cache_logging) {
-                if (is_array($groups_array)) {
+                if (is_array($groups_array) && !empty($groups_array)) {
                     file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
                 } else {
                     file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache miss) ' . $memcache_key, FILE_APPEND);
                 }
             }
         } else {
-            $groups_array = unserialize(file_get_contents($grouplist_cache_filename));
+            $cached_content = file_get_contents($grouplist_cache_filename);
+            if ($cached_content !== false) {
+                $groups_array = @unserialize($cached_content);
+                // Validate that unserialize returned an array to prevent object injection
+                if (!is_array($groups_array)) {
+                    $groups_array = array();
+                    error_log("Warning: Invalid data in grouplist cache file", 0);
+                }
+            } else {
+                $groups_array = array();
+            }
         }
         if (!is_array($groups_array)) {
             $groups_array = build_group_list();

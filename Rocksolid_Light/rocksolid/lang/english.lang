@@ -76,7 +76,7 @@ $text_error["auth_error"]="Authentication failed.";
 $text_error["spool_error"]="Error in spoolfile. Please reload.";
 
 $text_register["must_register_group"]="You have to be registered to have access to this group.";
-$text_register["must_register_post"]="You have to be registrered to post to this group.";
+$text_register["must_register_post"]="You have to be registered to post to this group.";
 $text_register["no_access_group"]="You don't have access to this group.";
 $text_register["no_access_post"]="You are not allowed to post to this group.";
 

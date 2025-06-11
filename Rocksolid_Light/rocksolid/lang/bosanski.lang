@@ -1,10 +1,10 @@
 <?php
-$text_header["from"]="<b>From:</b> ";
-$text_header["subject"]="<b>Subject:</b> ";
-$text_header["newsgroups"]="<b>Newsgroups:</b> ";
-$text_header["followup"]="<b>Followup:</b> ";
-$text_header["organization"]="<b>Organization:</b> ";
-$text_header["date"]="<b>Date:</b> ";
+$text_header["from"]="<b>Od:</b> ";
+$text_header["subject"]="<b>Subjekt:</b> ";
+$text_header["newsgroups"]="<b>Grupe:</b> ";
+$text_header["followup"]="<b>Odgovor na:</b> ";
+$text_header["organization"]="<b>Organizacija:</b> ";
+$text_header["date"]="<b>Datum:</b> ";
 $text_header["message-id"]="<b>Message-ID:</b> ";
 $text_header["references"]="<b>References:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
@@ -14,8 +14,8 @@ $text_thread["no_articles"]="<p><b>Nema clanaka</b></p>";
 $text_thread["button_write"]="Pisi";
 $text_thread["button_grouplist"]="Lista grupa";
 $text_thread["button_top"]="Na vrh";
-$text_thread["date"]="<b>Date</b>";
-$text_thread["subject"]="<b>Datum</b>";
+$text_thread["date"]="<b>Datum</b>";
+$text_thread["subject"]="<b>Subjekt</b>";
 $text_thread["author"]="<b>Autor</b>";
 $text_thread["no_such_group"]="Takva grupa ne postoji.";
 
