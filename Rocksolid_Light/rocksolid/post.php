@@ -39,20 +39,33 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 }
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+if (file_exists($keyfile) && is_readable($keyfile)) {
+    $keys_data = file_get_contents($keyfile);
+    if ($keys_data !== false) {
+        $keys = unserialize($keys_data);
+        // Validate that $keys is an array to prevent object injection
+        if (!is_array($keys)) {
+            $keys = array();
+        }
+    } else {
+        $keys = array();
+    }
+} else {
+    $keys = array();
+}
 $logfile = $logdir . '/post.log';
 
-@$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
-@$newsgroups = $_REQUEST["newsgroups"];
-@$group = $_REQUEST["group"];
-@$type = $_REQUEST["type"];
-@$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
-@$name = $_POST["username"];
-@$password = $_POST[md5($fieldnamedecrypt . "password")];
-@$body = $_POST[md5($fieldnamedecrypt . "body")];
-@$abspeichern = $_REQUEST["abspeichern"];
-@$references = $_REQUEST["references"];
-@$id = $_REQUEST["id"];
+$fieldnamedecrypt = isset($_REQUEST['fielddecrypt']) ? $_REQUEST['fielddecrypt'] : '';
+$newsgroups = isset($_REQUEST["newsgroups"]) ? $_REQUEST["newsgroups"] : '';
+$group = isset($_REQUEST["group"]) ? $_REQUEST["group"] : '';
+$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : '';
+$subject = isset($_POST[md5($fieldnamedecrypt . "subject")]) ? stripslashes($_POST[md5($fieldnamedecrypt . "subject")]) : '';
+$name = isset($_POST["username"]) ? $_POST["username"] : '';
+$password = isset($_POST[md5($fieldnamedecrypt . "password")]) ? $_POST[md5($fieldnamedecrypt . "password")] : '';
+$body = isset($_POST[md5($fieldnamedecrypt . "body")]) ? $_POST[md5($fieldnamedecrypt . "body")] : '';
+$abspeichern = isset($_REQUEST["abspeichern"]) ? $_REQUEST["abspeichern"] : '';
+$references = isset($_REQUEST["references"]) ? $_REQUEST["references"] : '';
+$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : '';
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
@@ -183,7 +196,7 @@ echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
 echo '<a href="' . $file_thread . '?group=' . rawurlencode($returngroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
 if (isset($type) && $type == 'post') {
-    echo ' / ' . $subject . '</h1>';
+    echo ' / ' . htmlspecialchars($subject) . '</h1>';
 } else {
     echo '</h1>';
 }
