@@ -28,6 +28,8 @@ return [
   'anonuser' => '',
   'organization' => 'Unconfigured rslight site',
   'postfooter' => 'Unconfigured rslight site',
+  'post_server' => '',
+  'post_port' => '',
   'synchronet' => '',
   'rate_limit' => '',
   'auto_create' => '',
