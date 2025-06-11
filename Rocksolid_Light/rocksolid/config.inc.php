@@ -21,6 +21,26 @@ if (!isset($_SESSION)) {
 
 include "../common/config.inc.php";
 
+// Stub functions for optional npreg permission system
+// These functions always return true (allow access) when npreg is not configured
+if (!function_exists('npreg_group_has_read_access')) {
+    function npreg_group_has_read_access($group) {
+        return true; // Allow read access to all groups by default
+    }
+}
+
+if (!function_exists('npreg_group_has_write_access')) {
+    function npreg_group_has_write_access($group) {
+        return true; // Allow write access to all groups by default
+    }
+}
+
+if (!function_exists('npreg_group_is_visible')) {
+    function npreg_group_is_visible($group) {
+        return true; // All groups visible by default
+    }
+}
+
 /*
  * Config file name should be the basename
  * of your path where you installed rslight

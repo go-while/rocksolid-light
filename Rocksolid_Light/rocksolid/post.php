@@ -143,6 +143,11 @@ if (strcmp(stripslashes($name), $CONFIG['anonusername']) !== 0) {
         setcookie("mail_name", stripslashes($name), time() + (3600 * 24 * 90), "/");
     }
 }
+
+// Initialize optional posting server variables from CONFIG
+$post_server = isset($CONFIG['post_server']) ? $CONFIG['post_server'] : '';
+$post_port = isset($CONFIG['post_port']) ? $CONFIG['post_port'] : '';
+
 if ((isset($post_server)) && ($post_server != ""))
     $server = $post_server;
 if ((isset($post_port)) && ($post_port != ""))
@@ -154,8 +159,8 @@ $thisgroup = _rawurldecode($_REQUEST['group']);
 
 // Is this a reply to an article containing Followup-To?
 if (isset($_REQUEST['fgroups'])) {
-    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups']);
-    $thisgroup = preg_replace('/\,+/', ',', $thisgroup);
+    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups'], -1);
+    $thisgroup = preg_replace('/\,+/', ',', $thisgroup, -1);
 }
 
 $newsgroups = $thisgroup;
@@ -289,11 +294,13 @@ if ($type == "post") {
             $error = "Too many groups in followup-to";
         }
     }
+    /*
     // captcha-check
     if (($post_captcha) && (captcha::check() == false)) {
         $type = "retry";
         $error = $text_post["captchafail"];
     }
+    */
 
     if ($type == "post") {
         $name = trim($name);
@@ -359,7 +366,7 @@ if ($type == "post") {
             }
 
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
-                $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
+                $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name'], -1);
                 // There is an attachment to handle
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
             } else {
@@ -446,7 +453,7 @@ if ($type == "reply") {
         if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {
         } else {
             // Remove spaces from starting quote '>' characters
-            $body = preg_replace("/^> >/", ">>", $body);
+            $body = preg_replace("/^> >/", ">>", $body, -1);
 
             // Quote blank lines? YES by default
             if (! isset($OVERRIDES['quote_blank_lines']) || $OVERRIDES['quote_blank_lines'] == true) {
@@ -479,7 +486,7 @@ if ($type == "reply") {
     $subject = "Re: " . $subject;
     // Cut off old parts of a subject
     // for example: 'foo (was: bar)' becomes 'foo'.
-    $subject = preg_replace('/(\(wa[sr]: .*\))$/i', '', $subject);
+    $subject = preg_replace('/(\(wa[sr]: .*\))$/i', '', $subject, -1);
     $show = 1;
     $references = false;
     if (isset($head->references[0])) {
@@ -707,11 +714,12 @@ if ($show == 1) {
             //  echo '<input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/pdf">';
             echo '</td></tr>';
         }
+        /*
         if ($post_captcha) {
             echo '<tr><td>';
             echo captcha::form($text_post["captchainfo1"], $text_post["captchainfo2"]);
             echo '</td></tr>';
-        }
+        }*/
         ?>
 
         </table>

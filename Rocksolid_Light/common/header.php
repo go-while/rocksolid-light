@@ -38,9 +38,9 @@ if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
 // Get theme
 $default_theme = "Default Theme";
 if (isset($_SESSION['theme'])) {
-    $do_theme = preg_replace("/ /", "%20", $_SESSION['theme']);
+    $do_theme = preg_replace("/ /", "%20", $_SESSION['theme'], -1);
 } else {
-    $do_theme = preg_replace("/ /", "%20", $default_theme);
+    $do_theme = preg_replace("/ /", "%20", $default_theme, -1);
 }
 echo '<link rel="stylesheet" type="text/css" href="' . $rootdir . '/common/themes/' . $do_theme . '/style.css">';
 echo '<link rel="icon" type="image/x-icon" href="/common/images/favicon.ico">';
@@ -126,7 +126,7 @@ foreach ($menulist as $menu) {
 }
 echo '</td></tr></table>';
 
-if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'])) {
+if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'], $matches)) {
     if (isset($_REQUEST["group"]) || isset($_REQUEST['thisgroup'])) {
         if (isset($_REQUEST["group"])) {
             $display_group = $_REQUEST['group'];

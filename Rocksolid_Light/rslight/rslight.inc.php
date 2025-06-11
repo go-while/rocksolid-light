@@ -3,6 +3,8 @@ return [
   'remote_server' => 'news.example.com',
   'remote_port' => '119',
   'remote_ssl' => '',
+  'post_server' => '',
+  'post_port' => '',
   'socks_host' => '',
   'socks_port' => '',
   'remote_auth_user' => 'username',

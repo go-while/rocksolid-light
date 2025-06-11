@@ -46,7 +46,9 @@ function nntp_open($nserver = 0, $nport = 0)
 {
     global $text_error, $CONFIG;
     global $server, $port;
-
+    // Initialize optional posting server variables from CONFIG
+    $post_server = isset($CONFIG['post_server']) ? $CONFIG['post_server'] : '';
+    $post_port = isset($CONFIG['post_port']) ? $CONFIG['post_port'] : '';
     // echo "<br>NNTP OPEN<br>";
     if (! isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) {
         $CONFIG['server_auth_user'] = $CONFIG['remote_auth_user'];
@@ -105,6 +107,9 @@ function nntp_open($nserver = 0, $nport = 0)
 function nntp2_open($nserver = 0, $nport = 0)
 {
     global $text_error, $CONFIG;
+    // Initialize optional posting server variables from CONFIG
+    $post_server = isset($CONFIG['post_server']) ? $CONFIG['post_server'] : '';
+    $post_port = isset($CONFIG['post_port']) ? $CONFIG['post_port'] : '';
 
     $authorize = ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != ""));
     if ($nserver == 0)
@@ -329,7 +334,7 @@ function testGroup($groupname)
         $gf = fopen($file_groups, "r");
         while (! feof($gf)) {
             $read = trim(line_read($gf));
-            $read = preg_replace('/\t/', ' ', $read);
+            $read = preg_replace('/\t/', ' ', $read, -1);
             $read = strtolower($read);
             $pos = strpos($read, " ");
             if ($pos != false) {
@@ -512,7 +517,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
         $overviewformat = thread_overview_read($ns);
         foreach ($gfdata as $gf) {
             $gruppe = new newsgroupType();
-            $tmp = preg_replace('/\t/', ' ', trim($gf));
+            $tmp = preg_replace('/\t/', ' ', trim($gf), -1);
             if (substr($tmp, 0, 1) == ":") {
                 $gruppe->text = substr($tmp, 1);
                 $newsgroups[] = $gruppe;
@@ -813,12 +818,12 @@ function groups_show($gruppen)
                 $block = false;
                 foreach ($blocked_user_config as $key => $value) {
                     $blockme = '/' . addslashes($key) . '/';
-                    if (preg_match($blockme, $name_from)) {
+                    if (preg_match($blockme, $name_from, $matches)) {
                         $block = true;
                         break;
                     }
                 }
-                $lastarticleinfo['subject'] = htmlentities(preg_replace('/_/', ' ', mb_decode_mimeheader($lastarticleinfo['subject'])));
+                $lastarticleinfo['subject'] = htmlentities(preg_replace('/_/', ' ', mb_decode_mimeheader($lastarticleinfo['subject']), -1));
                 $groupdisplay .= '<span class="grouplist_thread_start_author_info">';
                 if ($block) {
                     $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
@@ -986,7 +991,7 @@ function getTimestamp($value)
 function parse_header($hdr, $number = "")
 {
     for ($i = count($hdr) - 1; $i > 0; $i--)
-        if (preg_match("/^(\x09|\x20)/", $hdr[$i]))
+        if (preg_match("/^(\x09|\x20)/", $hdr[$i], $matches))
             $hdr[$i - 1] = $hdr[$i - 1] . " " . ltrim($hdr[$i]);
     $header = new headerType();
     $header->isAnswer = false;
@@ -1191,8 +1196,8 @@ function display_links_in_body($text)
         // Get rid of unwanted trailing characters
         $match = rtrim(htmlspecialchars_decode($match), '/>,".');
         $match = htmlspecialchars($match);
-        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
-        $url = preg_replace("/(<|>)/", ' ', $match);
+        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match), -1);
+        $url = preg_replace("/(<|>)/", ' ', $match, -1);
         $pattern = preg_quote($url);
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
@@ -1201,8 +1206,8 @@ function display_links_in_body($text)
 
     $vlad = explode('<br>', $text);
     foreach ($vlad as $line) {
-        $line = preg_replace("/<\/?p>/", "", $line);
-        $line = preg_replace("/\&gt;/", ">", $line);
+        $line = preg_replace("/<\/?p>/", "", $line, -1);
+        $line = preg_replace("/\&gt;/", ">", $line, -1);
         $line = rtrim($line);
         $depth = 0;
         for ($i = 0; $i < strlen($line); $i++) {
@@ -1682,10 +1687,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from, -1), FILE_APPEND);
         file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from, -1), FILE_APPEND);
     }
     return array(
         'res' => $res,
@@ -1700,7 +1705,7 @@ function logging_prefix($sockip = null)
 {
     global $client_ip_address;
     if ($sockip) {
-        if (preg_match("/\./", $sockip)) {
+        if (preg_match("/\./", $sockip, $matches)) {
             $ipv4_addr = preg_split("/\:/", $sockip);
             $client_ip = $ipv4_addr[0];
         } else {
@@ -1743,7 +1748,7 @@ function get_section_menu_array()
     $menudata = file($config_dir . '/menu.conf');
     $newmenu = array();
     foreach ($menudata as $menuentry) {
-        if (!preg_match("/^[a-zA-Z0-9]/", $menuentry)) { // Not an entry. Ignore
+        if (!preg_match("/^[a-zA-Z0-9]/", $menuentry, $matches)) { // Not an entry. Ignore
             continue;
         } else {
             $newmenu[] = $menuentry;
@@ -1772,7 +1777,7 @@ function format_log_date()
 function create_name_link($name, $data = null, $truncate = true)
 {
     global $CONFIG;
-    $name = preg_replace('/\"/', '', $name);
+    $name = preg_replace('/\"/', '', $name, -1);
 
     if ($truncate) {
         $trimlength = 20;
@@ -1974,7 +1979,7 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
             }
         }
     }
-    $mysnippet = preg_replace('/\n.{0,5}>(.*)/', '', $mysnippet);
+    $mysnippet = preg_replace('/\n.{0,5}>(.*)/', '', $mysnippet, -1);
 
     $snipstart = strpos($mysnippet, ":\n");
     if (substr_count(trim(substr($mysnippet, 0, $snipstart)), "\n") < 2) {
@@ -2047,7 +2052,7 @@ function history_db_open($database, $table = 'history')
 			status TEXT,
 			statusdate TEXT,
 			statusreason TEXT,
-			statusnotes TEXT,		
+			statusnotes TEXT,
 			unique (newsgroup, msgid),
 			unique (newsgroup, number))");
     $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_status on ' . $table . '(status)');
@@ -2103,11 +2108,11 @@ function article_db_open($database, $table = 'articles')
 {
     global $spooldir, $logdir, $config_name;
     $logfile = $logdir . '/debug.log';
-    $spoolpath = "/" . preg_replace("/\//", "\/", $spooldir) . "/";
-    $group = preg_replace("/\-articles\.db3/", "", $database);
-    $group = preg_replace($spoolpath, "", $group);
-    $group = preg_replace("/\//", "", $group);
-    if (! preg_match('/\-articles\.db3\-new/', $database)) {
+    $spoolpath = "/" . preg_replace("/\//", "\/", $spooldir, -1) . "/";
+    $group = preg_replace("/\-articles\.db3/", "", $database, -1);
+    $group = preg_replace($spoolpath, "", $group, -1);
+    $group = preg_replace("/\//", "", $group, -1);
+    if (! preg_match('/\-articles\.db3\-new/', $database, -1)) {
         if (! get_section_by_group($group, true)) {
             file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
             return false;
@@ -2489,12 +2494,9 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
     global $debug_log, $mail_log;
 
     include($config_dir . '/phpmailer.inc.php');
-    if (class_exists('PHPMailer')) {
-        $mail = new PHPMailer();
-    } else {
+    if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
         $mail = new PHPMailer\PHPMailer\PHPMailer();
     }
-
     if (!$mail) {
         return false;
     }
@@ -2554,7 +2556,7 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
 
 /* get_user_mail_auth_data is poorly named but
  * it retrieves newsgroup status per user info
- * for subscribe/unsubscribe/read/unread 
+ * for subscribe/unsubscribe/read/unread
  */
 function get_user_mail_auth_data($user)
 {
@@ -2807,7 +2809,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     global $CONFIG, $config_name, $config_dir, $spooldir, $logdir;
     $logfile = $logdir . '/spoolnews.log';
     $group = $this_article['group'];
-    $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $group);
+    $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $group, -1);
 
     if ($check_duplicates) {
         if (check_duplicate_msgid($this_article['mid'], $group)) {
@@ -3213,7 +3215,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             ':newsgroup' => $group,
             ':msgid' => $messageid
         ]);
-        $grouppath = preg_replace('/\./', '/', $group);
+        $grouppath = preg_replace('/\./', '/', $group, -1);
         $status = "deleted";
         $statusdate = time();
         $statusreason = "nocem";
@@ -3313,7 +3315,7 @@ function check_article_integrity($rawmessage, $artdate = false)
 /* Remove or replace characters in a string */
 function sanitize_header($text)
 {
-    return preg_replace("/\`/", "'", $text);
+    return preg_replace("/\`/", "'", $text, -1);
 }
 
 function wrap_post($body)

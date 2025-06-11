@@ -311,15 +311,15 @@ echo $thispage;
 function get_body_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
-    $terms = preg_replace("/'/", ' ', urldecode($terms));
+    $terms = preg_replace("/'/", ' ', urldecode($terms),-1);
     $terms = trim($terms);
     if ($terms[0] !== '"' || substr($terms, -1) !== '"') {
-        $terms = preg_replace('/"/', '', $terms);
-        $terms = preg_replace("/\ /", '" "', $terms);
-        $terms = preg_replace('/"NEAR"/', 'NEAR', $terms);
-        $terms = preg_replace('/"AND"/', 'AND', $terms);
-        $terms = preg_replace('/"OR"/', 'OR', $terms);
-        $terms = preg_replace('/"NOT"/', 'NOT', $terms);
+        $terms = preg_replace('/"/', '', $terms, -1);
+        $terms = preg_replace("/\ /", '" "', $terms, -1);
+        $terms = preg_replace('/"NEAR"/', 'NEAR', $terms, -1);
+        $terms = preg_replace('/"AND"/', 'AND', $terms, -1);
+        $terms = preg_replace('/"OR"/', 'OR', $terms, -1);
+        $terms = preg_replace('/"NOT"/', 'NOT', $terms, -1);
         $terms = '"' . $terms . '"';
     }
     if ($group != '') {
@@ -391,7 +391,7 @@ function show_search_sort_toggle()
 function get_header_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
-    $terms = preg_replace('/\%/', '\%', urldecode($terms));
+    $terms = preg_replace('/\%/', '\%', urldecode($terms), -1);
     $searchterms = "%" . $terms . "%";
 
     if (isset($group)) {
@@ -442,7 +442,7 @@ function get_header_search($group, $terms)
             $stmt->execute();
             while ($found = $stmt->fetch()) {
                 if (isset($_REQUEST['data']) && ($_REQUEST['searchpoint'] == 'name')) {
-                    if (preg_match($check, $found['name'])) {
+                    if (preg_match($check, $found['name'], $matches)) {
                         continue;
                     }
                 }
@@ -571,9 +571,9 @@ function get_suggestion($word)
     }
 
     // Remove specific characters here
-    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word);
+    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word, -1);
 
-    if (!preg_match("/ /", trim($word))) { // Just one word in search
+    if (!preg_match("/ /", trim($word), $matches)) { // Just one word in search
         if (!pspell_check($pspell, $word)) {
             $suggestions = pspell_suggest($pspell, $word);
             if (isset($suggestions[0])) {
@@ -590,7 +590,7 @@ function get_suggestion($word)
         $return_string = '';
         $words = explode(" ", $word);
         foreach ($words as $one_word) {
-            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
+            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word, -1)) {
                 $return_string .= $one_word . " ";
                 continue;
             }

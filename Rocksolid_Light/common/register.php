@@ -32,7 +32,7 @@ if (!isset($_POST['user_email'])) {
     $_POST['user_email'] = null;
 }
 $username_allowed_chars = "a-zA-Z0-9_.";
-$clean_username = preg_replace("/[^$username_allowed_chars]/", "", $_POST['username']);
+$clean_username = preg_replace("/[^$username_allowed_chars]/", "", $_POST['username'],-1);
 
 // Did this client arrive via a recent link from this file?
 if ((password_verify($keys[0], $_POST['key'])) || (password_verify($keys[1], $_POST['key']))) {
@@ -92,7 +92,7 @@ if (!isset($_POST['command'])) {
         echo '<td></td></tr>';
         echo '</table></form>';
 
-        // RESET Password 
+        // RESET Password
         echo '<form name="resetpw" method="post" action="register.php">';
         echo '<table class="register_table_forgot_password_button">';
         echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '">';
@@ -241,7 +241,7 @@ if (file_exists($email_registry)) {
         exit(2);
     }
 }
-if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email)) {
+if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email,-1)) {
     echo "Email must be in the form of an email address\r\n";
     echo '<form name="return1" method="post" action="register.php">';
     echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
@@ -486,9 +486,7 @@ function send_reset_email($username, $user_email)
             return false;
         }
         include($config_dir . '/phpmailer.inc.php');
-        if (class_exists('PHPMailer')) {
-            $mail = new PHPMailer();
-        } else {
+        if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
@@ -575,9 +573,7 @@ function create_account($username, $password, $user_email)
 
     if ($CONFIG['verify_email'] == true) {
         include($config_dir . '/phpmailer.inc.php');
-        if (class_exists('PHPMailer')) {
-            $mail = new PHPMailer();
-        } else {
+        if (class_exists('PHPMailer\PHPMailer\PHPMailer')) {
             $mail = new PHPMailer\PHPMailer\PHPMailer();
         }
     }
@@ -756,7 +752,7 @@ function create_new($username, $password, $user_email)
     } else {
         send_admin_message('admin', 'admin', $mail_subject, $mail_body . "\n");
     }
-    
+
 }
 
 function make_key($username)

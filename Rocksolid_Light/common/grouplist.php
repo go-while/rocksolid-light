@@ -73,7 +73,7 @@ foreach ($groups_array as $key) {
 
     // Check if this is a search
     if ($terms != '') {
-        if (!preg_match("/$terms/i", $group) && !preg_match("/$terms/i", $title))
+        if (!preg_match("/$terms/i", $group, $matches) && !preg_match("/$terms/i", $title, $matches))
             continue;
     }
 

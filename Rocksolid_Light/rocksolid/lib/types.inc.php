@@ -30,6 +30,7 @@ class newsgroupType {
   var $description;
   var $count;
   var $text;
+  var $age;        // timestamp of the latest article in the group
 }
 
 /*
@@ -75,5 +76,7 @@ class headerType {
   var $user_agent;
   var $isReply;    // has this article "Re: " at the beginning of the subject?
   var $threadsize; // number of articles in this thread
+  var $rslight_to;    // custom rslight field
+  var $rslight_site;  // custom rslight field
 }
 ?>
