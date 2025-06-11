@@ -162,7 +162,7 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
     $article = (object) [];
     for ($i = 0; $i < count($overviewfmt) - 1; $i++) {
         if ($overviewfmt[$i] == "Subject:") {
-            $subject = preg_replace('/\[doctalk\]/i', '', headerDecode($over[$i + 1]), -1);
+            $subject = preg_replace('/\[doctalk\]/i', '', headerDecode($over[$i + 1]));
             // $article->isReply = splitSubject($subject);
             $article->subject = $subject;
         }
@@ -468,7 +468,7 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
             $dirhandle = opendir($spooldir);
             while ($cachefile = readdir($dirhandle)) {
                 if (substr($cachefile, 0, strlen($groupname) + 1) == $groupname . "_") {
-                    $num = preg_replace('/^(.*)_(.*)\.(.*)$/i', '\2', $cachefile, -1);
+                    $num = preg_replace('/^(.*)_(.*)\.(.*)$/i', '\2', $cachefile);
                     if (($num < $firstarticle) || ($num > $lastarticle))
                         unlink($spooldir . '/' . $cachefile);
                 }
@@ -561,7 +561,7 @@ function thread_load($groupname, $readmode = 1, $poll = false)
  */
 function splitSubject(&$subject)
 {
-    $s = preg_replace('/^(odp:|aw:|re:|re\[2\]:| )+/i', '', $subject, -1);
+    $s = preg_replace('/^(odp:|aw:|re:|re\[2\]:| )+/i', '', $subject);
     $return = ($s != $subject);
     $subject = $s;
     return $return;

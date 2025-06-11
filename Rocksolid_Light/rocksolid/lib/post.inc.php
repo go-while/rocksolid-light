@@ -580,7 +580,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
             $body .= "\n\n-- \n" . $userconfig['signature'];
         } else {
             if ((isset($CONFIG['postfooter'])) && ($CONFIG['postfooter'] != "")) {
-                $postfooter = preg_replace('/\{DOMAIN\}/', "\n" . $_SERVER['HTTP_HOST'], $CONFIG['postfooter'], -1);
+                $postfooter = preg_replace('/\{DOMAIN\}/', "\n" . $_SERVER['HTTP_HOST'], $CONFIG['postfooter']);
                 $body .= "\n\n-- \n" . $postfooter;
             }
         }

@@ -1,14 +1,14 @@
 <?php
 global $enable_cache, $rslight_version, $spooldir, $logdir, $cache_dir, $cache_log;
- /* 
+ /*
  * Set $enable_cache to the cache type you want to use
  * memcached and php-memcached must be installed
  * if using memcached.
  * $enable_cache = 'memcached';
- * 
+ *
  * This will use a directory for caching, no memcache
  * $enable_cache = 'diskcache';
- * 
+ *
  * or set to false (no quotes) to disable caching:
  * $enable_cache = false;
  */
@@ -24,12 +24,12 @@ $memcache_server = '127.0.0.1';
 $memcache_port = 11211;
 /*
  * Maximum size of data (in bytes) to save per key in memcache
- * 
+ *
  * If using memcached This must be less than or equal to
  * MAXITEMSIZE in memcached, which is 1MiB by default
  * Increasing this here will not work unless it is also
  * increased in memcached configuration
- * 
+ *
  * You probably do not need to change this
  */
 $cache_maxitemsize = 1024000;

@@ -32,7 +32,7 @@ if (!isset($_POST['user_email'])) {
     $_POST['user_email'] = null;
 }
 $username_allowed_chars = "a-zA-Z0-9_.";
-$clean_username = preg_replace("/[^$username_allowed_chars]/", "", $_POST['username'],-1);
+$clean_username = preg_replace("/[^$username_allowed_chars]/", "", $_POST['username']);
 
 // Did this client arrive via a recent link from this file?
 if ((password_verify($keys[0], $_POST['key'])) || (password_verify($keys[1], $_POST['key']))) {
@@ -254,7 +254,7 @@ if (file_exists($email_registry) && is_readable($email_registry)) {
 } else {
     $tried_email = array();
 }
-if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email,-1)) {
+if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$/", $user_email)) {
     echo "Email must be in the form of an email address\r\n";
     echo '<form name="return1" method="post" action="register.php">';
     echo '<input name="username" type="hidden" id="username" value="' . $username . '">';

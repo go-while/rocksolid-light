@@ -314,7 +314,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         }
     }
     $user_config['signature'] = $_POST['signature'];
-    $user_config['xface'] = preg_replace("/[\n\r]/", "", $_POST['xface'], -1);
+    $user_config['xface'] = preg_replace("/[\n\r]/", "", $_POST['xface']);
     $user_config['timezone'] = $_POST['timezone'];
     $user_config['theme'] = $_POST['theme'];
     $user_config['hide_unsub'] = $_POST['hide_unsub'];
@@ -445,7 +445,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         $display_name = $_POST['display_name'];
         $display_email = $_POST['display_email'];
         $user_config['signature'] = $_POST['signature'];
-        $user_config['xface'] = preg_replace("/[\n\r]/", "", urldecode($_POST['xface']), -1);
+        $user_config['xface'] = preg_replace("/[\n\r]/", "", urldecode($_POST['xface']));
         $user_config['hide_unsub'] = $_POST['hide_unsub'];
         $user_config['subscribed'] = $_POST['subscribed'];
         $user_config['theme'] = $_POST['theme'];

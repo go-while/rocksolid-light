@@ -11,7 +11,7 @@ if(($_POST['configure'] == "Save Configuration") && ($_POST['configkey'] == $adm
   $return.="return [\n";
   foreach($_POST as $key => $value) {
     if(($key !== 'configure') && ($key !== 'configkey')) {
-      $value = preg_replace('/\'/', '\\\'', $value, -1);
+      $value = preg_replace('/\'/', '\\\'', $value);
       $return.='  \''.$key.'\' => \''.trim($value).'\''.",\n";
     }
   }

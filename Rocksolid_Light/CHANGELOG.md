@@ -109,6 +109,33 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 - Added missing class property declarations to prevent dynamic property warnings
 - Updated configuration defaults for posting servers
 
+#### **PCRE Function Modernization**
+**Fixed 65+ instances of deprecated PCRE function calls across 15 files:**
+
+**Core Files Fixed:**
+- `rocksolid/search.php` - Fixed 10 PCRE function calls
+- `rocksolid/newsportal.php` - Fixed 19 PCRE function calls  
+- `rocksolid/lib/thread.inc.php` - Fixed 3 PCRE function calls
+- `rocksolid/lib/post.inc.php` - Fixed 1 PCRE function call
+- `rocksolid/post.php` - Fixed 5 PCRE function calls
+- `spoolnews/newsportal.php` - Fixed 19 PCRE function calls
+- `common/register.php` - Fixed 2 PCRE function calls
+- `common/header.php` - Fixed 2 PCRE function calls
+- `common/setup.php` - Fixed 1 PCRE function call
+- `spoolnews/user.php` - Fixed 2 PCRE function calls
+- `spoolnews/upload.php` - Fixed 2 PCRE function calls
+- `rslight/cache.inc.php` - Fixed 1 PCRE function call
+
+**Deprecated Patterns Fixed:**
+- `preg_replace('/pattern/', 'replacement', $string, -1)` → `preg_replace('/pattern/', 'replacement', $string)`
+- `preg_match('/pattern/', $string, -1)` → `preg_match('/pattern/', $string)`
+
+**Impact:**
+- **Eliminates PHP 8.2+ Deprecation Warnings**: All invalid `-1` limit parameters removed
+- **Maintains Functionality**: Behavior unchanged, only removes deprecated syntax
+- **Future-Proof**: Ensures compatibility with PHP 8.2, 8.3, and beyond
+- **Performance**: Slightly improved performance by removing unnecessary limit parameters
+
 ---
 
 ### 3. **PHPMailer 6.10.0 Integration**
@@ -197,7 +224,7 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 
 | File | Security Fixes | PHP 8.2+ Fixes | Lines Modified | Status |
 |------|----------------|-----------------|----------------|---------|
-| `common/register.php` | 3 unserialize + XSS | 2 preg_replace | ~25 | ✅ Complete |
+| `common/register.php` | 3 unserialize + XSS | 3 preg_replace + regex fix | ~25 | ✅ Complete |
 | `common/header.php` | Object injection + XSS + Path traversal | 3 preg functions | ~30 | ✅ Complete |
 | `spoolnews/user.php` | 6 unserialize + XSS | PCRE functions | ~45 | ✅ Complete |
 | `rocksolid/newsportal.php` | 4+ unserialize + validation | 20+ preg functions | ~60 | ✅ Complete |

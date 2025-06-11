@@ -311,15 +311,15 @@ echo $thispage;
 function get_body_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $debug_log, $spooldir, $snippet_size;
-    $terms = preg_replace("/'/", ' ', urldecode($terms),-1);
+    $terms = preg_replace("/'/", ' ', urldecode($terms));
     $terms = trim($terms);
     if ($terms[0] !== '"' || substr($terms, -1) !== '"') {
-        $terms = preg_replace('/"/', '', $terms, -1);
-        $terms = preg_replace("/\ /", '" "', $terms, -1);
-        $terms = preg_replace('/"NEAR"/', 'NEAR', $terms, -1);
-        $terms = preg_replace('/"AND"/', 'AND', $terms, -1);
-        $terms = preg_replace('/"OR"/', 'OR', $terms, -1);
-        $terms = preg_replace('/"NOT"/', 'NOT', $terms, -1);
+        $terms = preg_replace('/"/', '', $terms);
+        $terms = preg_replace("/\ /", '" "', $terms);
+        $terms = preg_replace('/"NEAR"/', 'NEAR', $terms);
+        $terms = preg_replace('/"AND"/', 'AND', $terms);
+        $terms = preg_replace('/"OR"/', 'OR', $terms);
+        $terms = preg_replace('/"NOT"/', 'NOT', $terms);
         $terms = '"' . $terms . '"';
     }
     if ($group != '') {
@@ -391,7 +391,7 @@ function show_search_sort_toggle()
 function get_header_search($group, $terms)
 {
     global $CONFIG, $config_name, $config_dir, $spooldir, $debug_log, $snippet_size;
-    $terms = preg_replace('/\%/', '\%', urldecode($terms), -1);
+    $terms = preg_replace('/\%/', '\%', urldecode($terms));
     $searchterms = "%" . $terms . "%";
 
     if (isset($group)) {
@@ -571,7 +571,7 @@ function get_suggestion($word)
     }
 
     // Remove specific characters here
-    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word, -1);
+    $word = preg_replace("/(\"|\'|\(|\)|\-|\+|\_)/", '', $word);
 
     if (!preg_match("/ /", trim($word), $matches)) { // Just one word in search
         if (!pspell_check($pspell, $word)) {
@@ -590,7 +590,7 @@ function get_suggestion($word)
         $return_string = '';
         $words = explode(" ", $word);
         foreach ($words as $one_word) {
-            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word, -1)) {
+            if (preg_match("/^(AND|OR|NOT|\+)$/i", $one_word)) {
                 $return_string .= $one_word . " ";
                 continue;
             }

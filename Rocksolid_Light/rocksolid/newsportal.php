@@ -349,7 +349,7 @@ function testGroup($groupname)
         $gf = fopen($file_groups, "r");
         while (! feof($gf)) {
             $read = trim(line_read($gf));
-            $read = preg_replace('/\t/', ' ', $read, -1);
+            $read = preg_replace('/\t/', ' ', $read);
             $read = strtolower($read);
             $pos = strpos($read, " ");
             if ($pos != false) {
@@ -519,8 +519,8 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
             $data .= fgets($file, 1000);
         }
         fclose($file);
-        $newsgroups = @unserialize($data);
-        // Validate that unserialize returned an array to prevent object injection
+       $newsgroups = @unserialize($data);
+       // Validate that unserialize returned an array to prevent object injection
         if (!is_array($newsgroups)) {
             $newsgroups = array();
             // Log potential security issue and force rebuild
@@ -540,7 +540,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
         $overviewformat = thread_overview_read($ns);
         foreach ($gfdata as $gf) {
             $gruppe = new newsgroupType();
-            $tmp = preg_replace('/\t/', ' ', trim($gf), -1);
+            $tmp = preg_replace('/\t/', ' ', trim($gf));
             if (substr($tmp, 0, 1) == ":") {
                 $gruppe->text = substr($tmp, 1);
                 $newsgroups[] = $gruppe;
@@ -653,7 +653,6 @@ function groups_show($gruppen)
             } else {
                 $user_config = array();
             }
-
             // User blocklist
             $blocked_userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($blocked_userfile) && is_readable($blocked_userfile)) {
@@ -875,7 +874,7 @@ function groups_show($gruppen)
                         break;
                     }
                 }
-                $lastarticleinfo['subject'] = htmlentities(preg_replace('/_/', ' ', mb_decode_mimeheader($lastarticleinfo['subject']), -1));
+                $lastarticleinfo['subject'] = htmlentities(preg_replace('/_/', ' ', mb_decode_mimeheader($lastarticleinfo['subject'])));
                 $groupdisplay .= '<span class="grouplist_thread_start_author_info">';
                 if ($block) {
                     $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
@@ -1248,8 +1247,8 @@ function display_links_in_body($text)
         // Get rid of unwanted trailing characters
         $match = rtrim(htmlspecialchars_decode($match), '/>,".');
         $match = htmlspecialchars($match);
-        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match), -1);
-        $url = preg_replace("/(<|>)/", ' ', $match, -1);
+        $linkurl = preg_replace("/(<|>)/", '', htmlspecialchars_decode($match));
+        $url = preg_replace("/(<|>)/", ' ', $match);
         $pattern = preg_quote($url);
         $pattern = "!$pattern!";
         $text = preg_replace($pattern, '<a href="' . $linkurl . '" rel="nofollow" target="_blank">' . $url . '</a>', $text, 1);
@@ -1258,8 +1257,8 @@ function display_links_in_body($text)
 
     $vlad = explode('<br>', $text);
     foreach ($vlad as $line) {
-        $line = preg_replace("/<\/?p>/", "", $line, -1);
-        $line = preg_replace("/\&gt;/", ">", $line, -1);
+        $line = preg_replace("/<\/?p>/", "", $line);
+        $line = preg_replace("/\&gt;/", ">", $line);
         $line = rtrim($line);
         $depth = 0;
         for ($i = 0; $i < strlen($line); $i++) {
@@ -1421,7 +1420,6 @@ function verify_logged_in($name)
     } else {
         $keys = array();
     }
-
     $logged_in = false;
     $ip_pass = false;
 
@@ -1754,10 +1752,10 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     }
     unlink($spamfile);
     if ($res === 1) {
-        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from, -1), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tSPAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
         file_put_contents($spamdir . '/' . $msgid, $spamresult);
     } else {
-        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from, -1), FILE_APPEND);
+        file_put_contents($logfile, "\n" . logging_prefix() . " spamc:\tHAM\t" . $msgid . "\t" . $newsgroups . "\t" . preg_replace('/\t/', ' ', $from), FILE_APPEND);
     }
     return array(
         'res' => $res,
@@ -1844,7 +1842,7 @@ function format_log_date()
 function create_name_link($name, $data = null, $truncate = true)
 {
     global $CONFIG;
-    $name = preg_replace('/\"/', '', $name, -1);
+    $name = preg_replace('/\"/', '', $name);
 
     if ($truncate) {
         $trimlength = 20;
@@ -2046,7 +2044,7 @@ function get_search_snippet($body, $content_type = '', $content_transfer_encodin
             }
         }
     }
-    $mysnippet = preg_replace('/\n.{0,5}>(.*)/', '', $mysnippet, -1);
+    $mysnippet = preg_replace('/\n.{0,5}>(.*)/', '', $mysnippet);
 
     $snipstart = strpos($mysnippet, ":\n");
     if (substr_count(trim(substr($mysnippet, 0, $snipstart)), "\n") < 2) {
@@ -2175,11 +2173,11 @@ function article_db_open($database, $table = 'articles')
 {
     global $spooldir, $logdir, $config_name;
     $logfile = $logdir . '/debug.log';
-    $spoolpath = "/" . preg_replace("/\//", "\/", $spooldir, -1) . "/";
-    $group = preg_replace("/\-articles\.db3/", "", $database, -1);
-    $group = preg_replace($spoolpath, "", $group, -1);
-    $group = preg_replace("/\//", "", $group, -1);
-    if (! preg_match('/\-articles\.db3\-new/', $database, -1)) {
+    $spoolpath = "/" . preg_replace("/\//", "\/", $spooldir) . "/";
+    $group = preg_replace("/\-articles\.db3/", "", $database);
+    $group = preg_replace($spoolpath, "", $group);
+    $group = preg_replace("/\//", "", $group);
+    if (! preg_match('/\-articles\.db3\-new/', $database)) {
         if (! get_section_by_group($group, true)) {
             file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
             return false;
@@ -2876,7 +2874,7 @@ function insert_article_from_array($this_article, $check_duplicates = true)
     global $CONFIG, $config_name, $config_dir, $spooldir, $logdir;
     $logfile = $logdir . '/spoolnews.log';
     $group = $this_article['group'];
-    $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $group, -1);
+    $grouppath = $spooldir . '/articles/' . preg_replace('/\./', '/', $group);
 
     if ($check_duplicates) {
         if (check_duplicate_msgid($this_article['mid'], $group)) {
@@ -3282,7 +3280,7 @@ function delete_message($messageid, $group = null, $overview_dbh = null)
             ':newsgroup' => $group,
             ':msgid' => $messageid
         ]);
-        $grouppath = preg_replace('/\./', '/', $group, -1);
+        $grouppath = preg_replace('/\./', '/', $group);
         $status = "deleted";
         $statusdate = time();
         $statusreason = "nocem";
@@ -3382,7 +3380,7 @@ function check_article_integrity($rawmessage, $artdate = false)
 /* Remove or replace characters in a string */
 function sanitize_header($text)
 {
-    return preg_replace("/\`/", "'", $text, -1);
+    return preg_replace("/\`/", "'", $text);
 }
 
 function wrap_post($body)

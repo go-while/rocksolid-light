@@ -172,8 +172,8 @@ $thisgroup = _rawurldecode($_REQUEST['group']);
 
 // Is this a reply to an article containing Followup-To?
 if (isset($_REQUEST['fgroups'])) {
-    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups'], -1);
-    $thisgroup = preg_replace('/\,+/', ',', $thisgroup, -1);
+    $thisgroup = preg_replace('!\s+!', ',', $_REQUEST['fgroups']);
+    $thisgroup = preg_replace('/\,+/', ',', $thisgroup);
 }
 
 $newsgroups = $thisgroup;
@@ -379,7 +379,7 @@ if ($type == "post") {
             }
 
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
-                $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name'], -1);
+                $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
                 // There is an attachment to handle
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
             } else {
@@ -466,7 +466,7 @@ if ($type == "reply") {
         if ((trim($body[$i]) == "") && ($body[$i + 1] == '-- ' || $i >= count($body) - 1)) {
         } else {
             // Remove spaces from starting quote '>' characters
-            $body = preg_replace("/^> >/", ">>", $body, -1);
+            $body = preg_replace("/^> >/", ">>", $body);
 
             // Quote blank lines? YES by default
             if (! isset($OVERRIDES['quote_blank_lines']) || $OVERRIDES['quote_blank_lines'] == true) {
@@ -499,7 +499,7 @@ if ($type == "reply") {
     $subject = "Re: " . $subject;
     // Cut off old parts of a subject
     // for example: 'foo (was: bar)' becomes 'foo'.
-    $subject = preg_replace('/(\(wa[sr]: .*\))$/i', '', $subject, -1);
+    $subject = preg_replace('/(\(wa[sr]: .*\))$/i', '', $subject);
     $show = 1;
     $references = false;
     if (isset($head->references[0])) {

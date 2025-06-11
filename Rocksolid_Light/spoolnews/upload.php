@@ -70,7 +70,7 @@ echo '<hr>';
 if (isset($_FILES['photo']) && is_uploaded_file($_FILES['photo']['tmp_name'])) {
     // Enhanced filename sanitization and validation
     $original_name = $_FILES['photo']['name'];
-    $sanitized_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', $original_name, -1);
+    $sanitized_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', $original_name);
 
     // Validate file extension - only allow safe file types
     $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif', 'pdf', 'txt', 'doc', 'docx');
@@ -84,7 +84,7 @@ if (isset($_FILES['photo']) && is_uploaded_file($_FILES['photo']['tmp_name'])) {
         // Check auth here
         if ($logged_in) {
             // Prevent path traversal by validating username
-            $safe_username = preg_replace('/[^a-zA-Z0-9_.-]/', '', strtolower($_POST['username']), -1);
+            $safe_username = preg_replace('/[^a-zA-Z0-9_.-]/', '', strtolower($_POST['username']));
             $userdir = $spooldir . '/upload/' . $safe_username;
             $upload_to = $userdir . '/' . $_FILES['photo']['name'];
 

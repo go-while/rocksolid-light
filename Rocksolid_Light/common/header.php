@@ -51,9 +51,9 @@ if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
 // Get theme
 $default_theme = "Default Theme";
 if (isset($_SESSION['theme'])) {
-    $do_theme = preg_replace("/ /", "%20", $_SESSION['theme'], -1);
+    $do_theme = preg_replace("/ /", "%20", $_SESSION['theme']);
 } else {
-    $do_theme = preg_replace("/ /", "%20", $default_theme, -1);
+    $do_theme = preg_replace("/ /", "%20", $default_theme);
 }
 echo '<link rel="stylesheet" type="text/css" href="' . $rootdir . '/common/themes/' . $do_theme . '/style.css">';
 echo '<link rel="icon" type="image/x-icon" href="/common/images/favicon.ico">';
