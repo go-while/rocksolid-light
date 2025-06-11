@@ -6,14 +6,14 @@ Screenshots: https://www.novabbs.com/rocksolid-light/screenshots/
 
 ![ScreenShot](https://www.novabbs.com/images/rslight-480.png)
 
-Rocksolid Light is based on NewsPortal, which discontinued development in 2008, and was 
-developed by Florian Amrhein https://florian-amrhein.de/newsportal/ 
+Rocksolid Light is based on NewsPortal, which discontinued development in 2008, and was
+developed by Florian Amrhein https://florian-amrhein.de/newsportal/
 
-rslight contains some major code and feature changes, but would not exist 
+rslight contains some major code and feature changes, but would not exist
 without NewsPortal as a basis for development.
 
-Rocksolid Light is a php web forum interface that basically uses nntp as a backend. 
-Forums can be Usenet newsgroups, or any groups you wish to create. Forums can be 
+Rocksolid Light is a php web forum interface that basically uses nntp as a backend.
+Forums can be Usenet newsgroups, or any groups you wish to create. Forums can be
 synchronized with other rslight installs, or other nntp servers.
 
   * Uses sqlite3 database. No configuration required
@@ -40,3 +40,22 @@ See INSTALL.md for installation instructions.
 If you have trouble, post to rocksolid.nodes.help (www.novabbs.com) and we'll try to help.
 
 Retro Guy retroguy@novabbs.com
+
+---
+
+[rocksolid-light Community Repository on Github](https://github.com/go-while/rocksolid-light)
+
+## In Memory of Retro Guy
+
+**Thomas "Thom" Miller (Retro Guy)** - *Creator and Lead Developer*
+*Passed away April 26, 2025*
+
+Thom was the visionary behind RockSolid Light, transforming NewsPortal into a modern, robust newsgroup platform that serves communities worldwide. His excellent defensive programming practices, fault-tolerant architecture, and dedication to preserving internet infrastructure have left an indelible mark on the open source community.
+
+This project continues in his honor, maintaining and modernizing his exceptional work for future generations of newsgroup enthusiasts.
+
+*"The internet never forgets, and neither will we."*
+
+## Current Maintainers
+
+The RockSolid Light project is now maintained by the community, ensuring Thom's legacy continues to serve newsgroup users around the world.
