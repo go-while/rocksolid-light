@@ -69,10 +69,10 @@ if (!isset($_POST['command'])) {
         echo '<td></td>';
         echo '</tr><tr>';
         echo '<td>Username: </td>';
-        echo '<td><input name="username" type="text" id="username"value="' . $_POST['username'] . '" maxlength="30"></td>';
+        echo '<td><input name="username" type="text" id="username"value="' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . '" maxlength="30"></td>';
         echo '</tr><tr>';
         echo '<td>Email: </td>';
-        echo '<td><input name="user_email" type="text" id="user_email" value="' . $_POST['user_email'] . '"></td>';
+        echo '<td><input name="user_email" type="text" id="user_email" value="' . htmlspecialchars($_POST['user_email'], ENT_QUOTES, 'UTF-8') . '"></td>';
         echo '</tr><tr>';
         echo '<td>Password: </td>';
         echo '<td><input name="password" type="password" id="password"></td>';
@@ -231,15 +231,28 @@ foreach ($users as $user) {
 }
 
 # Check email address attempts to avoid abuse
-if (file_exists($email_registry)) {
-    $tried_email = unserialize(file_get_contents($email_registry));
-    if (isset($tried_email[$user_email])) {
-        echo "Email address already used\r\n";
-        echo '<form name="return1" method="post" action="register.php">';
-        echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
-        echo '<input type="submit" name="Submit" value="Back"></td></form>';
-        exit(2);
+if (file_exists($email_registry) && is_readable($email_registry)) {
+    $registry_data = file_get_contents($email_registry);
+    if ($registry_data !== false) {
+        $tried_email = @unserialize($registry_data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($tried_email)) {
+            $tried_email = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in email registry file", 0);
+        }
+        if (isset($tried_email[$user_email])) {
+            echo "Email address already used\r\n";
+            echo '<form name="return1" method="post" action="register.php">';
+            echo '<input name="username" type="hidden" id="username" value="' . htmlspecialchars($username, ENT_QUOTES, 'UTF-8') . '">';
+            echo '<input type="submit" name="Submit" value="Back"></td></form>';
+            exit(2);
+        }
+    } else {
+        $tried_email = array();
     }
+} else {
+    $tried_email = array();
 }
 if (!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z0-9]{2,5})$^", $user_email,-1)) {
     echo "Email must be in the form of an email address\r\n";
@@ -455,8 +468,19 @@ function send_reset_email($username, $user_email)
     $retry_delay = 3; // How many minutes before allowing to re-send email
 
     $reset_file = $spooldir . '/email_reset_log.dat';
-    if (file_exists($reset_file)) {
-        $reset_log = unserialize(file_get_contents($reset_file));
+    if (file_exists($reset_file) && is_readable($reset_file)) {
+        $reset_data = file_get_contents($reset_file);
+        if ($reset_data !== false) {
+            $reset_log = @unserialize($reset_data);
+            // Validate that unserialize returned an array to prevent object injection
+            if (!is_array($reset_log)) {
+                $reset_log = array();
+                // Log potential security issue
+                error_log("Warning: Invalid data in email reset log file", 0);
+            }
+        } else {
+            $reset_log = array();
+        }
     } else {
         $reset_log = array();
     }
@@ -592,8 +616,21 @@ function create_account($username, $password, $user_email)
     }
     if ($CONFIG['verify_email']) {
         # Log email address attempts to avoid abuse
-        if (file_exists($email_registry)) {
-            $tried_email = unserialize(file_get_contents($email_registry));
+        if (file_exists($email_registry) && is_readable($email_registry)) {
+            $registry_data = file_get_contents($email_registry);
+            if ($registry_data !== false) {
+                $tried_email = @unserialize($registry_data);
+                // Validate that unserialize returned an array to prevent object injection
+                if (!is_array($tried_email)) {
+                    $tried_email = array();
+                    // Log potential security issue
+                    error_log("Warning: Invalid data in email registry file during verification", 0);
+                }
+            } else {
+                $tried_email = array();
+            }
+        } else {
+            $tried_email = array();
         }
         $tried_email[$user_email]['time'] = time();
         file_put_contents($email_registry, serialize($tried_email));

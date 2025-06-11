@@ -1,6 +1,21 @@
 <?php
 $keyfile = $spooldir.'/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+if (file_exists($keyfile) && is_readable($keyfile)) {
+    $keys_data = file_get_contents($keyfile);
+    if ($keys_data !== false) {
+        $keys = @unserialize($keys_data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($keys)) {
+            $keys = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in keys file for auth", 0);
+        }
+    } else {
+        $keys = array();
+    }
+} else {
+    $keys = array();
+}
 // How long should cookie allow user to stay logged in?
 // 14400 = 4 hours
   $auth_expire = 14400;
@@ -25,11 +40,11 @@ $keys = unserialize(file_get_contents($keyfile));
 ?>
       <script type="text/javascript">
        if (navigator.cookieEnabled)
-         var authcookie = "<?php echo $authkey; ?>";
-         var savename = "<?php echo stripslashes($name); ?>";
-         var auth_expire = "<?php echo $auth_expire; ?>";
+         var authcookie = "<?php echo htmlspecialchars($authkey, ENT_QUOTES, 'UTF-8'); ?>";
+         var savename = "<?php echo htmlspecialchars(stripslashes($name), ENT_QUOTES, 'UTF-8'); ?>";
+         var auth_expire = "<?php echo intval($auth_expire); ?>";
          var name_expire = "7776000";
-         var pkey = "<?php echo $pkey; ?>";
+         var pkey = "<?php echo htmlspecialchars($pkey, ENT_QUOTES, 'UTF-8'); ?>";
          document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
          document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
          document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";

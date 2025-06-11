@@ -34,7 +34,22 @@ if (file_exists("lib/post.inc.php"))
 $CONFIG = include($config_file);
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+if (file_exists($keyfile) && is_readable($keyfile)) {
+    $keys_data = file_get_contents($keyfile);
+    if ($keys_data !== false) {
+        $keys = @unserialize($keys_data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($keys)) {
+            $keys = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in keys file", 0);
+        }
+    } else {
+        $keys = array();
+    }
+} else {
+    $keys = array();
+}
 
 /*
  * opens the connection to the NNTP-Server
@@ -504,8 +519,16 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
             $data .= fgets($file, 1000);
         }
         fclose($file);
-        $newsgroups = unserialize($data);
-    } else {
+        $newsgroups = @unserialize($data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($newsgroups)) {
+            $newsgroups = array();
+            // Log potential security issue and force rebuild
+            error_log("Warning: Invalid data in newsgroups cache file", 0);
+            $force_reload = true;
+        }
+    }
+    if ($force_reload || !isset($newsgroups)) {
         // force a refresh of the group list
         $ns = nntp_open($server, $port);
         if ($ns == false)
@@ -613,12 +636,41 @@ function groups_show($gruppen)
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            $user_config_file = $config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config';
+            if (file_exists($user_config_file) && is_readable($user_config_file)) {
+                $config_data = file_get_contents($user_config_file);
+                if ($config_data !== false) {
+                    $user_config = @unserialize($config_data);
+                    // Validate that unserialize returned an array to prevent object injection
+                    if (!is_array($user_config)) {
+                        $user_config = array();
+                        // Log potential security issue
+                        error_log("Warning: Invalid data in user config file for user: " . strtolower($cookie_mail_name), 0);
+                    }
+                } else {
+                    $user_config = array();
+                }
+            } else {
+                $user_config = array();
+            }
 
             // User blocklist
             $blocked_userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
-            if (file_exists($blocked_userfile)) {
-                $blocked_user_config = unserialize(file_get_contents($blocked_userfile));
+            if (file_exists($blocked_userfile) && is_readable($blocked_userfile)) {
+                $blocked_data = file_get_contents($blocked_userfile);
+                if ($blocked_data !== false) {
+                    $blocked_user_config = @unserialize($blocked_data);
+                    // Validate that unserialize returned an array to prevent object injection
+                    if (!is_array($blocked_user_config)) {
+                        $blocked_user_config = array();
+                        // Log potential security issue
+                        error_log("Warning: Invalid data in blocked users file", 0);
+                    }
+                } else {
+                    $blocked_user_config = array();
+                }
+            } else {
+                $blocked_user_config = array();
             }
         }
     }
@@ -1353,7 +1405,22 @@ function verify_logged_in($name)
     global $CONFIG, $spooldir, $auth_log, $debug_log;
 
     $keyfile = $spooldir . '/keys.dat';
-    $keys = unserialize(file_get_contents($keyfile));
+    if (file_exists($keyfile) && is_readable($keyfile)) {
+        $keys_data = file_get_contents($keyfile);
+        if ($keys_data !== false) {
+            $keys = @unserialize($keys_data);
+            // Validate that unserialize returned an array to prevent object injection
+            if (!is_array($keys)) {
+                $keys = array();
+                // Log potential security issue
+                error_log("Warning: Invalid data in keys file for authentication", 0);
+            }
+        } else {
+            $keys = array();
+        }
+    } else {
+        $keys = array();
+    }
 
     $logged_in = false;
     $ip_pass = false;

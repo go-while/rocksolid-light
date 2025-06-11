@@ -5,7 +5,22 @@ include "newsportal.php";
 $logfile = $logdir . '/files.log';
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+if (file_exists($keyfile) && is_readable($keyfile)) {
+    $keys_data = file_get_contents($keyfile);
+    if ($keys_data !== false) {
+        $keys = @unserialize($keys_data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($keys)) {
+            $keys = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in keys file for upload", 0);
+        }
+    } else {
+        $keys = array();
+    }
+} else {
+    $keys = array();
+}
 
 $name = '';
 
@@ -52,28 +67,44 @@ echo '</form>';
 echo '</td>';
 echo '<td width=100%></td></tr></table>';
 echo '<hr>';
-if (isset($_FILES['photo'])) {
-    $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
-    // Check auth here
-    if ($logged_in) {
-        $userdir = $spooldir . '/upload/' . strtolower($_POST['username']);
-        $upload_to = $userdir . '/' . $_FILES['photo']['name'];
-        if (is_file($upload_to)) {
-            echo $_FILES['photo']['name'] . ' already exists in your folder';
-        } else {
-            if (! is_dir($userdir)) {
-                mkdir($userdir);
-            }
-            $success = move_uploaded_file($_FILES['photo']['tmp_name'], $upload_to);
-            if ($success) {
-                file_put_contents($logfile, "\n" . format_log_date() . " Saved: " . strtolower($_POST['username']) . "/" . $_FILES['photo']['name'], FILE_APPEND);
-                echo 'Saved ' . $_FILES['photo']['name'] . ' to your files folder';
-            } else {
-                echo 'There was an error saving ' . $_FILES['photo']['name'];
-            }
-        }
+if (isset($_FILES['photo']) && is_uploaded_file($_FILES['photo']['tmp_name'])) {
+    // Enhanced filename sanitization and validation
+    $original_name = $_FILES['photo']['name'];
+    $sanitized_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', $original_name, -1);
+
+    // Validate file extension - only allow safe file types
+    $allowed_extensions = array('jpg', 'jpeg', 'png', 'gif', 'pdf', 'txt', 'doc', 'docx');
+    $extension = strtolower(pathinfo($sanitized_name, PATHINFO_EXTENSION));
+
+    if (!in_array($extension, $allowed_extensions)) {
+        echo 'File type not allowed. Allowed types: ' . implode(', ', $allowed_extensions);
     } else {
-        echo 'Authentication Failed';
+        $_FILES['photo']['name'] = $sanitized_name;
+
+        // Check auth here
+        if ($logged_in) {
+            // Prevent path traversal by validating username
+            $safe_username = preg_replace('/[^a-zA-Z0-9_.-]/', '', strtolower($_POST['username']), -1);
+            $userdir = $spooldir . '/upload/' . $safe_username;
+            $upload_to = $userdir . '/' . $_FILES['photo']['name'];
+
+            if (is_file($upload_to)) {
+                echo htmlspecialchars($_FILES['photo']['name']) . ' already exists in your folder';
+            } else {
+                if (! is_dir($userdir)) {
+                    mkdir($userdir, 0755, true);
+                }
+                $success = move_uploaded_file($_FILES['photo']['tmp_name'], $upload_to);
+                if ($success) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " Saved: " . $safe_username . "/" . $_FILES['photo']['name'], FILE_APPEND);
+                    echo 'Saved ' . htmlspecialchars($_FILES['photo']['name']) . ' to your files folder';
+                } else {
+                    echo 'There was an error saving ' . htmlspecialchars($_FILES['photo']['name']);
+                }
+            }
+        } else {
+            echo 'Authentication Failed';
+        }
     }
     echo '<br ><br >';
 }
@@ -89,7 +120,7 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input name="source" type="hidden" id="source" value="Files:files.php">';

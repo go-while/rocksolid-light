@@ -27,9 +27,22 @@ echo '<meta charset="utf-8">';
 
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     $user = strtolower($_COOKIE['mail_name']);
-    if (! isset($_SESSION['theme']) && file_exists($config_dir . '/userconfig/' . $user . '.config')) {
-        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $user . '.config'));
-        $_SESSION['theme'] = $user_config['theme'];
+    // Validate username to prevent path traversal
+    if (preg_match('/^[a-z0-9_.-]+$/', $user, $matches) && strlen($user) <= 50) {
+        $config_file_path = $config_dir . '/userconfig/' . $user . '.config';
+        if (! isset($_SESSION['theme']) && file_exists($config_file_path)) {
+            $user_config_data = file_get_contents($config_file_path);
+            if ($user_config_data !== false) {
+                $user_config = unserialize($user_config_data);
+                // Validate that $user_config is an array to prevent object injection
+                if (is_array($user_config) && isset($user_config['theme'])) {
+                    $_SESSION['theme'] = $user_config['theme'];
+                }
+            }
+        }
+    } else {
+        // Invalid username, unset user
+        unset($user);
     }
 } else {
     unset($user);
@@ -61,7 +74,7 @@ echo '<img src="' . $header_image . '" alt="Rocksolid Light"';
 echo ' class="responsive_image"></a></td>';
 echo '<td class="header_page_title_top">';
 echo '<p class="header_page_title_top">';
-echo $CONFIG['rslight_title'];
+echo htmlspecialchars($CONFIG['rslight_title']);
 echo '</p></td>';
 echo '<td class="header_links">';
 echo '<div class="header_links_text">';
@@ -89,7 +102,7 @@ foreach ($linklist as $link) {
 }
 echo '<a class="header_links_text" href="../spoolnews/user.php">';
 if (isset($user)) {
-    echo '(' . $_COOKIE['mail_name'] . ')';
+    echo '(' . htmlspecialchars($_COOKIE['mail_name']) . ')';
 } else {
     echo 'login';
 }
@@ -97,7 +110,11 @@ echo '</a>';
 echo '</div></td></tr>';
 echo '</table>';
 
-include($config_dir . '/fortunes.conf');
+// Safely include fortunes.conf if it exists and is readable
+$fortunes_file = $config_dir . '/fortunes.conf';
+if (file_exists($fortunes_file) && is_readable($fortunes_file)) {
+    include($fortunes_file);
+}
 
 // If $config_dir/motd.txt is not blank, show it
 if (file_exists($config_dir . '/motd.txt')) {
@@ -169,7 +186,14 @@ if ($unread) {
 } else {
     echo '<div class="np_display_motd">';
 }
-echo $motd;
+// Only escape MOTD if it's from file (not the hardcoded unread message)
+if (isset($motd)) {
+    if ($unread) {
+        echo $motd; // This is safe hardcoded HTML
+    } else {
+        echo htmlspecialchars($motd); // Escape file content
+    }
+}
 echo '</div>';
 
 function check_unread_mail()
@@ -177,9 +201,16 @@ function check_unread_mail()
     global $CONFIG, $spooldir;
     if (isset($_COOKIE['mail_name'])) {
         $name = strtolower($_COOKIE['mail_name']);
+        // Validate username before using in database query
+        if (!preg_match('/^[a-z0-9_.-]+$/', $name, $matches) || strlen($name) > 50) {
+            return false;
+        }
         $database = $spooldir . '/mail.db3';
         if (is_file($database)) {
             $dbh = head_mail_db_open($database);
+            if ($dbh === null) {
+                return false;
+            }
             $query = $dbh->prepare('SELECT * FROM messages where rcpt_to=:rcpt_to');
             $query->execute([
                 'rcpt_to' => $name
@@ -196,6 +227,7 @@ function check_unread_mail()
             return false;
         }
     }
+    return false;
 }
 
 function head_mail_db_open($database, $table = 'messages')
@@ -203,8 +235,9 @@ function head_mail_db_open($database, $table = 'messages')
     try {
         $dbh = new PDO('sqlite:' . $database);
     } catch (PDOException $e) {
-        echo 'Connection failed: ' . $e->getMessage();
-        exit();
+        // Log the actual error for debugging, but don't expose it to users
+        error_log('Database connection failed: ' . $e->getMessage());
+        return null;
     }
     $dbh->exec("CREATE TABLE IF NOT EXISTS messages(
      id INTEGER PRIMARY KEY,

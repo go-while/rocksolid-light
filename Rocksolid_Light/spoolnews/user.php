@@ -54,7 +54,22 @@ if (! isset($_POST['command'])) {
 }
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+if (file_exists($keyfile) && is_readable($keyfile)) {
+    $keys_data = file_get_contents($keyfile);
+    if ($keys_data !== false) {
+        $keys = @unserialize($keys_data);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($keys)) {
+            $keys = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in keys file", 0);
+        }
+    } else {
+        $keys = array();
+    }
+} else {
+    $keys = array();
+}
 
 $title .= ' - User Configuration';
 include "head.inc";
@@ -178,8 +193,21 @@ $user = strtolower($_POST['username']);
 $_SESSION['username'] = $user;
 unset($user_config);
 $userfile = $spooldir . '/' . $user . '-articleviews.dat';
-if (is_file($userfile)) {
-    $userdata = unserialize(file_get_contents($userfile));
+if (is_file($userfile) && is_readable($userfile)) {
+    $userdata_content = file_get_contents($userfile);
+    if ($userdata_content !== false) {
+        $userdata = @unserialize($userdata_content);
+        // Validate that unserialize returned an array to prevent object injection
+        if (!is_array($userdata)) {
+            $userdata = array();
+            // Log potential security issue
+            error_log("Warning: Invalid data in user article views file for user: " . $user, 0);
+        }
+    } else {
+        $userdata = array();
+    }
+} else {
+    $userdata = array();
 }
 if (!file_exists($config_dir . '/userconfig/' . $user . '.config')) {
     $user_config = array();
@@ -286,7 +314,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         }
     }
     $user_config['signature'] = $_POST['signature'];
-    $user_config['xface'] = preg_replace("/[\n\r]/", "", $_POST['xface']);
+    $user_config['xface'] = preg_replace("/[\n\r]/", "", $_POST['xface'], -1);
     $user_config['timezone'] = $_POST['timezone'];
     $user_config['theme'] = $_POST['theme'];
     $user_config['hide_unsub'] = $_POST['hide_unsub'];
@@ -308,10 +336,21 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
 
     // Block posters
     $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
-    if (file_exists($blockfile)) {
-        $blocked_saved_config = unserialize(file_get_contents($blockfile));
+    if (file_exists($blockfile) && is_readable($blockfile)) {
+        $blocked_data = file_get_contents($blockfile);
+        if ($blocked_data !== false) {
+            $blocked_saved_config = @unserialize($blocked_data);
+            // Validate that unserialize returned an array to prevent object injection
+            if (!is_array($blocked_saved_config)) {
+                $blocked_saved_config = array();
+                // Log potential security issue
+                error_log("Warning: Invalid data in blocked posters file", 0);
+            }
+        } else {
+            $blocked_saved_config = array();
+        }
     } else {
-        $blocked_saved_config = null;
+        $blocked_saved_config = array();
     }
     $block = preg_split("/\r\n|\n|\r/", $_POST['blocked_users_config']);
     foreach ($block as $blocked_user) {
@@ -325,7 +364,22 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     file_put_contents($blockfile, serialize($newblocks));
     // End Block posters
 
-    $userdata = unserialize(file_get_contents($userfile));
+    if (is_file($userfile) && is_readable($userfile)) {
+        $userdata_content = file_get_contents($userfile);
+        if ($userdata_content !== false) {
+            $userdata = @unserialize($userdata_content);
+            // Validate that unserialize returned an array to prevent object injection
+            if (!is_array($userdata)) {
+                $userdata = array();
+                // Log potential security issue
+                error_log("Warning: Invalid data in user file for config save", 0);
+            }
+        } else {
+            $userdata = array();
+        }
+    } else {
+        $userdata = array();
+    }
     if ($userdata) {
         ksort($userdata);
     }
@@ -336,9 +390,24 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         file_put_contents($userFilename, password_hash($_POST['password'], PASSWORD_DEFAULT));
     }
 
-    echo '<center>Configuration Saved for ' . $_POST['username'] . '</center>';
+    echo '<center>Configuration Saved for ' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . '</center>';
 } else {
-    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $user . '.config'));
+    if (file_exists($config_dir . '/userconfig/' . $user . '.config') && is_readable($config_dir . '/userconfig/' . $user . '.config')) {
+        $config_data = file_get_contents($config_dir . '/userconfig/' . $user . '.config');
+        if ($config_data !== false) {
+            $user_config = @unserialize($config_data);
+            // Validate that unserialize returned an array to prevent object injection
+            if (!is_array($user_config)) {
+                $user_config = array();
+                // Log potential security issue
+                error_log("Warning: Invalid data in user config file for user: " . $user, 0);
+            }
+        } else {
+            $user_config = array();
+        }
+    } else {
+        $user_config = array();
+    }
 }
 // Get themes
 $themedir = $rootdir . '/common/themes';
@@ -376,7 +445,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
         $display_name = $_POST['display_name'];
         $display_email = $_POST['display_email'];
         $user_config['signature'] = $_POST['signature'];
-        $user_config['xface'] = preg_replace("/[\n\r]/", "", urldecode($_POST['xface']));
+        $user_config['xface'] = preg_replace("/[\n\r]/", "", urldecode($_POST['xface']), -1);
         $user_config['hide_unsub'] = $_POST['hide_unsub'];
         $user_config['subscribed'] = $_POST['subscribed'];
         $user_config['theme'] = $_POST['theme'];
@@ -519,10 +588,21 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     // Blocklist
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
-        if (file_exists($blockfile)) {
-            $blocked_users_config = unserialize(file_get_contents($blockfile));
+        if (file_exists($blockfile) && is_readable($blockfile)) {
+            $blocked_data = file_get_contents($blockfile);
+            if ($blocked_data !== false) {
+                $blocked_users_config = @unserialize($blocked_data);
+                // Validate that unserialize returned an array to prevent object injection
+                if (!is_array($blocked_users_config)) {
+                    $blocked_users_config = array();
+                    // Log potential security issue
+                    error_log("Warning: Invalid data in blocked users config file", 0);
+                }
+            } else {
+                $blocked_users_config = array();
+            }
         } else {
-            $blocked_users_config = null;
+            $blocked_users_config = array();
         }
     }
     echo '<tr class="config_table_row">';
