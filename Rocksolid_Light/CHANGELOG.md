@@ -1,6 +1,6 @@
 # RockSolid Light Newsportal - CHANGELOG
 
-## Comprehensive Security Review & PHP 8.2+ Compatibility Update - Patch-2 - 2025
+## Comprehensive Security Review & PHP 8.2+ Compatibility Update - Patch-3 - 2025
 
 ### In Memory of Retro Guy
 
@@ -10,7 +10,7 @@ This update is dedicated to **Thomas "Thom" Miller (Retro Guy)** (1954-2025), th
 
 ### Overview
 
-Comprehensive security review and hardening of the RockSolid Light newsportal system, including critical vulnerability fixes for XSS, object injection, file upload security, and path traversal attacks. Additionally includes PHP 8.2+ compatibility fixes, deprecated warning removals, and modernization while maintaining backward compatibility and the original architecture.
+Comprehensive security review and hardening of the RockSolid Light newsportal system, including critical vulnerability fixes for XSS, object injection, file upload security, and path traversal attacks. Additionally includes PHP 8.2+ compatibility fixes, deprecated warning removals, linguistic improvements across multiple language files, and modernization while maintaining backward compatibility and the original architecture.
 
 ---
 
@@ -204,6 +204,11 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 | `rocksolid/auth.inc.php` | Object injection + XSS | Keys validation | ~15 | ✅ Complete |
 | `spoolnews/upload.php` | File upload security overhaul | Object injection | ~35 | ✅ Complete |
 | `rocksolid/post.php` | XSS + error suppression | PCRE functions | ~10 | ✅ Complete |
+| `common/grouplist.php` | Object injection + cache security | PCRE functions | ~20 | ✅ Complete |
+| `rocksolid/lang/english.lang` | - | Spelling corrections | ~1 | ✅ Complete |
+| `rocksolid/lang/spanish.lang` | - | Character encoding + typos | ~15 | ✅ Complete |
+| `rocksolid/lang/francais.lang` | - | Character encoding | ~10 | ✅ Complete |
+| `rocksolid/lang/bosanski.lang` | - | Translation corrections | ~5 | ✅ Complete |
 | Additional files | Various PCRE fixes | PHP 8.2+ compatibility | ~40 | ✅ Complete |
 
 ### **Security Vulnerability Patterns Addressed:**
@@ -273,14 +278,15 @@ Comprehensive security review and hardening of the RockSolid Light newsportal sy
 
 ## SUMMARY
 
-- **Total Files Modified:** 20+
+- **Total Files Modified:** 24+
 - **Files Added:** 5 (PHPMailer)
 - **Files Removed:** 5 (Captcha)
-- **Critical Security Vulnerabilities Fixed:** 15+
+- **Critical Security Vulnerabilities Fixed:** 16+
+- **Language Files Improved:** 4
 - **PHP 8.2+ Compatibility Issues Resolved:** 50+
-- **Major Issues Fixed:** Critical security vulnerabilities, PHP 8.2+ compatibility, PHPMailer upgrade, code modernization
+- **Major Issues Fixed:** Critical security vulnerabilities, object injection prevention, linguistic corrections, PHP 8.2+ compatibility, PHPMailer upgrade, code modernization
 
-This comprehensive security review and modernization effort ensures that the RockSolid Light newsportal system remains secure, stable, and maintainable while honoring Retro Guy's excellent original architecture and defensive programming principles.
+This comprehensive security review, linguistic improvement, and modernization effort ensures that the RockSolid Light newsportal system remains secure, stable, maintainable, and internationally accessible while honoring Retro Guy's excellent original architecture and defensive programming principles.
 
 ---
 
@@ -313,5 +319,6 @@ This comprehensive security review and modernization effort ensures that the Roc
 
 *Generated: June 11, 2025*
 *Security Review: Complete*
+*Linguistic Review: Complete*
 *PHP Version: 8.2+ Compatible*
 *Backward Compatible: PHP 7.4+*
