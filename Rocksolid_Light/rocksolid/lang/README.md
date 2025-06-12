@@ -3,7 +3,7 @@
 # WORKFLOW INSTRUCTIONS:
 - 1. in TODO:01 Create new translations for the most important Top 10 languages we don't have in the list
 - 2. in TODO:02 Verify translation keys with script './verify_lang_keys.sh $langfile' and check that it does not list any keys as missing. Do not add any comments to the translation files, except the 2nd line // filename.lang and strictly follow the english.lang template when creating new .lang files!
-- 3. in TODO:03 when verified, add language line with ISO encoding to LIST
+- 3. in TODO:03 when the new .lang file verified, run ./verify_all.sh and if results without errors: add language line with ISO encoding to LIST
 - 4. in TODO:04 README update with all new languages and final note at bottom
 
 #### EMPTY WORKFLOW TEMPLATE BEGINS - @AI: DO NOT TOUCH THIS JUMP TO NEXT BLOCK! ####
