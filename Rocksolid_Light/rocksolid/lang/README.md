@@ -142,10 +142,10 @@
 [✅] basque.lang | 0.75M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] welsh.lang | 0.7M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] luxembourgish.lang | 0.6M, UTF-8 recommended | ✅ PASS - All required keys present
-[✅] icelandic.lang | 0.35M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] maltese.lang | 0.5M, UTF-8 recommended | ✅ PASS - All required keys present
-[✅] breton.lang | 0.2M, UTF-8 recommended | ✅ PASS - All required keys present
+[✅] icelandic.lang | 0.35M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] montenegrin.lang | 0.3M, UTF-8 recommended | ✅ PASS - All required keys present
+[✅] breton.lang | 0.2M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] faroese.lang | 0.07M, UTF-8 recommended | ✅ PASS - All required keys present
 
 **All new global language files were created, verified, and documented as part of the global coverage expansion from 90→100 languages.**
