@@ -61,8 +61,6 @@ $text_post["error_wrong_email"]="ईमेल पत्तो बरो ना."
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" बरयलां:";
 $text_post["quote"]="अवतरण";
-
-// CAPTCHA keys
 $text_post["captchafail"]='तुमी CAPTCHA परीक्षेंत नापास झाता. कृपया परत प्रयत्न करा.';
 $text_post["captchainfo1"]='ते इगें परत टायप करा';
 $text_post["captchainfo2"]='चित्रांतलीं बरोबर अक्षरां आनी संख्या मजकूर पेट्यांत घाला. हो ल्हान परीक्षा स्पॅम-बॉट्सांक आड थावपी म्हणून काम करता.';
