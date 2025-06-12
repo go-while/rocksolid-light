@@ -1,0 +1,81 @@
+<?php
+// kazakh.lang
+$text_header["from"]="<b>Жіберуші:</b> ";
+$text_header["subject"]="<b>Тақырып:</b> ";
+$text_header["newsgroups"]="<b>Жаңалықтар топтары:</b> ";
+$text_header["followup"]="<b>Жауап:</b> ";
+$text_header["organization"]="<b>Ұйым:</b> ";
+$text_header["date"]="<b>Күні:</b> ";
+$text_header["message-id"]="<b>Хабарлама ID:</b> ";
+$text_header["references"]="<b>Сілтемелер:</b> ";
+$text_header["user-agent"]="<b>Пайдаланушы агенті:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Тіркемелер:</b> ";
+
+$text_thread["no_articles"]="<p><b>Мақалалар жоқ</b></p>";
+$text_thread["button_write"]="жаңа тақырып";
+$text_thread["button_grouplist"]="жаңалықтар топтары";
+$text_thread["button_latest"]="соңғысын көру";
+$text_thread["button_overboard"]="overboard";
+$text_thread["button_search"]="іздеу";
+$text_thread["button_top"]="Жоғарғыға оралу";
+$text_thread["date"]="<b>Күні</b>";
+$text_thread["subject"]="<b>Тақырып</b>";
+$text_thread["threadsize"]="<b>Жауаптар</b>";
+$text_thread["author"]="<b>Автор</b>";
+$text_thread["lastmessage"]="<b>Соңғы хабарлама</b>";
+$text_thread["no_such_group"]="Мұндай топ жоқ.";
+$text_thread["pages"]="Беттер:";
+
+$text_groups["newsgroup"]="<b>Жаңалықтар тобы</b>";
+$text_groups["description"]="<b>Сипаттама</b>";
+
+$text_article["back_to_group"]="мақалалар тізімі";
+$text_article["refresh"]="жаңарту";
+$text_article["button_answer"]="Жауап беру";
+$text_article["button_cancel"]="Жою";
+$text_article["block-xnoarchive"]="Бұл жүйе архив емес, бірақ жүйе әкімшісі автор архивтеуді қаламаса, жарияланымдарды бұғаттауға шешім қабылдады.";
+$text_article["full_article"]="Толық мақаланы оқу үшін мұнда басыңыз";
+
+$text_post["name"]="Пайдаланушы аты:";
+$text_post["password"]="Құпия сөз:";
+$text_post["email"]="Сіздің эл. поштаңыз:";
+$text_post["missing_message"]="Жариялау үшін хабарлама енгізу керек.";
+$text_post["missing_email"]="Эл. пошта мекенжайын енгізу керек.";
+$text_post["missing_name"]="Аты немесе кемінде лақап аты енгізу керек.";
+$text_post["missing_subject"]="Тақырып енгізу керек.";
+$text_post["button_post"]="Мақаланы жариялау";
+$text_post["remember"]="Атын есте сақтау";
+$text_post["message"]="Хабарлама";
+$text_post["group_head"]="Топта жариялау ";
+$text_post["group_head_reply"]="Топтағы хабарламаға жауап беру ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Сізге бұл топтарға жариялауға рұқсат жоқ:";
+$text_post["message_posted"]="Хабарлама жарияланды";
+$text_post["message_posted2"]="Хабарлама сәтті жарияланды.";
+$text_post["button_back"]="Артқа";
+$text_post["button_back2"]="-ға";
+$text_post["error_newsserver"]="Хабарлама сервері хабарламаны қабылдамады:";
+$text_post["error_readonly"]="Топ жазудан қорғалған";
+$text_post["error_wrong_email"]="Қате эл. пошта мекенжайы.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" жазды:";
+$text_post["quote"]="Дәйексөз";
+$text_post["captchafail"]='Сіз CAPTCHA тестінен өтпедіңіз. Қайтадан көріңіз';
+$text_post["captchainfo1"]='мұнда қайта теріңіз';
+$text_post["captchainfo2"]='Суреттен дұрыс әріптер мен сандарды мәтін өрісіне енгізіңіз. Бұл шағын тест spam-bots-қа қарсы кіру шектеуі ретінде қызмет етеді.';
+
+$text_error["error:"]='<font color="red">Қате:</font>';
+$text_error["connection_failed"]="Хабарлама серверіне қосылу сәтсіз аяқталды";
+$text_error["article_not_found"]="<p>Мақала табылмады.</p>";
+$text_error["read_access_denied"]="<p>Оқуға рұқсат жоқ!</p>";
+$text_error["post_failed"]="Қосылу сәтсіз аяқталды. Кейінірек қайталап көріңіз.";
+$text_error["auth_error"]="Аутентификация сәтсіз аяқталды.";
+$text_error["spool_error"]="spool файлында қате. Қайта жүктеңіз.";
+
+$text_register["must_register_group"]="Бұл топқа кіру үшін тіркелу керек.";
+$text_register["must_register_post"]="Бұл топқа жариялау үшін тіркелу керек.";
+$text_register["no_access_group"]="Сізге бұл топқа кіруге рұқсат жоқ.";
+$text_register["no_access_post"]="Сізге бұл топқа жариялауға рұқсат жоқ.";
+
+?>
