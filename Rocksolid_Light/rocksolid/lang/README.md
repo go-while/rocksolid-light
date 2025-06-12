@@ -123,6 +123,7 @@
 [x] malayalam.lang ✅ PASS - All required keys present
 [x] malay.lang ✅ PASS - All required keys present
 [x] marathi.lang ✅ PASS - All required keys present
+[x] mongolian.lang ✅ PASS - All required keys present
 [x] norsk.lang ✅ PASS - All required keys present
 [x] persian.lang ✅ PASS - All required keys present
 [x] polish.lang ✅ PASS - All required keys present
