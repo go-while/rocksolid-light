@@ -1,12 +1,14 @@
 # TODO LIST for AI Agent:
 
-- [x] JOB:01 = check all .lang files with: ./get_translation_keys.sh "$file" vs. ./find_translation_variables.sh and update this README.md after every step.
+- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Uzbek, Albanian, Malay, Burmese, Khmer, Lao, Nepali, Sinhala,Mongolian, Tibetan, Kazakh". In this order please. You created Uzbek, Albanian and Malay lang.files but you forgot to add them in the readme. Please verify keys for every newly created language too.
 
-- [x] JOB:02 = check all languages from JOB:01 if they might need a special ISO code to work with php and create a list. Languages that might need special ISO charset codes for PHP:
+- [ ] TODO:02 = check all newly created .lang files with: ./get_translation_keys.sh "$file" vs. ./find_translation_variables.sh and update this README.md after every step.
 
-- [x] JOB:03 = Add your TOP 10 most important languages that are missing and update this readme. update the checklist with the ./checklist_helper.sh script. rinse and repeat with JOB:01 and JOB:02
+- [ ] TODO:03 = check all newly created languages from TODO:01 if they might need a special ISO code to work with php and create a list. Languages that might need special ISO charset codes for PHP:
 
-- [ ] JOB:04 = WOW! You finished JOB:03 in seconds! Now try to reach your goal and find 39 more languages, or 40 ;) so we even break the goal of 100 languages :D. You can decide on your own which are the next most important languages. Maybe we will not stop on 101. But the JOB:04 target at this moment is maximum 101 languages ;) Please update this Readme as before and the final note too. Use the lang/./checklist_helper.sh script first and update the JOB:01 checklist here in this readme, so you won't get off track again. Use the english.lang as template or any other you prefer. iterate step by step and update the readme at every language file you successfully created, and verified with the scripts in lang/ "./translation_test.sh, ./verify_lang_keys.sh, ./get_translation_keys.sh, ./quick_verify.sh, ./check_README_vs_langfiles.sh, ./find_translation_variables_2.sh, ./search_encoding.sh, ./check_langfiles_vs_README.sh, ./find_translation_variables.sh, ./count_translation_variables.sh"
+- [ ] TODO:04 = update this readme with the newly created language and remove it from TODO:01. rinse and repeat, goto TODO:01 until you have finished. Have fun working. When you're done, update your final note at the bottom. Thank you! =)
+
+
 
 **✅ JOB:03 COMPLETED - Added TOP 10 Critical Languages:**
 1. **Chinese Simplified (chinese_simplified.lang)** - 918M+ speakers, UTF-8 required
@@ -137,6 +139,7 @@
 [x] turkish.lang ✅ PASS - All required keys present
 [x] ukrainian.lang ✅ PASS - All required keys present
 [x] urdu.lang ✅ PASS - All required keys present
+[x] uzbek.lang ✅ PASS - All required keys present
 [x] vietnamese.lang ✅ PASS - All required keys present
 [x] welsh.lang ✅ PASS - All required keys present
 
