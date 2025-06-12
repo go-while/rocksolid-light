@@ -1,12 +1,33 @@
 # TODO LIST for AI Agent:
 
-- [✅] TODO:01 = COMPLETED - Created 6 European language files: Serbian, Macedonian, Maltese, Luxembourgish, Sardinian, Montenegrin. All files contain authentic translations in the target languages.
+# WORKFLOW INSTRUCTIONS:
+- 1. in TODO:01 Create new translations for the most important Top 10 languages we don't have in the list
+- 2. in TODO:02 Verify translation keys for newly added translation files.
+- 3. in TODO:03 when verified, add language line with ISO encoding to LIST
+- 4. in TODO:04 README update with all new languages and final note at bottom
 
-- [✅] TODO:02 = COMPLETED - All newly created .lang files verified with 71/71 required translation keys present.
+#### EMPTY WORKFLOW TEMPLATE BEGINS - @AI: DO NOT TOUCH THIS JUMP TO NEXT BLOCK ####
 
-- [✅] TODO:03 = COMPLETED - ISO encoding analysis completed for all new languages.
+- [ ] TODO:01 = INCOMPLETE
 
-- [✅] TODO:04 = COMPLETED - README updated with all new languages and global coverage increased from 74 to 80 languages.
+- [ ] TODO:02 = INCOMPLETE
+
+- [ ] TODO:03 = INCOMPLETE
+
+- [ ] TODO:04 = INCOMPLETE
+
+#### END OF EMPTY WORKFLOW TEMPLATE ####
+
+
+#### @AI: YOUR WORKFLOW STARTS HERE ####
+
+- [ ] TODO:01 = INCOMPLETE
+
+- [ ] TODO:02 = INCOMPLETE
+
+- [ ] TODO:03 = INCOMPLETE
+
+- [ ] TODO:04 = INCOMPLETE
 
 ##### JOB:01 EDIT AND START REORDERING THIS LIST WHENEVER A NEW LANGUAGE HAS BEEN ADDED ###
 
