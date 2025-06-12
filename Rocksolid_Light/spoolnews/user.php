@@ -194,12 +194,12 @@ if (!file_exists($config_dir . '/userconfig/' . $user . '.config')) {
 if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
     if (isset($_POST['source'])) {
         $link = explode(':', $_POST['source']);
-        $golink = '<a href="' . $link[1] . '">Continue to ' . $link[0] . '</a>';
+        $golink = '<a href="' . htmlspecialchars($link[1], ENT_QUOTES, 'UTF-8') . '">Continue to ' . htmlspecialchars($link[0], ENT_QUOTES, 'UTF-8') . '</a>';
     } else {
         $golink = '';
     }
     echo "<center>";
-    echo "<hr><p>You are logged in as " . $_POST['username'] . "</p>";
+    echo "<hr><p>You are logged in as " . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "</p>";
     echo "<p>" . $golink . "</p>";
     echo '</center>';
 }
@@ -346,7 +346,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
         file_put_contents($userFilename, password_hash($_POST['password'], PASSWORD_DEFAULT));
     }
 
-    echo '<center>Configuration Saved for ' . $_POST['username'] . '</center>';
+    echo '<center>Configuration Saved for ' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . '</center>';
 } else {
     $user_config = secure_unserialize($config_dir . '/userconfig/' . $user . '.config');
 }
@@ -396,19 +396,19 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     // Show Config
     echo '<hr><h1 class="np_thread_headline"></h1>';
     echo '<table cellspacing="0" width="100%" class="config_results_table">';
-    echo '<tr class="config_thread_head"><td class="config_thread_head"><h2>Settings for ' . $_POST['username'] . ':</h2></td></tr>';
+    echo '<tr class="config_thread_head"><td class="config_thread_head"><h2>Settings for ' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . ':</h2></td></tr>';
     echo '<form method="post" action="user.php">';
     echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
     echo '<tr class="config_table_row">';
     if ($OVERRIDES['disable_change_name'] != true) {
         // User Display Name
         echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Display Name for posts: </h3>';
-        echo '<input name="display_name" type="text" id="username"value="' . $display_name . '" maxlength="40"></td>';
+        echo '<input name="display_name" type="text" id="username"value="' . htmlspecialchars($display_name, ENT_QUOTES, 'UTF-8') . '" maxlength="40"></td>';
         echo '</tr>';
         // User Display Email
         echo '<tr class="config_table_row">';
         echo '<td class="config_table_row" style="word-wrap:break-word";><h3>Display Email for posts: </h3>';
-        echo '<input name="display_email" type="text" id="username"value="' . $display_email . '" maxlength="40"></td>';
+        echo '<input name="display_email" type="text" id="username"value="' . htmlspecialchars($display_email, ENT_QUOTES, 'UTF-8') . '" maxlength="40"></td>';
         echo '</tr>';
         // Send Mail by Email
         if ($OVERRIDES['disable_mail_to_email'] !== true) {

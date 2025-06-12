@@ -227,7 +227,12 @@ if ($type == "new") {
 
 // Is there a new article to post to the newsserver?
 if ($type == "post") {
-    $show = 0;
+    // Verify CSRF token for form submissions
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        $type = "retry";
+        $error = "Security Error: Invalid form submission. Please try again.";
+    } else {
+        $show = 0;
     if (! $CONFIG['synchronet']) {
         if (! $logged_in) {
             if (check_bbs_auth(trim($name), $userpass) == FALSE) {
@@ -405,6 +410,7 @@ if ($type == "post") {
             echo $text_post["error_readonly"];
         }
     }
+    } // End CSRF verification block
 }
 
 // A reply of an other article.
@@ -534,6 +540,7 @@ if ($show == 1) {
 
         echo '<form action="' . $file_post . '" method="post" name="postform"';
         echo ' enctype="multipart/form-data">';
+        echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
 
         echo '<div class="np_post_header">';
         echo '<table><tr>';

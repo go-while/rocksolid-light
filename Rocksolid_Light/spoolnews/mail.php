@@ -165,7 +165,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Message') {
         echo '<form action="mail.php" method="post">';
         echo '<button class="np_button_link" type="submit">Reply</button>';
         echo "<input type='hidden' name='id' value='" . $row['id'] . "' >";
-        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+        echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
         echo '<input name="command" type="hidden" value="Send">';
         echo '</form>';
         echo '</div>';
@@ -336,7 +336,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'Send') {
 
     echo '</tr><tr>';
     echo "<input type='hidden' name='from' value='" . $user . "' >";
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo "<td></td><td><input type='submit' value='Send Mail' name='sendMessage' ></td>";
     echo '</tr></tbody></table></form>';
     echo '</div>';
@@ -389,7 +389,7 @@ function view_mailbox($user)
         echo '<form action="mail.php" method="post">';
         echo '<button class="' . $button_link . '" type="submit">' . $row["subject"] . '</button>';
         echo "<input type='hidden' name='id' value='" . $row['id'] . "' >";
-        echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+        echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
         echo '<input name="command" type="hidden" value="Message">';
         echo '</form>';
         echo '</td><td class="mail_results_from">' . $row["mail_from"] . '</td><td class="mail_results_to">' . $row["rcpt_to"] . '</td><td class="mail_results_date">' . $newdate . '</td></tr>';

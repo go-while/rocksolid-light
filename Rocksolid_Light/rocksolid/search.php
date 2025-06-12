@@ -42,6 +42,7 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
         if (isset($_REQUEST['data'])) {
             echo '<br>';
             echo '<form name="blockform" method="post" action="search.php">';
+            echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
             echo '<table width=100% border="0" class="search_hide_posts">';
             echo '<tr>';
             echo '<td>Hide posts by <strong>' . secure_input($_GET['terms'], 'html') . '</strong></td>';
@@ -114,6 +115,12 @@ include "head.inc";
 // Handle Block poster
 $post_username = trim(strtolower($_POST['username']));
 if (isset($_POST['block_poster'])) {
+    // Verify CSRF token
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        echo '<div class="error">Security Error: Invalid form submission. Please try again.</div>';
+        exit();
+    }
+
     if ((password_verify($post_username . $keys[0] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($post_username . $keys[1] . get_user_config($post_username, 'encryptionkey'), $_COOKIE['mail_auth']))) {
         $logged_in = true;
     } else {
