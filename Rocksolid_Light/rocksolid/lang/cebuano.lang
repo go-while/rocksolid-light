@@ -1,0 +1,81 @@
+<?php
+// cebuano.lang
+$text_header["from"]="<b>Gikan sa:</b> ";
+$text_header["subject"]="<b>Hilisgutan:</b> ";
+$text_header["newsgroups"]="<b>Mga Newsgroup:</b> ";
+$text_header["followup"]="<b>Sunod:</b> ";
+$text_header["organization"]="<b>Organisasyon:</b> ";
+$text_header["date"]="<b>Petsa:</b> ";
+$text_header["message-id"]="<b>Message-ID:</b> ";
+$text_header["references"]="<b>Mga Reperensya:</b> ";
+$text_header["user-agent"]="<b>User-Agent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Mga Attachment:</b> ";
+
+$text_thread["no_articles"]="<p><b>Walay mga artikulo nga available</b></p>";
+$text_thread["button_write"]="bag-ong thread";
+$text_thread["button_grouplist"]="mga newsgroup";
+$text_thread["button_latest"]="tan-awa ang pinakabag-o";
+$text_thread["button_overboard"]="overboard";
+$text_thread["button_search"]="pangita";
+$text_thread["button_top"]="Balik sa Taas";
+$text_thread["date"]="<b>Petsa</b>";
+$text_thread["subject"]="<b>Hilisgutan</b>";
+$text_thread["threadsize"]="<b>Mga Tubag</b>";
+$text_thread["author"]="<b>Tagsulat</b>";
+$text_thread["lastmessage"]="<b>Katapusang Mensahe</b>";
+$text_thread["no_such_group"]="Walay ingana nga Grupo.";
+$text_thread["pages"]="Mga Panid:";
+
+$text_groups["newsgroup"]="<b>Newsgroup</b>";
+$text_groups["description"]="<b>Paghulagway</b>";
+
+$text_article["back_to_group"]="listahan sa artikulo";
+$text_article["refresh"]="i-refresh";
+$text_article["button_answer"]="Tubag";
+$text_article["button_cancel"]="Papas";
+$text_article["block-xnoarchive"]="Kining sistema dili archive, apan ang administrator niining sistema nakadesisyon nga i-block ang mga posting diin ang tagsulat dili gusto og archivation.";
+$text_article["full_article"]="I-click dinhi aron mabasa ang tibuok artikulo";
+
+$text_post["name"]="Username:";
+$text_post["password"]="Password:";
+$text_post["email"]="Inyong E-Mail:";
+$text_post["missing_message"]="Kinahanglan ninyong mag-apil og mensahe aron maka-post.";
+$text_post["missing_email"]="Kinahanglan ninyong mag-apil og e-mail address.";
+$text_post["missing_name"]="Kinahanglan ninyong mag-apil og ngalan o alias ra gyud.";
+$text_post["missing_subject"]="Kinahanglan ninyong mag-apil og hilisgutan.";
+$text_post["button_post"]="I-Post ang Artikulo";
+$text_post["remember"]="Hinumdumi ang ngalan";
+$text_post["message"]="Mensahe";
+$text_post["group_head"]="Pagsulat og post sa ";
+$text_post["group_head_reply"]="Tubaga ang post sa ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Dili kamo gitugotan nga maka-post sa mga grupong:";
+$text_post["message_posted"]="Na-post na ang mensahe";
+$text_post["message_posted2"]="Malampuson nga na-post ang mensahe.";
+$text_post["button_back"]="Balik";
+$text_post["button_back2"]="sa";
+$text_post["error_newsserver"]="Gi-reject sa Message Server ang mensahe:";
+$text_post["error_readonly"]="Ang grupo kay write protected";
+$text_post["error_wrong_email"]="Sayup nga e-mail address.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" nagsulat:";
+$text_post["quote"]="Quote";
+$text_post["captchafail"]="Napakyas mo sa CAPTCHA test. Palihug sulayi pag-usab";
+$text_post["captchainfo1"]="i-type pag-usab kana dinhi";
+$text_post["captchainfo2"]="Ibutang ang saktong mga letra ug numero gikan sa hulagway sa text box. Kining gamhang test nagsilbi isip access restriction batok sa mga spam-bot.";
+
+$text_error["error:"]='<font color="red">Sayup:</font>';
+$text_error["connection_failed"]="Napakyas ang koneksyon sa Message Server";
+$text_error["article_not_found"]="<p>Wala na ang artikulo.</p>";
+$text_error["read_access_denied"]="<p>Walay pagtugot nga makabasa!</p>";
+$text_error["post_failed"]="Napakyas ang koneksyon. Sulayi ang pag-reload unya.";
+$text_error["auth_error"]="Napakyas ang authentication.";
+$text_error["spool_error"]="Sayup sa spoolfile. Palihug i-reload.";
+
+$text_register["must_register_group"]="Kinahanglan ninyong mag-register aron makakuha og access niining grupoa.";
+$text_register["must_register_post"]="Kinahanglan ninyong mag-register aron maka-post niining grupoa.";
+$text_register["no_access_group"]="Walay access ninyo niining grupoa.";
+$text_register["no_access_post"]="Dili kamo gitugotan nga maka-post niining grupoa.";
+
+?>
