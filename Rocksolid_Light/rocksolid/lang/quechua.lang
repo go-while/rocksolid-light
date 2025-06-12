@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="Chaski qillqa mana allinchu.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" qillqarqan:";
 $text_post["quote"]="Willay";
+$text_post["captchafail"]='CAPTCHA pruebapi pantasqanki. Yapamanta ruwayküy.';
+$text_post["captchainfo1"]='kaypi wakmanta qillqay';
+$text_post["captchainfo2"]='Rikuypi kaq allin qillqakuna hinaspa yupanakuna qillqana kaxunman churay. Kay huchuy pruebaqa spam-botkunamanta harkakuypaq sirvin.';
 
 $text_nav["first_page"]="Ñawpaq panqa";
 $text_nav["last_page"]="Qhipa panqa";
@@ -70,7 +73,7 @@ $text_nav["prev_page"]="Ñawpaq panqa";
 $text_error["error:"]='<font color="red">Pantay:</font>';
 $text_error["connection_failed"]="Willakuy sirwiqwan tinkiypakuq pantarqan.";
 $text_error["article_not_found"]="<p>Willakuy mana tariqchu.</p>";
-$text_error["read_access_denied"]="<p>Ñawiy mana saqisqachu.</p>";
+$text_error["read_access_denied"]="<p>Ñawinayninqa mana saqisqachu.</p>";
 $text_error["post_failed"]="Tinkiy pantarqan. Huk ratopi kutilla ruway.";
 $text_error["auth_error"]="Qhapaq kasqay mana allinchu.";
 $text_error["spool_error"]="Spool willana pantay. Ama hina kaspa musuqmanta apamuy.";
