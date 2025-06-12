@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="Tansa n imayl ur temsawal ara.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" yuṛa:";
 $text_post["quote"]="Ɣer";
+$text_post["captchafail"]='Ur tfekkemt ara deg uḥabes CAPTCHA. Ɛreḍ daɣen.';
+$text_post["captchainfo1"]='ales tira dha';
+$text_post["captchainfo2"]='Sekcem isekkilen d uṭṭunen iṣeḥḥen seg tugna ɣer tanaka n uḍris. Aḥabes-a meẓẓiyen yettak taɛekkamt mgal imeddayen n spam.';
 
 $text_nav["first_page"]="Asebter amezwaru";
 $text_nav["last_page"]="Asebter aneggaru";
