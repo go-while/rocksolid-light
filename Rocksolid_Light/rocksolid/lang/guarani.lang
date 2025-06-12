@@ -62,6 +62,11 @@ $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" ohai:";
 $text_post["quote"]="Je'epy";
 
+// CAPTCHA keys
+$text_post["captchafail"]='Rejavy CAPTCHA ñeha'ãme. Eha'ãjey.';
+$text_post["captchainfo1"]='ehai jey ko'ápe';
+$text_post["captchainfo2"]='Emoinge ta'anga pegua tai ha papapy hekopete moñe'ẽrã ryru'ípe. Ko ñeha'ã michĩmi oñemoñondive spam-bot kuérare.';
+
 $text_nav["first_page"]="Kuatia rogue peteĩha";
 $text_nav["last_page"]="Kuatia rogue paha";
 $text_nav["next_page"]="Kuatia rogue oúva";
@@ -70,7 +75,7 @@ $text_nav["prev_page"]="Kuatia rogue ohasáva";
 $text_error["error:"]='<font color="red">Jejavy:</font>';
 $text_error["connection_failed"]="Marandu servidor ndive joaju ndoikói.";
 $text_error["article_not_found"]="<p>Jehaipyre ndojejuhúi.</p>";
-$text_error["read_access_denied"]="<p>Moñe'ẽ ñemoneĩ oñemboyke.</p>";
+$text_error["read_access_denied"]="<p>Ñemoñe'ẽ jeike noñemoneĩri.</p>";
 $text_error["post_failed"]="Joaju ndoikói. Eha'arõ jey upe rire.";
 $text_error["auth_error"]="Ñemoneĩ ndoikói.";
 $text_error["spool_error"]="Jejavy spool marandurenda-pe. Ehupi jey.";
