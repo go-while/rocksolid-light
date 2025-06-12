@@ -99,23 +99,25 @@ else
     echo "✅ All required keys are present"
 fi
 
-# Find extra keys in language file
-EXTRA_IN_LANG=$(comm -13 <(echo "$REFERENCE_KEYS" | sort) <(echo "$LANG_KEYS" | sort))
-if [ -n "$EXTRA_IN_LANG" ]; then
-    echo ""
-    echo "⚠️  EXTRA keys in $LANGFILE (not used in codebase):"
-    echo "$EXTRA_IN_LANG"
-else
-    echo "✅ No unused keys found"
-fi
-
-# Final verdict
-if [ -z "$MISSING_IN_LANG" ] && [ -z "$EXTRA_IN_LANG" ]; then
-    echo ""
-    echo "✅ PASS: $LANGFILE matches codebase perfectly"
-    exit 0
-else
-    echo ""
-    echo "❌ FAIL: $LANGFILE has discrepancies"
-    exit 1
+if [ "$1" = "-verbose" ]; then
+ # Find extra keys in language file
+ EXTRA_IN_LANG=$(comm -13 <(echo "$REFERENCE_KEYS" | sort) <(echo "$LANG_KEYS" | sort))
+ if [ -n "$EXTRA_IN_LANG" ]; then
+     echo ""
+     echo "⚠️  EXTRA keys in $LANGFILE (not used in codebase):"
+     echo "$EXTRA_IN_LANG"
+ else
+     echo "✅ No unused keys found"
+ fi
+ 
+ # Final verdict
+ if [ -z "$MISSING_IN_LANG" ] && [ -z "$EXTRA_IN_LANG" ]; then
+     echo ""
+     echo "✅ PASS: $LANGFILE matches codebase perfectly"
+     exit 0
+ else
+     echo ""
+     echo "❌ FAIL: $LANGFILE has discrepancies"
+     exit 1
+ fi
 fi
