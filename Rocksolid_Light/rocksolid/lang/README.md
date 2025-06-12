@@ -1,6 +1,6 @@
 # TODO LIST for AI Agent:
 
-- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Tibetan, Kazakh". In this order please. You created already: Uzbek, Albanian, Malay, Burmese, Khmer, Lao, Nepali, Sinhala, Mongolian lang.files. Please verify keys for every newly created language too.
+- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Kazakh". In this order please. You created already: Uzbek, Albanian, Malay, Burmese, Khmer, Lao, Nepali, Sinhala, Mongolian, lang.files. Please verify keys for every newly created language too.
 
 - [ ] TODO:02 = check all newly created .lang files with: ./get_translation_keys.sh "$file" vs. ./find_translation_variables.sh and update this README.md after every step.
 
@@ -118,6 +118,7 @@
 [x] italiano.lang ✅ PASS - All required keys present
 [x] japanese.lang ✅ PASS - All required keys present
 [x] korean.lang ✅ PASS - All required keys present
+[x] kazakh.lang ✅ PASS - All required keys present
 [x] latvian.lang ✅ PASS - All required keys present
 [x] lithuanian.lang ✅ PASS - All required keys present
 [x] malayalam.lang ✅ PASS - All required keys present
@@ -150,6 +151,7 @@
 [x] lao.lang ✅ PASS - All required keys present
 [x] nepali.lang ✅ PASS - All required keys present
 [x] sinhala.lang ✅ PASS - All required keys present
+[x] tibetan.lang ✅ PASS - All required keys present
 
 # END JOB:01 #
 
