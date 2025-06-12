@@ -1,6 +1,6 @@
 # TODO LIST for AI Agent:
 
-- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Mongolian, Tibetan, Kazakh". In this order please. You created already: Uzbek, Albanian, Malay, Burmese, Khmer, Lao, Nepali lang.files. Please verify keys for every newly created language too.
+- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Tibetan, Kazakh". In this order please. You created already: Uzbek, Albanian, Malay, Burmese, Khmer, Lao, Nepali, Sinhala, Mongolian lang.files. Please verify keys for every newly created language too.
 
 - [ ] TODO:02 = check all newly created .lang files with: ./get_translation_keys.sh "$file" vs. ./find_translation_variables.sh and update this README.md after every step.
 
