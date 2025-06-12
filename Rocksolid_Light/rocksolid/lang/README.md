@@ -1,6 +1,6 @@
 # TODO LIST for AI Agent:
 
-- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "". In this order please. Check that the newly created lang file actually contains the targeted translation to this language!
+- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Serbian, Macedonian, Maltese, Luxembourgish, Sardinian, Montenegrin". In this order please. Check that the newly created lang file actually contains the targeted translation to this language!
 
 - [ ] TODO:02 = check all newly created .lang files with: ./verify_lang_keys.sh "$file" and update this README.md after every step in the JOB:01 section.
 
