@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="اي ميل پتو صحيح ناهي.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" لکيو:";
 $text_post["quote"]="حوالو";
+$text_post["captchafail"]='توهان CAPTCHA ٽيسٽ ۾ ناڪام ٿيا. مهرباني ڪري ٻيهر ڪوشش ڪريو.';
+$text_post["captchainfo1"]='ان کي هتي ٻيهر ٽائيپ ڪريو';
+$text_post["captchainfo2"]='تصوير مان صحيح اکر ۽ نمبر ٽيڪسٽ باڪس ۾ داخل ڪريو. هي ننڍو ٽيسٽ اسپام بوٽس جي خلاف رسائي جي پابندي جي طور تي ڪم ڪري ٿو.';
 
 $text_nav["first_page"]="پهريون صفحو";
 $text_nav["last_page"]="آخري صفحو";
@@ -70,7 +73,7 @@ $text_nav["prev_page"]="اڳوڻو صفحو";
 $text_error["error:"]='<font color="red">خرابي:</font>';
 $text_error["connection_failed"]="خبرن جي سرور سان رابطو ناڪام.";
 $text_error["article_not_found"]="<p>مضمون نه مليو.</p>";
-$text_error["read_access_denied"]="<p>پڙهڻ جي رسائي رد.</p>";
+$text_error["read_access_denied"]="<p>پڙهڻ جي رسائي رد ڪئي وئي.</p>";
 $text_error["post_failed"]="رابطو ناڪام. ٿوري دير بعد ٻيهر ڪوشش ڪريو.";
 $text_error["auth_error"]="تصديق ناڪام.";
 $text_error["spool_error"]="سپول فائل ۾ خرابي. مهرباني ڪري ٻيهر لوڊ ڪريو.";
