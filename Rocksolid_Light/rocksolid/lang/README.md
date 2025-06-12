@@ -89,6 +89,7 @@
 [x] bosanski.lang ✅ PASS - All required keys present
 [x] breton.lang ✅ PASS - All required keys present
 [x] bulgarian.lang ✅ PASS - All required keys present
+[x] burmese.lang ✅ PASS - All required keys present
 [x] catalan.lang ✅ PASS - All required keys present
 [x] chinese_simplified.lang ✅ PASS - All required keys present
 [x] chinese_traditional.lang ✅ PASS - All required keys present
