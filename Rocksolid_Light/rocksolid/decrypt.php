@@ -14,6 +14,10 @@
 
   include "auth.inc";
   include "$file_newsportal";
+  require_once(__DIR__ . '/security.inc.php');
+
+  // Add security headers
+  add_security_headers();
 
 if(isset($frames_on) && $frames_on === true) {
 ?>
@@ -58,7 +62,7 @@ if(isset($frames_on) && $frames_on === true) {
 <h1 class="np_article_headline"><?php echo htmlspecialchars(group_display_name($group)." / ".$subject) ?></h1>
 
 <table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>
-<?php 
+<?php
   if(!$frames_on) {
     echo '<td class="np_button"><a class="np_button" href="'.
          $file_index.'">'.$text_thread["button_grouplist"].'</a></td>';
@@ -81,7 +85,7 @@ if(isset($frames_on) && $frames_on === true) {
 ?>
 <td width="100%">&nbsp;</td></tr></table>
 
-<?php 
+<?php
   if (!$message)
     // article not found
     echo $text_error["article_not_found"];
@@ -97,7 +101,7 @@ if(isset($frames_on) && $frames_on === true) {
         echo "Failed to authenticate";
   }
 //    if($article_showthread)
-//      message_thread($message->header->id,$group,$thread); 
+//      message_thread($message->header->id,$group,$thread);
 
   }
   include "tail.inc";

@@ -24,7 +24,7 @@ echo "====================================\n";
 echo "PHP Version: " . PHP_VERSION . "\n";
 echo "Date: " . date('Y-m-d H:i:s') . "\n\n";
 
-require_once(__DIR__ . '/rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 $tests_passed = 0;
 $tests_failed = 0;

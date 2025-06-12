@@ -21,7 +21,10 @@ if (! isset($_POST['command'])) {
 
 $logfile = $logdir . '/mail.log';
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+$keys = secure_unserialize($keyfile, ['stdClass'], false);
+if ($keys === false) {
+    die("Critical Error: Cannot load keys file securely");
+}
 
 $title .= ' - Mail';
 include "head.inc";
@@ -259,8 +262,11 @@ if (isset($_POST['sendMessage'])) {
 
                 // Send internet email notification here
                 if (strpos('@', $to) === false) {
-                    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
-                    if ($user_config['send_mail_to_email'] == 'true') {
+                    $user_config = secure_unserialize($config_dir . '/userconfig/' . $to . '.config');
+                    if ($user_config === false) {
+                        $user_config = [];
+                    }
+                    if (isset($user_config['send_mail_to_email']) && $user_config['send_mail_to_email'] == 'true') {
                         $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
                         if (get_user_config($to, 'email_verified') == 'true') {
                             if ($email_address = get_user_config($to, 'email')) {

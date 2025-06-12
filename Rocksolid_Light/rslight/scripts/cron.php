@@ -1,6 +1,7 @@
 <?php
 // This file runs maintenance scripts and should be executed by cron regularly
 include "config.inc.php";
+require_once(__DIR__ . '/../../rocksolid/security.inc.php');
 include "newsportal.php";
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
@@ -235,7 +236,14 @@ function check_disk_space()
             $date_window = 86400;
             $send_email_timer_file = $spooldir . '/email_send_timer.dat';
             if (file_exists($send_email_timer_file)) {
-                $send_email_timer = unserialize(file_get_contents($send_email_timer_file));
+                try {
+                    $send_email_timer = secure_unserialize($send_email_timer_file);
+                    if (!is_array($send_email_timer)) {
+                        $send_email_timer = array();
+                    }
+                } catch (Exception $e) {
+                    $send_email_timer = array();
+                }
             } else {
                 $send_email_timer = array();
             }
@@ -336,8 +344,18 @@ function rotate_keys()
     } else {
         $new = true;
         if (is_file($keyfile)) {
-            $keys = unserialize(file_get_contents($keyfile));
-            $new = false;
+            try {
+                $keys = secure_unserialize($keyfile);
+                if (!is_array($keys)) {
+                    $keys = array();
+                    $new = true;
+                } else {
+                    $new = false;
+                }
+            } catch (Exception $e) {
+                $keys = array();
+                $new = true;
+            }
         }
         if ($new !== true) {
             $newkeys[0] = base64_encode(openssl_random_pseudo_bytes(44));

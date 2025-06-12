@@ -10,6 +10,11 @@
 
 include "config.inc.php";
 include "../spoolnews/newsportal.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
+
 $title .= " - Privacy and FAQ";
 include "head.inc";
 

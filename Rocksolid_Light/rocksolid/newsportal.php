@@ -22,17 +22,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-if (file_exists("lib/types.inc.php"))
-    include "lib/types.inc.php";
-if (file_exists("lib/thread.inc.php"))
-    include "lib/thread.inc.php";
-if (file_exists("lib/message.inc.php"))
-    include "lib/message.inc.php";
-if (file_exists("lib/post.inc.php"))
-    include "lib/post.inc.php";
 
-// Include security functions
-include "security.inc.php";
+// Include security functions first for all operations
+require_once("security.inc.php");
+
+// Add security headers
+add_security_headers();
+
+if (file_exists("lib/types.inc.php")) {
+    include "lib/types.inc.php";
+}
+if (file_exists("lib/thread.inc.php")) {
+    include "lib/thread.inc.php";
+}
+if (file_exists("lib/message.inc.php")) {
+    include "lib/message.inc.php";
+}
+if (file_exists("lib/post.inc.php")) {
+    include "lib/post.inc.php";
+}
+
+// Include database optimization functions
+if (file_exists("database_optimizer.php")) {
+    include "database_optimizer.php";
+}
 
 $CONFIG = include($config_file);
 
@@ -59,10 +72,12 @@ function nntp_open($nserver = 0, $nport = 0)
         $CONFIG['server_auth_pass'] = $CONFIG['remote_auth_pass'];
     }
     $authorize = ((isset($CONFIG['server_auth_user'])) && (isset($CONFIG['server_auth_pass'])) && ($CONFIG['server_auth_user'] != ""));
-    if ($nserver == 0)
+    if ($nserver == 0) {
         $nserver = $server;
-    if ($nport == 0)
+    }
+    if ($nport == 0) {
         $nport = $port;
+    }
     $ns = @fsockopen($nserver, $nport);
 
     // if the connection to the news server fails, inform the user and stop processing.
@@ -103,8 +118,9 @@ function nntp_open($nserver = 0, $nport = 0)
             }
         }
     }
-    if ($ns == false)
+    if ($ns == false) {
         echo "<p>" . $text_error["connection_failed"] . "</p>";
+    }
     return $ns;
 }
 
@@ -113,10 +129,12 @@ function nntp2_open($nserver = 0, $nport = 0)
     global $text_error, $CONFIG;
 
     $authorize = ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != ""));
-    if ($nserver == 0)
+    if ($nserver == 0) {
         $nserver = $CONFIG['remote_server'];
-    if ($nport == 0)
+    }
+    if ($nport == 0) {
         $nport = $CONFIG['remote_port'];
+    }
     if ($CONFIG['remote_ssl']) {
         if ($nport == $CONFIG['remote_port']) {
             $nport = $CONFIG['remote_ssl'];
@@ -163,22 +181,24 @@ function nntp2_open($nserver = 0, $nport = 0)
             }
         }
     }
-    if ($ns == false)
+    if ($ns == false) {
         echo "<p>" . $text_error["connection_failed"] . "</p>";
+    }
     return $ns;
 }
 
 function fsocks4asockopen($proxyHostname, $proxyPort, $targetHostname, $targetPort)
 {
     $sock = fsockopen($proxyHostname, $proxyPort);
-    if ($sock === false)
+    if ($sock === false) {
         return false;
+    }
     fwrite($sock, pack("CCnCCCCC", 0x04, 0x01, $targetPort, 0x00, 0x00, 0x00, 0x01, 0x00) . $targetHostname . pack("C", 0x00));
     $response = fread($sock, 16);
     $values = unpack("xnull/Cret/nport/Nip", $response);
-    if ($values["ret"] == 0x5a)
+    if ($values["ret"] == 0x5a) {
         return $sock;
-    else {
+    } else {
         fclose($sock);
         return false;
     }
@@ -208,18 +228,20 @@ function validate_email($address)
 {
     global $validate_email;
     $return = true;
-    if (($validate_email >= 1) && ($return == true))
+    if (($validate_email >= 1) && ($return == true)) {
         /* Need to clean up this regex to work properly with preg_match
-    $return = (preg_match('^[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+'.'@'.
+        $return = (preg_match('^[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+'.'@'.
                '[-!#$%&\'*+\\/0-9=?A-Z^_A-z{|}~]+\.'.
                '[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+$',$address));
 */
         $return = 1;
+    }
     if (($validate_email >= 2) && ($return == true)) {
         $addressarray = address_decode($address, "garantiertungueltig");
         $return = checkdnsrr($addressarray[0]["host"], "MX");
-        if (! $return)
+        if (! $return) {
             $return = checkdnsrr($addressarray[0]["host"], "A");
+        }
     }
     return ($return);
 }
@@ -247,8 +269,9 @@ function uudecode_line($line)
         $bitmaske = 0;
         for ($o = 0; $o < 4; $o++) {
             $g = ((ord($pack[3 - $o]) - 32));
-            if ($g == 64)
+            if ($g == 64) {
                 $g = 0;
+            }
             $bitmaske = $bitmaske | ($g << (6 * $o));
         }
         $schablone = 255;
@@ -339,11 +362,13 @@ function testGroup($groupname)
             $read = strtolower($read);
             $pos = strpos($read, " ");
             if ($pos != false) {
-                if (substr($read, 0, $pos) == trim($groupname))
+                if (substr($read, 0, $pos) == trim($groupname)) {
                     return true;
+                }
             } else {
-                if ($read == trim($groupname))
+                if ($read == trim($groupname)) {
                     return true;
+                }
             }
         }
         fclose($gf);
@@ -505,12 +530,24 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
             $data .= fgets($file, 1000);
         }
         fclose($file);
-        $newsgroups = unserialize($data);
+        $newsgroups = secure_unserialize($cachefile, ['newsgroupType'], false);
+        if ($newsgroups === false) {
+            // Fallback to secure unserialize with data validation
+            try {
+                $newsgroups = secure_unserialize($data);
+                if (!is_array($newsgroups)) {
+                    $newsgroups = false;
+                }
+            } catch (Exception $e) {
+                $newsgroups = false;
+            }
+        }
     } else {
         // force a refresh of the group list
         $ns = nntp_open($server, $port);
-        if ($ns == false)
+        if ($ns == false) {
             return false;
+        }
         // $gf=fopen($file_groups,"r");
         $gfdata = file($file_groups);
         // if we want to mark groups with new articles with colors, we will later
@@ -538,19 +575,21 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
                         $desc = "-";
                     }
                 }
-                if (strcmp($desc, "") == 0)
+                if (strcmp($desc, "") == 0) {
                     $desc = "-";
+                }
                 $gruppe->description = $desc;
                 fputs($ns, "GROUP " . $gruppe->name . "\r\n");
                 $t = explode(" ", line_read($ns));
 
-                if ($t[0] == "211")
+                if ($t[0] == "211") {
                     $gruppe->count = $t[1];
-                else {
+                } else {
                     nntp_close($ns);
                     $ns = nntp_open($server, $port);
-                    if ($ns == false)
+                    if ($ns == false) {
                         return false;
+                    }
                     fputs($ns, "GROUP " . $gruppe->name . "\r\n");
                     $t = explode(" ", line_read($ns));
                     if ($t[0] == "211")
@@ -571,8 +610,9 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
                         }
                     }
                 }
-                if ((strcmp(trim($gruppe->name), "") != 0) && (substr($gruppe->name, 0, 1) != "#"))
+                if ((strcmp(trim($gruppe->name), "") != 0) && (substr($gruppe->name, 0, 1) != "#")) {
                     $newsgroups[] = $gruppe;
+                }
             }
         }
         nntp_close($ns);
@@ -589,8 +629,9 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
 function groups_show($gruppen)
 {
     global $gl_age, $frame, $spooldir, $config_dir, $config_name, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir;
-    if ($gruppen == false)
+    if ($gruppen == false) {
         return;
+    }
     global $file_thread, $text_groups;
     $logfile = $logdir . '/debug.log';
     if (file_exists($config_dir . '/cache.inc.php')) {
@@ -627,7 +668,6 @@ function groups_show($gruppen)
                     $blocked_user_config = [];
                 }
             }
-            }
         }
     }
 
@@ -662,15 +702,22 @@ function groups_show($gruppen)
                 $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
                 $lar = cache_get($memcache_key, $memcacheD);
                 if ($lar) {
-                    if ($lastarticleinfo = unserialize($lar)) {
-                        if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
-                            if ($enable_cache_logging) {
-                                file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
-                            }
-                            $found = 1;
-                        } else {
-                            unset($lastarticleinfo);
+                    // Try to unserialize cached data safely
+                    try {
+                        $lastarticleinfo = secure_unserialize($lar);
+                        if (!is_array($lastarticleinfo)) {
+                            $lastarticleinfo = false;
                         }
+                    } catch (Exception $e) {
+                        $lastarticleinfo = false;
+                    }
+                    if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
+                        if ($enable_cache_logging) {
+                            file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
+                        }
+                        $found = 1;
+                    } else {
+                        unset($lastarticleinfo);
                     }
                 }
             }
@@ -795,18 +842,19 @@ function groups_show($gruppen)
             } else {
                 $datecolor = "";
             }
-            if ($datecolor != "")
+            if ($datecolor != "") {
                 $groupdisplay .= '<div class="' . $datecolor . '">' . $g->count . '</div>';
-            else
+            } else {
                 $groupdisplay .= '<div class="group_display_message_count_old">' . $g->count . '</div>';
-
+            }
             /* Display latest article info */
             $groupdisplay .= '</td><td class="' . $lineclass . '"><div class="grouplist_td_thread_start_author_info">';
 
             if ($found == 1) {
                 $fromline = address_decode(headerDecode($lastarticleinfo['name']), "nowhere");
-                if (! isset($fromline[0]["host"]))
+                if (! isset($fromline[0]["host"])) {
                     $fromline[0]["host"] = "";
+                }
                 $name_from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
                 if (! isset($fromline[0]["personal"])) {
                     $poster_name = $fromline[0]["mailbox"];
@@ -905,8 +953,9 @@ function show_groups_hide_toggle()
 function groups_show_frames($gruppen)
 {
     global $gl_age, $frame, $spooldir;
-    if ($gruppen == false)
+    if ($gruppen == false) {
         return;
+    }
     global $file_thread, $text_groups;
     $c = count($gruppen);
     echo '<div class="np_index_groupblock">';
@@ -916,32 +965,37 @@ function groups_show_frames($gruppen)
         if (isset($g->text)) {
             if ($acttype != "text") {
                 $acttype = "text";
-                if ($i > 0)
+                if ($i > 0) {
                     echo '</div>';
+                }
                 echo '<div class="np_index_grouphead">';
             }
             echo $g->text;
         } else {
             if ($acttype != "group") {
                 $acttype = "group";
-                if ($i > 0)
+                if ($i > 0) {
                     echo '</div>';
+                }
                 echo '<div class="np_index_groupblock">';
             }
             echo '<div class="np_index_group">';
             echo '<b><a ';
             echo 'target="' . $frame['content'] . '" ';
             echo 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '">' . group_display_name($g->name) . "</a></b>\n";
-            if ($gl_age)
+            if ($gl_age) {
                 $datecolor = thread_format_date_color($g->age);
+            }
             echo '<small>(';
-            if ($datecolor != "")
+            if ($datecolor != "") {
                 echo '<font color="' . $datecolor . '">' . $g->count . '</font>';
-            else
+            } else {
                 echo $g->count;
+            }
             echo ')</small>';
-            if ($g->description != "-")
+            if ($g->description != "-") {
                 echo '<br><small>' . $g->description . '</small>';
+            }
             echo '</div>';
         }
         echo "\n";
@@ -1009,8 +1063,9 @@ function parse_header($hdr, $number = "")
         switch (strtolower($variable)) {
             case "from:":
                 $fromline = address_decode(headerDecode($value), "nowhere");
-                if (! isset($fromline[0]["host"]))
+                if (! isset($fromline[0]["host"])) {
                     $fromline[0]["host"] = "";
+                }
                 $header->from = $fromline[0]["mailbox"] . "@" . $fromline[0]["host"];
                 $header->username = $fromline[0]["mailbox"];
                 if (! isset($fromline[0]["personal"])) {
@@ -1051,8 +1106,9 @@ function parse_header($hdr, $number = "")
                     if ($gleichpos) {
                         $subvariable = trim(substr($subheader[$i], 0, $gleichpos));
                         $subvalue = trim(substr($subheader[$i], $gleichpos + 1));
-                        if (($subvalue[0] == '"') && ($subvalue[strlen($subvalue) - 1] == '"'))
+                        if (($subvalue[0] == '"') && ($subvalue[strlen($subvalue) - 1] == '"')){
                             $subvalue = substr($subvalue, 1, strlen($subvalue) - 2);
+                        }
                         switch ($subvariable) {
                             case "charset":
                                 $header->content_type_charset = array(
@@ -1107,12 +1163,15 @@ function parse_header($hdr, $number = "")
                 $header->xnoarchive = strtolower(trim($value));
         }
     }
-    if (! isset($header->content_type[0]))
+    if (! isset($header->content_type[0])) {
         $header->content_type[0] = "text/plain";
-    if (! isset($header->content_transfer_encoding))
+    }
+    if (! isset($header->content_transfer_encoding)) {
         $header->content_transfer_encoding = "8bit";
-    if ($number != "")
+    }
+    if ($number != ""){
         $header->number = $number;
+    }
     return $header;
 }
 
@@ -1122,14 +1181,16 @@ function parse_header($hdr, $number = "")
 function recode_charset($text, $source = false, $dest = false)
 {
     global $iconv_enable, $www_charset;
-    if ($dest == false)
+    if ($dest == false) {
         $dest = $www_charset;
+    }
     if (($iconv_enable) && ($source != false)) {
         $return = iconv($source, $dest . "//TRANSLIT", $text);
-        if ($return != "")
+        if ($return != "") {
             return $return;
-        else
+        } else {
             return $text;
+        }
     } else {
         return $text;
     }
@@ -1176,8 +1237,9 @@ function html_parse($text)
     for ($i = 0; $i < $n; $i++) {
         $word = $words[$i];
         // add the spaces between the words
-        if ($i > 0)
+        if ($i > 0) {
             $ntext .= " ";
+        }
         $ntext .= $word;
     }
     return ($ntext);
@@ -1286,12 +1348,15 @@ function message_cancel($subject, $from, $newsgroups, $ref, $body, $id)
         fputs($ns, "Mime-Version: 1.0\r\n");
         fputs($ns, "Content-Type: text/plain; charset=" . $www_charset . "\r\n");
         fputs($ns, "Content-Transfer-Encoding: 8bit\r\n");
-        if ($send_poster_host)
+        if ($send_poster_host) {
             fputs($ns, 'X-HTTP-Posting-Host: ' . gethostbyaddr(getenv("REMOTE_ADDR")) . "\r\n");
-        if ($ref != false)
+        }
+        if ($ref != false) {
             fputs($ns, 'References: ' . $ref . "\r\n");
-        if (isset($CONFIG['organization']))
+        }
+        if (isset($CONFIG['organization'])){
             fputs($ns, 'Organization: ' . quoted_printable_encode($CONFIG['organization']) . "\r\n");
+        }
         fputs($ns, "Control: cancel " . $id . "\r\n");
         $body = str_replace("\n.\r", "\n..\r", $body);
         $body = str_replace("\r", '', $body);
@@ -1361,7 +1426,14 @@ function verify_logged_in($name)
     global $CONFIG, $spooldir, $auth_log, $debug_log;
 
     $keyfile = $spooldir . '/keys.dat';
-    $keys = unserialize(file_get_contents($keyfile));
+    try {
+        $keys = secure_unserialize(file_get_contents($keyfile));
+        if (!is_array($keys)) {
+            $keys = array();
+        }
+    } catch (Exception $e) {
+        $keys = array();
+    }
 
     $logged_in = false;
     $ip_pass = false;
@@ -1478,8 +1550,9 @@ function check_bbs_auth($username, $password, $sockip = null)
     $keyFilename = $config_dir . "/userconfig/" . $username;
 
     foreach ($banned_list as $banned) {
-        if ($banned[0] == '#')
+        if ($banned[0] == '#') {
             continue;
+        }
         if (strtolower(trim($username)) == strtolower(trim($banned))) {
             file_put_contents($logfile, "\n" . logging_prefix($sockip) . " AUTH Failed for: " . $username . ' (user is banned)', FILE_APPEND);
             return false;
@@ -1814,12 +1887,15 @@ function truncate_email($address)
     $namelen = strlen($before_at[0]);
     if ($namelen > 3) {
         $endname = $namelen - 3;
-        if ($endname > 8)
+        if ($endname > 8) {
             $endname = 8;
-        if ($endname < 3)
+        }
+        if ($endname < 3) {
             $endname++;
-        if ($endname < 3)
+        }
+        if ($endname < 3) {
             $endname++;
+        }
     } else {
         $endname = $namelen;
     }
@@ -1898,10 +1974,16 @@ function get_newsgroups_by_msgid($msgid, $noarray = false)
     if ($enable_cache) {
         $memcache_key = $cache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
         if ($getgroups = cache_get($memcache_key, $memcacheD)) {
-            if ($groups = unserialize($getgroups)) {
-                if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $memcache_key", FILE_APPEND);
+            try {
+                $groups = secure_unserialize($getgroups);
+                if (!is_array($groups)) {
+                    $groups = false;
                 }
+            } catch (Exception $e) {
+                $groups = false;
+            }
+            if ($groups && $enable_cache_logging) {
+                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $memcache_key", FILE_APPEND);
             }
         }
     }
@@ -2024,6 +2106,12 @@ function mail_db_open($database, $table = 'messages')
 {
     try {
         $dbh = new PDO('sqlite:' . $database);
+
+        // Apply database optimizations for performance
+        if (class_exists('DatabaseOptimizer')) {
+            $optimizer = new DatabaseOptimizer(false); // Disable monitoring for production
+            $optimizer->optimizeDatabase($dbh, 'mail');
+        }
     } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         exit();
@@ -2048,6 +2136,12 @@ function history_db_open($database, $table = 'history')
 {
     try {
         $dbh = new PDO('sqlite:' . $database);
+
+        // Apply database optimizations for performance
+        if (class_exists('DatabaseOptimizer')) {
+            $optimizer = new DatabaseOptimizer(false); // Disable monitoring for production
+            $optimizer->optimizeDatabase($dbh, 'history');
+        }
     } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         exit();
@@ -2080,6 +2174,12 @@ function overview_db_open($database, $table = 'overview')
 {
     try {
         $dbh = new PDO('sqlite:' . $database);
+
+        // Apply database optimizations for performance
+        if (class_exists('DatabaseOptimizer')) {
+            $optimizer = new DatabaseOptimizer(false); // Disable monitoring for production
+            $optimizer->optimizeDatabase($dbh, 'overview');
+        }
     } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         exit();
@@ -2128,6 +2228,12 @@ function article_db_open($database, $table = 'articles')
     }
     try {
         $dbh = new PDO('sqlite:' . $database);
+
+        // Apply database optimizations for performance
+        if (class_exists('DatabaseOptimizer')) {
+            $optimizer = new DatabaseOptimizer(false); // Disable monitoring for production
+            $optimizer->optimizeDatabase($dbh, 'article');
+        }
     } catch (PDOException $e) {
         echo 'Connection failed: ' . $e->getMessage();
         exit();
@@ -2378,7 +2484,14 @@ function throttle_hits($client_device = null)
     $rdns_file = $spooldir . '/rdns.dat';
     $rdns = array();
     if (file_exists($rdns_file)) {
-        $rdns = unserialize(file_get_contents($rdns_file));
+        try {
+            $rdns = secure_unserialize(file_get_contents($rdns_file));
+            if (!is_array($rdns)) {
+                $rdns = array();
+            }
+        } catch (Exception $e) {
+            $rdns = array();
+        }
     }
 
     if (! $client_device) {
@@ -2530,7 +2643,7 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
 
     $mail->Port = $mailer['port'];
     $mail->Username = $mailer['username'];
-    $mail->Password = $mailer['password'];;
+    $mail->Password = $mailer['password'];
     $mail->SMTPSecure = 'tls';
 
 
@@ -2585,7 +2698,14 @@ function get_user_mail_auth_data($user)
     if ($pkey_config == $pkey_cookie) {
         $userfile = $spooldir . '/' . $user . '-articleviews.dat';
         if (is_file($userfile)) {
-            $userdata = unserialize(file_get_contents($userfile));
+            try {
+                $userdata = secure_unserialize(file_get_contents($userfile));
+                if (!is_array($userdata)) {
+                    $userdata = array();
+                }
+            } catch (Exception $e) {
+                $userdata = array();
+            }
             if (isset($userdata['DO.NOT.DELETE'])) {
                 $userdata['DO.NOT.DELETE'] = time();
             }
@@ -2887,8 +3007,9 @@ function insert_article_from_array($this_article, $check_duplicates = true)
         $article_dbh = null;
     } else {
         $article_date = $this_article['epochdate'];
-        if ($article_date > time())
+        if ($article_date > time()) { // REVIEW ?+86400
             $article_date = time();
+        }
         touch($grouppath . "/" . $this_article['local'], $article_date);
     }
     echo "\nSpooling: " . $group . " " . $this_article['local'];
@@ -2963,11 +3084,19 @@ function get_db_data_from_msgid($msgid, $group)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
-        if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
-            if ($enable_cache_logging) {
-                file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
+        $cached_data = cache_get($row_cache, $memcacheD);
+        if ($cached_data) {
+            try {
+                $row = secure_unserialize(gzuncompress($cached_data));
+                if ($row !== false) {
+                    if ($enable_cache_logging) {
+                        file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
+                    }
+                    return $row;
+                }
+            } catch (Exception $e) {
+                // Cache corruption, continue with database lookup
             }
-            return $row;
         }
     }
 
@@ -3037,12 +3166,18 @@ function get_data_from_msgid($msgid, $thisgroup = null)
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_data_from_msgid-' . $msgid;
-        if ($row = unserialize(gzuncompress(cache_get($row_cache, $memcacheD)))) {
-            if (isset($row['msgid'])) {
-                if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
+        $cached_data = cache_get($row_cache, $memcacheD);
+        if ($cached_data) {
+            try {
+                $row = secure_unserialize(gzuncompress($cached_data));
+                if ($row !== false && isset($row['msgid'])) {
+                    if ($enable_cache_logging) {
+                        file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $row_cache", FILE_APPEND);
+                    }
+                    return $row;
                 }
-                return $row;
+            } catch (Exception $e) {
+                // Cache corruption, continue with database lookup
             }
         } else {
             file_put_contents($cache_log, "\n" . logging_prefix() . " (cache update) $row_cache", FILE_APPEND);
@@ -3385,9 +3520,16 @@ function delete_message_from_overboard($config_name, $group, $messageid)
     global $spooldir;
     $cachefile = $spooldir . "/" . $config_name . "-overboard.dat";
     if (is_file($cachefile)) {
-        $cached_overboard = unserialize(file_get_contents($cachefile));
+        try {
+            $cached_overboard = secure_unserialize(file_get_contents($cachefile));
+            if (!is_array($cached_overboard)) {
+                $cached_overboard = array();
+            }
+        } catch (Exception $e) {
+            $cached_overboard = array();
+        }
         if (isset($cached_overboard['msgids'][$messageid])) {
-            if ($target = $cached_overboard['msgids'][$messageid]) {
+            if ($target == $cached_overboard['msgids'][$messageid]) { // REVIEW
                 unset($cached_overboard['threads'][$target['date']]);
                 unset($cached_overboard['msgids'][$messageid]);
                 unset($cached_overboard['threadlink'][$messageid]);
@@ -3397,9 +3539,16 @@ function delete_message_from_overboard($config_name, $group, $messageid)
     }
     $cachefile = $spooldir . "/" . $group . "-overboard.dat";
     if (is_file($cachefile)) {
-        $cached_overboard = unserialize(file_get_contents($cachefile));
+        try {
+            $cached_overboard = secure_unserialize(file_get_contents($cachefile));
+            if (!is_array($cached_overboard)) {
+                $cached_overboard = array();
+            }
+        } catch (Exception $e) {
+            $cached_overboard = array();
+        }
         if (isset($cached_overboard['msgids'][$messageid])) {
-            if ($target = $cached_overboard['msgids'][$messageid]) {
+            if ($target == $cached_overboard['msgids'][$messageid]) {  // REVIEW
                 unset($cached_overboard['threads'][$target['date']]);
                 unset($cached_overboard['msgids'][$messageid]);
                 unset($cached_overboard['threadlink'][$messageid]);

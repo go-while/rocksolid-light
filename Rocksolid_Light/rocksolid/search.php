@@ -6,8 +6,8 @@ header("Cache-Control: max-age=120");
 header("Pragma: cache");
 
 include "config.inc.php";
-include "security.inc.php";
 include "$file_newsportal";
+require_once(__DIR__ . '/security.inc.php');
 
 // Add security headers
 add_security_headers();
@@ -136,7 +136,14 @@ if (isset($_POST['block_poster'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($blockfile)) {
-                $blocked_user_config = unserialize(file_get_contents($blockfile));
+                try {
+                    $blocked_user_config = secure_unserialize(file_get_contents($blockfile));
+                    if (!is_array($blocked_user_config)) {
+                        $blocked_user_config = array();
+                    }
+                } catch (Exception $e) {
+                    $blocked_user_config = array();
+                }
             } else {
                 $blocked_user_config = array();
             }

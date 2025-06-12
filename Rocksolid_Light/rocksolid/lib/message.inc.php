@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../security.inc.php');
+
 /*
  * rslight NNTP<->HTTP Gateway
  * Download: https://news.novabbs.com/getrslight
@@ -25,6 +27,11 @@
  */
 
 require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
+// Add security headers if accessed directly
+if (!headers_sent()) {
+    add_security_headers();
+}
 
 function message_parse($rawmessage)
 {
@@ -146,30 +153,36 @@ function message_parse($rawmessage)
         if (isset($message->header->content_type_charset)) {
             $body = recode_charset($body, $message->header->content_type_charset[0], $www_charset);
         }
-        if ($body == "")
+        if ($body == "") {
             $body = " ";
-        // }
+        }
         $message->body[0] = $body;
     }
-    if (! isset($message->header->content_type_charset))
+    if (! isset($message->header->content_type_charset)) {
         $message->header->content_type_charset = array(
             $www_charset
         );
-    if (! isset($message->header->content_type_name))
+    }
+    if (! isset($message->header->content_type_name)) {
         $message->header->content_type_name = array(
             "unnamed"
         );
-    if (! isset($message->header->content_type_format))
+    }
+    if (! isset($message->header->content_type_format)) {
         $message->header->content_type_format = array(
             "fixed"
         );
+    }
     for ($o = 0; $o < count($message->body); $o++) {
-        if (! isset($message->header->content_type_charset[$o]))
+        if (! isset($message->header->content_type_charset[$o])) {
             $message->header->content_type_charset[$o] = $www_charset;
-        if (! isset($message->header->content_type_name[$o]))
+        }
+        if (! isset($message->header->content_type_name[$o])) {
             $message->header->content_type_name[$o] = "unnamed";
-        if (! isset($message->header->content_type_format[$o]))
+        }
+        if (! isset($message->header->content_type_format[$o])) {
             $message->header->content_type_format[$o] = "fixed";
+        }
     }
     return $message;
 }
@@ -211,12 +224,11 @@ function message_read($id, $bodynum = 0, $group = "")
             $decompressed = gzuncompress($message_data);
             if ($decompressed !== false && preg_match('/^[adbois]:[0-9]+/', $decompressed)) {
                 try {
-                    $message = unserialize($decompressed, ['allowed_classes' => true]);
+                    $message = secure_unserialize($decompressed);
                 } catch (Exception $e) {
                     error_log("Cache unserialize failed: " . $e->getMessage());
                     $message = false;
                 }
-                if ($message) {
                 if ($message) {
                     if ($enable_cache_logging) {
                         file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $cache_key", FILE_APPEND);
@@ -229,10 +241,12 @@ function message_read($id, $bodynum = 0, $group = "")
     $message = new messageType();
     if ((isset($cache_articles)) && ($cache_articles == true)) {
         // Try to load a cached article
-        if ((preg_match('/^[0-9]+$/', $id)) && ($group != ''))
+        if ((preg_match('/^[0-9]+$/', $id)) && ($group != '')) {
+            // If the group is set, we use the group name as part of the filename
             $filename = $group . '_' . $id;
-        else
+        } else {
             $filename = base64_encode($id);
+        }
         $cachefilename_header = $spooldir . "/" . $filename . '.header';
         $cachefilename_body = $spooldir . "/" . $filename . '.body';
         if (file_exists($cachefilename_header)) {
@@ -241,7 +255,7 @@ function message_read($id, $bodynum = 0, $group = "")
             fclose($cachefile);
             if (preg_match('/^[adbois]:[0-9]+/', $header_data)) {
                 try {
-                    $message->header = unserialize($header_data, ['allowed_classes' => true]);
+                    $message->header = secure_unserialize($header_data);
                 } catch (Exception $e) {
                     error_log("Header cache unserialize failed: " . $e->getMessage());
                     unset($message->header);
@@ -253,8 +267,9 @@ function message_read($id, $bodynum = 0, $group = "")
             unset($message->header);
         }
         // Is a non-existing attachment of an article requested?
-        if ((isset($message->header)) && ($bodynum != -1) && (! isset($message->header->content_type[$bodynum])))
+        if ((isset($message->header)) && ($bodynum != -1) && (! isset($message->header->content_type[$bodynum]))) {
             return false;
+        }
         if ((file_exists($cachefilename_body . $bodynum)) && ($bodynum != -1)) {
             $cachefile = fopen($cachefilename_body . $bodynum, "r");
             $message->body[$bodynum] = fread($cachefile, filesize($cachefilename_body . $bodynum));
@@ -303,7 +318,6 @@ function message_read($id, $bodynum = 0, $group = "")
                 // This is most likely a bot calling an old article, not a bug
                 //    file_put_contents($debug_log, "\n" . logging_prefix() . " " . $config_name . " Unable to retrieve: " . $group . ":" . $id . " from local server. Removing...", FILE_APPEND);
                 return false;
-            } else {
             }
             $rawmessage = array();
             $line = line_read($ns);
@@ -313,8 +327,10 @@ function message_read($id, $bodynum = 0, $group = "")
             }
         }
         $message = message_parse($rawmessage);
-        if (preg_match('/^[0-9]+$/', $id))
+        if (preg_match('/^[0-9]+$/', $id)) {
+            // If the group is set, we use the group name as part of the filename
             $message->header->number = $id;
+        }
         // write header, body and attachments to the cache
         if ((isset($cache_articles)) && ($cache_articles == true)) {
             $cachefile = fopen($cachefilename_header, "w");
@@ -544,8 +560,10 @@ function show_header($head, $group, $local_poster = false)
                 $contype = $head->content_type_name[$i];
             }
             echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
-            if ($i < count($head->content_type) - 1)
+            if ($i < count($head->content_type) - 1) {
+                // If this is not the last attachment, add a comma
                 echo ', ';
+            }
         }
         echo '</div>';
     }
@@ -719,8 +737,10 @@ function show_header_short($head, $group, $local_poster = false)
                 $contype = $head->content_type_name[$i];
             }
             echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
-            if ($i < count($head->content_type) - 1)
+            if ($i < count($head->content_type) - 1) {
+                // If this is not the last attachment, add a comma
                 echo ', ';
+            }
         }
         echo '</div>';
     }
@@ -855,8 +875,10 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
                 $contype = $head->content_type_name[$i];
             }
             echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
-            if ($i < count($head->content_type) - 1)
+            if ($i < count($head->content_type) - 1) {
+                // If this is not the last attachment, add a comma
                 echo ', ';
+            }
         }
         echo '</div>';
         echo '</td></tr>';
@@ -876,7 +898,6 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
-
 
     &nbsp;
     <a href="<?php echo $sitelink . '/' . $config_name . '/article-flat.php?id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
@@ -1000,10 +1021,11 @@ function decode_textbody($body, $format = "fixed")
             $tmp->text = $paragraph;
             $tmp->depth = $depth;
             $paragraph = "";
-            if (phpversion() >= 5)
+            if (phpversion() >= 5) { // clone the object to avoid reference issues
                 $nbody[] = clone ($tmp);
-            else
+            } else {
                 $nbody[] = $tmp;
+            }
         }
         if (@$body[$i] == "-- " && $format == "flowed")
             $body[$i] = "--";
@@ -1034,7 +1056,7 @@ function nl2p($string, $line_breaks = true, $xml = false)
 
     // It is conceivable that people might still want single line-breaks
     // without breaking into a new paragraph.
-    if ($line_breaks == true)
+    if ($line_breaks == true) {
         return '<p>' . preg_replace(array(
             "/([\n]{2,})/i",
             "/([^>])\n([^<])/i"
@@ -1042,7 +1064,7 @@ function nl2p($string, $line_breaks = true, $xml = false)
             "</p>\n<p>",
             '$1<br' . ($xml == true ? ' /' : '') . '>$2'
         ), rtrim($string)) . '</p>';
-    else
+    } else {
         return '<p>' . preg_replace(array(
             "/([\n]{2,})/i",
             "/([\r\n]{3,})/i",
@@ -1052,6 +1074,7 @@ function nl2p($string, $line_breaks = true, $xml = false)
             "</p>\n<p>",
             '$1<br' . ($xml == true ? ' /' : '') . '>$2'
         ), rtrim($string)) . '</p>';
+    }
 }
 
 /*
@@ -1070,8 +1093,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     global $CONFIG, $current_message;
     $current_message = np_get_db_article($id, $group, 1);
 
-    if ($article_data == false)
+    if ($article_data == false) {
         $article_data = message_read($id, $attachment, $group);
+    }
     $head = $article_data->header;
     $local_poster = false;
     if (! isset($head->rslight_site)) {
@@ -1205,10 +1229,13 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                 } else {
                     // Boring old Quotings with >
                     if ($body[$i]->depth == 0) {
-                        if (trim($body[$i]->text) == '')
+                        if (trim($body[$i]->text) == '') {
+                            // If the text is empty, we just print a line break
+                            // This is needed to avoid empty lines in the article
                             $t = "<br>\n";
-                        else
+                        } else {
                             $t = @$body[$i]->text;
+                        }
                     } else {
                         $t = '<i>' . str_repeat('&gt;', $body[$i]->depth) . ' ' . html_parse(text2html(textwrap($body[$i]->text, 72 - $body[$i]->depth, "\n" . str_repeat('>', $body[$i]->depth) . ' '))) . "</i><br>\n";
                     }
@@ -1262,8 +1289,9 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
     global $file_article, $file_article_full;
     global $text_header, $text_article, $article_showthread;
     global $block_xnoarchive, $article_graphicquotes;
-    if ($article_data == false)
+    if ($article_data == false) {
         $article_data = message_read($id, $attachment, $group);
+    }
     $head = $article_data->header;
     $body = $article_data->body[$attachment];
     if ($head) {
@@ -1284,10 +1312,12 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
                 // HTMLized Quotings instead of boring > ?
                 if ($article_graphicquotes) {
                     // HTMLized Quotings
-                    for ($j = $depth; $j < $body[$i]->depth; $j++)
+                    for ($j = $depth; $j < $body[$i]->depth; $j++){
                         echo '<blockquote class="np_article_quote">';
-                    for ($j = $body[$i]->depth; $j < $depth; $j++)
+                    }
+                    for ($j = $body[$i]->depth; $j < $depth; $j++) {
                         echo '</blockquote>';
+                    }
                     $t = html_parse(text2html($body[$i]->text)) . '<br>';
                     echo $t;
                     $currentlen += strlen($t);
@@ -1296,10 +1326,12 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
                 } else {
                     // Boring old Quotings with >
                     if ($body[$i]->depth == 0) {
-                        if (trim($body[$i]->text) == '')
+                        if (trim($body[$i]->text) == '') {
+                            // If the text is empty, we just print a line break
                             $t = "<br>\n";
-                        else
+                        } else {
                             $t = html_parse(text2html($body[$i]->text)) . "<br>\n";
+                        }
                     } else {
                         $t = '<i>' . str_repeat('&gt;', $body[$i]->depth) . ' ' . html_parse(text2html(textwrap($body[$i]->text, 72 - $body[$i]->depth, "\n" . str_repeat('>', $body[$i]->depth) . ' '))) . "</i><br>\n";
                     }
@@ -1327,21 +1359,24 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     global $text_thread, $thread_show;
     $pages = ceil($article_count / $articleflat_articles_per_page);
     $return = "";
-    if ($article_count > $articleflat_articles_per_page)
+    if ($article_count > $articleflat_articles_per_page) {
         $return .= $text_thread["pages"];
+    }
     for ($i = 0; $i < $pages; $i++) {
-        if ($first != $i * $articleflat_articles_per_page + 1)
+        if ($first != $i * $articleflat_articles_per_page + 1) {
             $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $articleflat_articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articleflat_articles_per_page . '#start">';
-        else
+        } else {
             $return .= '<span class="np_pages_selected">';
+        }
         $return .= $i + 1;
         if ($i == $pages - 1) {
             // $return.= $article_count;
         }
-        if ($first != $i * $articleflat_articles_per_page + 1)
+        if ($first != $i * $articleflat_articles_per_page + 1) {
             $return .= '</a>';
-        else
+        } else {
             $return .= '</span>';
+        }
     }
     return $return;
 }

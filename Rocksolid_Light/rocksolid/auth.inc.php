@@ -1,5 +1,9 @@
 <?php
+
 require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 $keyfile = $spooldir.'/keys.dat';
 $keys = secure_unserialize($keyfile, ['stdClass'], false);

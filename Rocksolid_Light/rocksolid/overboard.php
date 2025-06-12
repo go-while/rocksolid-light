@@ -118,7 +118,14 @@ if (isset($_GET['thisgroup'])) {
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            try {
+                $user_config = secure_unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+                if (!is_array($user_config)) {
+                    $user_config = array();
+                }
+            } catch (Exception $e) {
+                $user_config = array();
+            }
             $userdata[$grouplist[0]] = time();
             file_put_contents($userfile, serialize($userdata));
         }
@@ -155,7 +162,14 @@ if (! isset($this_overboard['version'])) {
 }
 if (is_file($cachefile)) {
     $stats = stat($cachefile);
-    $this_overboard = unserialize(file_get_contents($cachefile));
+    try {
+        $this_overboard = secure_unserialize(file_get_contents($cachefile));
+        if (!is_array($this_overboard)) {
+            $this_overboard = array('version' => '0');
+        }
+    } catch (Exception $e) {
+        $this_overboard = array('version' => '0');
+    }
     $cachedate = ($this_overboard['lastmessage'] - 86400);
     $oldest = $cachedate;
 } else {
@@ -274,10 +288,24 @@ function display_threads($threads, $oldest)
     $newonly = false;
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            try {
+                $user_config = secure_unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+                if (!is_array($user_config)) {
+                    $user_config = array();
+                }
+            } catch (Exception $e) {
+                $user_config = array();
+            }
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
             if (file_exists($userfile)) {
-                $blocked_user_config = unserialize(file_get_contents($userfile));
+                try {
+                    $blocked_user_config = secure_unserialize(file_get_contents($userfile));
+                    if (!is_array($blocked_user_config)) {
+                        $blocked_user_config = array();
+                    }
+                } catch (Exception $e) {
+                    $blocked_user_config = array();
+                }
             } else {
                 $blocked_user_config = null;
             }
@@ -460,11 +488,25 @@ function display_flat($threads, $oldest)
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            try {
+                $user_config = secure_unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+                if (!is_array($user_config)) {
+                    $user_config = array();
+                }
+            } catch (Exception $e) {
+                $user_config = array();
+            }
         }
         $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
         if (file_exists($userfile)) {
-            $blocked_user_config = unserialize(file_get_contents($userfile));
+            try {
+                $blocked_user_config = secure_unserialize(file_get_contents($userfile));
+                if (!is_array($blocked_user_config)) {
+                    $blocked_user_config = array();
+                }
+            } catch (Exception $e) {
+                $blocked_user_config = array();
+            }
         } else {
             $blocked_user_config = null;
         }

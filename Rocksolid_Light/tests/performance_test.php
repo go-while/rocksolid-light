@@ -4,12 +4,14 @@
  * Tests the performance impact of security hardening
  */
 
+session_start();
+
 echo "RockSolid Light Performance Impact Assessment\n";
 echo "=============================================\n";
 echo "PHP Version: " . PHP_VERSION . "\n";
 echo "Date: " . date('Y-m-d H:i:s') . "\n\n";
 
-require_once(__DIR__ . '/rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 function benchmark($function, $iterations = 1000) {
     $start = microtime(true);
@@ -30,7 +32,6 @@ echo "   Average per call: " . number_format($time / 10000, 4) . " ms\n\n";
 
 // Test 2: CSRF token generation performance
 echo "2. Testing CSRF token generation performance...\n";
-@session_start();
 $time = benchmark(function() {
     generate_csrf_token();
 }, 1000);
@@ -39,7 +40,7 @@ echo "   Average per call: " . number_format($time / 1000, 4) . " ms\n\n";
 
 // Test 3: File operations performance
 echo "3. Testing file operations performance...\n";
-$test_file = '/tmp/perf_test.dat';
+$test_file = '.perf_test.dat';
 $test_data = ['performance' => 'test', 'data' => range(1, 100)];
 
 // JSON serialization performance

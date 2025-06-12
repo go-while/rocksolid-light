@@ -7,6 +7,10 @@ $_SESSION['group'] = $_SERVER['REQUEST_URI'];
 
 include "config.inc.php";
 include ("$file_newsportal");
+require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();

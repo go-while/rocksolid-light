@@ -1,4 +1,7 @@
 <?php
+
+require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
 /*
  * This script allows importing a group .db3 file from a backup
  * or another rslight site, and other features.
@@ -338,7 +341,14 @@ function refill_group($group, $start)
 
     $remote_groups_array_file = $spooldir . "/" . $config_name . "/" . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'] . "-remote_groups.dat";
     if (file_exists($remote_groups_array_file)) {
-        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+        try {
+            $remote_groups_array = secure_unserialize($remote_groups_array_file);
+            if (!is_array($remote_groups_array)) {
+                $remote_groups_array = array();
+            }
+        } catch (Exception $e) {
+            $remote_groups_array = array();
+        }
     } else {
         $remote_groups_array = array();
     }
@@ -398,7 +408,16 @@ function reset_group($group, $remove = 0)
         if (!str_ends_with($config_file, '_groups.dat')) {
             continue;
         }
-        $groups_array = unserialize(file_get_contents($config_location . '/' . $config_file));
+        try {
+            $groups_array = secure_unserialize($config_location . '/' . $config_file);
+            if (!is_array($groups_array)) {
+                echo "Invalid groups file format: $config_file\n";
+                continue;
+            }
+        } catch (Exception $e) {
+            echo "Error reading groups file: $config_file\n";
+            continue;
+        }
         if (isset($groups_array[$group])) {
             echo "Current group pointer for " . $group . ": " . $groups_array[$group] . "\n";
             $groups_array[$group] = '1';

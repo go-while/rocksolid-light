@@ -5,6 +5,10 @@ $id=$_REQUEST["id"];
 $attachment=$_REQUEST["attachment"];
 include "config.inc.php";
 require("$file_newsportal");
+require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 if (!isset($attachment))
   $attachment=0;
 $message=message_read($id,$attachment,$group);

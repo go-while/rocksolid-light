@@ -1,8 +1,12 @@
 <?php
-  
+
 include "config.inc.php";
 include "head.inc";
 include ($config_dir.'/admin.inc.php');
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 // Accept new config
 if(($_POST['configure'] == "Save Configuration") && ($_POST['configkey'] == $admin['key'])) {
@@ -28,10 +32,10 @@ if(($_POST['configure'] == "Save Configuration") && ($_POST['configkey'] == $adm
   exit(0);
 }
 
-if ((isset($_POST["password"]) && ($_POST["password"]==$admin["password"])) && ($_POST['configkey'] == $admin['key'])) { 
+if ((isset($_POST["password"]) && ($_POST["password"]==$admin["password"])) && ($_POST['configkey'] == $admin['key'])) {
   include($config_dir.'/scripts/setup.inc.php');
   exit(0);
-} else{ 
+} else{
 //Show the wrong password notice
   if($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo '<center>';
@@ -46,5 +50,5 @@ if ((isset($_POST["password"]) && ($_POST["password"]==$admin["password"])) && (
   echo '<input type="hidden" name="configkey" value="'.$admin['key'].'">';
   echo '<input name="password" type="password" size="25" maxlength="20"><input value="Submit" type="submit"></p>';
   echo '</form>';
- } 
+ }
 ?>

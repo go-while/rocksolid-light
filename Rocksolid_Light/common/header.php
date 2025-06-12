@@ -6,6 +6,10 @@ if (basename(getcwd()) == 'mods') {
 }
 
 include($rootdir . 'common/config.inc.php');
+require_once($rootdir . 'rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 global $OVERRIDES;
 $CONFIG = include $config_file;
@@ -28,8 +32,13 @@ echo '<meta charset="utf-8">';
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     $user = strtolower($_COOKIE['mail_name']);
     if (! isset($_SESSION['theme']) && file_exists($config_dir . '/userconfig/' . $user . '.config')) {
-        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $user . '.config'));
-        $_SESSION['theme'] = $user_config['theme'];
+        $user_config = secure_unserialize($config_dir . '/userconfig/' . $user . '.config');
+        if ($user_config === false) {
+            $user_config = [];
+        }
+        if (isset($user_config['theme'])) {
+            $_SESSION['theme'] = $user_config['theme'];
+        }
     }
 } else {
     unset($user);

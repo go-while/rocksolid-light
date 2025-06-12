@@ -3,7 +3,7 @@
  * Simple Security Function Test
  */
 
-require_once(__DIR__ . '/rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 echo "Testing Security Functions...\n";
 

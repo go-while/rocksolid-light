@@ -11,7 +11,7 @@ ini_set('session.use_cookies', '0');
 ini_set('session.use_trans_sid', '0');
 ini_set('session.cache_limiter', '');
 
-require_once(__DIR__ . '/rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 echo "CSRF Debug Test\n";
 echo "===============\n";

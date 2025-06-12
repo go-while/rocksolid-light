@@ -376,7 +376,7 @@ function add_security_headers() {
  * @return string CSRF token
  */
 function generate_csrf_token() {
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
@@ -394,7 +394,7 @@ function generate_csrf_token() {
  * @return bool True if valid
  */
 function verify_csrf_token($token) {
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
@@ -411,7 +411,7 @@ function secure_session_start() {
     ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
     ini_set('session.cookie_samesite', 'Strict');
 
-    if (session_status() == PHP_SESSION_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 

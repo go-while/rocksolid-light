@@ -25,6 +25,10 @@
 include "config.inc.php";
 $CONFIG = include($config_file);
 include $file_newsportal;
+require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 include "head.inc";
 
@@ -39,7 +43,7 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 }
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+$keys = secure_unserialize($keyfile, ['stdClass'], false);
 $logfile = $logdir . '/post.log';
 
 @$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
@@ -626,7 +630,14 @@ if ($show == 1) {
         echo '</td>';
         // Check for custom name/email from user configuration
         if ($OVERRIDES['disable_change_name'] != true) {
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
+            try {
+                $user_config = secure_unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($name) . '.config'));
+                if (!is_array($user_config)) {
+                    $user_config = array();
+                }
+            } catch (Exception $e) {
+                $user_config = array();
+            }
             if (isset($user_config['display_name']) && trim($user_config['display_name']) != '') {
                 if (isset($user_config['display_email']) && trim($user_config['display_email']) != '') {
                     echo '<td></td><tr><td class="np_post_header_from">';

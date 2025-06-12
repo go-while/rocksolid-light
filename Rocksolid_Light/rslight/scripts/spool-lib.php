@@ -1,4 +1,7 @@
 <?php
+
+require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
 function get_articles($ns, $group, $refill_start = false)
 {
     global $enable_rslight, $rslight_gpg, $config_name, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG;
@@ -38,7 +41,14 @@ function get_articles($ns, $group, $refill_start = false)
     }
     # Get config
     if (file_exists($remote_groups_array_file)) {
-        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+        try {
+            $remote_groups_array = secure_unserialize($remote_groups_array_file);
+            if (!is_array($remote_groups_array)) {
+                $remote_groups_array = array();
+            }
+        } catch (Exception $e) {
+            $remote_groups_array = array();
+        }
     } else {
         $remote_groups_array = array();
     }
@@ -475,7 +485,14 @@ function get_articles($ns, $group, $refill_start = false)
     }
     # Save config
     if (file_exists($remote_groups_array_file)) {
-        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+        try {
+            $remote_groups_array = secure_unserialize($remote_groups_array_file);
+            if (!is_array($remote_groups_array)) {
+                $remote_groups_array = array();
+            }
+        } catch (Exception $e) {
+            $remote_groups_array = array();
+        }
     } else {
         $remote_groups_array = array();
     }

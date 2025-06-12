@@ -1,6 +1,10 @@
 <?php
 include "config.inc.php";
 include "newsportal.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 $logfile = $logdir . '/files.log';
 

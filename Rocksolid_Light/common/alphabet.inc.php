@@ -1,5 +1,11 @@
 <?php
 
+// Include security functions for data integrity
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
+
     $alphabet = array('K', 'g', 'A', 'D', 'R', 'V', 's', 'L', 'Q', 'w');
     $alphabetsForNumbers = array(
         array('K', 'g', 'A', 'D', 'R', 'V', 's', 'L', 'Q', 'w'),

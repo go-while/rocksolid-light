@@ -1,4 +1,7 @@
 <?php
+
+require_once(__DIR__ . '/../security.inc.php');
+
 /*
  * rslight NNTP<->HTTP Gateway
  * Download: https://news.novabbs.com/getrslight
@@ -23,6 +26,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 @session_start();
+
+// Add security headers if accessed directly
+if (!headers_sent()) {
+    add_security_headers();
+}
 
 /*
  * Encode lines with 8bit-characters to quote-printable
@@ -372,7 +380,11 @@ function check_rate_limit($name, $set = 0, $gettime = 0)
             $ratedata .= fgets($ratefp, 1000);
         }
         fclose($ratefp);
-        $rate = unserialize($ratedata);
+        $rate_file = $spooldir . '/' . $remote_poster . '-rate.dat';
+        $rate = secure_unserialize($rate_file, [], false);
+        if ($rate === false) {
+            $rate = [];
+        }
         sort($rate);
         foreach ($rate as $ratepost) {
             if ($ratepost > (time() - 3600)) {
@@ -429,7 +441,10 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
     }
     $myconfig = false;
     if (file_exists($config_dir . '/userconfig/' . $authname . '.config')) {
-        $userconfig = unserialize(file_get_contents($config_dir . '/userconfig/' . $authname . '.config'));
+        $userconfig = secure_unserialize($config_dir . '/userconfig/' . $authname . '.config');
+        if ($userconfig === false) {
+            $userconfig = [];
+        }
         $myconfig = true;
     }
     if (isset($encryptthis)) {
@@ -501,7 +516,10 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         }
         // Check for custom name/email from user configuration
         if ($OVERRIDES['disable_change_name'] != true) {
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $authname . '.config'));
+            $user_config = secure_unserialize($config_dir . '/userconfig/' . $authname . '.config');
+            if ($user_config === false) {
+                $user_config = [];
+            }
             if (trim($user_config['display_name']) == '') {
                 unset($user_config['display_name']);
             }
@@ -536,7 +554,10 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
             }
             $posthashfile = $spooldir . '/posthash.dat';
             if(file_exists($posthashfile)) {
-                $posthash = unserialize(file_get_contents($posthashfile));
+                $posthash = secure_unserialize($posthashfile);
+                if ($posthash === false) {
+                    $posthash = array();
+                }
             } else {
                 $posthash = array();
             }

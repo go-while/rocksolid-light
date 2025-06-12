@@ -2,6 +2,11 @@
 include "config.inc.php";
 include "../spoolnews/config.inc.php";
 include "../spoolnews/newsportal.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
+
 $title .= ' - Available Newsgroups';
 include "head.inc";
 
@@ -33,7 +38,19 @@ if (filemtime($grouplist_cache_filename) > (time() - 15000)) {
         if ($enable_cache) {
             $cache_time = filemtime($grouplist_cache_filename);
             $memcache_key = $cache_key_prefix . '_grouplist-cache';
-            $groups_array = unserialize(cache_get($memcache_key, $memcacheD));
+            $cached_data = cache_get($memcache_key, $memcacheD);
+            if ($cached_data) {
+                try {
+                    $groups_array = secure_unserialize($cached_data);
+                    if (!is_array($groups_array)) {
+                        $groups_array = false;
+                    }
+                } catch (Exception $e) {
+                    $groups_array = false;
+                }
+            } else {
+                $groups_array = false;
+            }
             if ($enable_cache_logging) {
                 if (is_array($groups_array)) {
                     file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
@@ -42,7 +59,18 @@ if (filemtime($grouplist_cache_filename) > (time() - 15000)) {
                 }
             }
         } else {
-            $groups_array = unserialize(file_get_contents($grouplist_cache_filename));
+            $groups_array = secure_unserialize($grouplist_cache_filename, [], false);
+            if ($groups_array === false) {
+                // Fallback to secure unserialize for cached data
+                try {
+                    $groups_array = secure_unserialize(file_get_contents($grouplist_cache_filename));
+                    if (!is_array($groups_array)) {
+                        $groups_array = false;
+                    }
+                } catch (Exception $e) {
+                    $groups_array = false;
+                }
+            }
         }
         if (!is_array($groups_array)) {
             $groups_array = build_group_list();
