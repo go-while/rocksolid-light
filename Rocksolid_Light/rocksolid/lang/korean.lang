@@ -1,0 +1,81 @@
+<?php
+// Korean (ko) translation for RockSolid Light
+$text_header["from"]="<b>보낸 사람:</b> ";
+$text_header["subject"]="<b>제목:</b> ";
+$text_header["newsgroups"]="<b>뉴스그룹:</b> ";
+$text_header["followup"]="<b>후속:</b> ";
+$text_header["organization"]="<b>조직:</b> ";
+$text_header["date"]="<b>날짜:</b> ";
+$text_header["message-id"]="<b>메시지 ID:</b> ";
+$text_header["references"]="<b>참조:</b> ";
+$text_header["user-agent"]="<b>사용자 에이전트:</b> ";
+$text_header["date_format"]="Y년 n월 j일 H:i";
+$text_header["attachments"]="<b>첨부파일:</b> ";
+
+$text_thread["no_articles"]="<p><b>사용 가능한 기사가 없습니다</b></p>";
+$text_thread["button_write"]="새 스레드";
+$text_thread["button_grouplist"]="뉴스그룹";
+$text_thread["button_latest"]="최신 보기";
+$text_thread["button_overboard"]="종합 게시판";
+$text_thread["button_search"]="검색";
+$text_thread["button_top"]="맨 위로";
+$text_thread["date"]="<b>날짜</b>";
+$text_thread["subject"]="<b>제목</b>";
+$text_thread["threadsize"]="<b>답글</b>";
+$text_thread["author"]="<b>작성자</b>";
+$text_thread["lastmessage"]="<b>마지막 메시지</b>";
+$text_thread["no_such_group"]="해당 그룹이 존재하지 않습니다.";
+$text_thread["pages"]="페이지:";
+
+$text_groups["newsgroup"]="<b>뉴스그룹</b>";
+$text_groups["description"]="<b>설명</b>";
+
+$text_article["back_to_group"]="기사 목록";
+$text_article["refresh"]="새로 고침";
+$text_article["button_answer"]="답글";
+$text_article["button_cancel"]="삭제";
+$text_article["block-xnoarchive"]="이 시스템은 아카이브가 아니지만, 시스템 관리자가 작성자가 아카이브를 원하지 않는 게시물을 차단하기로 결정했습니다.";
+$text_article["full_article"]="전체 기사를 읽으려면 여기를 클릭하세요";
+
+$text_post["name"]="사용자 이름:";
+$text_post["password"]="비밀번호:";
+$text_post["email"]="이메일:";
+$text_post["missing_message"]="게시하려면 메시지를 포함해야 합니다.";
+$text_post["missing_email"]="이메일 주소를 포함해야 합니다.";
+$text_post["missing_name"]="이름 또는 최소한 닉네임을 포함해야 합니다.";
+$text_post["missing_subject"]="제목을 포함해야 합니다.";
+$text_post["button_post"]="기사 게시";
+$text_post["remember"]="이름 기억하기";
+$text_post["message"]="메시지";
+$text_post["group_head"]="";
+$text_post["group_head_reply"]="";
+$text_post["group_tail"]="에 게시물 작성";
+$text_post["followup_not_allowed"]="이 그룹들에 게시할 권한이 없습니다:";
+$text_post["message_posted"]="메시지가 게시되었습니다";
+$text_post["message_posted2"]="메시지가 성공적으로 게시되었습니다.";
+$text_post["button_back"]="뒤로";
+$text_post["button_back2"]="로";
+$text_post["error_newsserver"]="메시지 서버가 메시지를 거부했습니다:";
+$text_post["error_readonly"]="그룹이 쓰기 보호되어 있습니다";
+$text_post["error_wrong_email"]="잘못된 이메일 주소입니다.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]="님이 작성:";
+$text_post["quote"]="인용";
+$text_post["captchafail"]='CAPTCHA 테스트에 실패했습니다. 다시 시도해주세요';
+$text_post["captchainfo1"]='여기에 다시 입력하세요';
+$text_post["captchainfo2"]='이미지의 올바른 문자와 숫자를 텍스트 상자에 입력하세요. 이 작은 테스트는 스팸 봇에 대한 접근 제한 역할을 합니다.';
+
+$text_error["error:"]='<font color="red">오류:</font>';
+$text_error["connection_failed"]="메시지 서버 연결 실패";
+$text_error["article_not_found"]="<p>기사가 존재하지 않습니다.</p>";
+$text_error["read_access_denied"]="<p>읽기 권한이 없습니다!</p>";
+$text_error["post_failed"]="연결 실패. 나중에 다시 시도하세요.";
+$text_error["auth_error"]="인증 실패.";
+$text_error["spool_error"]="스풀 파일 오류. 새로 고침하세요.";
+
+$text_register["must_register_group"]="이 그룹에 액세스하려면 등록해야 합니다.";
+$text_register["must_register_post"]="이 그룹에 게시하려면 등록해야 합니다.";
+$text_register["no_access_group"]="이 그룹에 대한 액세스 권한이 없습니다.";
+$text_register["no_access_post"]="이 그룹에 게시할 권한이 없습니다.";
+
+?>
