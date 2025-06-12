@@ -595,14 +595,22 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         if ($do_attach) {
             fputs($ns, 'Content-Type: multipart/mixed;boundary="------------' . $boundary . '"');
             fputs($ns, "\r\n");
-            $contenttype = shell_exec('file -b --mime-type ' . $attachment_temp_dir . $_FILES['photo']['name']);
-            $contenttype = rtrim($contenttype);
-            $b64file = shell_exec('uuencode -m ' . $attachment_temp_dir . $_FILES['photo']['name'] . ' ' . $_FILES['photo']['name'] . ' | grep -v \'begin-base64\|====\'');
+
+            // Secure MIME type detection without shell execution
+            $contenttype = get_secure_mime_type($attachment_temp_dir . $_FILES['photo']['name']);
+            if (!$contenttype) {
+                $contenttype = 'application/octet-stream'; // fallback
+            }
+
+            // Secure base64 encoding without shell execution
+            $file_content = file_get_contents($attachment_temp_dir . $_FILES['photo']['name']);
+            $b64file = chunk_split(base64_encode($file_content));
+
             $body .= 'Content-Type: ' . $contenttype . ';';
-            $body .= "\r\n name=" . $_FILES['photo']['name'];
+            $body .= "\r\n name=" . secure_input($_FILES['photo']['name'], 'filename');
             $body .= "\r\nContent-Transfer-Encoding: base64";
             $body .= "\r\nContent-Disposition: attachment;";
-            $body .= "\r\n filename=" . $_FILES['photo']['name'];
+            $body .= "\r\n filename=" . secure_input($_FILES['photo']['name'], 'filename');
             $body .= "\r\n";
             $body .= "\r\n" . $b64file;
             $body .= "\r\n--------------" . $boundary . "--\r\n";

@@ -26,6 +26,10 @@ header("Pragma: cache");
  */
 include "config.inc.php";
 include "$file_newsportal";
+require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
@@ -586,7 +590,7 @@ function show_overboard_header($grouplist)
         echo '<td>';
         echo '<div style="float:left;">';
         echo '<form action="overboard.php">';
-        echo '<input type="hidden" name="thisgroup" value="' . $_GET['thisgroup'] . '">';
+        echo '<input type="hidden" name="thisgroup" value="' . htmlspecialchars($_GET['thisgroup'], ENT_QUOTES, 'UTF-8') . '">';
         if (isset($user_time)) {
             echo '<button class="np_button_link" type="submit">overboard</button>';
         } else {

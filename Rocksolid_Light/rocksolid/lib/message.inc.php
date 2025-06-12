@@ -24,6 +24,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
 function message_parse($rawmessage)
 {
     global $attachment_delete_alternative, $attachment_uudecode, $www_charset;
@@ -206,11 +208,21 @@ function message_read($id, $bodynum = 0, $group = "")
         $cache_key = $cache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
         $message_data = cache_get($cache_key, $memcacheD);
         if ($message_data) {
-            if ($message = unserialize(gzuncompress($message_data))) {
-                if ($enable_cache_logging) {
-                    file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $cache_key", FILE_APPEND);
+            $decompressed = gzuncompress($message_data);
+            if ($decompressed !== false && preg_match('/^[adbois]:[0-9]+/', $decompressed)) {
+                try {
+                    $message = unserialize($decompressed, ['allowed_classes' => true]);
+                } catch (Exception $e) {
+                    error_log("Cache unserialize failed: " . $e->getMessage());
+                    $message = false;
                 }
-                return $message;
+                if ($message) {
+                if ($message) {
+                    if ($enable_cache_logging) {
+                        file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) $cache_key", FILE_APPEND);
+                    }
+                    return $message;
+                }
             }
         }
     }
@@ -225,8 +237,18 @@ function message_read($id, $bodynum = 0, $group = "")
         $cachefilename_body = $spooldir . "/" . $filename . '.body';
         if (file_exists($cachefilename_header)) {
             $cachefile = fopen($cachefilename_header, "r");
-            $message->header = unserialize(fread($cachefile, filesize($cachefilename_header)));
+            $header_data = fread($cachefile, filesize($cachefilename_header));
             fclose($cachefile);
+            if (preg_match('/^[adbois]:[0-9]+/', $header_data)) {
+                try {
+                    $message->header = unserialize($header_data, ['allowed_classes' => true]);
+                } catch (Exception $e) {
+                    error_log("Header cache unserialize failed: " . $e->getMessage());
+                    unset($message->header);
+                }
+            } else {
+                unset($message->header);
+            }
         } else {
             unset($message->header);
         }
@@ -1065,7 +1087,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($userfile)) {
-                $blocked_user_config = unserialize(file_get_contents($userfile));
+                $blocked_user_config = secure_unserialize($userfile);
             }
             $block = false;
             foreach ($blocked_user_config as $key => $value) {
@@ -1082,7 +1104,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         }
 
         if (($block_xnoarchive) && (isset($head->xnoarchive)) && ($head->xnoarchive == "yes")) {
-            echo '<hr><p class="message_show_header_notice">' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
+            echo '<hr><p class="message_show_header_notice>' . $text_article["block-xnoarchive"] . '(article #' . $id . ')</p><hr>';
             return "no-archive";
         }
 

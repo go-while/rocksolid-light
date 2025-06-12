@@ -359,9 +359,15 @@ if ($type == "post") {
             }
 
             if (isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0) {
-                $_FILES['photo']['name'] = preg_replace('/[^a-zA-Z0-9\.]/', '_', $_FILES['photo']['name']);
-                // There is an attachment to handle
-                $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
+                // Secure file upload validation
+                $upload_result = secure_file_upload($_FILES["photo"], ['image/jpeg', 'image/png', 'image/gif', 'text/plain'], 5242880); // 5MB limit
+                if ($upload_result === false) {
+                    echo '<p class="np_post_error">File upload failed: Invalid file type or size too large</p>';
+                } else {
+                    $_FILES['photo']['name'] = $upload_result['secure_filename'];
+                    // There is an attachment to handle
+                    $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto, true);
+                }
             } else {
                 $message = message_post(quoted_printable_encode($subject), $nemail . " (" . quoted_printable_encode($name) . ")", $newsgroups, $references_array, addslashes($body), $_POST['encryptthis'], $_POST['encryptto'], strtolower($name), $_POST['fromname'], $followupto);
             }

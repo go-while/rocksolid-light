@@ -3,7 +3,11 @@ session_start();
 
 include "config.inc.php";
 include "newsportal.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 include $config_dir . "/gpg.conf";
+
+// Add security headers
+add_security_headers();
 
 if (isset($_COOKIE['tzo'])) {
     $offset = $_COOKIE['tzo'];
@@ -60,7 +64,7 @@ if ($_POST['command'] !== 'Send') {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
     echo '<input name="command" type="hidden" value="Send">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">New Message</button>';
     echo '</form>';
     echo '</td>';
@@ -70,8 +74,8 @@ if (isset($_POST['command']) && $_POST['command'] == 'Message') {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
     echo '<input name="command" type="hidden" value="Delete">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
-    echo "<input type='hidden' name='id' value='" . $_POST['id'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='id' value='" . htmlspecialchars($_POST['id'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Delete This Message</button>';
     echo '</form>';
     echo '</td>';
@@ -82,7 +86,7 @@ if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input name="source" type="hidden" id="source" value="Mail:mail.php">';

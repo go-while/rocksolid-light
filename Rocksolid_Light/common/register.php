@@ -3,6 +3,11 @@ include "config.inc.php";
 include "../spoolnews/config.inc.php";
 include "../spoolnews/newsportal.php";
 include "alphabet.inc.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 $title .= ' - Register';
 include "head.inc";
@@ -69,10 +74,10 @@ if (!isset($_POST['command'])) {
         echo '<td></td>';
         echo '</tr><tr>';
         echo '<td>Username: </td>';
-        echo '<td><input name="username" type="text" id="username"value="' . $_POST['username'] . '" maxlength="30"></td>';
+        echo '<td><input name="username" type="text" id="username"value="' . secure_input($_POST['username'], 'html') . '" maxlength="30"></td>';
         echo '</tr><tr>';
         echo '<td>Email: </td>';
-        echo '<td><input name="user_email" type="text" id="user_email" value="' . $_POST['user_email'] . '"></td>';
+        echo '<td><input name="user_email" type="text" id="user_email" value="' . secure_input($_POST['user_email'], 'html') . '"></td>';
         echo '</tr><tr>';
         echo '<td>Password: </td>';
         echo '<td><input name="password" type="password" id="password"></td>';
@@ -92,7 +97,7 @@ if (!isset($_POST['command'])) {
         echo '<td></td></tr>';
         echo '</table></form>';
 
-        // RESET Password 
+        // RESET Password
         echo '<form name="resetpw" method="post" action="register.php">';
         echo '<table class="register_table_forgot_password_button">';
         echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $captchacode . '">';
@@ -232,7 +237,7 @@ foreach ($users as $user) {
 
 # Check email address attempts to avoid abuse
 if (file_exists($email_registry)) {
-    $tried_email = unserialize(file_get_contents($email_registry));
+    $tried_email = secure_unserialize($email_registry);
     if (isset($tried_email[$user_email])) {
         echo "Email address already used\r\n";
         echo '<form name="return1" method="post" action="register.php">';
@@ -380,8 +385,8 @@ function verify_reset_password($username, $user_email)
             echo '<input name="username" type="hidden" id="username" value="' . $username . '">';
             echo '<input name="user_email" type="hidden" id="user_email" value="' . $user_email . '">';
             echo '<input name="key" type="hidden" value="' . password_hash($keys[0], PASSWORD_DEFAULT) . '">';
-            echo '<input name="captchacode" type="hidden" id="captchacode" value="' . $_POST['captchacode'] . '">';
-            echo '<input name="captchaimage" type="hidden" id="captcha" value="' . $_POST['captcha'] . '">';
+            echo '<input name="captchacode" type="hidden" id="captchacode" value="' . secure_input($_POST['captchacode'], 'html') . '">';
+            echo '<input name="captchaimage" type="hidden" id="captcha" value="' . secure_input($_POST['captcha'], 'html') . '">';
             echo '<td><input name="pwcommand" type="hidden" id="pwcommand" value="retry"></td>';
             echo '<input name="command" type="hidden" id="command" value="ResetPW">';
             echo '<input type="submit" name="Submit" value="Back"></td></form>';
@@ -456,7 +461,7 @@ function send_reset_email($username, $user_email)
 
     $reset_file = $spooldir . '/email_reset_log.dat';
     if (file_exists($reset_file)) {
-        $reset_log = unserialize(file_get_contents($reset_file));
+        $reset_log = secure_unserialize($reset_file);
     } else {
         $reset_log = array();
     }
@@ -583,7 +588,7 @@ function create_account($username, $password, $user_email)
     }
 
     echo '<center>';
-    echo 'Create account: ' . $_POST['username'] . '<br><br >';
+    echo 'Create account: ' . secure_input($_POST['username'], 'html') . '<br><br >';
     /* Generate email */
     # only check for no verification if the field has been populated
     if (!empty($CONFIG['no_verify'])) {
@@ -597,10 +602,10 @@ function create_account($username, $password, $user_email)
     if ($CONFIG['verify_email']) {
         # Log email address attempts to avoid abuse
         if (file_exists($email_registry)) {
-            $tried_email = unserialize(file_get_contents($email_registry));
+            $tried_email = secure_unserialize($email_registry);
         }
         $tried_email[$user_email]['time'] = time();
-        file_put_contents($email_registry, serialize($tried_email));
+        secure_serialize_file($email_registry, $tried_email, false);
 
         $mail->SMTPOptions = array(
             'ssl' => array(
@@ -756,7 +761,7 @@ function create_new($username, $password, $user_email)
     } else {
         send_admin_message('admin', 'admin', $mail_subject, $mail_body . "\n");
     }
-    
+
 }
 
 function make_key($username)

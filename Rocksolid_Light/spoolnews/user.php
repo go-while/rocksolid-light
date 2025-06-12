@@ -19,6 +19,10 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
 }
 
 include("config.inc.php");
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
 include("newsportal.php");
 
 $ip_pass = false;
@@ -54,7 +58,7 @@ if (! isset($_POST['command'])) {
 }
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+$keys = secure_unserialize($keyfile, ['stdClass'], false);
 
 $title .= ' - User Configuration';
 include "head.inc";
@@ -108,7 +112,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
     echo '<input name="command" type="hidden" id="command" value="Mail" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Mail</button>';
     echo '</form>';
     echo '</td>';
@@ -116,7 +120,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="files.php">';
     echo '<input name="command" type="hidden" id="command" value="Files" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Files</button>';
     echo '</form>';
     echo '</td>';
@@ -124,7 +128,7 @@ if ($logged_in == true) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Configuration</button>';
     echo '</form>';
     echo '</td>';
@@ -134,7 +138,7 @@ if ((isset($_COOKIE["mail_name"]))) {
     echo '<td>';
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Logout" readonly="readonly">';
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Logout</button>';
     echo '</form>';
     echo '</td>';
@@ -161,7 +165,7 @@ if ($logged_in !== true) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . secure_input($_POST['username'], 'html') . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
@@ -179,7 +183,7 @@ $_SESSION['username'] = $user;
 unset($user_config);
 $userfile = $spooldir . '/' . $user . '-articleviews.dat';
 if (is_file($userfile)) {
-    $userdata = unserialize(file_get_contents($userfile));
+    $userdata = secure_unserialize($userfile);
 }
 if (!file_exists($config_dir . '/userconfig/' . $user . '.config')) {
     $user_config = array();
@@ -202,6 +206,12 @@ if ($_POST['command'] != 'Configuration' && $_POST['command'] != 'SaveConfig') {
 
 // Apply Config
 if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
+    // Verify CSRF token
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        $message = '<b>Security Error</b><br>Invalid form submission. Please try again.';
+        retry_configuration($message);
+    }
+
     // Confirm password
     if (! check_bbs_auth($user, $_POST['confirm_password'])) {
         $message = '<b>Password Incorrect</b><br >Please try again';
@@ -309,7 +319,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     // Block posters
     $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
     if (file_exists($blockfile)) {
-        $blocked_saved_config = unserialize(file_get_contents($blockfile));
+        $blocked_saved_config = secure_unserialize($blockfile);
     } else {
         $blocked_saved_config = null;
     }
@@ -325,7 +335,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
     file_put_contents($blockfile, serialize($newblocks));
     // End Block posters
 
-    $userdata = unserialize(file_get_contents($userfile));
+    $userdata = secure_unserialize($userfile);
     if ($userdata) {
         ksort($userdata);
     }
@@ -338,7 +348,7 @@ if (isset($_POST['command']) && $_POST['command'] == 'SaveConfig') {
 
     echo '<center>Configuration Saved for ' . $_POST['username'] . '</center>';
 } else {
-    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $user . '.config'));
+    $user_config = secure_unserialize($config_dir . '/userconfig/' . $user . '.config');
 }
 // Get themes
 $themedir = $rootdir . '/common/themes';
@@ -388,6 +398,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<table cellspacing="0" width="100%" class="config_results_table">';
     echo '<tr class="config_thread_head"><td class="config_thread_head"><h2>Settings for ' . $_POST['username'] . ':</h2></td></tr>';
     echo '<form method="post" action="user.php">';
+    echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
     echo '<tr class="config_table_row">';
     if ($OVERRIDES['disable_change_name'] != true) {
         // User Display Name
@@ -520,7 +531,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
         if (file_exists($blockfile)) {
-            $blocked_users_config = unserialize(file_get_contents($blockfile));
+            $blocked_users_config = secure_unserialize($blockfile);
         } else {
             $blocked_users_config = null;
         }
@@ -585,16 +596,16 @@ function retry_configuration($message)
     echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
     echo "<input type='hidden' name='retry' value='retry' >";
-    echo "<input type='hidden' name='username' value='" . $_POST['username'] . "' >";
-    echo "<input type='hidden' name='display_name' value='" . $_POST['display_name'] . "' >";
-    echo "<input type='hidden' name='display_email' value='" . $_POST['display_email'] . "' >";
-    echo "<input type='hidden' name='signature' value='" . $_POST['signature'] . "' >";
-    echo "<input type='hidden' name='xface' value='" . urlencode($_POST['xface']) . "' >";
-    echo "<input type='hidden' name='hide_unsub' value='" . $_POST['hide_unsub'] . "' >";
-    echo "<input type='hidden' name='subscribed' value='" . $_POST['subscribed'] . "' >";
-    echo "<input type='hidden' name='theme' value='" . $_POST['theme'] . "' >";
-    echo "<input type='hidden' name='blocked_users_config' value'" . $_POST['blocked_users_config'] . "' >";
-    echo "<input type='hidden' name='send_mail_to_email' value'" . $_POST['send_mail_to_email'] . "' >";
+    echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='display_name' value='" . htmlspecialchars($_POST['display_name'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='display_email' value='" . htmlspecialchars($_POST['display_email'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='signature' value='" . htmlspecialchars($_POST['signature'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='xface' value='" . htmlspecialchars(urlencode($_POST['xface']), ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='hide_unsub' value='" . htmlspecialchars($_POST['hide_unsub'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='subscribed' value='" . htmlspecialchars($_POST['subscribed'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='theme' value='" . htmlspecialchars($_POST['theme'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='blocked_users_config' value='" . htmlspecialchars($_POST['blocked_users_config'], ENT_QUOTES, 'UTF-8') . "' >";
+    echo "<input type='hidden' name='send_mail_to_email' value='" . htmlspecialchars($_POST['send_mail_to_email'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Return to Configuration</button>';
     echo '</center>';
     exit();

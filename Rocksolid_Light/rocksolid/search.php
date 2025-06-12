@@ -6,7 +6,11 @@ header("Cache-Control: max-age=120");
 header("Pragma: cache");
 
 include "config.inc.php";
-include "newsportal.php";
+include "security.inc.php";
+include "$file_newsportal";
+
+// Add security headers
+add_security_headers();
 
 $logfile = $logdir . '/search.log';
 
@@ -40,19 +44,19 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
             echo '<form name="blockform" method="post" action="search.php">';
             echo '<table width=100% border="0" class="search_hide_posts">';
             echo '<tr>';
-            echo '<td>Hide posts by <strong>' . $_GET['terms'] . '</strong></td>';
+            echo '<td>Hide posts by <strong>' . secure_input($_GET['terms'], 'html') . '</strong></td>';
             echo '</tr>';
             echo '<input name="command" type="hidden" id="command" value="Search">';
             echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
             if (isset($_GET['data'])) {
-                echo '<input type="hidden" name="data" value="' . $_GET['data'] . '">';
+                echo '<input type="hidden" name="data" value="' . secure_input($_GET['data'], 'html') . '">';
             }
-            echo '<input type="hidden" name="username" value="' . $_COOKIE['mail_name'] . '">';
+            echo '<input type="hidden" name="username" value="' . secure_input($_COOKIE['mail_name'], 'html') . '">';
             // Password confirmation
             echo '<tr>';
             echo '<td style="word-wrap:break-word";>Enter your password: ';
             echo '<input name="password" type="password" id="password" maxlength="40"></td>';
-            echo '<input name="block_poster" type="hidden" id="block_poster" value="' . $_GET['terms'] . '"></td>';
+            echo '<input name="block_poster" type="hidden" id="block_poster" value="' . secure_input($_GET['terms'], 'html') . '"></td>';
             echo '</tr>';
             echo '<td><input type="submit" name="Submit" value="Add poster to my block list"></td>';
             echo '</tr></table></td></form>';
@@ -132,7 +136,7 @@ if (isset($_POST['block_poster'])) {
             $blocked_user_config[base64_decode(urldecode($_REQUEST['data']))] = $_POST['block_poster'];
             file_put_contents($blockfile, serialize($blocked_user_config));
         }
-        echo "<center><b>'" . $_POST['block_poster'] . "'</b> successfully added to your blocklist";
+        echo "<center><b>'" . secure_input($_POST['block_poster'], 'html') . "'</b> successfully added to your blocklist";
         echo '<br>You may edit your blocklist on your <a href="/spoolnews/user.php?command=Configuration">Configuration Page</a></center>';
         echo '<center><br><i>(Articles may still appear on Cached Pages)</i></center>';
     } else {
@@ -149,11 +153,11 @@ if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && iss
     if ($suggestion != false) {
         echo '<form method="post" action="search.php" class="search_suggestion_inline">';
 
-        echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
+        echo '<input type="hidden" name="group" value="' . secure_input($_REQUEST['group'], 'html') . '">';
         echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
-        echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
-        echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
-        echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+        echo '<input type="hidden" name="key" value="' . secure_input($_REQUEST['key'], 'html') . '">';
+        echo '<input type="hidden" name="command" value="' . secure_input($_REQUEST['command'], 'html') . '">';
+        echo '<input type="hidden" name="searchpoint" value="' . secure_input($_REQUEST['searchpoint'], 'html') . '">';
 
         echo '<button type="submit" name="submit_param" value="submit_value" class="search_suggestion_link-button">';
         echo 'Did you mean: <b><i>' . htmlentities($suggestion) . '</i></b>';
@@ -172,11 +176,11 @@ if (isset($search_group)) {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
-    echo 'search results for: ' . $_POST['terms'] . '</h1>';
+    echo 'search results for: ' . secure_input($_POST['terms'], 'html') . '</h1>';
 } else {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-    echo 'search results for: ' . $_POST['terms'] . '</h1>';
+    echo 'search results for: ' . secure_input($_POST['terms'], 'html') . '</h1>';
 }
 echo '<table class="np_buttonbar"><tr>';
 echo '<td class="search_sort_toggle">';
@@ -378,12 +382,12 @@ function show_search_sort_toggle()
         echo '<input type="radio" name="searchsort" value="relevance" checked>Relevance';
         echo '&nbsp;';
     }
-    echo '<input type="hidden" name="group" value="' . $_REQUEST['group'] . '">';
-    echo '<input type="hidden" name="data" value="' . $_REQUEST['data'] . '">';
-    echo '<input type="hidden" name="terms" value="' . $_REQUEST['terms'] . '">';
-    echo '<input type="hidden" name="key" value="' . $_REQUEST['key'] . '">';
-    echo '<input type="hidden" name="command" value="' . $_REQUEST['command'] . '">';
-    echo '<input type="hidden" name="searchpoint" value="' . $_REQUEST['searchpoint'] . '">';
+    echo '<input type="hidden" name="group" value="' . secure_input($_REQUEST['group'], 'html') . '">';
+    echo '<input type="hidden" name="data" value="' . secure_input($_REQUEST['data'], 'html') . '">';
+    echo '<input type="hidden" name="terms" value="' . secure_input($_REQUEST['terms'], 'html') . '">';
+    echo '<input type="hidden" name="key" value="' . secure_input($_REQUEST['key'], 'html') . '">';
+    echo '<input type="hidden" name="command" value="' . secure_input($_REQUEST['command'], 'html') . '">';
+    echo '<input type="hidden" name="searchpoint" value="' . secure_input($_REQUEST['searchpoint'], 'html') . '">';
     echo '<input class="np_button_link" type="submit" value="Reload" name="reload">';
     echo '</form >';
 }
@@ -540,7 +544,7 @@ function display_search_tools($home = true)
     }
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
     if (isset($_REQUEST['data'])) {
-        echo '<input type="hidden" name="data" value="' . $_REQUEST['data'] . '">';
+        echo '<input type="hidden" name="data" value="' . secure_input($_REQUEST['data'], 'html') . '">';
     }
     echo '</td></tr>';
     echo '<tr>';

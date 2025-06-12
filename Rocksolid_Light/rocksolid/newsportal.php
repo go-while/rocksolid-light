@@ -31,10 +31,16 @@ if (file_exists("lib/message.inc.php"))
 if (file_exists("lib/post.inc.php"))
     include "lib/post.inc.php";
 
+// Include security functions
+include "security.inc.php";
+
 $CONFIG = include($config_file);
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+$keys = secure_unserialize($keyfile, [], false);
+if ($keys === false) {
+    die("Critical Error: Cannot load keys file securely");
+}
 
 /*
  * opens the connection to the NNTP-Server
@@ -608,12 +614,19 @@ function groups_show($gruppen)
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
             $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+            $user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config');
+            if ($user_config === false) {
+                $user_config = [];
+            }
 
             // User blocklist
             $blocked_userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($blocked_userfile)) {
-                $blocked_user_config = unserialize(file_get_contents($blocked_userfile));
+                $blocked_user_config = secure_unserialize($blocked_userfile);
+                if ($blocked_user_config === false) {
+                    $blocked_user_config = [];
+                }
+            }
             }
         }
     }
@@ -2047,7 +2060,7 @@ function history_db_open($database, $table = 'history')
 			status TEXT,
 			statusdate TEXT,
 			statusreason TEXT,
-			statusnotes TEXT,		
+			statusnotes TEXT,
 			unique (newsgroup, msgid),
 			unique (newsgroup, number))");
     $stmt = $dbh->query('CREATE INDEX IF NOT EXISTS id_status on ' . $table . '(status)');
@@ -2554,7 +2567,7 @@ function send_internet_email($subject, $body, $mail_to = false, $mail_from = fal
 
 /* get_user_mail_auth_data is poorly named but
  * it retrieves newsgroup status per user info
- * for subscribe/unsubscribe/read/unread 
+ * for subscribe/unsubscribe/read/unread
  */
 function get_user_mail_auth_data($user)
 {

@@ -1,11 +1,15 @@
 <?php
 include "config.inc.php";
 include "newsportal.php";
+require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 $logfile = $logdir . '/files.log';
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+$keys = secure_unserialize($keyfile, ['stdClass'], false);
 
 $name = '';
 
@@ -89,7 +93,7 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . $_POST['username'] . '"></td></tr>';
+    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . secure_input($_POST['username'], 'html') . '"></td></tr>';
     echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
     echo '<input name="command" type="hidden" value="Login">';
     echo '<input name="source" type="hidden" id="source" value="Files:files.php">';
@@ -102,11 +106,11 @@ if (! $logged_in && ! check_bbs_auth($_POST['username'], $_POST['password'])) {
     echo '</form>';
 } else {
     echo '<form name="form1" method="post" action="upload.php" enctype="multipart/form-data">';
-    echo '<tr><td class="upload_logged_in_msg"><strong>Logged in as ' . $_POST['username'] . '<br >(max size=2MB)</strong></td></tr>';
+    echo '<tr><td class="upload_logged_in_msg"><strong>Logged in as ' . secure_input($_POST['username'], 'html') . '<br >(max size=2MB)</strong></td></tr>';
     echo '<td><input name="command" type="hidden" id="command" value="Upload" readonly="readonly"></td>';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
-    echo '<input type="hidden" name="username" value="' . $_POST['username'] . '">';
-    echo '<input type="hidden" name="password" value="' . $_POST['password'] . '">';
+    echo '<input type="hidden" name="username" value="' . secure_input($_POST['username'], 'html') . '">';
+    echo '<input type="hidden" name="password" value="' . secure_input($_POST['password'], 'html') . '">';
     echo '<tr><td><input type="file" name="photo" id="fileSelect" value="fileSelect" accept="image/*,audio/*,text/*,application/*"></td>
 ';
     echo '<td>&nbsp;<input type="submit" name="Submit" value="Upload"></td>';

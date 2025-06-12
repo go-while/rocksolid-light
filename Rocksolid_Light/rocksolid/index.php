@@ -5,6 +5,10 @@ header("Pragma: cache");
 
 include "config.inc.php";
 include ("$file_newsportal");
+require_once(__DIR__ . '/security.inc.php');
+
+// Add security headers
+add_security_headers();
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
@@ -51,10 +55,10 @@ if (isset($_COOKIE['mail_name'])) {
     }
     if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-        $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+        $user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config');
         if (isset($_POST['hide_unsub'])) {
             $user_config['hide_unsub'] = $_POST['hide_unsub'];
-            file_put_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config', serialize($user_config));
+            secure_serialize_file($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config', $user_config, false);
         }
     }
 }
@@ -111,7 +115,7 @@ if (isset($_GET['mark_read'])) {
     if (isset($_COOKIE['mail_name'])) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
             $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-            $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config'));
+            $user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config');
             $userdata[$_GET['mark_read']] = time();
             file_put_contents($userfile, serialize($userdata));
         }
