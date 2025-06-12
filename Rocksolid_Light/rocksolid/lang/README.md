@@ -80,6 +80,7 @@
 - For legacy Cyrillic: `$www_charset = 'iso-8859-5';` or `$www_charset = 'windows-1251';`
 
  # JOB:01:
+[x] albanian.lang ✅ PASS - All required keys present
 [x] amharic.lang ✅ PASS - All required keys present
 [x] arabic.lang ✅ PASS - All required keys present
 [x] armenian.lang ✅ PASS - All required keys present
@@ -119,6 +120,7 @@
 [x] latvian.lang ✅ PASS - All required keys present
 [x] lithuanian.lang ✅ PASS - All required keys present
 [x] malayalam.lang ✅ PASS - All required keys present
+[x] malay.lang ✅ PASS - All required keys present
 [x] marathi.lang ✅ PASS - All required keys present
 [x] norsk.lang ✅ PASS - All required keys present
 [x] persian.lang ✅ PASS - All required keys present
