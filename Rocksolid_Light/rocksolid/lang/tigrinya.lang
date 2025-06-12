@@ -1,0 +1,83 @@
+<?php
+// tigrinya.lang
+$text_header["from"]="<b>ካብ:</b> ";
+$text_header["subject"]="<b>ኣርእስቲ:</b> ";
+$text_header["newsgroups"]="<b>ሓበሬታ ጉጅለታት:</b> ";
+$text_header["followup"]="<b>ምኽታል:</b> ";
+$text_header["organization"]="<b>ተቃውሞ:</b> ";
+$text_header["date"]="<b>ዕለት:</b> ";
+$text_header["message-id"]="<b>መልእኽቲ-መለለዪ:</b> ";
+$text_header["references"]="<b>ቅጥዒታት:</b> ";
+$text_header["user-agent"]="<b>ተጠቃሚ-ወኪል:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>ተተሒዞም:</b> ";
+
+$text_thread["no_articles"]="<p><b>ዓንቀጻት ኣይተረኽቡን</b></p>";
+$text_thread["button_write"]="ሓድሽ ኣርእስቲ";
+$text_thread["button_grouplist"]="ሓበሬታ ጉጅለታት";
+$text_thread["button_latest"]="ሓድሽ ርኡይ";
+$text_thread["button_overboard"]="ጠቕላላ";
+$text_thread["button_search"]="ናድ";
+$text_thread["button_top"]="ናብ ላዕሊ ተመለስ";
+$text_thread["date"]="<b>ዕለት</b>";
+$text_thread["subject"]="<b>ኣርእስቲ</b>";
+$text_thread["threadsize"]="<b>መልሲ</b>";
+$text_thread["author"]="<b>ደራሲ</b>";
+$text_thread["lastmessage"]="<b>ናይ መወዳእታ መልእኽቲ</b>";
+$text_thread["no_such_group"]="እንደሞኑ ጉጅለ የለን።";
+$text_thread["pages"]="ገጽታት:";
+
+$text_groups["newsgroup"]="<b>ሓበሬታ ጉጅለ</b>";
+$text_groups["description"]="<b>መግለጺ</b>";
+
+$text_article["back_to_group"]="ዓንቀጻት ዝርዝር";
+$text_article["refresh"]="ሐድሽ";
+$text_article["button_answer"]="መልሲ";
+$text_article["button_cancel"]="ሰረዝ";
+$text_article["block-xnoarchive"]="እዚ ስርዓት ኣርካይቭ ኣይኮነን ግን ናይ ስርዓት አስተዳዳሪ ወሰነ ደራሲ ኣርካይቭ እንተዘይደሊዩ ዓንቀጻት ይድፈኑ።";
+$text_article["full_article"]="ዝኾነ ዓንቀጽ ንምንባብ ኣብዚ ጠውቅ";
+
+$text_post["name"]="ተጠቃሚ ስም:";
+$text_post["password"]="መሸፈኒ ቃል:";
+$text_post["email"]="ናትካ ኢመይል:";
+$text_post["missing_message"]="ንምልኣኽ መልእኽቲ የድሊ።";
+$text_post["missing_email"]="ኢመይል ኣድራሻ የድሊ።";
+$text_post["missing_name"]="ስም ወይ ውሑዳት ምስለ ስም የድሊ።";
+$text_post["missing_subject"]="ኣርእስቲ የድሊ።";
+$text_post["button_post"]="ዓንቀጽ ለኣኽ";
+$text_post["remember"]="ስም ዝኽር";
+$text_post["message"]="መልእኽቲ";
+$text_post["group_head"]="ኣብ ጉጅለ ጽሓፍ ";
+$text_post["group_head_reply"]="ናብ ጉጅለ መልሲ ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ኣብዞም ጉጅለታት ምልኣኽ ኣይትኽእልን:";
+$text_post["message_posted"]="መልእኽቲ ተላኢኹ";
+$text_post["message_posted2"]="መልእኽቲ ብዓወት ተላኢኹ።";
+$text_post["button_back"]="ተመለስ";
+$text_post["button_back2"]="ናብ";
+$text_post["error_newsserver"]="ሓበሬታ ሰርቨር እዚ መልእኽቲ ኣልጊሱ:";
+$text_post["error_readonly"]="እዚ ጉጅለ ካብ ጽሓፈት ተኸልኪሉ";
+$text_post["error_wrong_email"]="ኢመይል ኣድራሻ ቅኑዕ ኣይኮነን።";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ጸሓፈ:";
+$text_post["quote"]="ቅጥዒ";
+
+$text_nav["first_page"]="ቀዳማይ ገጽ";
+$text_nav["last_page"]="ናይ መወዳእታ ገጽ";
+$text_nav["next_page"]="ቀጺሉ ገጽ";
+$text_nav["prev_page"]="ዝሓለፈ ገጽ";
+
+$text_error["error:"]='<font color="red">ጌጋ:</font>';
+$text_error["connection_failed"]="ምስ ሓበሬታ ሰርቨር ምትእስሳር ወደቐ።";
+$text_error["article_not_found"]="<p>ዓንቀጽ ኣይተረኽበን።</p>";
+$text_error["read_access_denied"]="<p>ንባብ ተደፋፍኦ።</p>";
+$text_error["post_failed"]="ምትእስሳር ወደቐ። ገለ እዋን ድሕሪኡ እንደገና ፈትን።";
+$text_error["auth_error"]="ሓቅነት ስልጣን ወደቐ።";
+$text_error["spool_error"]="ኣብ ስፑል ፋይል ጌጋ። በጃኻ እንደገና ሰዓብ።";
+
+$text_register["must_register_group"]="ናብዚ ጉጅለ ንምእታው ክትመዝገብ ኣለካ።";
+$text_register["must_register_post"]="ኣብዚ ጉጅለ ንምልኣኽ ክትመዝገብ ኣለካ።";
+$text_register["no_access_group"]="ናብዚ ጉጅለ መብጽሓ የብልካን።";
+$text_register["no_access_post"]="ኣብዚ ጉጅለ ምልኣኽ ኣይተፈቕደልካን።";
+
+?>
