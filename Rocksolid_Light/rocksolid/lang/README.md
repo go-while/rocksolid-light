@@ -16,7 +16,7 @@
 
 # 🌍 Comprehensive Language Coverage List (Ordered by Speaker Count)
 
-**Global Coverage: 72/72 languages, ~85% of world population**
+**Global Coverage: 73/73 languages, ~85% of world population**
 
 ## 📝 Language File Checklist
 
@@ -58,6 +58,7 @@
 [✅] burmese.lang | 33M, UTF-8 required (Burmese script) | ✅ PASS - All required keys present
 [✅] amharic.lang | 32M, UTF-8 required | ✅ PASS - All required keys present
 [✅] uzbek.lang | 32M, UTF-8 required | ✅ PASS - All required keys present
+[✅] pashto.lang | 40M, UTF-8 required (Arabic script, RTL) | ✅ PASS - All required keys present
 [✅] filipino.lang | 28M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] romanian.lang | 24M, UTF-8 recommended, legacy: ISO-8859-2 | ✅ PASS - All required keys present
 [✅] dutch.lang | 23M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
