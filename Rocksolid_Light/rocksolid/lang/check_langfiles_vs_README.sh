@@ -1,10 +1,12 @@
 #!/bin/bash
-ERRORS=0, EXISTS=0;
+echo "$0"
+ERRORS=0; EXISTS=0;
 while IFS="" read -r langfile; do
- RES=$(grep PASS README.md | grep "$langfile");
+ RES=$(egrep "^\[.\]\ " README.md |grep "$langfile"|cut -d" " -f2);
  E=$?
+ #echo "RES=$RES"
  test "$1" = "-verbose" && echo "RES: $RES"
- if [ $E -gt 0 ]; then
+ if [ "$RES" != "$langfile" ]; then
   echo "$langfile ❌ FAIL: not in README";
   let ERRORS="ERRORS+1"
  else
