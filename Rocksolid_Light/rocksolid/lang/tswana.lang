@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="Aterese ya imeile ga e a siame.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" o kwadile:";
 $text_post["quote"]="Sekai";
+$text_post["captchafail"]='O paletse mo tekong ya CAPTCHA. Tsweetswee leka gape.';
+$text_post["captchainfo1"]='kwala fale gape fa';
+$text_post["captchainfo2"]='Tsenya ditlhaka le dinomoro tse di siameng go tswa mo setshwantshong mo lebokosong la mokwalo. Teko e nnye e e direla go thibela di-spam bot.';
 
 $text_nav["first_page"]="Tsebe ya ntlha";
 $text_nav["last_page"]="Tsebe ya bofelo";
@@ -70,7 +73,7 @@ $text_nav["prev_page"]="Tsebe e e fetileng";
 $text_error["error:"]='<font color="red">Phoso:</font>';
 $text_error["connection_failed"]="Kgolagano le seva ya dikgang e paletse.";
 $text_error["article_not_found"]="<p>Kgatiso ga ya bonwa.</p>";
-$text_error["read_access_denied"]="<p>Tumelelo ya go buisa e gannwe.</p>";
+$text_error["read_access_denied"]="<p>Go bala ga gannwe.</p>";
 $text_error["post_failed"]="Kgolagano e paletse. Leka gape mo nakong e e tlang.";
 $text_error["auth_error"]="Netefatso e paletse.";
 $text_error["spool_error"]="Phoso mo faileng ya spool. Tsweetswee laisa gape.";
