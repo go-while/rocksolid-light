@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="Email bi baaxul.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" bindee:";
 $text_post["quote"]="Waytu";
+$text_post["captchafail"]='Baaxul nga ci test CAPTCHA bi. Jariñ ko tubaab.';
+$text_post["captchainfo1"]='bind ko fii tubaab';
+$text_post["captchainfo2"]='Duggal ay xarnu ak ay limu yu baax ci biir nataal bi ci bopp baatu mbind mi. Test bii ndaw na ngi leer ci spam-bot yi.';
 
 $text_nav["first_page"]="Xët bu njëkk";
 $text_nav["last_page"]="Xët bu mujj";
@@ -70,7 +73,7 @@ $text_nav["prev_page"]="Xët bu jiitu";
 $text_error["error:"]='<font color="red">Njumte:</font>';
 $text_error["connection_failed"]="Jokkoo ak serwer-xabaar bi njumte.";
 $text_error["article_not_found"]="<p>Gisul wax-waxeet bi.</p>";
-$text_error["read_access_denied"]="<p>Jàng bi warani.</p>";
+$text_error["read_access_denied"]="<p>Jàng amul dara.</p>";
 $text_error["post_failed"]="Jokkoo bi njumte. Jéem ci kanam.";
 $text_error["auth_error"]="Jëfandoo bi baaxul.";
 $text_error["spool_error"]="Njumte ci fiise spool. Jariñu reessil.";
