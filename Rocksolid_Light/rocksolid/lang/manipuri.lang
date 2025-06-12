@@ -61,6 +61,9 @@ $text_post["error_wrong_email"]="ꯏꯃꯦꯏꯜ ꯑꯦꯗ꯭ꯔꯦꯁ ꯌꯥꯃ
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" ꯅ ꯏꯔꯦ:";
 $text_post["quote"]="ꯋꯥꯐꯝ";
+$text_post["captchafail"]='CAPTCHA ꯇꯦꯁ꯭ꯇꯇ ꯅꯪꯡ ꯆꯥꯟꯈꯤꯗꯦ. ꯆꯥꯡꯅꯕ ꯍꯣꯠꯅꯧ.';
+$text_post["captchainfo1"]='ꯃꯐꯝ ꯑꯗꯨꯗ ꯑꯃꯨꯛ ꯍꯟꯅ ꯏꯕꯤꯌꯨ';
+$text_post["captchainfo2"]='ꯃꯆꯤꯟ ꯃꯅꯥꯎꯗꯒꯤ ꯑꯆꯨꯝꯕ ꯑꯛꯁꯔꯁꯤꯡ ꯑꯃꯁꯨꯡ ꯅꯝꯕꯔꯁꯤꯡ ꯇꯦꯛꯁ ꯕꯣꯛꯁꯇ ꯊꯥꯖꯤꯟ ꯄꯤꯌꯨ. ꯃꯁꯤꯒꯤ ꯑꯄꯤꯀꯄ ꯇꯦꯁ꯭ꯇ ꯑꯁꯤ ꯁ꯭ꯄꯦꯝ-ꯕꯣꯠꯁꯤꯡꯒꯤ ꯃꯇꯥꯡꯗ ꯑꯊꯤꯡꯕ ꯌꯥꯅꯤꯡ ꯍꯤꯁꯥꯕꯅꯤ.';
 
 $text_nav["first_page"]="ꯑꯍꯥꯅꯕ ꯂꯥꯏꯔꯤꯛ";
 $text_nav["last_page"]="ꯑꯔꯣꯏꯕ ꯂꯥꯏꯔꯤꯛ";
@@ -70,14 +73,8 @@ $text_nav["prev_page"]="ꯃꯃꯥꯡꯒꯤ ꯂꯥꯏꯔꯤꯛ";
 $text_error["error:"]='<font color="red">ꯑꯁꯣꯏꯕ:</font>';
 $text_error["connection_failed"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯁꯔꯚꯔꯒꯥ ꯁꯝꯅꯕ ꯉꯃꯈꯤꯗꯦ.";
 $text_error["article_not_found"]="<p>ꯑꯥꯔꯇꯤꯀꯂ ꯐꯪꯈꯤꯗꯦ.</p>";
-$text_error["read_access_denied"]="<p>ꯄꯥꯕꯒꯤ ꯑꯌꯥꯕ ꯌꯥꯍꯟꯈꯤꯗꯦ.</p>";
-$text_error["post_failed"]="ꯁꯝꯅꯕ ꯉꯃꯈꯤꯗꯦ. ꯃꯇꯝ ꯈꯔꯥ ꯃꯇꯨꯡꯗ ꯍꯣꯠꯅꯒꯅꯨ.";
-$text_error["auth_error"]="ꯑꯣꯊꯦꯟꯇꯤꯀꯦꯁꯟ ꯉꯃꯈꯤꯗꯦ.";
-$text_error["spool_error"]="ꯁ꯭ꯄꯨꯜ ꯐꯥꯏꯂꯗ ꯑꯁꯣꯏꯕ ꯂꯩ. ꯆꯥꯅꯕꯤꯗꯨꯅ ꯑꯃꯨꯛ ꯍꯟꯅ ꯂꯣꯗ ꯇꯧꯕꯤꯌꯨ.";
-
-$text_register["must_register_group"]="ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤꯗ ꯆꯪꯅꯕꯒꯤꯗꯃꯛ ꯔꯦꯖꯤꯁ꯭ꯇꯔ ꯇꯧꯕ ꯃꯊꯧ ꯇꯥꯏ.";
-$text_register["must_register_post"]="ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤꯗ ꯄꯣꯁ꯭ꯠ ꯇꯧꯅꯕꯒꯤꯗꯃꯛ ꯔꯦꯖꯤꯁ꯭ꯇꯔ ꯇꯧꯕ ꯃꯊꯧ ꯇꯥꯏ.";
-$text_register["no_access_group"]="ꯅꯪꯗ ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤꯗ ꯆꯪꯅꯕꯒꯤ ꯍꯀ ꯂꯩꯇꯦ.";
-$text_register["no_access_post"]="ꯅꯪꯗ ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤꯗ ꯄꯣꯁ꯭ꯠ ꯇꯧꯅꯕꯒꯤ ꯍꯀ ꯂꯩꯇꯦ.";
-
+$text_error["read_access_denied"]="<p>ꯄꯥꯕꯒꯤ ꯑꯌꯥꯕ ꯌꯥꯗꯕ.</p>";
+$text_error["post_failed"]="ꯀꯅꯦꯛꯁꯟ ꯐꯦꯜ ꯇꯧꯈꯤ. ꯇꯨꯡꯗ ꯑꯃꯨꯛ ꯔꯤꯂꯣꯗ ꯇꯧ.";
+$text_error["auth_error"]="ꯑꯣꯊꯦꯟꯇꯤꯀꯦꯁꯟ ꯐꯦꯜ ꯇꯧꯈꯤ.";
+$text_register["no_access_group"]="ꯅꯪꯡꯗ ꯃꯁꯤꯒꯤ ꯒ꯭ꯔꯨꯄꯇ ꯑꯦꯛꯁꯦꯁ ꯂꯩꯇꯦ.";
 ?>
