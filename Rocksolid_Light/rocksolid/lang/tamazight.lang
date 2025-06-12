@@ -1,0 +1,83 @@
+<?php
+// tamazight.lang
+$text_header["from"]="<b>Seg:</b> ";
+$text_header["subject"]="<b>Asentel:</b> ";
+$text_header["newsgroups"]="<b>Igrawen n telɣut:</b> ";
+$text_header["followup"]="<b>Ḍfeṛ:</b> ";
+$text_header["organization"]="<b>Takebbanit:</b> ";
+$text_header["date"]="<b>Azemz:</b> ";
+$text_header["message-id"]="<b>Asulay n tuzint:</b> ";
+$text_header["references"]="<b>Tinfaliyin:</b> ";
+$text_header["user-agent"]="<b>Anmeṛṛu n useqdac:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Ifuyla icerken:</b> ";
+
+$text_thread["no_articles"]="<p><b>Ulac imagraden yellan</b></p>";
+$text_thread["button_write"]="asentel amaynut";
+$text_thread["button_grouplist"]="igrawen n telɣut";
+$text_thread["button_latest"]="ẓeṛ imaynuten";
+$text_thread["button_overboard"]="taferka tameqrant";
+$text_thread["button_search"]="nadi";
+$text_thread["button_top"]="Uɣal s afella";
+$text_thread["date"]="<b>Azemz</b>";
+$text_thread["subject"]="<b>Asentel</b>";
+$text_thread["threadsize"]="<b>Tiririt</b>";
+$text_thread["author"]="<b>Ameskar</b>";
+$text_thread["lastmessage"]="<b>Tuzint taneggarut</b>";
+$text_thread["no_such_group"]="Ulac agraw am wagi.";
+$text_thread["pages"]="Isebtar:";
+
+$text_groups["newsgroup"]="<b>Agraw n telɣut</b>";
+$text_groups["description"]="<b>Aglam</b>";
+
+$text_article["back_to_group"]="umuɣ n imagraden";
+$text_article["refresh"]="smiren";
+$text_article["button_answer"]="Err";
+$text_article["button_cancel"]="Sefsex";
+$text_article["block-xnoarchive"]="Anagraw-agi mačči d aḥraz, maca anedbal n unagraw yefra ad yugi ad yaḥrez imagraden.";
+$text_article["full_article"]="Sit da i weẓṛi n umagrad akk";
+
+$text_post["name"]="Isem n useqdac:";
+$text_post["password"]="Awal n tbaḍnit:";
+$text_post["email"]="Imayl-inek:";
+$text_post["missing_message"]="Ilaq tuzint i usekcem.";
+$text_post["missing_email"]="Ilaq tansa n imayl.";
+$text_post["missing_name"]="Ilaq isem neɣ xas meqqar isem n uqdim.";
+$text_post["missing_subject"]="Ilaq asentel.";
+$text_post["button_post"]="Azen amagrad";
+$text_post["remember"]="Cfu ɣef yisem";
+$text_post["message"]="Tuzint";
+$text_post["group_head"]="Aru deg ugraw ";
+$text_post["group_head_reply"]="Err i usekcem deg ugraw ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Ur tzemreḍ ara ad tazneḍ ɣer igrawen-agi:";
+$text_post["message_posted"]="Tuzint tettuzen";
+$text_post["message_posted2"]="Tuzint tettuzen akken iwata.";
+$text_post["button_back"]="Uɣal";
+$text_post["button_back2"]="ɣer";
+$text_post["error_newsserver"]="Aqeddac n telɣut yugi tuzint-agi:";
+$text_post["error_readonly"]="Agraw-agi yettwaḥbes i tira";
+$text_post["error_wrong_email"]="Tansa n imayl ur temsawal ara.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" yuṛa:";
+$text_post["quote"]="Ɣer";
+
+$text_nav["first_page"]="Asebter amezwaru";
+$text_nav["last_page"]="Asebter aneggaru";
+$text_nav["next_page"]="Asebter d-iteddun";
+$text_nav["prev_page"]="Asebter uzwir";
+
+$text_error["error:"]='<font color="red">Tuccḍa:</font>';
+$text_error["connection_failed"]="Tuqqna ur teddi ara ɣer uqeddac n telɣut.";
+$text_error["article_not_found"]="<p>Amagrad ur yettwafen ara.</p>";
+$text_error["read_access_denied"]="<p>Aɣuri yettunuɛ.</p>";
+$text_error["post_failed"]="Tuqqna ur teddi ara. Ɛreḍ tikkelt nniḍen ticki.";
+$text_error["auth_error"]="Asentem ur yeddi ara.";
+$text_error["spool_error"]="Tuccḍa deg ufaylu spool. Ttxil-k ales asali.";
+
+$text_register["must_register_group"]="Ilaq ad tjeṛḍeḍ i ukcem ɣer ugraw-agi.";
+$text_register["must_register_post"]="Ilaq ad tjeṛḍeḍ i usekcem deg ugraw-agi.";
+$text_register["no_access_group"]="Ur ṭeseḍ ara tasiregt n ukcem ɣer ugraw-agi.";
+$text_register["no_access_post"]="Ur yettusireg ara ad tsekmeḍ deg ugraw-agi.";
+
+?>
