@@ -1,4 +1,6 @@
+// Slovenian (sl) translation for RockSolid Light
 <?php
+$text_header["attachments"]="<b>Priloge:</b> ";
 $text_header["from"]="<b>Avtor:</b> ";
 $text_header["subject"]="<b>Tema:</b> ";
 $text_header["newsgroups"]="<b>Skupina:</b> ";
@@ -11,19 +13,33 @@ $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="M d Y H:i:s";
 
 $text_thread["no_articles"]="<p><b>Ni sporocil</b></p>";
+$text_thread["button_latest"]="Najnovejše";
+$text_thread["button_overboard"]="Pregled";
+$text_thread["button_search"]="Iskanje";
 $text_thread["button_write"]="Novo sporocilo";
 $text_thread["button_grouplist"]="Skupine";
 $text_thread["button_top"]="Na vrh";
 $text_thread["date"]="<b>Datum</b>";
 $text_thread["subject"]="<b>Tema</b>";
 $text_thread["author"]="<b>Avtor</b>";
+$text_thread["threadsize"]="<b>Velikost niti</b>";
+$text_thread["lastmessage"]="<b>Zadnje sporočilo</b>";
+$text_thread["pages"]="<b>Strani</b>";
 $text_thread["no_such_group"]="Skupina ne obstaja";
 
 $text_groups["newsgroup"]="<b>Skupina</b>";
 $text_groups["description"]="<b>Opis</b>";
 
 $text_article["button_answer"]="Odgovori";
+$text_article["button_cancel"]="Prekliči";
+$text_article["back_to_group"]="Nazaj v skupino";
+$text_article["refresh"]="Osveži";
+$text_article["block-xnoarchive"]="[Blokirano: X-No-Archive]";
+$text_article["full_article"]="Celoten članek";
 
+$text_post["name"]="Ime:";
+$text_post["password"]="Geslo:";
+$text_post["email"]="E-pošta:";
 $text_post["missing_message"]="Manjka vsebina sporocila.";
 $text_post["missing_email"]="Manjka vas postni naslov.";
 $text_post["missing_name"]="Manjka vase ime.";
@@ -41,6 +57,13 @@ $text_post["button_back2"]="na";
 $text_post["error_newsserver"]="Streznik ne sprejme sporocila:";
 $text_post["error_readonly"]="Skupina je read-only";
 $text_post["error_wrong_email"]="Postni naslov je napacen";
+$text_post["group_head_reply"]="Odgovori na";
+$text_post["wrote_prefix"]="Dne";
+$text_post["wrote_suffix"]="je napisal(a):";
+$text_post["quote"]="Citat";
+$text_post["captchafail"]="CAPTCHA neuspešna";
+$text_post["captchainfo1"]="Prosimo, vnesite besedilo s slike";
+$text_post["captchainfo2"]="To je potrebno za avtomatizirano zaščito pred neželeno pošto";
 
 $text_error["error:"]='<font color="red">Napaka:</font>';
 $text_error["connection_failed"]="Povezava z streznikom ni bila uspesna.";
@@ -49,5 +72,10 @@ $text_error["read_access_denied"]="<p>Branje ni dovoljeno!</p>";
 $text_error["post_failed"]="Povezava prekinjena. Poskusite kasneje.";
 $text_error["auth_error"]="Avtorizacija neuspesna.";
 $text_error["spool_error"]="Napaka na strezniku. Poskusite osveziti stran.";
+
+$text_register["must_register_group"]="Registrirati se morate za dostop do tega foruma.";
+$text_register["must_register_post"]="Registrirati se morate za pisanje člankov.";
+$text_register["no_access_group"]="Nimate dostopa do tega foruma";
+$text_register["no_access_post"]="Ne morete pisati člankov v tem forumu.";
 
 ?>

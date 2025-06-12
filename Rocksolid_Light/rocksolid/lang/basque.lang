@@ -1,0 +1,81 @@
+<?php
+// Basque (eu) translation for RockSolid Light
+$text_header["from"]="<b>Nork:</b> ";
+$text_header["subject"]="<b>Gaia:</b> ";
+$text_header["newsgroups"]="<b>Berri-taldeak:</b> ";
+$text_header["followup"]="<b>Jarraipena:</b> ";
+$text_header["organization"]="<b>Erakundea:</b> ";
+$text_header["date"]="<b>Data:</b> ";
+$text_header["message-id"]="<b>Mezu ID:</b> ";
+$text_header["references"]="<b>Erreferentziak:</b> ";
+$text_header["user-agent"]="<b>Erabiltzaile-agentea:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Eranskinak:</b> ";
+
+$text_thread["no_articles"]="<p><b>Ez dago artikulurik eskuragarri</b></p>";
+$text_thread["button_write"]="hari berria";
+$text_thread["button_grouplist"]="berri-taldeak";
+$text_thread["button_latest"]="ikusi azkenak";
+$text_thread["button_overboard"]="taula orokorra";
+$text_thread["button_search"]="bilatu";
+$text_thread["button_top"]="Itzuli goira";
+$text_thread["date"]="<b>Data</b>";
+$text_thread["subject"]="<b>Gaia</b>";
+$text_thread["threadsize"]="<b>Erantzunak</b>";
+$text_thread["author"]="<b>Egilea</b>";
+$text_thread["lastmessage"]="<b>Azken mezua</b>";
+$text_thread["no_such_group"]="Ez dago halako talderik.";
+$text_thread["pages"]="Orrialdeak:";
+
+$text_groups["newsgroup"]="<b>Berri-taldea</b>";
+$text_groups["description"]="<b>Deskribapena</b>";
+
+$text_article["back_to_group"]="artikulu-zerrenda";
+$text_article["refresh"]="freskatu";
+$text_article["button_answer"]="Erantzun";
+$text_article["button_cancel"]="Ezabatu";
+$text_article["block-xnoarchive"]="Sistema hau ez da artxiboa, baina sistema honen administratzaileak egileak artxibatzea nahi ez duen argitalpenen blokeatzea erabaki du.";
+$text_article["full_article"]="Egin klik hemen artikulu osoa irakurtzeko";
+
+$text_post["name"]="Erabiltzaile-izena:";
+$text_post["password"]="Pasahitza:";
+$text_post["email"]="Zure e-posta:";
+$text_post["missing_message"]="Argitaratzeko mezu bat gehitu behar duzu.";
+$text_post["missing_email"]="E-posta helbide bat gehitu behar duzu.";
+$text_post["missing_name"]="Izen bat edo gutxienez ezizen bat gehitu behar duzu.";
+$text_post["missing_subject"]="Gai bat gehitu behar duzu.";
+$text_post["button_post"]="Argitaratu artikulua";
+$text_post["remember"]="Gogoratu izena";
+$text_post["message"]="Mezua";
+$text_post["group_head"]="Idatzi argitalpena hemen: ";
+$text_post["group_head_reply"]="Erantzun argitalpenari hemen: ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Ez duzu baimenik talde hauetan argitaratzeko:";
+$text_post["message_posted"]="Mezua argitaratu da";
+$text_post["message_posted2"]="Mezua arrakastaz argitaratu da.";
+$text_post["button_back"]="Atzera";
+$text_post["button_back2"]="hona";
+$text_post["error_newsserver"]="Mezu-zerbitzariak mezua ukatu du:";
+$text_post["error_readonly"]="Taldea idazteko babestua dago";
+$text_post["error_wrong_email"]="E-posta helbide okerra.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" idatzi zuen:";
+$text_post["quote"]="Aipatu";
+$text_post["captchafail"]='CAPTCHA testa huts egin duzu. Saiatu berriro';
+$text_post["captchainfo1"]='idatzi hau hemen berriro';
+$text_post["captchainfo2"]='Sartu irudiko letra eta zenbaki zuzenak testu-koadroan. Test txiki honek spam-robot-en aurkako sarbide-murrizketa gisa balio du.';
+
+$text_error["error:"]='<font color="red">Errorea:</font>';
+$text_error["connection_failed"]="Mezu-zerbitzariarekiko konexioak huts egin du";
+$text_error["article_not_found"]="<p>Artikulua ez dago.</p>";
+$text_error["read_access_denied"]="<p>Ez dago irakurtzeko baimenik!</p>";
+$text_error["post_failed"]="Konexioak huts egin du. Saiatu beranduago berriro kargatzen.";
+$text_error["auth_error"]="Autentifikazioak huts egin du.";
+$text_error["spool_error"]="Errorea spool fitxategian. Kargatu berriro.";
+
+$text_register["must_register_group"]="Talde honetara sartzeko erregistratu egin behar zara.";
+$text_register["must_register_post"]="Talde honetan argitaratzeko erregistratu egin behar zara.";
+$text_register["no_access_group"]="Ez duzu talde honetara sarbiderik.";
+$text_register["no_access_post"]="Ez duzu baimenik talde honetan argitaratzeko.";
+
+?>

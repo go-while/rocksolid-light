@@ -1,4 +1,5 @@
 <?php
+// english.lang
 $text_header["from"]="<b>From:</b> ";
 $text_header["subject"]="<b>Subject:</b> ";
 $text_header["newsgroups"]="<b>Newsgroups:</b> ";
@@ -33,9 +34,7 @@ $text_article["back_to_group"]="article list";
 $text_article["refresh"]="refresh";
 $text_article["button_answer"]="Reply";
 $text_article["button_cancel"]="Delete";
-$text_article["block-xnoarchive"]="This system is not an archive, but the
-administrator of this system decided to block postings, where the author
-doesn't want archivation.";
+$text_article["block-xnoarchive"]="This system is not an archive, but the administrator of this system decided to block postings, where the author doesn't want archivation.";
 $text_article["full_article"]="Click here to read the complete article";
 
 $text_post["name"]="Username:";
@@ -65,7 +64,6 @@ $text_post["quote"]="Quote";
 $text_post["captchafail"]='You failed the CAPTCHA test. Please try again';
 $text_post["captchainfo1"]='retype that here';
 $text_post["captchainfo2"]='Enter the correct letters and numbers from the image into the text box. This small test serves as access restriction against spam-bots.';
-
 
 $text_error["error:"]='<font color="red">Error:</font>';
 $text_error["connection_failed"]="The connection to the Message Server failed";

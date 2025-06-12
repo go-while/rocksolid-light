@@ -1,0 +1,81 @@
+<?php
+// Esperanto (eo) translation for RockSolid Light
+$text_header["from"]="<b>De:</b> ";
+$text_header["subject"]="<b>Temo:</b> ";
+$text_header["newsgroups"]="<b>Novaĵgrupoj:</b> ";
+$text_header["followup"]="<b>Sekvo:</b> ";
+$text_header["organization"]="<b>Organizo:</b> ";
+$text_header["date"]="<b>Dato:</b> ";
+$text_header["message-id"]="<b>Mesaĝo-ID:</b> ";
+$text_header["references"]="<b>Referencoj:</b> ";
+$text_header["user-agent"]="<b>Uzant-agento:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Aldonaĵoj:</b> ";
+
+$text_thread["no_articles"]="<p><b>Neniuj artikoloj disponeblaj</b></p>";
+$text_thread["button_write"]="nova fadeno";
+$text_thread["button_grouplist"]="novaĵgrupoj";
+$text_thread["button_latest"]="vidi lastajn";
+$text_thread["button_overboard"]="ĝenerala tabulo";
+$text_thread["button_search"]="serĉi";
+$text_thread["button_top"]="Reen al supro";
+$text_thread["date"]="<b>Dato</b>";
+$text_thread["subject"]="<b>Temo</b>";
+$text_thread["threadsize"]="<b>Respondoj</b>";
+$text_thread["author"]="<b>Aŭtoro</b>";
+$text_thread["lastmessage"]="<b>Lasta mesaĝo</b>";
+$text_thread["no_such_group"]="Ne ekzistas tia grupo.";
+$text_thread["pages"]="Paĝoj:";
+
+$text_groups["newsgroup"]="<b>Novaĵgrupo</b>";
+$text_groups["description"]="<b>Priskribo</b>";
+
+$text_article["back_to_group"]="artikol-listo";
+$text_article["refresh"]="aktualigi";
+$text_article["button_answer"]="Respondi";
+$text_article["button_cancel"]="Forigi";
+$text_article["block-xnoarchive"]="Ĉi tiu sistemo ne estas arkivo, sed la administranto de ĉi tiu sistemo decidis bloki afiŝojn kie la aŭtoro ne volas arkivigon.";
+$text_article["full_article"]="Alklaku ĉi tie por legi la kompletan artikolon";
+
+$text_post["name"]="Uzantnomo:";
+$text_post["password"]="Pasvorto:";
+$text_post["email"]="Via retpoŝto:";
+$text_post["missing_message"]="Vi devas inkluzivi mesaĝon por afiŝi.";
+$text_post["missing_email"]="Vi devas inkluzivi retpoŝt-adreson.";
+$text_post["missing_name"]="Vi devas inkluzivi nomon aŭ almenaŭ kaŝnomon.";
+$text_post["missing_subject"]="Vi devas inkluzivi temon.";
+$text_post["button_post"]="Afiŝi artikolon";
+$text_post["remember"]="Memori nomon";
+$text_post["message"]="Mesaĝo";
+$text_post["group_head"]="Komponi afiŝon en ";
+$text_post["group_head_reply"]="Respondi al afiŝo en ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Vi ne rajtas afiŝi en la grupoj:";
+$text_post["message_posted"]="Mesaĝo afiŝita";
+$text_post["message_posted2"]="La mesaĝo estis sukcese afiŝita.";
+$text_post["button_back"]="Reen";
+$text_post["button_back2"]="al";
+$text_post["error_newsserver"]="La mesaĝ-servilo malakceptis la mesaĝon:";
+$text_post["error_readonly"]="La grupo estas protektita kontraŭ skribado";
+$text_post["error_wrong_email"]="Malĝusta retpoŝt-adreso.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" skribis:";
+$text_post["quote"]="Citaĵo";
+$text_post["captchafail"]='Vi malsukcesis en la CAPTCHA-testo. Bonvolu reprovi';
+$text_post["captchainfo1"]='retajpu tion ĉi tie';
+$text_post["captchainfo2"]='Enigu la ĝustajn literojn kaj numerojn el la bildo en la tekst-keston. Ĉi tiu malgranda testo servas kiel alir-limigo kontraŭ spam-robotoj.';
+
+$text_error["error:"]='<font color="red">Eraro:</font>';
+$text_error["connection_failed"]="La konekto al la mesaĝ-servilo malsukcesis";
+$text_error["article_not_found"]="<p>La artikolo ne ekzistas.</p>";
+$text_error["read_access_denied"]="<p>Neniu permeso por legi!</p>";
+$text_error["post_failed"]="Konekto malsukcesis. Provu reŝargi poste.";
+$text_error["auth_error"]="Aŭtentikigo malsukcesis.";
+$text_error["spool_error"]="Eraro en spool-dosiero. Bonvolu reŝargi.";
+
+$text_register["must_register_group"]="Vi devas esti registrita por havi aliron al ĉi tiu grupo.";
+$text_register["must_register_post"]="Vi devas esti registrita por afiŝi en ĉi tiu grupo.";
+$text_register["no_access_group"]="Vi ne havas aliron al ĉi tiu grupo.";
+$text_register["no_access_post"]="Vi ne rajtas afiŝi en ĉi tiu grupo.";
+
+?>

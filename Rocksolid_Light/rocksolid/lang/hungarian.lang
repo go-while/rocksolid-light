@@ -1,0 +1,81 @@
+<?php
+// Hungarian (hu) translation for RockSolid Light
+$text_header["from"]="<b>Feladó:</b> ";
+$text_header["subject"]="<b>Tárgy:</b> ";
+$text_header["newsgroups"]="<b>Hírcsoportok:</b> ";
+$text_header["followup"]="<b>Folytatás:</b> ";
+$text_header["organization"]="<b>Szervezet:</b> ";
+$text_header["date"]="<b>Dátum:</b> ";
+$text_header["message-id"]="<b>Üzenet azonosító:</b> ";
+$text_header["references"]="<b>Hivatkozások:</b> ";
+$text_header["user-agent"]="<b>Felhasználói ügynök:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Mellékletek:</b> ";
+
+$text_thread["no_articles"]="<p><b>Nincsenek elérhető cikkek</b></p>";
+$text_thread["button_write"]="új téma";
+$text_thread["button_grouplist"]="hírcsoportok";
+$text_thread["button_latest"]="legutóbbiak megtekintése";
+$text_thread["button_overboard"]="általános tábla";
+$text_thread["button_search"]="keresés";
+$text_thread["button_top"]="Vissza a tetejére";
+$text_thread["date"]="<b>Dátum</b>";
+$text_thread["subject"]="<b>Tárgy</b>";
+$text_thread["threadsize"]="<b>Válaszok</b>";
+$text_thread["author"]="<b>Szerző</b>";
+$text_thread["lastmessage"]="<b>Utolsó üzenet</b>";
+$text_thread["no_such_group"]="Nincs ilyen csoport.";
+$text_thread["pages"]="Oldalak:";
+
+$text_groups["newsgroup"]="<b>Hírcsoport</b>";
+$text_groups["description"]="<b>Leírás</b>";
+
+$text_article["back_to_group"]="cikk lista";
+$text_article["refresh"]="frissítés";
+$text_article["button_answer"]="Válasz";
+$text_article["button_cancel"]="Törlés";
+$text_article["block-xnoarchive"]="Ez a rendszer nem archívum, de a rendszer adminisztrátora úgy döntött, hogy blokkolja azokat a bejegyzéseket, ahol a szerző nem kívánja az archiválást.";
+$text_article["full_article"]="Kattintson ide a teljes cikk elolvasásához";
+
+$text_post["name"]="Felhasználónév:";
+$text_post["password"]="Jelszó:";
+$text_post["email"]="Az Ön e-mailje:";
+$text_post["missing_message"]="Üzenetet kell megadnia a közzétételhez.";
+$text_post["missing_email"]="E-mail címet kell megadnia.";
+$text_post["missing_name"]="Nevet vagy legalább becenevet kell megadnia.";
+$text_post["missing_subject"]="Tárgyat kell megadnia.";
+$text_post["button_post"]="Cikk közzététele";
+$text_post["remember"]="Név megjegyzése";
+$text_post["message"]="Üzenet";
+$text_post["group_head"]="Bejegyzés írása itt: ";
+$text_post["group_head_reply"]="Válasz a bejegyzésre itt: ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Nem jogosult közzétenni ezekben a csoportokban:";
+$text_post["message_posted"]="Üzenet közzétéve";
+$text_post["message_posted2"]="Az üzenet sikeresen közzétéve.";
+$text_post["button_back"]="Vissza";
+$text_post["button_back2"]="ide";
+$text_post["error_newsserver"]="Az üzenetszerver elutasította az üzenetet:";
+$text_post["error_readonly"]="A csoport írás ellen védett";
+$text_post["error_wrong_email"]="Helytelen e-mail cím.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" írta:";
+$text_post["quote"]="Idézet";
+$text_post["captchafail"]='Sikertelen volt a CAPTCHA teszt. Kérjük próbálja újra';
+$text_post["captchainfo1"]='írja be újra itt';
+$text_post["captchainfo2"]='Írja be a képről a helyes betűket és számokat a szövegmezőbe. Ez a kis teszt hozzáférési korlátozásként szolgál a spam-robotok ellen.';
+
+$text_error["error:"]='<font color="red">Hiba:</font>';
+$text_error["connection_failed"]="Az üzenetszerverre való kapcsolódás sikertelen";
+$text_error["article_not_found"]="<p>A cikk nem létezik.</p>";
+$text_error["read_access_denied"]="<p>Nincs olvasási jogosultság!</p>";
+$text_error["post_failed"]="Kapcsolódás sikertelen. Próbálja meg később újratölteni.";
+$text_error["auth_error"]="Hitelesítés sikertelen.";
+$text_error["spool_error"]="Hiba a spool fájlban. Kérjük töltse újra.";
+
+$text_register["must_register_group"]="Regisztrálnia kell, hogy hozzáférést kapjon ehhez a csoporthoz.";
+$text_register["must_register_post"]="Regisztrálnia kell, hogy közzétehessen ebben a csoportban.";
+$text_register["no_access_group"]="Nincs hozzáférése ehhez a csoporthoz.";
+$text_register["no_access_post"]="Nem jogosult közzétenni ebben a csoportban.";
+
+?>

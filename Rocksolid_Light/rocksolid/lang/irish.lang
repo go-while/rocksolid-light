@@ -1,0 +1,81 @@
+<?php
+// Irish (ga) translation for RockSolid Light
+$text_header["from"]="<b>Ó:</b> ";
+$text_header["subject"]="<b>Ábhar:</b> ";
+$text_header["newsgroups"]="<b>Grúpaí nuachta:</b> ";
+$text_header["followup"]="<b>Leantóir:</b> ";
+$text_header["organization"]="<b>Eagraíocht:</b> ";
+$text_header["date"]="<b>Dáta:</b> ";
+$text_header["message-id"]="<b>Aitheantas an Teachtaireachta:</b> ";
+$text_header["references"]="<b>Tagairtí:</b> ";
+$text_header["user-agent"]="<b>Gníomhaire úsáideora:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Ceangaltáin:</b> ";
+
+$text_thread["no_articles"]="<p><b>Níl aon alt ar fáil</b></p>";
+$text_thread["button_write"]="snáithe nua";
+$text_thread["button_grouplist"]="grúpaí nuachta";
+$text_thread["button_latest"]="féach ar na cinn is déanaí";
+$text_thread["button_overboard"]="clár ginearálta";
+$text_thread["button_search"]="cuardach";
+$text_thread["button_top"]="Ar ais go Barr";
+$text_thread["date"]="<b>Dáta</b>";
+$text_thread["subject"]="<b>Ábhar</b>";
+$text_thread["threadsize"]="<b>Freagraí</b>";
+$text_thread["author"]="<b>Údar</b>";
+$text_thread["lastmessage"]="<b>An Teachtaireacht Dheireanach</b>";
+$text_thread["no_such_group"]="Níl a leithéid de ghrúpa ann.";
+$text_thread["pages"]="Leathanaigh:";
+
+$text_groups["newsgroup"]="<b>Grúpa nuachta</b>";
+$text_groups["description"]="<b>Cur síos</b>";
+
+$text_article["back_to_group"]="liosta alt";
+$text_article["refresh"]="athnuachan";
+$text_article["button_answer"]="Freagair";
+$text_article["button_cancel"]="Scrios";
+$text_article["block-xnoarchive"]="Ní cartlann í an córas seo, ach tá cinneadh déanta ag riarthóir an chórais seo postálacha a chur ar ceal sa chás nach dteastaíonn ón údar iad a chur i gcartlann.";
+$text_article["full_article"]="Cliceáil anseo chun an t-alt iomlán a léamh";
+
+$text_post["name"]="Ainm úsáideora:";
+$text_post["password"]="Pasfhocal:";
+$text_post["email"]="Do ríomhphost:";
+$text_post["missing_message"]="Caithfidh tú teachtaireacht a chur san áireamh le postáil.";
+$text_post["missing_email"]="Caithfidh tú seoladh ríomhphoist a chur san áireamh.";
+$text_post["missing_name"]="Caithfidh tú ainm nó bréagainm ar a laghad a chur san áireamh.";
+$text_post["missing_subject"]="Caithfidh tú ábhar a chur san áireamh.";
+$text_post["button_post"]="Postáil Alt";
+$text_post["remember"]="Cuimhnigh ar ainm";
+$text_post["message"]="Teachtaireacht";
+$text_post["group_head"]="Cum postáil i ";
+$text_post["group_head_reply"]="Freagair postáil i ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Ní cheadaítear duit postáil sna grúpaí:";
+$text_post["message_posted"]="Teachtaireacht postáilte";
+$text_post["message_posted2"]="D'éirigh leis an teachtaireacht a phostáil.";
+$text_post["button_back"]="Ar Ais";
+$text_post["button_back2"]="go";
+$text_post["error_newsserver"]="Dhiúltaigh an Freastalaí Teachtaireachta don teachtaireacht:";
+$text_post["error_readonly"]="Tá an grúpa cosanta ó scríobh";
+$text_post["error_wrong_email"]="Seoladh ríomhphoist mícheart.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" scríobh:";
+$text_post["quote"]="Luaigh";
+$text_post["captchafail"]='Theip ort sa tástáil CAPTCHA. Bain triail eile as le do thoil';
+$text_post["captchainfo1"]='athchló é sin anseo';
+$text_post["captchainfo2"]='Cuir isteach na litreacha agus na huimhreacha cearta ón íomhá sa bhosca téacs. Feidhmíonn an tástáil bheag seo mar shrianadh rochtana in aghaidh róbónna turscair.';
+
+$text_error["error:"]='<font color="red">Earráid:</font>';
+$text_error["connection_failed"]="Theip ar an nasc leis an bhFreastalaí Teachtaireachta";
+$text_error["article_not_found"]="<p>Níl an t-alt ann.</p>";
+$text_error["read_access_denied"]="<p>Níl cead léimh ann!</p>";
+$text_error["post_failed"]="Theip ar nasc. Bain triail as athluchtú níos déanaí.";
+$text_error["auth_error"]="Theip ar fhíordheimhniú.";
+$text_error["spool_error"]="Earráid i gcomhad spool. Athluchtaigh le do thoil.";
+
+$text_register["must_register_group"]="Caithfidh tú a bheith cláraithe chun rochtain a fháil ar an ngrúpa seo.";
+$text_register["must_register_post"]="Caithfidh tú a bheith cláraithe chun postáil sa ghrúpa seo.";
+$text_register["no_access_group"]="Níl rochtain agat ar an ngrúpa seo.";
+$text_register["no_access_post"]="Ní cheadaítear duit postáil sa ghrúpa seo.";
+
+?>

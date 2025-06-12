@@ -1,8 +1,5 @@
 <?php
-/* zmieñ $www_charset w config.inc.php na:
- * change $www_charset in config.inc.php to:
- * iso-8859-2
- */
+// Polish (pl) translation for RockSolid Light
 $text_header["from"]="<b>Od:</b> ";
 $text_header["subject"]="<b>Temat:</b> ";
 $text_header["newsgroups"]="<b>Grupa:</b> ";
@@ -13,54 +10,72 @@ $text_header["message-id"]="<b>Message-ID:</b> ";
 $text_header["references"]="<b>Referencje:</b> ";
 $text_header["user-agent"]="<b>Czytnik:</b> ";
 $text_header["date_format"]="j.m.Y H:i:s";
-$text_header["attachments"]="<b>Za³±czniki:</b> ";
+$text_header["attachments"]="<b>ZaÅ‚Ä…czniki:</b> ";
 
-$text_index["newsgroup_not_avaiable"]="Niedostêpna";
-
-$text_thread["no_articles"]="<p><b>Brak artyku³ów</b></p>";
+$text_thread["no_articles"]="<p><b>Brak artykuÅ‚Ã³w</b></p>";
+$text_thread["button_latest"]="Najnowsze";
+$text_thread["button_overboard"]="PrzeglÄ…d";
+$text_thread["button_search"]="Szukaj";
 $text_thread["button_write"]="Napisz";
 $text_thread["button_grouplist"]="Lista grup";
-$text_thread["button_top"]="Z powrotem na pocz±tek";
+$text_thread["button_top"]="Z powrotem na poczÄ…tek";
 $text_thread["date"]="<b>Data</b>";
 $text_thread["subject"]="<b>Temat</b>";
 $text_thread["author"]="<b>Autor</b>";
+$text_thread["threadsize"]="<b>Rozmiar wÄ…tku</b>";
+$text_thread["lastmessage"]="<b>Ostatnia wiadomoÅ›Ä‡</b>";
+$text_thread["pages"]="<b>Strony</b>";
 $text_thread["no_such_group"]="Nie ma takiej grupy.";
 
 $text_groups["newsgroup"]="<b>Grupa</b>";
 $text_groups["description"]="<b>Opis</b>";
 
 $text_article["button_answer"]="Odpowiedz";
-$text_article["button_rawview"]="¬ród³o wiadomo¶ci";
-$text_article["block-xnoarchive"]="Administrator strony zdecydowa³, ¿e
-wiadomo¶ci, których autor nie chcia³, aby by³y archiwizowane, nie bêd±
-udostêpniane. Wiadomo¶æ nie mo¿e zostæ wy¶wietlona.";
+$text_article["button_cancel"]="Anuluj";
+$text_article["back_to_group"]="PowrÃ³t do grupy";
+$text_article["refresh"]="OdÅ›wieÅ¼";
+$text_article["block-xnoarchive"]="[Zablokowano: X-No-Archive]";
+$text_article["full_article"]="PeÅ‚ny artykuÅ‚";
 
 $text_post["name"]="Twoje Nazwisko:";
-$text_post["email"]="Twój E-Mail:";
-$text_post["missing_message"]="Musisz wpisaæ tre¶æ wiadomo¶ci.";
-$text_post["missing_email"]="Musisz podaæ swój e-mail.";
-$text_post["missing_name"]="Musisz wpisaæ imiê i nazwisko (a przynajmniej ksywkê).";
-$text_post["missing_subject"]="Musisz podaæ temat wiadomo¶ci.";
-$text_post["button_post"]="Wy¶lij";
-$text_post["remember"]="Zapamiêtaj nazwisko i e-mail";
-$text_post["message"]="Wiadomo¶æ";
-$text_post["group_head"]="Wy¶lij wiadomo¶æ na grupê ";
+$text_post["password"]="HasÅ‚o:";
+$text_post["email"]="TwÃ³j E-Mail:";
+$text_post["missing_message"]="Musisz wpisaÄ‡ treÅ›Ä‡ wiadomoÅ›ci.";
+$text_post["missing_email"]="Musisz podaÄ‡ swÃ³j e-mail.";
+$text_post["missing_name"]="Musisz wpisaÄ‡ imiÄ™ i nazwisko (a przynajmniej ksywkÄ™).";
+$text_post["missing_subject"]="Musisz podaÄ‡ temat wiadomoÅ›ci.";
+$text_post["button_post"]="WyÅ›lij";
+$text_post["remember"]="ZapamiÄ™taj nazwisko i e-mail";
+$text_post["message"]="WiadomoÅ›Ä‡";
+$text_post["group_head"]="WyÅ›lij wiadomoÅ›Ä‡ na grupÄ™ ";
 $text_post["group_tail"]="";
-$text_post["followup_not_allowed"]="Nie masz uprawnieñ do wysy³ania wiadomo¶ci na grupy:";
-$text_post["message_posted"]="Wiadomo¶æ wys³ana";
-$text_post["message_posted2"]="Wiadomo¶æ zosta³a wys³ana.";
+$text_post["followup_not_allowed"]="Nie masz uprawnieÅ„ do wysyÅ‚ania wiadomoÅ›ci na grupy:";
+$text_post["message_posted"]="WiadomoÅ›Ä‡ wysÅ‚ana";
+$text_post["message_posted2"]="WiadomoÅ›Ä‡ zostaÅ‚a wysÅ‚ana.";
 $text_post["button_back"]="Z powrotem";
 $text_post["button_back2"]="do";
-$text_post["error_newsserver"]="Serwer nie przyj±³ wiadomo¶ci. Komunikat b³êdu:";
+$text_post["error_newsserver"]="Serwer nie przyjÄ…Å‚ wiadomoÅ›ci. Komunikat bÅ‚Ä™du:";
 $text_post["error_readonly"]="Ta grupa jest tylko do odczytu";
-$text_post["error_wrong_email"]="Podany adres e-mail jest nieprawid³owy";
+$text_post["error_wrong_email"]="Podany adres e-mail jest nieprawidÅ‚owy";
+$text_post["group_head_reply"]="Odpowiedz na";
+$text_post["wrote_prefix"]="W dniu";
+$text_post["wrote_suffix"]="napisaÅ‚(a):";
+$text_post["quote"]="Cytat";
+$text_post["captchafail"]="CAPTCHA niepowodzenie";
+$text_post["captchainfo1"]="ProszÄ™ wpisaÄ‡ tekst z obrazka";
+$text_post["captchainfo2"]="Jest to wymagane dla automatycznej ochrony przed spamem";
 
-$text_error["error:"]='<font color="red">B³±d:</font>';
-$text_error["connection_failed"]="Nie uda³o siê nawi±zanie po³±czenia z serwerem Usenetu";
-$text_error["article_not_found"]="<p>Wiadomo¶æ nie istnieje.</p>";
-$text_error["read_access_denied"]="<p>Brak uprawnieñ do odczytu!</p>";
-$text_error["post_failed"]="Po³±czenie zerwane. Spróbuj ponownie za jaki¶ czas.";
-$text_error["auth_error"]="B³ad autoryzacji na serwerze.";
-$text_error["spool_error"]="B³±d w pliku wiadomo¶ci. Proszê prze³adowaæ stronê..";
+$text_error["error:"]='<font color="red">BÅ‚Ä…d:</font>';
+$text_error["connection_failed"]="Nie udaÅ‚o siÄ™ nawiÄ…zanie poÅ‚Ä…czenia z serwerem Usenetu";
+$text_error["article_not_found"]="<p>WiadomoÅ›Ä‡ nie istnieje.</p>";
+$text_error["read_access_denied"]="<p>Brak uprawnieÅ„ do odczytu!</p>";
+$text_error["post_failed"]="PoÅ‚Ä…czenie zerwane. SprÃ³buj ponownie za jakiÅ› czas.";
+$text_error["auth_error"]="BÅ‚Ä…d autoryzacji na serwerze.";
+$text_error["spool_error"]="BÅ‚Ä…d w pliku wiadomoÅ›ci. ProszÄ™ przeÅ‚adowaÄ‡ stronÄ™.";
+
+$text_register["must_register_group"]="Musisz byÄ‡ zarejestrowany, aby uzyskaÄ‡ dostÄ™p do tego forum.";
+$text_register["must_register_post"]="Musisz byÄ‡ zarejestrowany, aby napisaÄ‡ artykuÅ‚.";
+$text_register["no_access_group"]="Nie masz dostÄ™pu do tego forum";
+$text_register["no_access_post"]="Nie moÅ¼esz napisaÄ‡ artykuÅ‚u w tym forum.";
 
 ?>

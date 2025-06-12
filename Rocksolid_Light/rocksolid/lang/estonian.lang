@@ -1,0 +1,81 @@
+<?php
+// Estonian (et) translation for RockSolid Light
+$text_header["from"]="<b>Kellelt:</b> ";
+$text_header["subject"]="<b>Teema:</b> ";
+$text_header["newsgroups"]="<b>Uudistegrupid:</b> ";
+$text_header["followup"]="<b>Järelkäik:</b> ";
+$text_header["organization"]="<b>Organisatsioon:</b> ";
+$text_header["date"]="<b>Kuupäev:</b> ";
+$text_header["message-id"]="<b>Sõnumi ID:</b> ";
+$text_header["references"]="<b>Viited:</b> ";
+$text_header["user-agent"]="<b>Kasutajaagent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Manused:</b> ";
+
+$text_thread["no_articles"]="<p><b>Artikleid pole saadaval</b></p>";
+$text_thread["button_write"]="uus lõng";
+$text_thread["button_grouplist"]="uudistegrupid";
+$text_thread["button_latest"]="vaata viimased";
+$text_thread["button_overboard"]="üldtahvel";
+$text_thread["button_search"]="otsing";
+$text_thread["button_top"]="Tagasi üles";
+$text_thread["date"]="<b>Kuupäev</b>";
+$text_thread["subject"]="<b>Teema</b>";
+$text_thread["threadsize"]="<b>Vastused</b>";
+$text_thread["author"]="<b>Autor</b>";
+$text_thread["lastmessage"]="<b>Viimane sõnum</b>";
+$text_thread["no_such_group"]="Sellist gruppi pole.";
+$text_thread["pages"]="Leheküljed:";
+
+$text_groups["newsgroup"]="<b>Uudistegrupp</b>";
+$text_groups["description"]="<b>Kirjeldus</b>";
+
+$text_article["back_to_group"]="artiklite nimekiri";
+$text_article["refresh"]="värskenda";
+$text_article["button_answer"]="Vasta";
+$text_article["button_cancel"]="Kustuta";
+$text_article["block-xnoarchive"]="See süsteem ei ole arhiiv, kuid selle süsteemi administraator otsustas blokeerida postitusi, kus autor ei soovi arhiveerimist.";
+$text_article["full_article"]="Klõpsa siia, et lugeda täielikku artiklit";
+
+$text_post["name"]="Kasutajanimi:";
+$text_post["password"]="Parool:";
+$text_post["email"]="Sinu e-post:";
+$text_post["missing_message"]="Postitamiseks peate lisama sõnumi.";
+$text_post["missing_email"]="Peate lisama e-posti aadressi.";
+$text_post["missing_name"]="Peate lisama nime või vähemalt hüüdnime.";
+$text_post["missing_subject"]="Peate lisama teema.";
+$text_post["button_post"]="Postita artikkel";
+$text_post["remember"]="Jäta nimi meelde";
+$text_post["message"]="Sõnum";
+$text_post["group_head"]="Koostage postitus grupis ";
+$text_post["group_head_reply"]="Vastake postitusele grupis ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Teil ei ole lubatud postitada gruppidesse:";
+$text_post["message_posted"]="Sõnum postitatud";
+$text_post["message_posted2"]="Sõnum postitati edukalt.";
+$text_post["button_back"]="Tagasi";
+$text_post["button_back2"]="juurde";
+$text_post["error_newsserver"]="Sõnumiserver lükkas sõnumi tagasi:";
+$text_post["error_readonly"]="Grupp on kirjutamise eest kaitstud";
+$text_post["error_wrong_email"]="Vale e-posti aadress.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" kirjutas:";
+$text_post["quote"]="Tsitaat";
+$text_post["captchafail"]='CAPTCHA test ebaõnnestus. Palun proovige uuesti';
+$text_post["captchainfo1"]='tippige see siia uuesti';
+$text_post["captchainfo2"]='Sisestage pildilt õiged tähed ja numbrid tekstikasti. See väike test teenib juurdepääsu piiranguna rämpsposti-robotite vastu.';
+
+$text_error["error:"]='<font color="red">Viga:</font>';
+$text_error["connection_failed"]="Ühendus sõnumiserveriga ebaõnnestus";
+$text_error["article_not_found"]="<p>Artikkel ei eksisteeri.</p>";
+$text_error["read_access_denied"]="<p>Lugemisõigus puudub!</p>";
+$text_error["post_failed"]="Ühendus ebaõnnestus. Proovige hiljem uuesti laadida.";
+$text_error["auth_error"]="Autentimine ebaõnnestus.";
+$text_error["spool_error"]="Viga spool-failis. Palun värskendage.";
+
+$text_register["must_register_group"]="Sellele grupile juurdepääsuks peate olema registreeritud.";
+$text_register["must_register_post"]="Sellesse gruppi postitamiseks peate olema registreeritud.";
+$text_register["no_access_group"]="Teil ei ole juurdepääsu sellele grupile.";
+$text_register["no_access_post"]="Teil ei ole lubatud sellesse gruppi postitada.";
+
+?>

@@ -1,0 +1,81 @@
+<?php
+// Latvian (lv) translation for RockSolid Light
+$text_header["from"]="<b>No:</b> ";
+$text_header["subject"]="<b>Temats:</b> ";
+$text_header["newsgroups"]="<b>Ziņu grupas:</b> ";
+$text_header["followup"]="<b>Turpinājums:</b> ";
+$text_header["organization"]="<b>Organizācija:</b> ";
+$text_header["date"]="<b>Datums:</b> ";
+$text_header["message-id"]="<b>Ziņojuma ID:</b> ";
+$text_header["references"]="<b>Atsauces:</b> ";
+$text_header["user-agent"]="<b>Lietotāja aģents:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Pielikumi:</b> ";
+
+$text_thread["no_articles"]="<p><b>Nav pieejamu rakstu</b></p>";
+$text_thread["button_write"]="jauna tēma";
+$text_thread["button_grouplist"]="ziņu grupas";
+$text_thread["button_latest"]="skatīt jaunākos";
+$text_thread["button_overboard"]="vispārējā dēle";
+$text_thread["button_search"]="meklēt";
+$text_thread["button_top"]="Atpakaļ uz augšu";
+$text_thread["date"]="<b>Datums</b>";
+$text_thread["subject"]="<b>Temats</b>";
+$text_thread["threadsize"]="<b>Atbildes</b>";
+$text_thread["author"]="<b>Autors</b>";
+$text_thread["lastmessage"]="<b>Pēdējais ziņojums</b>";
+$text_thread["no_such_group"]="Nav šādas grupas.";
+$text_thread["pages"]="Lapas:";
+
+$text_groups["newsgroup"]="<b>Ziņu grupa</b>";
+$text_groups["description"]="<b>Apraksts</b>";
+
+$text_article["back_to_group"]="rakstu saraksts";
+$text_article["refresh"]="atjaunot";
+$text_article["button_answer"]="Atbildēt";
+$text_article["button_cancel"]="Dzēst";
+$text_article["block-xnoarchive"]="Šī sistēma nav arhīvs, bet šīs sistēmas administrators nolēma bloķēt ierakstus, kur autors nevēlas arhivēšanu.";
+$text_article["full_article"]="Noklikšķiniet šeit, lai izlasītu pilnu rakstu";
+
+$text_post["name"]="Lietotājvārds:";
+$text_post["password"]="Parole:";
+$text_post["email"]="Jūsu e-pasts:";
+$text_post["missing_message"]="Jums jāiekļauj ziņojums, lai publicētu.";
+$text_post["missing_email"]="Jums jāiekļauj e-pasta adrese.";
+$text_post["missing_name"]="Jums jāiekļauj vārds vai vismaz segvārds.";
+$text_post["missing_subject"]="Jums jāiekļauj temats.";
+$text_post["button_post"]="Publicēt rakstu";
+$text_post["remember"]="Atcerēties vārdu";
+$text_post["message"]="Ziņojums";
+$text_post["group_head"]="Rakstīt ierakstu ";
+$text_post["group_head_reply"]="Atbildēt uz ierakstu ";
+$text_post["group_tail"]="grupā";
+$text_post["followup_not_allowed"]="Jums nav atļauts publicēt šajās grupās:";
+$text_post["message_posted"]="Ziņojums publicēts";
+$text_post["message_posted2"]="Ziņojums tika veiksmīgi publicēts.";
+$text_post["button_back"]="Atpakaļ";
+$text_post["button_back2"]="uz";
+$text_post["error_newsserver"]="Ziņojumu serveris noraidīja ziņojumu:";
+$text_post["error_readonly"]="Grupa ir aizsargāta pret rakstīšanu";
+$text_post["error_wrong_email"]="Nepareiza e-pasta adrese.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" rakstīja:";
+$text_post["quote"]="Citāts";
+$text_post["captchafail"]='Jūs neizturējāt CAPTCHA testu. Lūdzu, mēģiniet vēlreiz';
+$text_post["captchainfo1"]='ievadiet to šeit vēlreiz';
+$text_post["captchainfo2"]='Ievadiet pareizos burtus un ciparus no attēla teksta laukā. Šis mazais tests kalpo kā piekļuves ierobežojums pret surogātpasta robotiem.';
+
+$text_error["error:"]='<font color="red">Kļūda:</font>';
+$text_error["connection_failed"]="Savienojums ar ziņojumu serveri neizdevās";
+$text_error["article_not_found"]="<p>Raksts neeksistē.</p>";
+$text_error["read_access_denied"]="<p>Nav atļaujas lasīt!</p>";
+$text_error["post_failed"]="Savienojums neizdevās. Mēģiniet ielādēt vēlāk.";
+$text_error["auth_error"]="Autentifikācija neizdevās.";
+$text_error["spool_error"]="Kļūda spool failā. Lūdzu, ielādējiet vēlreiz.";
+
+$text_register["must_register_group"]="Jums jābūt reģistrētam, lai piekļūtu šai grupai.";
+$text_register["must_register_post"]="Jums jābūt reģistrētam, lai publicētu šajā grupā.";
+$text_register["no_access_group"]="Jums nav piekļuves šai grupai.";
+$text_register["no_access_post"]="Jums nav atļauts publicēt šajā grupā.";
+
+?>
