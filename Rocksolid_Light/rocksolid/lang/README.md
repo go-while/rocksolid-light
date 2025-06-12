@@ -76,27 +76,29 @@
 [✅] fula.lang | 65M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] thai.lang | 60M, UTF-8 required (Thai script) | ✅ PASS - All required keys present
 [✅] gujarati.lang | 56M, UTF-8 required | ✅ PASS - All required keys present
-[✅] polish.lang | 45M, UTF-8 recommended, legacy: ISO-8859-2 | ✅ PASS - All required keys present
 [✅] yoruba.lang | 50M, UTF-8 recommended | ✅ PASS - All required keys present
+[✅] polish.lang | 45M, UTF-8 recommended, legacy: ISO-8859-2 | ✅ PASS - All required keys present
 [✅] igbo.lang | 45M, UTF-8 recommended | ✅ PASS - All required keys present
+[✅] pashto.lang | 40M, UTF-8 required (Arabic script, RTL) | ✅ PASS - All required keys present
 [✅] malayalam.lang | 38M, UTF-8 required (Malayalam script) | ✅ PASS - All required keys present
 [✅] oromo.lang | 37M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] burmese.lang | 33M, UTF-8 required (Burmese script) | ✅ PASS - All required keys present
 [✅] amharic.lang | 32M, UTF-8 required | ✅ PASS - All required keys present
 [✅] uzbek.lang | 32M, UTF-8 required | ✅ PASS - All required keys present
-[✅] pashto.lang | 40M, UTF-8 required (Arabic script, RTL) | ✅ PASS - All required keys present
+[✅] lao.lang | 30M, UTF-8 required (Lao script) | ✅ PASS - All required keys present
+[✅] tamazight.lang | 30M, UTF-8 required (Tifinagh script) | ✅ PASS - All required keys present
+[✅] ukrainian.lang | 30M, UTF-8 recommended, legacy: ISO-8859-5/Win-1251 | ✅ PASS - All required keys present
 [✅] filipino.lang | 28M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] sindhi.lang | 25M, UTF-8 required (Arabic script) | ✅ PASS - All required keys present
 [✅] akan.lang | 25M, UTF-8 required | ✅ PASS - All required keys present
 [✅] romanian.lang | 24M, UTF-8 recommended, legacy: ISO-8859-2 | ✅ PASS - All required keys present
 [✅] chinese_traditional.lang | 23M speakers (Traditional Chinese script users), UTF-8 required | ✅ PASS - All required keys present
 [✅] dutch.lang | 23M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
+[✅] somali.lang | 21M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
 [✅] nepali.lang | 17M, UTF-8 required (Devanagari script) | ✅ PASS - All required keys present
-[✅] shona.lang | 15M, UTF-8 required | ✅ PASS - All required keys present
 [✅] sinhala.lang | 17M, UTF-8 required (Sinhala script) | ✅ PASS - All required keys present
 [✅] khmer.lang | 17M, UTF-8 required (Khmer script) | ✅ PASS - All required keys present
-[✅] lao.lang | 30M, UTF-8 required (Lao script) | ✅ PASS - All required keys present
-[✅] tamazight.lang | 30M, UTF-8 required (Tifinagh script) | ✅ PASS - All required keys present
+[✅] shona.lang | 15M, UTF-8 required | ✅ PASS - All required keys present
 [✅] hungarian.lang | 13M, UTF-8 recommended, legacy: ISO-8859-2 | ✅ PASS - All required keys present
 [✅] kinyarwanda.lang | 12M, UTF-8 required | ✅ PASS - All required keys present
 [✅] wolof.lang | 12M, UTF-8 recommended | ✅ PASS - All required keys present
@@ -130,6 +132,8 @@
 [✅] bosanski.lang | 2.5M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] galician.lang | 2.4M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] lithuanian.lang | 2.8M, UTF-8 recommended, legacy: ISO-8859-4 | ✅ PASS - All required keys present
+[✅] esperanto.lang | 2M, UTF-8 recommended | ✅ PASS - All required keys present
+[✅] macedonian.lang | 2M, UTF-8 recommended (Cyrillic script) | ✅ PASS - All required keys present
 [✅] irish.lang | 1.7M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] manipuri.lang | 1.7M, UTF-8 required (Meitei Mayek script) | ✅ PASS - All required keys present
 [✅] latvian.lang | 1.5M, UTF-8 recommended, legacy: ISO-8859-4 | ✅ PASS - All required keys present
@@ -143,10 +147,6 @@
 [✅] breton.lang | 0.2M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] montenegrin.lang | 0.3M, UTF-8 recommended | ✅ PASS - All required keys present
 [✅] faroese.lang | 0.07M, UTF-8 recommended | ✅ PASS - All required keys present
-[✅] esperanto.lang | 2M, UTF-8 recommended | ✅ PASS - All required keys present
-[✅] macedonian.lang | 2M, UTF-8 recommended (Cyrillic script) | ✅ PASS - All required keys present
-[✅] ukrainian.lang | 30M, UTF-8 recommended, legacy: ISO-8859-5/Win-1251 | ✅ PASS - All required keys present
-[✅] somali.lang | 21M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
 
 **All new global language files were created, verified, and documented as part of the global coverage expansion from 90→100 languages.**
 
