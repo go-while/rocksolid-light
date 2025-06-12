@@ -1,9 +1,11 @@
 # TODO LIST for AI Agent:
 
 - [x] JOB:01 = check all .lang files with: ./get_translation_keys.sh "$file" vs. ./find_translation_variables.sh and update this README.md after every step.
-- [x] JOB:02 = check all languages from JOB:01 if they might need a special ISO code to work with php and create a list.
 
-Languages that might need special ISO charset codes for PHP:
+- [x] JOB:02 = check all languages from JOB:01 if they might need a special ISO code to work with php and create a list. Languages that might need special ISO charset codes for PHP:
+
+- [ ] JOB:03 = Add your TOP 10 most important languages that are missing and update this readme. update the checklist with the ./checklist_helper.sh script. rinse and repeat with JOB:01 and JOB:02
+
 
 **UTF-8 is recommended for all languages, but some legacy systems might need specific charsets:**
 
