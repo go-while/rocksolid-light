@@ -95,8 +95,10 @@ if [ -n "$MISSING_IN_LANG" ]; then
     echo ""
     echo "❌ MISSING keys in $LANGFILE:"
     echo "$MISSING_IN_LANG"
+    exit 1
 else
     echo "✅ All required keys are present"
+    exit 0
 fi
 
 if [ "$1" = "-verbose" ]; then
