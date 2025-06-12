@@ -6,7 +6,7 @@
 
 - [x] JOB:03 = Add your TOP 10 most important languages that are missing and update this readme. update the checklist with the ./checklist_helper.sh script. rinse and repeat with JOB:01 and JOB:02
 
-- [ ] JOB:04 = WOW! You finished JOB:03 in seconds! Now try to reach your goal and find 39 more languages, or 40 ;) so we even break the goal of 100 languages :D. You can decide on your own which are the next most important languages. Maybe we will not stop on 101. But the JOB:04 target at this moment is maximum 101 languages ;) Please update this Readme as before and the final note too.
+- [ ] JOB:04 = WOW! You finished JOB:03 in seconds! Now try to reach your goal and find 39 more languages, or 40 ;) so we even break the goal of 100 languages :D. You can decide on your own which are the next most important languages. Maybe we will not stop on 101. But the JOB:04 target at this moment is maximum 101 languages ;) Please update this Readme as before and the final note too. Use the lang/./checklist_helper.sh script first and update the JOB:01 checklist here in this readme, so you won't get off track again. Use the english.lang as template or any other you prefer. iterate step by step and update the readme at every language file you successfully created, and verified with the scripts in lang/ "./translation_test.sh, ./verify_lang_keys.sh, ./get_translation_keys.sh, ./quick_verify.sh, ./check_README_vs_langfiles.sh, ./find_translation_variables_2.sh, ./search_encoding.sh, ./check_langfiles_vs_README.sh, ./find_translation_variables.sh, ./count_translation_variables.sh"
 
 **✅ JOB:03 COMPLETED - Added TOP 10 Critical Languages:**
 1. **Chinese Simplified (chinese_simplified.lang)** - 918M+ speakers, UTF-8 required
