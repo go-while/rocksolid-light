@@ -6,7 +6,7 @@
 - 3. in TODO:03 when verified, add language line with ISO encoding to LIST
 - 4. in TODO:04 README update with all new languages and final note at bottom
 
-#### EMPTY WORKFLOW TEMPLATE BEGINS - @AI: DO NOT TOUCH THIS JUMP TO NEXT BLOCK ####
+#### EMPTY WORKFLOW TEMPLATE BEGINS - @AI: DO NOT TOUCH THIS JUMP TO NEXT BLOCK! ####
 
 - [ ] TODO:01 = INCOMPLETE
 
