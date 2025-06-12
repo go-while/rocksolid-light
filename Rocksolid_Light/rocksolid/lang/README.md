@@ -1,6 +1,6 @@
 # TODO LIST for AI Agent:
 
-- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "Pashto, Javanese". In this order please. Check that the newly created lang file actually contains the targeted translation to this language!
+- [ ] TODO:01 = Use the lang/english.lang as template. iterate step by step and update the readme at every language file you successfully created and verify it with the scripts in lang/. TODO: list of new languages: "". In this order please. Check that the newly created lang file actually contains the targeted translation to this language!
 
 - [ ] TODO:02 = check all newly created .lang files with: ./verify_lang_keys.sh "$file" and update this README.md after every step in the JOB:01 section.
 
@@ -16,7 +16,7 @@
 
 # 🌍 Comprehensive Language Coverage List (Ordered by Speaker Count)
 
-**Global Coverage: 73/73 languages, ~85% of world population**
+**Global Coverage: 74/74 languages, ~85% of world population**
 
 ## 📝 Language File Checklist
 
@@ -37,6 +37,7 @@
 [✅] bengali.lang | 230M, UTF-8 required | ✅ PASS - All required keys present
 [✅] francais.lang | 274M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
 [✅] indonesian.lang | 270M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
+[✅] javanese.lang | 98M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
 [✅] swahili.lang | 200M, UTF-8 recommended, legacy: ISO-8859-1 | ✅ PASS - All required keys present
 [✅] russian.lang | 154M, UTF-8 recommended, legacy: ISO-8859-5/Win-1251 | ✅ PASS - All required keys present
 [✅] japanese.lang | 125M, UTF-8 required | ✅ PASS - All required keys present
