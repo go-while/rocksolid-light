@@ -30,7 +30,7 @@ echo "Choose a path for your spool files for rslight"
 read -p "Use default spool path $spoolpath (y/n)? " default; echo
 if [ "${default^^}" != "Y" ]
 then
-  read -p "Enter spool path for rslight: " spoolpath; echo 
+  read -p "Enter spool path for rslight: " spoolpath; echo
 fi
 echo "Choose a path for rslight configuration files"
 read -p "Use default config path $configpath (y/n)? " default; echo
@@ -108,11 +108,23 @@ sed -i -e "s|<webserver_user>|$username|" $configpath/rslight.inc.php
 sed -i -e "s|<site_key>|$site_key|" $configpath/rslight.inc.php
 sed -i -e "s|<anonymous_password>|$anonymous_password|" $configpath/rslight.inc.php
 sed -i -e "s|<local_password>|$local_password|" $configpath/rslight.inc.php
-sed -i -e "s|<admin_password>|$admin_password|" $configpath/admin.inc.php 
+sed -i -e "s|<admin_password>|$admin_password|" $configpath/admin.inc.php
 sed -i -e "s|<admin_key>|$admin_key|" $configpath/admin.inc.php
 sed -i -e "s|<sessions_path>|/var/lib/php/sessions|" $configpath/rslight.inc.php
 echo "done"
 echo
+
+echo -n "Initializing cryptographic keys..."
+if sudo -u $username php $configpath/initialize_keys.php >/dev/null 2>&1; then
+    echo "done"
+else
+    echo "failed"
+    echo "ERROR: Failed to initialize keys.dat file"
+    echo "You can manually run: sudo -u $username php $configpath/initialize_keys.php"
+    echo "This may cause 'Critical Error: Cannot load keys file securely' on first web access"
+fi
+echo
+
 echo "***************************************************"
 echo "******** YOUR ADMIN PASSWORD IS: '$admin_password'"
 echo "***************************************************"

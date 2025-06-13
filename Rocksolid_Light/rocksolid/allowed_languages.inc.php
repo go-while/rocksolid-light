@@ -2,7 +2,7 @@
 /**
  * Rocksolid Light - Allowed Languages Configuration
  *
- * This file contains the definitive list of allowed languages.
+ * This file contains the definitive list of allowed languages for the system.
  * Only languages listed in this array can be selected by users.
  * This provides better security than regex validation alone.
  */
@@ -126,9 +126,11 @@ $ALLOWED_LANGUAGES = array(
  * @param string $language_file The language filename (e.g., 'english.lang')
  * @return bool True if language is allowed, false otherwise
  */
-function is_language_allowed($language_file) {
-    global $ALLOWED_LANGUAGES;
-    return isset($ALLOWED_LANGUAGES[$language_file]);
+if (!function_exists('is_language_allowed')) {
+    function is_language_allowed($language_file) {
+        global $ALLOWED_LANGUAGES;
+        return isset($ALLOWED_LANGUAGES[$language_file]);
+    }
 }
 
 /**
@@ -136,18 +138,21 @@ function is_language_allowed($language_file) {
  * @param string $language_file The language filename (e.g., 'english.lang')
  * @return string The display name or the filename if not found
  */
-function get_language_display_name($language_file) {
-    global $ALLOWED_LANGUAGES;
-    return $ALLOWED_LANGUAGES[$language_file] ?? $language_file;
+if (!function_exists('get_language_display_name')) {
+    function get_language_display_name($language_file) {
+        global $ALLOWED_LANGUAGES;
+        return $ALLOWED_LANGUAGES[$language_file] ?? $language_file;
+    }
 }
 
 /**
  * Get all allowed languages
  * @return array Array of language_file => display_name
  */
-function get_allowed_languages() {
-    global $ALLOWED_LANGUAGES;
-    return $ALLOWED_LANGUAGES;
+if (!function_exists('get_allowed_languages')) {
+    function get_allowed_languages() {
+        global $ALLOWED_LANGUAGES;
+        return $ALLOWED_LANGUAGES;
+    }
 }
-
 ?>

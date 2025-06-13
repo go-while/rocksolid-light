@@ -26,6 +26,9 @@
 // Include security functions first for all operations
 require_once("security.inc.php");
 
+// Include common menu functions
+include_once("../common/menu_functions.inc.php");
+
 // Add security headers
 add_security_headers();
 
@@ -1820,22 +1823,6 @@ function repair_broken_group($group)
             wipe_newsportal_spool_info($group);
         }
     }
-}
-
-// Read <config_dir>/menu.conf and return as array
-function get_section_menu_array()
-{
-    global $config_dir;
-    $menudata = file($config_dir . '/menu.conf');
-    $newmenu = array();
-    foreach ($menudata as $menuentry) {
-        if (!preg_match("/^[a-zA-Z0-9]/", $menuentry)) { // Not an entry. Ignore
-            continue;
-        } else {
-            $newmenu[] = $menuentry;
-        }
-    }
-    return $newmenu;
 }
 
 function wipe_newsportal_spool_info($group)

@@ -14,6 +14,20 @@ add_security_headers();
 global $OVERRIDES;
 $CONFIG = include $config_file;
 
+// Include menu functions - handle different calling contexts
+if (file_exists($rootdir . 'common/menu_functions.inc.php')) {
+    // Called from subdirectory (normal case)
+    include_once($rootdir . 'common/menu_functions.inc.php');
+} elseif (file_exists('menu_functions.inc.php')) {
+    // Called from same directory (setup.php case)
+    include_once('menu_functions.inc.php');
+} else {
+    // Fallback - try relative paths
+    if (file_exists('../common/menu_functions.inc.php')) {
+        include_once('../common/menu_functions.inc.php');
+    }
+}
+
 $menulist = get_section_menu_array();
 $linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
 
