@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="grupe vijesti";
 $text_thread["button_latest"]="pogledaj najnovije";
 $text_thread["button_overboard"]="sve grupe";
 $text_thread["button_search"]="pretraži";
-$text_thread["button_top"]="Nazad na vrh";
 $text_thread["date"]="<b>Datum</b>";
 $text_thread["subject"]="<b>Tema</b>";
 $text_thread["threadsize"]="<b>Odgovori</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Poslednja poruka</b>";
 $text_thread["no_such_group"]="Grupa ne postoji.";
 $text_thread["pages"]="Stranice:";
 
-$text_groups["newsgroup"]="<b>Grupa vijesti</b>";
-$text_groups["description"]="<b>Opis</b>";
 
 $text_article["back_to_group"]="lista članaka";
 $text_article["refresh"]="osveži";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Kliknite ovdje da pročitate kompletan članak";
 
 $text_post["name"]="Korisničko ime:";
 $text_post["password"]="Lozinka:";
-$text_post["email"]="Vaš e-mail:";
 $text_post["missing_message"]="Morate uključiti poruku za postavljanje.";
 $text_post["missing_email"]="Morate uključiti e-mail adresu.";
 $text_post["missing_name"]="Morate uključiti ime ili barem pseudonim.";
 $text_post["missing_subject"]="Morate uključiti temu.";
 $text_post["button_post"]="Pošalji članak";
-$text_post["remember"]="Zapamti ime";
 $text_post["message"]="Poruka";
 $text_post["group_head"]="Sastavi post u ";
 $text_post["group_head_reply"]="Odgovori na post u ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Nije vam dozvoljeno da postavite u grupe:";
-$text_post["message_posted"]="Poruka postavljena";
 $text_post["message_posted2"]="Poruka je uspješno postavljena.";
 $text_post["button_back"]="Nazad";
 $text_post["button_back2"]="na";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Članak ne postoji.</p>";
 $text_error["read_access_denied"]="<p>Nema dozvole za čitanje!</p>";
 $text_error["post_failed"]="Veza nije uspješna. Pokušajte ponovo kasnije.";
 $text_error["auth_error"]="Autentifikacija nije uspjela.";
-$text_error["spool_error"]="Greška u spool-fajlu. Molimo ponovo učitajte.";
 
-$text_register["must_register_group"]="Morate se registrovati da biste imali pristup ovoj grupi.";
-$text_register["must_register_post"]="Morate se registrovati da biste postavljali u ovu grupu.";
 $text_register["no_access_group"]="Nemate pristup ovoj grupi.";
-$text_register["no_access_post"]="Nije vam dozvoljeno da postavljate u ovu grupu.";
 
 ?>

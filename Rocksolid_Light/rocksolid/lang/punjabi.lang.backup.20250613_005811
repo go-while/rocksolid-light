@@ -1,0 +1,81 @@
+<?php
+// Punjabi (pa) translation for RockSolid Light
+$text_header["from"]="<b>ਤੋਂ:</b> ";
+$text_header["subject"]="<b>ਵਿਸ਼ਾ:</b> ";
+$text_header["newsgroups"]="<b>ਖ਼ਬਰਾਂ ਦੇ ਸਮੂਹ:</b> ";
+$text_header["followup"]="<b>ਫਾਲੋਅੱਪ:</b> ";
+$text_header["organization"]="<b>ਸੰਸਥਾ:</b> ";
+$text_header["date"]="<b>ਤਾਰੀਖ਼:</b> ";
+$text_header["message-id"]="<b>ਸੰਦੇਸ਼ ID:</b> ";
+$text_header["references"]="<b>ਹਵਾਲੇ:</b> ";
+$text_header["user-agent"]="<b>ਯੂਜ਼ਰ ਏਜੰਟ:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>ਅਟੈਚਮੈਂਟਸ:</b> ";
+
+$text_thread["no_articles"]="<p><b>ਕੋਈ ਲੇਖ ਉਪਲਬਧ ਨਹੀਂ</b></p>";
+$text_thread["button_write"]="ਨਵਾਂ ਥ੍ਰਿਡ";
+$text_thread["button_grouplist"]="ਖ਼ਬਰਾਂ ਦੇ ਸਮੂਹ";
+$text_thread["button_latest"]="ਨਵੀਨਤਮ ਦੇਖੋ";
+$text_thread["button_overboard"]="ਆਮ ਬੋਰਡ";
+$text_thread["button_search"]="ਖੋਜੋ";
+$text_thread["button_top"]="ਸਿਖਰ 'ਤੇ ਵਾਪਸ";
+$text_thread["date"]="<b>ਤਾਰੀਖ਼</b>";
+$text_thread["subject"]="<b>ਵਿਸ਼ਾ</b>";
+$text_thread["threadsize"]="<b>ਜਵਾਬ</b>";
+$text_thread["author"]="<b>ਲੇਖਕ</b>";
+$text_thread["lastmessage"]="<b>ਆਖਰੀ ਸੰਦੇਸ਼</b>";
+$text_thread["no_such_group"]="ਅਜਿਹਾ ਕੋਈ ਸਮੂਹ ਨਹੀਂ।";
+$text_thread["pages"]="ਪੰਨੇ:";
+
+$text_groups["newsgroup"]="<b>ਖ਼ਬਰਾਂ ਦਾ ਸਮੂਹ</b>";
+$text_groups["description"]="<b>ਵਰਣਨ</b>";
+
+$text_article["back_to_group"]="ਲੇਖਾਂ ਦੀ ਸੂਚੀ";
+$text_article["refresh"]="ਤਾਜ਼ਾ ਕਰੋ";
+$text_article["button_answer"]="ਜਵਾਬ ਦਿਓ";
+$text_article["button_cancel"]="ਮਿਟਾਓ";
+$text_article["block-xnoarchive"]="ਇਹ ਸਿਸਟਮ ਇੱਕ ਆਰਕਾਈਵ ਨਹੀਂ ਹੈ, ਪਰ ਇਸ ਸਿਸਟਮ ਦੇ ਪ੍ਰਸ਼ਾਸਕ ਨੇ ਉਹਨਾਂ ਪੋਸਟਾਂ ਨੂੰ ਬਲਾਕ ਕਰਨ ਦਾ ਫੈਸਲਾ ਕੀਤਾ ਹੈ ਜਿੱਥੇ ਲੇਖਕ ਆਰਕਾਈਵਿੰਗ ਨਹੀਂ ਚਾਹੁੰਦਾ।";
+$text_article["full_article"]="ਪੂਰਾ ਲੇਖ ਪੜ੍ਹਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ";
+
+$text_post["name"]="ਯੂਜ਼ਰ ਨਾਮ:";
+$text_post["password"]="ਪਾਸਵਰਡ:";
+$text_post["email"]="ਤੁਹਾਡਾ ਈਮੇਲ:";
+$text_post["missing_message"]="ਪੋਸਟ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਇੱਕ ਸੰਦੇਸ਼ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_post["missing_email"]="ਤੁਹਾਨੂੰ ਇੱਕ ਈਮੇਲ ਪਤਾ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_post["missing_name"]="ਤੁਹਾਨੂੰ ਇੱਕ ਨਾਮ ਜਾਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਉਪਨਾਮ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_post["missing_subject"]="ਤੁਹਾਨੂੰ ਇੱਕ ਵਿਸ਼ਾ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_post["button_post"]="ਲੇਖ ਪੋਸਟ ਕਰੋ";
+$text_post["remember"]="ਨਾਮ ਯਾਦ ਰੱਖੋ";
+$text_post["message"]="ਸੰਦੇਸ਼";
+$text_post["group_head"]="ਵਿੱਚ ਇੱਕ ਪੋਸਟ ਲਿਖੋ ";
+$text_post["group_head_reply"]="ਵਿੱਚ ਪੋਸਟ ਦਾ ਜਵਾਬ ਦਿਓ ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ਤੁਹਾਨੂੰ ਇਹਨਾਂ ਸਮੂਹਾਂ ਵਿੱਚ ਪੋਸਟ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ:";
+$text_post["message_posted"]="ਸੰਦੇਸ਼ ਪੋਸਟ ਕੀਤਾ ਗਿਆ";
+$text_post["message_posted2"]="ਸੰਦੇਸ਼ ਸਫਲਤਾਪੂਰਵਕ ਪੋਸਟ ਕੀਤਾ ਗਿਆ।";
+$text_post["button_back"]="ਪਿੱਛੇ";
+$text_post["button_back2"]="ਨੂੰ";
+$text_post["error_newsserver"]="ਸੰਦੇਸ਼ ਸਰਵਰ ਨੇ ਸੰਦੇਸ਼ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ:";
+$text_post["error_readonly"]="ਸਮੂਹ ਲਿਖਣ ਤੋਂ ਸੁਰੱਖਿਅਤ ਹੈ";
+$text_post["error_wrong_email"]="ਗਲਤ ਈਮੇਲ ਪਤਾ।";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ਨੇ ਲਿਖਿਆ:";
+$text_post["quote"]="ਹਵਾਲਾ";
+$text_post["captchafail"]='ਤੁਸੀਂ CAPTCHA ਟੈਸਟ ਵਿੱਚ ਅਸਫਲ ਰਹੇ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
+$text_post["captchainfo1"]='ਇਸਨੂੰ ਇੱਥੇ ਦੁਬਾਰਾ ਟਾਈਪ ਕਰੋ';
+$text_post["captchainfo2"]='ਤਸਵੀਰ ਵਿੱਚੋਂ ਸਹੀ ਅੱਖਰ ਅਤੇ ਨੰਬਰ ਟੈਕਸਟ ਬਾਕਸ ਵਿੱਚ ਦਾਖਲ ਕਰੋ। ਇਹ ਛੋਟਾ ਟੈਸਟ ਸਪੈਮ-ਬੋਟਸ ਦੇ ਵਿਰੁੱਧ ਪਹੁੰਚ ਪਾਬੰਦੀ ਵਜੋਂ ਕੰਮ ਕਰਦਾ ਹੈ।';
+
+$text_error["error:"]='<font color="red">ਗਲਤੀ:</font>';
+$text_error["connection_failed"]="ਸੰਦੇਸ਼ ਸਰਵਰ ਨਾਲ ਕਨੈਕਸ਼ਨ ਅਸਫਲ";
+$text_error["article_not_found"]="<p>ਲੇਖ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।</p>";
+$text_error["read_access_denied"]="<p>ਪੜ੍ਹਨ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ!</p>";
+$text_error["post_failed"]="ਕਨੈਕਸ਼ਨ ਅਸਫਲ। ਬਾਅਦ ਵਿੱਚ ਮੁੜ ਲੋਡ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।";
+$text_error["auth_error"]="ਪ੍ਰਮਾਣਿਕਤਾ ਅਸਫਲ।";
+$text_error["spool_error"]="ਸਪੂਲ ਫਾਈਲ ਵਿੱਚ ਗਲਤੀ। ਕਿਰਪਾ ਕਰਕੇ ਮੁੜ ਲੋਡ ਕਰੋ।";
+
+$text_register["must_register_group"]="ਇਸ ਸਮੂਹ ਤੱਕ ਪਹੁੰਚ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਰਜਿਸਟਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_register["must_register_post"]="ਇਸ ਸਮੂਹ ਵਿੱਚ ਪੋਸਟ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਰਜਿਸਟਰ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।";
+$text_register["no_access_group"]="ਤੁਹਾਨੂੰ ਇਸ ਸਮੂਹ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੈ।";
+$text_register["no_access_post"]="ਤੁਹਾਨੂੰ ਇਸ ਸਮੂਹ ਵਿੱਚ ਪੋਸਟ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ।";
+
+?>

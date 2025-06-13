@@ -1,0 +1,81 @@
+<?php
+// Faroese (fo) translation for RockSolid Light
+$text_header["from"]="<b>Frá:</b> ";
+$text_header["subject"]="<b>Evni:</b> ";
+$text_header["newsgroups"]="<b>Tíðindabólkar:</b> ";
+$text_header["followup"]="<b>Eftirfylgni:</b> ";
+$text_header["organization"]="<b>Stovnur:</b> ";
+$text_header["date"]="<b>Dagur:</b> ";
+$text_header["message-id"]="<b>Boðskaps-ID:</b> ";
+$text_header["references"]="<b>Tilvísingar:</b> ";
+$text_header["user-agent"]="<b>Brúkara-agent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Viðfestingar:</b> ";
+
+$text_thread["no_articles"]="<p><b>Eingir greinir tøkir</b></p>";
+$text_thread["button_write"]="nýtt tátt";
+$text_thread["button_grouplist"]="tíðindabólkar";
+$text_thread["button_latest"]="síggj seinast";
+$text_thread["button_overboard"]="alment borð";
+$text_thread["button_search"]="leita";
+$text_thread["button_top"]="Aftur ovantil";
+$text_thread["date"]="<b>Dagur</b>";
+$text_thread["subject"]="<b>Evni</b>";
+$text_thread["threadsize"]="<b>Svar</b>";
+$text_thread["author"]="<b>Høvundur</b>";
+$text_thread["lastmessage"]="<b>Seinasti boðskapur</b>";
+$text_thread["no_such_group"]="Eingin slíkur bólkur.";
+$text_thread["pages"]="Síður:";
+
+$text_groups["newsgroup"]="<b>Tíðindabólkur</b>";
+$text_groups["description"]="<b>Lýsing</b>";
+
+$text_article["back_to_group"]="grein-listi";
+$text_article["refresh"]="endurnýggja";
+$text_article["button_answer"]="Svara";
+$text_article["button_cancel"]="Strika";
+$text_article["block-xnoarchive"]="Hendan skipanin er ikki eitt arkiv, men umsjónarmaðurin av hesi skipan hevur avgjørt at sparra fyri uppsløgum, har høvundurin ikki vil hava arkivering.";
+$text_article["full_article"]="Trýst her fyri at lesa fulla greinina";
+
+$text_post["name"]="Brúkaranavn:";
+$text_post["password"]="Loyniorð:";
+$text_post["email"]="Tín teldupostur:";
+$text_post["missing_message"]="Tú mást hava við einum boðskapi fyri at leggja út.";
+$text_post["missing_email"]="Tú mást hava við eina teldupost-adressu.";
+$text_post["missing_name"]="Tú mást hava við eitt navn ella í minsta lagi eitt dulnavn.";
+$text_post["missing_subject"]="Tú mást hava við eitt evni.";
+$text_post["button_post"]="Legg út grein";
+$text_post["remember"]="Minnast navn";
+$text_post["message"]="Boðskapur";
+$text_post["group_head"]="Skriv eitt uppsløg í ";
+$text_post["group_head_reply"]="Svara uppsløginum í ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Tær hevur ikki loyvi at leggja út í bólkunum:";
+$text_post["message_posted"]="Boðskapur lagdur út";
+$text_post["message_posted2"]="Boðskapurin varð væl lagdur út.";
+$text_post["button_back"]="Aftur";
+$text_post["button_back2"]="til";
+$text_post["error_newsserver"]="Boðskapa-ambætarin nokta boðskapin:";
+$text_post["error_readonly"]="Bólkurin er verjaður móti skrivingum";
+$text_post["error_wrong_email"]="Rang teldupost-adressa.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" skrivaði:";
+$text_post["quote"]="Sitat";
+$text_post["captchafail"]='Tú miseydnaðist í CAPTCHA-royndini. Vinarliga royn aftur';
+$text_post["captchainfo1"]='skriv tað aftur her';
+$text_post["captchainfo2"]='Skriva rættu bókstavirnar og tølini frá myndini í tekstkassan. Hendan lítla roynd tænir sum atgongd-avmarkingar móti spam-robotum.';
+
+$text_error["error:"]='<font color="red">Villa:</font>';
+$text_error["connection_failed"]="Sambandið til boðskapa-ambætaran miseydnaðist";
+$text_error["article_not_found"]="<p>Greinin finst ikki.</p>";
+$text_error["read_access_denied"]="<p>Einki loyvi til at lesa!</p>";
+$text_error["post_failed"]="Samband miseydnaðist. Royn at endurløða seinni.";
+$text_error["auth_error"]="Váttan miseydnaðist.";
+$text_error["spool_error"]="Villa í spool-fíluni. Vinarliga endurløð.";
+
+$text_register["must_register_group"]="Tú mást vera skrásett/ur fyri at hava atgongd til hendan bólkin.";
+$text_register["must_register_post"]="Tú mást vera skrásett/ur fyri at leggja út í hendan bólkin.";
+$text_register["no_access_group"]="Tú hevur ikki atgongd til hendan bólkin.";
+$text_register["no_access_post"]="Tær hevur ikki loyvi at leggja út í hendan bólkin.";
+
+?>

@@ -1,0 +1,81 @@
+<?php
+// Amharic (am) translation for RockSolid Light
+$text_header["from"]="<b>ከ:</b> ";
+$text_header["subject"]="<b>ርዕስ:</b> ";
+$text_header["newsgroups"]="<b>የዜና ቡድኖች:</b> ";
+$text_header["followup"]="<b>ተከታይ:</b> ";
+$text_header["organization"]="<b>ድርጅት:</b> ";
+$text_header["date"]="<b>ቀን:</b> ";
+$text_header["message-id"]="<b>መልእክት-መለያ:</b> ";
+$text_header["references"]="<b>ማጣቀሻዎች:</b> ";
+$text_header["user-agent"]="<b>ተጠቃሚ-ወኪል:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>አባሪዎች:</b> ";
+
+$text_thread["no_articles"]="<p><b>ምንም ጽሑፎች የሉም</b></p>";
+$text_thread["button_write"]="አዲስ ክር";
+$text_thread["button_grouplist"]="የዜና ቡድኖች";
+$text_thread["button_latest"]="ቅርብ ያለፈውን ይመልከቱ";
+$text_thread["button_overboard"]="ከቦርድ ውጭ";
+$text_thread["button_search"]="ፈልግ";
+$text_thread["button_top"]="ወደ ላይ ተመለስ";
+$text_thread["date"]="<b>ቀን</b>";
+$text_thread["subject"]="<b>ርዕስ</b>";
+$text_thread["threadsize"]="<b>ምላሾች</b>";
+$text_thread["author"]="<b>ደራሲ</b>";
+$text_thread["lastmessage"]="<b>የመጨረሻ መልእክት</b>";
+$text_thread["no_such_group"]="እንደዚህ ያለ ቡድን የለም።";
+$text_thread["pages"]="ገጾች:";
+
+$text_groups["newsgroup"]="<b>የዜና ቡድን</b>";
+$text_groups["description"]="<b>መግለጫ</b>";
+
+$text_article["back_to_group"]="የጽሑፍ ዝርዝር";
+$text_article["refresh"]="ማደስ";
+$text_article["button_answer"]="መልስ";
+$text_article["button_cancel"]="ሰርዝ";
+$text_article["block-xnoarchive"]="ይህ ሥርዓት መዝገብ አይደለም፣ ነገር ግን የዚህ ሥርዓት አስተዳዳሪ ደራሲው መዝገብ መሆንን የማይፈልግ ልጥፎችን ለማገድ ወስኗል።";
+$text_article["full_article"]="ሙሉውን ጽሑፍ ለማንበብ እዚህ ጠቅ ያድርጉ";
+
+$text_post["name"]="የተጠቃሚ ስም:";
+$text_post["password"]="የይለፍ ቃል:";
+$text_post["email"]="የእርስዎ ኢ-ሜይል:";
+$text_post["missing_message"]="ለመለጠፍ መልእክት ማካተት አለብዎት።";
+$text_post["missing_email"]="የኢ-ሜይል አድራሻ ማካተት አለብዎት።";
+$text_post["missing_name"]="ስም ወይም ቢያንስ የጠቅላላ ስም ማካተት አለብዎት።";
+$text_post["missing_subject"]="ርዕስ ማካተት አለብዎት።";
+$text_post["button_post"]="ጽሑፍ ለጥፍ";
+$text_post["remember"]="ስም አስታውስ";
+$text_post["message"]="መልእክት";
+$text_post["group_head"]="በ ";
+$text_post["group_head_reply"]="በ ለተለጠፈ መልስ ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ወደ ቡድኖች መለጠፍ አይፈቀድልዎትም:";
+$text_post["message_posted"]="መልእክት ተለጠፈ";
+$text_post["message_posted2"]="መልእክቱ በተሳካ ሁኔታ ተለጠፈ።";
+$text_post["button_back"]="ተመለስ";
+$text_post["button_back2"]="ወደ";
+$text_post["error_newsserver"]="የመልእክት አገልጋዩ መልእክቱን አልተቀበለውም:";
+$text_post["error_readonly"]="ቡድኑ ለመፃፍ የተጠበቀ ነው";
+$text_post["error_wrong_email"]="ስህተተኛ የኢ-ሜይል አድራሻ።";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ጻፈ:";
+$text_post["quote"]="ጥቅስ";
+$text_post["captchafail"]='የCAPTCHA ፈተናውን ወድቀዋል። እባክዎ እንደገና ሞክሩ';
+$text_post["captchainfo1"]='እዚህ እንደገና ይተይቡ';
+$text_post["captchainfo2"]='ከምስሉ ትክክለኛውን ፊደሎች እና ቁጥሮች ወደ ጽሑፍ ሳጥኑ ያስገቡ። ይህ ትንሽ ፈተና በስፓም-ቦቶች ላይ እንደ የመዳረሻ ገደብ ያገለግላል።';
+
+$text_error["error:"]='<font color="red">ስህተት:</font>';
+$text_error["connection_failed"]="ከመልእክት አገልጋዩ ጋር ያለው ግንኙነት ተሳክቷል";
+$text_error["article_not_found"]="<p>ጽሑፉ አይገኝም።</p>";
+$text_error["read_access_denied"]="<p>ለማንበብ ፈቃድ የለም!</p>";
+$text_error["post_failed"]="ግንኙነት ተሳክቷል። በኋላ እንደገና ለመጫን ይሞክሩ።";
+$text_error["auth_error"]="ማረጋገጥ ተሳክቷል።";
+$text_error["spool_error"]="በስፖል ፋይል ውስጥ ስህተት። እባክዎ እንደገና ይጫኑ።";
+
+$text_register["must_register_group"]="ለዚህ ቡድን ለመዳረሻ መመዝገብ አለብዎት።";
+$text_register["must_register_post"]="ለዚህ ቡድን ለመለጠፍ መመዝገብ አለብዎት።";
+$text_register["no_access_group"]="ለዚህ ቡድን መዳረሻ የለዎትም።";
+$text_register["no_access_post"]="ለዚህ ቡድን መለጠፍ አይፈቀድልዎትም።";
+
+?>

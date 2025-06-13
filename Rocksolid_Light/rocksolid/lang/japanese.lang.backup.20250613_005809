@@ -1,0 +1,81 @@
+<?php
+// Japanese (ja) translation for RockSolid Light
+$text_header["from"]="<b>送信者:</b> ";
+$text_header["subject"]="<b>件名:</b> ";
+$text_header["newsgroups"]="<b>ニュースグループ:</b> ";
+$text_header["followup"]="<b>フォローアップ:</b> ";
+$text_header["organization"]="<b>組織:</b> ";
+$text_header["date"]="<b>日付:</b> ";
+$text_header["message-id"]="<b>メッセージID:</b> ";
+$text_header["references"]="<b>参照:</b> ";
+$text_header["user-agent"]="<b>ユーザーエージェント:</b> ";
+$text_header["date_format"]="Y年n月j日 H:i";
+$text_header["attachments"]="<b>添付ファイル:</b> ";
+
+$text_thread["no_articles"]="<p><b>利用可能な記事がありません</b></p>";
+$text_thread["button_write"]="新しいスレッド";
+$text_thread["button_grouplist"]="ニュースグループ";
+$text_thread["button_latest"]="最新を表示";
+$text_thread["button_overboard"]="総合掲示板";
+$text_thread["button_search"]="検索";
+$text_thread["button_top"]="トップに戻る";
+$text_thread["date"]="<b>日付</b>";
+$text_thread["subject"]="<b>件名</b>";
+$text_thread["threadsize"]="<b>返信</b>";
+$text_thread["author"]="<b>作者</b>";
+$text_thread["lastmessage"]="<b>最後のメッセージ</b>";
+$text_thread["no_such_group"]="そのようなグループは存在しません。";
+$text_thread["pages"]="ページ:";
+
+$text_groups["newsgroup"]="<b>ニュースグループ</b>";
+$text_groups["description"]="<b>説明</b>";
+
+$text_article["back_to_group"]="記事リスト";
+$text_article["refresh"]="更新";
+$text_article["button_answer"]="返信";
+$text_article["button_cancel"]="削除";
+$text_article["block-xnoarchive"]="このシステムはアーカイブではありませんが、システム管理者は作者がアーカイブを望まない投稿をブロックすることを決定しました。";
+$text_article["full_article"]="完全な記事を読むにはここをクリック";
+
+$text_post["name"]="ユーザー名:";
+$text_post["password"]="パスワード:";
+$text_post["email"]="あなたのメール:";
+$text_post["missing_message"]="投稿するにはメッセージを含める必要があります。";
+$text_post["missing_email"]="メールアドレスを含める必要があります。";
+$text_post["missing_name"]="名前または少なくともニックネームを含める必要があります。";
+$text_post["missing_subject"]="件名を含める必要があります。";
+$text_post["button_post"]="記事を投稿";
+$text_post["remember"]="名前を記憶";
+$text_post["message"]="メッセージ";
+$text_post["group_head"]="";
+$text_post["group_head_reply"]="";
+$text_post["group_tail"]="への投稿を作成";
+$text_post["followup_not_allowed"]="これらのグループに投稿することは許可されていません:";
+$text_post["message_posted"]="メッセージが投稿されました";
+$text_post["message_posted2"]="メッセージが正常に投稿されました。";
+$text_post["button_back"]="戻る";
+$text_post["button_back2"]="へ";
+$text_post["error_newsserver"]="メッセージサーバーがメッセージを拒否しました:";
+$text_post["error_readonly"]="グループは書き込み保護されています";
+$text_post["error_wrong_email"]="間違ったメールアドレス。";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" さんは書きました:";
+$text_post["quote"]="引用";
+$text_post["captchafail"]='CAPTCHAテストに失敗しました。再試行してください';
+$text_post["captchainfo1"]='ここに再入力してください';
+$text_post["captchainfo2"]='画像から正しい文字と数字をテキストボックスに入力してください。この小さなテストは、スパムボット対策のアクセス制限として機能します。';
+
+$text_error["error:"]='<font color="red">エラー:</font>';
+$text_error["connection_failed"]="メッセージサーバーへの接続が失敗しました";
+$text_error["article_not_found"]="<p>記事が存在しません。</p>";
+$text_error["read_access_denied"]="<p>読み取り権限がありません！</p>";
+$text_error["post_failed"]="接続が失敗しました。後でもう一度試してください。";
+$text_error["auth_error"]="認証に失敗しました。";
+$text_error["spool_error"]="スプールファイルエラー。更新してください。";
+
+$text_register["must_register_group"]="このグループにアクセスするには登録が必要です。";
+$text_register["must_register_post"]="このグループに投稿するには登録が必要です。";
+$text_register["no_access_group"]="このグループへのアクセス権がありません。";
+$text_register["no_access_post"]="このグループに投稿する権限がありません。";
+
+?>

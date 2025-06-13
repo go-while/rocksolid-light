@@ -1,0 +1,81 @@
+<?php
+// Swedish (sv) translation for RockSolid Light
+$text_header["from"]="<b>Från:</b> ";
+$text_header["subject"]="<b>Ämne:</b> ";
+$text_header["newsgroups"]="<b>Nyhetsgrupper:</b> ";
+$text_header["followup"]="<b>Uppföljning:</b> ";
+$text_header["organization"]="<b>Organisation:</b> ";
+$text_header["date"]="<b>Datum:</b> ";
+$text_header["message-id"]="<b>Meddelande-ID:</b> ";
+$text_header["references"]="<b>Referenser:</b> ";
+$text_header["user-agent"]="<b>Användaragent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Bilagor:</b> ";
+
+$text_thread["no_articles"]="<p><b>Inga artiklar tillgängliga</b></p>";
+$text_thread["button_write"]="ny tråd";
+$text_thread["button_grouplist"]="nyhetsgrupper";
+$text_thread["button_latest"]="visa senaste";
+$text_thread["button_overboard"]="allmän tavla";
+$text_thread["button_search"]="sök";
+$text_thread["button_top"]="Tillbaka till toppen";
+$text_thread["date"]="<b>Datum</b>";
+$text_thread["subject"]="<b>Ämne</b>";
+$text_thread["threadsize"]="<b>Svar</b>";
+$text_thread["author"]="<b>Författare</b>";
+$text_thread["lastmessage"]="<b>Senaste meddelandet</b>";
+$text_thread["no_such_group"]="Ingen sådan grupp.";
+$text_thread["pages"]="Sidor:";
+
+$text_groups["newsgroup"]="<b>Nyhetsgrupp</b>";
+$text_groups["description"]="<b>Beskrivning</b>";
+
+$text_article["back_to_group"]="artikellista";
+$text_article["refresh"]="uppdatera";
+$text_article["button_answer"]="Svara";
+$text_article["button_cancel"]="Radera";
+$text_article["block-xnoarchive"]="Detta system är inte ett arkiv, men administratören för detta system bestämde sig för att blockera inlägg där författaren inte vill ha arkivering.";
+$text_article["full_article"]="Klicka här för att läsa hela artikeln";
+
+$text_post["name"]="Användarnamn:";
+$text_post["password"]="Lösenord:";
+$text_post["email"]="Din e-post:";
+$text_post["missing_message"]="Du måste inkludera ett meddelande för att posta.";
+$text_post["missing_email"]="Du måste inkludera en e-postadress.";
+$text_post["missing_name"]="Du måste inkludera ett namn eller åtminstone ett alias.";
+$text_post["missing_subject"]="Du måste inkludera ett ämne.";
+$text_post["button_post"]="Posta artikel";
+$text_post["remember"]="Kom ihåg namn";
+$text_post["message"]="Meddelande";
+$text_post["group_head"]="Skriv ett inlägg i ";
+$text_post["group_head_reply"]="Svara på inlägget i ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Du får inte posta i grupperna:";
+$text_post["message_posted"]="Meddelande postat";
+$text_post["message_posted2"]="Meddelandet postades framgångsrikt.";
+$text_post["button_back"]="Tillbaka";
+$text_post["button_back2"]="till";
+$text_post["error_newsserver"]="Meddelandeservern avvisade meddelandet:";
+$text_post["error_readonly"]="Gruppen är skyddad mot skrivning";
+$text_post["error_wrong_email"]="Fel e-postadress.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" skrev:";
+$text_post["quote"]="Citera";
+$text_post["captchafail"]='Du misslyckades med CAPTCHA-testet. Vänligen försök igen';
+$text_post["captchainfo1"]='skriv om det här';
+$text_post["captchainfo2"]='Ange rätt bokstäver och siffror från bilden i textrutan. Detta lilla test tjänar som åtkomstbegränsning mot spam-robotar.';
+
+$text_error["error:"]='<font color="red">Fel:</font>';
+$text_error["connection_failed"]="Anslutningen till meddelandeservern misslyckades";
+$text_error["article_not_found"]="<p>Artikeln existerar inte.</p>";
+$text_error["read_access_denied"]="<p>Ingen behörighet att läsa!</p>";
+$text_error["post_failed"]="Anslutning misslyckades. Försök ladda om senare.";
+$text_error["auth_error"]="Autentisering misslyckades.";
+$text_error["spool_error"]="Fel i spool-filen. Vänligen ladda om.";
+
+$text_register["must_register_group"]="Du måste vara registrerad för att få tillgång till denna grupp.";
+$text_register["must_register_post"]="Du måste vara registrerad för att posta i denna grupp.";
+$text_register["no_access_group"]="Du har inte tillgång till denna grupp.";
+$text_register["no_access_post"]="Du får inte posta i denna grupp.";
+
+?>

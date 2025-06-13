@@ -1,0 +1,81 @@
+<?php
+// Bosnian (bs) translation for RockSolid Light
+$text_header["from"]="<b>Od:</b> ";
+$text_header["subject"]="<b>Subjekt:</b> ";
+$text_header["newsgroups"]="<b>Grupe:</b> ";
+$text_header["followup"]="<b>Odgovor na:</b> ";
+$text_header["organization"]="<b>Organizacija:</b> ";
+$text_header["date"]="<b>Datum:</b> ";
+$text_header["message-id"]="<b>Message-ID:</b> ";
+$text_header["references"]="<b>References:</b> ";
+$text_header["user-agent"]="<b>User-Agent:</b> ";
+$text_header["date_format"]="M d Y H:i:s";
+$text_header["attachments"]="<b>Prilozi:</b> ";
+
+$text_thread["no_articles"]="<p><b>Nema članaka</b></p>";
+$text_thread["button_write"]="Nova nit";
+$text_thread["button_grouplist"]="Lista grupa";
+$text_thread["button_latest"]="Pogledaj najnovije";
+$text_thread["button_overboard"]="Opća ploča";
+$text_thread["button_search"]="Pretraži";
+$text_thread["button_top"]="Na vrh";
+$text_thread["date"]="<b>Datum</b>";
+$text_thread["subject"]="<b>Subjekt</b>";
+$text_thread["threadsize"]="<b>Odgovori</b>";
+$text_thread["author"]="<b>Autor</b>";
+$text_thread["lastmessage"]="<b>Poslednja poruka</b>";
+$text_thread["no_such_group"]="Takva grupa ne postoji.";
+$text_thread["pages"]="Stranice:";
+
+$text_groups["newsgroup"]="<b>Grupa</b>";
+$text_groups["description"]="<b>Opis</b>";
+
+$text_article["back_to_group"]="Lista članaka";
+$text_article["refresh"]="Osvježi";
+$text_article["button_answer"]="Odgovor";
+$text_article["button_cancel"]="Obriši";
+$text_article["block-xnoarchive"]="Ovaj sistem nije arhiv, ali administrator ovog sistema je odlučio da blokira postove gdje autor ne želi arhiviranje.";
+$text_article["full_article"]="Kliknite ovdje da pročitate cijeli članak";
+
+$text_post["name"]="Korisničko ime:";
+$text_post["password"]="Lozinka:";
+$text_post["email"]="Vaš e-mail:";
+$text_post["missing_message"]="Nedostaje vam poruka.";
+$text_post["missing_email"]="Nedostaje email adresa.";
+$text_post["missing_name"]="Nedostaje ime.";
+$text_post["missing_subject"]="Nedostaje subjekt.";
+$text_post["button_post"]="Salji";
+$text_post["remember"]="Zapamti ime i email adresu";
+$text_post["message"]="Message";
+$text_post["group_head"]="Sastavi poruku za ";
+$text_post["group_head_reply"]="Odgovori na post u ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Nije vam dozvoljeno slanje u grupe:";
+$text_post["message_posted"]="Poruka poslana";
+$text_post["message_posted2"]="Poruka uspješno poslana.";
+$text_post["button_back"]="Nazad";
+$text_post["button_back2"]="na";
+$text_post["error_newsserver"]="Newsserver nije prihvatio poruku:";
+$text_post["error_readonly"]="Grupa je read-only";
+$text_post["error_wrong_email"]="Email adresa je pogrešna";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" je napisao:";
+$text_post["quote"]="Citat";
+$text_post["captchafail"]='Niste prošli CAPTCHA test. Molimo pokušajte ponovo';
+$text_post["captchainfo1"]='Otkucajte to ovdje ponovo';
+$text_post["captchainfo2"]='Unesite ispravna slova i brojeve sa slike u tekstno polje. Ovaj mali test služi kao ograničenje pristupa protiv spam-botova.';
+
+$text_error["error:"]='<font color="red">Greška:</font>';
+$text_error["connection_failed"]="Nije uspjelo konektovanje na newsserver";
+$text_error["article_not_found"]="<p>Članak ne postoji.</p>";
+$text_error["read_access_denied"]="<p>Nemate dozvolu za čitanje!</p>";
+$text_error["post_failed"]="Konekcija prekinuta. Pokušajte kasnije.";
+$text_error["auth_error"]="Autorizacija kod newsservera nije prošla.";
+$text_error["spool_error"]="Greška u spoolfile-u. Pritisnite refresh (reload) dugme.";
+
+$text_register["must_register_group"]="Morate se registrovati za pristup ovoj grupi.";
+$text_register["must_register_post"]="Morate se registrovati za postovanje u ovu grupu.";
+$text_register["no_access_group"]="Nemate pristup ovoj grupi.";
+$text_register["no_access_post"]="Nije vam dozvoljeno postovanje u ovu grupu.";
+
+?>

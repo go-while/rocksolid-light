@@ -1,0 +1,81 @@
+<?php
+// kannada.lang
+$text_header["from"]="<b>ಇಂದ:</b> ";
+$text_header["subject"]="<b>ವಿಷಯ:</b> ";
+$text_header["newsgroups"]="<b>ನ್ಯೂಸ್‌ಗ್ರೂಪ್‌ಗಳು:</b> ";
+$text_header["followup"]="<b>ಮುಂದಿನ:</b> ";
+$text_header["organization"]="<b>ಸಂಸ್ಥೆ:</b> ";
+$text_header["date"]="<b>ದಿನಾಂಕ:</b> ";
+$text_header["message-id"]="<b>ಸಂದೇಶ-ID:</b> ";
+$text_header["references"]="<b>ಉಲ್ಲೇಖಗಳು:</b> ";
+$text_header["user-agent"]="<b>ಬಳಕೆದಾರ-ಏಜೆಂಟ್:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>ಅಟ್ಯಾಚ್‌ಮೆಂಟ್‌ಗಳು:</b> ";
+
+$text_thread["no_articles"]="<p><b>ಯಾವುದೇ ಲೇಖನಗಳು ಲಭ್ಯವಿಲ್ಲ</b></p>";
+$text_thread["button_write"]="ಹೊಸ ಥ್ರೆಡ್";
+$text_thread["button_grouplist"]="ನ್ಯೂಸ್‌ಗ್ರೂಪ್‌ಗಳು";
+$text_thread["button_latest"]="ಇತ್ತೀಚಿನದನ್ನು ನೋಡಿ";
+$text_thread["button_overboard"]="ಓವರ್‌ಬೋರ್ಡ್";
+$text_thread["button_search"]="ಹುಡುಕಿ";
+$text_thread["button_top"]="ಮೇಲೆ ಹಿಂತಿರುಗಿ";
+$text_thread["date"]="<b>ದಿನಾಂಕ</b>";
+$text_thread["subject"]="<b>ವಿಷಯ</b>";
+$text_thread["threadsize"]="<b>ಉತ್ತರಗಳು</b>";
+$text_thread["author"]="<b>ಲೇಖಕ</b>";
+$text_thread["lastmessage"]="<b>ಕೊನೆಯ ಸಂದೇಶ</b>";
+$text_thread["no_such_group"]="ಅಂತಹ ಗುಂಪು ಇಲ್ಲ.";
+$text_thread["pages"]="ಪುಟಗಳು:";
+
+$text_groups["newsgroup"]="<b>ನ್ಯೂಸ್‌ಗ್ರೂಪ್</b>";
+$text_groups["description"]="<b>ವಿವರಣೆ</b>";
+
+$text_article["back_to_group"]="ಲೇಖನ ಪಟ್ಟಿ";
+$text_article["refresh"]="ರಿಫ್ರೆಶ್";
+$text_article["button_answer"]="ಉತ್ತರ";
+$text_article["button_cancel"]="ಅಳಿಸಿ";
+$text_article["block-xnoarchive"]="ಈ ಸಿಸ್ಟಮ್ ಆರ್ಕೈವ್ ಅಲ್ಲ, ಆದರೆ ಈ ಸಿಸ್ಟಮ್‌ನ ನಿರ್ವಾಹಕರು ಲೇಖಕರು ಆರ್ಕೈವ್ ಮಾಡಲು ಬಯಸದ ಪೋಸ್ಟ್‌ಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ನಿರ್ಧರಿಸಿದ್ದಾರೆ.";
+$text_article["full_article"]="ಸಂಪೂರ್ಣ ಲೇಖನವನ್ನು ಓದಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ";
+
+$text_post["name"]="ಬಳಕೆದಾರ ಹೆಸರು:";
+$text_post["password"]="ಪಾಸ್‌ವರ್ಡ್:";
+$text_post["email"]="ನಿಮ್ಮ ಇ-ಮೇಲ್:";
+$text_post["missing_message"]="ಪೋಸ್ಟ್ ಮಾಡಲು ನೀವು ಸಂದೇಶವನ್ನು ಸೇರಿಸಬೇಕು.";
+$text_post["missing_email"]="ನೀವು ಇ-ಮೇಲ್ ವಿಳಾಸವನ್ನು ಸೇರಿಸಬೇಕು.";
+$text_post["missing_name"]="ನೀವು ಹೆಸರು ಅಥವಾ ಕನಿಷ್ಠ ಅಲಿಯಾಸ್ ಅನ್ನು ಸೇರಿಸಬೇಕು.";
+$text_post["missing_subject"]="ನೀವು ವಿಷಯವನ್ನು ಸೇರಿಸಬೇಕು.";
+$text_post["button_post"]="ಲೇಖನ ಪೋಸ್ಟ್ ಮಾಡಿ";
+$text_post["remember"]="ಹೆಸರು ನೆನಪಿಟ್ಟುಕೊಳ್ಳಿ";
+$text_post["message"]="ಸಂದೇಶ";
+$text_post["group_head"]="ಇದರಲ್ಲಿ ಪೋಸ್ಟ್ ಬರೆಯಿರಿ ";
+$text_post["group_head_reply"]="ಇದರಲ್ಲಿ ಪೋಸ್ಟ್‌ಗೆ ಉತ್ತರಿಸಿ ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ನೀವು ಈ ಗುಂಪುಗಳಲ್ಲಿ ಪೋಸ್ಟ್ ಮಾಡಲು ಅನುಮತಿ ಇಲ್ಲ:";
+$text_post["message_posted"]="ಸಂದೇಶ ಪೋಸ್ಟ್ ಮಾಡಿದೆ";
+$text_post["message_posted2"]="ಸಂದೇಶವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪೋಸ್ಟ್ ಮಾಡಲಾಗಿದೆ.";
+$text_post["button_back"]="ಹಿಂತಿರುಗಿ";
+$text_post["button_back2"]="ಗೆ";
+$text_post["error_newsserver"]="ಮೆಸೇಜ್ ಸರ್ವರ್ ಸಂದೇಶವನ್ನು ತಿರಸ್ಕರಿಸಿದೆ:";
+$text_post["error_readonly"]="ಗುಂಪು ಬರೆಯಲು ಸಂರಕ್ಷಿತವಾಗಿದೆ";
+$text_post["error_wrong_email"]="ತಪ್ಪು ಇ-ಮೇಲ್ ವಿಳಾಸ.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ಬರೆದರು:";
+$text_post["quote"]="ಉಲ್ಲೇಖ";
+$text_post["captchafail"]="ನೀವು CAPTCHA ಪರೀಕ್ಷೆಯಲ್ಲಿ ವಿಫಲರಾಗಿದ್ದೀರಿ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ";
+$text_post["captchainfo1"]="ಇದನ್ನು ಇಲ್ಲಿ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ";
+$text_post["captchainfo2"]="ಚಿತ್ರದಿಂದ ಸರಿಯಾದ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳನ್ನು ಪಠ್ಯ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ ನಮೂದಿಸಿ. ಈ ಸಣ್ಣ ಪರೀಕ್ಷೆಯು ಸ್ಪ್ಯಾಮ್-ಬಾಟ್‌ಗಳ ವಿರುದ್ಧ ಪ್ರವೇಶ ನಿರ್ಬಂಧವಾಗಿ ಕಾಗಿ ಮಾಡುತ್ತದೆ.";
+
+$text_error["error:"]='<font color="red">ದೋಷ:</font>';
+$text_error["connection_failed"]="ಮೆಸೇಜ್ ಸರ್ವರ್‌ಗೆ ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ";
+$text_error["article_not_found"]="<p>ಲೇಖನ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.</p>";
+$text_error["read_access_denied"]="<p>ಓದಲು ಅನುಮತಿ ಇಲ್ಲ!</p>";
+$text_error["post_failed"]="ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ. ನಂತರ ರೀಲೋಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.";
+$text_error["auth_error"]="ದೃಢೀಕರಣ ವಿಫಲವಾಗಿದೆ.";
+$text_error["spool_error"]="ಸ್ಪೂಲ್‌ಫೈಲ್‌ನಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ರೀಲೋಡ್ ಮಾಡಿ.";
+
+$text_register["must_register_group"]="ಈ ಗುಂಪಿನ ಪ್ರವೇಶಕ್ಕಾಗಿ ನೀವು ನೋಂದಾಯಿಸಿಕೊಳ್ಳಬೇಕು.";
+$text_register["must_register_post"]="ಈ ಗುಂಪಿನಲ್ಲಿ ಪೋಸ್ಟ್ ಮಾಡಲು ನೀವು ನೋಂದಾಯಿಸಿಕೊಳ್ಳಬೇಕು.";
+$text_register["no_access_group"]="ನಿಮಗೆ ಈ ಗುಂಪಿನ ಪ್ರವೇಶ ಇಲ್ಲ.";
+$text_register["no_access_post"]="ನಿಮಗೆ ಈ ಗುಂಪಿನಲ್ಲಿ ಪೋಸ್ಟ್ ಮಾಡಲು ಅನುಮತಿ ಇಲ್ಲ.";
+
+?>

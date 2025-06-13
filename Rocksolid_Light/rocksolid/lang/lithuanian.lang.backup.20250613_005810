@@ -1,0 +1,81 @@
+<?php
+// Lithuanian (lt) translation for RockSolid Light
+$text_header["from"]="<b>Nuo:</b> ";
+$text_header["subject"]="<b>Tema:</b> ";
+$text_header["newsgroups"]="<b>Naujienų grupės:</b> ";
+$text_header["followup"]="<b>Tęsinys:</b> ";
+$text_header["organization"]="<b>Organizacija:</b> ";
+$text_header["date"]="<b>Data:</b> ";
+$text_header["message-id"]="<b>Žinutės ID:</b> ";
+$text_header["references"]="<b>Nuorodos:</b> ";
+$text_header["user-agent"]="<b>Vartotojo agentas:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Priedai:</b> ";
+
+$text_thread["no_articles"]="<p><b>Straipsnių nėra</b></p>";
+$text_thread["button_write"]="nauja tema";
+$text_thread["button_grouplist"]="naujienų grupės";
+$text_thread["button_latest"]="žiūrėti naujausius";
+$text_thread["button_overboard"]="bendroji lenta";
+$text_thread["button_search"]="ieškoti";
+$text_thread["button_top"]="Atgal į viršų";
+$text_thread["date"]="<b>Data</b>";
+$text_thread["subject"]="<b>Tema</b>";
+$text_thread["threadsize"]="<b>Atsakymai</b>";
+$text_thread["author"]="<b>Autorius</b>";
+$text_thread["lastmessage"]="<b>Paskutinė žinutė</b>";
+$text_thread["no_such_group"]="Tokios grupės nėra.";
+$text_thread["pages"]="Puslapiai:";
+
+$text_groups["newsgroup"]="<b>Naujienų grupė</b>";
+$text_groups["description"]="<b>Aprašymas</b>";
+
+$text_article["back_to_group"]="straipsnių sąrašas";
+$text_article["refresh"]="atnaujinti";
+$text_article["button_answer"]="Atsakyti";
+$text_article["button_cancel"]="Ištrinti";
+$text_article["block-xnoarchive"]="Ši sistema nėra archyvas, bet šios sistemos administratorius nusprendė blokuoti įrašus, kurių autorius nenori archyvuoti.";
+$text_article["full_article"]="Spustelėkite čia, kad perskaitytumėte visą straipsnį";
+
+$text_post["name"]="Vartotojo vardas:";
+$text_post["password"]="Slaptažodis:";
+$text_post["email"]="Jūsų el. paštas:";
+$text_post["missing_message"]="Turite įtraukti žinutę, kad galėtumėte skelbti.";
+$text_post["missing_email"]="Turite įtraukti el. pašto adresą.";
+$text_post["missing_name"]="Turite įtraukti vardą arba bent slapyvardį.";
+$text_post["missing_subject"]="Turite įtraukti temą.";
+$text_post["button_post"]="Skelbti straipsnį";
+$text_post["remember"]="Prisiminti vardą";
+$text_post["message"]="Žinutė";
+$text_post["group_head"]="Rašyti įrašą ";
+$text_post["group_head_reply"]="Atsakyti į įrašą ";
+$text_post["group_tail"]="grupėje";
+$text_post["followup_not_allowed"]="Jums neleidžiama skelbti šiose grupėse:";
+$text_post["message_posted"]="Žinutė paskelbta";
+$text_post["message_posted2"]="Žinutė sėkmingai paskelbta.";
+$text_post["button_back"]="Atgal";
+$text_post["button_back2"]="į";
+$text_post["error_newsserver"]="Žinučių serveris atmetė žinutę:";
+$text_post["error_readonly"]="Grupė apsaugota nuo rašymo";
+$text_post["error_wrong_email"]="Neteisingas el. pašto adresas.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" rašė:";
+$text_post["quote"]="Cituoti";
+$text_post["captchafail"]='Jums nepavyko CAPTCHA testas. Prašome bandyti dar kartą';
+$text_post["captchainfo1"]='perrašykite tai čia';
+$text_post["captchainfo2"]='Įveskite teisingas raides ir skaičius iš paveiksliuko į teksto laukelį. Šis mažas testas tarnauja kaip prieigos apribojimas prieš šlamšto robotus.';
+
+$text_error["error:"]='<font color="red">Klaida:</font>';
+$text_error["connection_failed"]="Nepavyko prisijungti prie žinučių serverio";
+$text_error["article_not_found"]="<p>Straipsnis neegzistuoja.</p>";
+$text_error["read_access_denied"]="<p>Nėra leidimo skaityti!</p>";
+$text_error["post_failed"]="Prisijungimas nepavyko. Bandykite perkrauti vėliau.";
+$text_error["auth_error"]="Autentifikacija nepavyko.";
+$text_error["spool_error"]="Klaida spool faile. Prašome perkrauti.";
+
+$text_register["must_register_group"]="Turite būti užsiregistravęs, kad gautumėte prieigą prie šios grupės.";
+$text_register["must_register_post"]="Turite būti užsiregistravęs, kad galėtumėte skelbti šioje grupėje.";
+$text_register["no_access_group"]="Neturite prieigos prie šios grupės.";
+$text_register["no_access_post"]="Jums neleidžiama skelbti šioje grupėje.";
+
+?>

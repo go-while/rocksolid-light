@@ -1,0 +1,81 @@
+<?php
+// Armenian (hy) translation for RockSolid Light
+$text_header["from"]="<b>Ից:</b> ";
+$text_header["subject"]="<b>Թեմա:</b> ";
+$text_header["newsgroups"]="<b>Լուրերի խմբեր:</b> ";
+$text_header["followup"]="<b>Հետևություն:</b> ";
+$text_header["organization"]="<b>Կազմակերպություն:</b> ";
+$text_header["date"]="<b>Ամսաթիվ:</b> ";
+$text_header["message-id"]="<b>Հաղորդագրություն ID:</b> ";
+$text_header["references"]="<b>Հղումներ:</b> ";
+$text_header["user-agent"]="<b>Օգտատիրոջ գործակալ:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Կցորդներ:</b> ";
+
+$text_thread["no_articles"]="<p><b>Հոդվածներ չկան</b></p>";
+$text_thread["button_write"]="նոր թեմա";
+$text_thread["button_grouplist"]="լուրերի խմբեր";
+$text_thread["button_latest"]="դիտել վերջինները";
+$text_thread["button_overboard"]="ընդհանուր տախտակ";
+$text_thread["button_search"]="փնտրել";
+$text_thread["button_top"]="Վերադառնալ վեր";
+$text_thread["date"]="<b>Ամսաթիվ</b>";
+$text_thread["subject"]="<b>Թեմա</b>";
+$text_thread["threadsize"]="<b>Պատասխաններ</b>";
+$text_thread["author"]="<b>Հեղինակ</b>";
+$text_thread["lastmessage"]="<b>Վերջին հաղորդագրություն</b>";
+$text_thread["no_such_group"]="Այդպիսի խումբ չկա:";
+$text_thread["pages"]="Էջեր:";
+
+$text_groups["newsgroup"]="<b>Լուրերի խումբ</b>";
+$text_groups["description"]="<b>Նկարագրություն</b>";
+
+$text_article["back_to_group"]="հոդվածների ցուցակ";
+$text_article["refresh"]="թարմացնել";
+$text_article["button_answer"]="Պատասխանել";
+$text_article["button_cancel"]="Ջնջել";
+$text_article["block-xnoarchive"]="Այս համակարգը արխիվ չէ, բայց այս համակարգի ադմինիստրատորը որոշել է արգելափակել այն գրառումները, որտեղ հեղինակը չի ցանկանում արխիվացում:";
+$text_article["full_article"]="Սեղմեք այստեղ ամբողջական հոդվածը կարդալու համար";
+
+$text_post["name"]="Օգտատիրոջ անուն:";
+$text_post["password"]="Գաղտնաբառ:";
+$text_post["email"]="Ձեր էլ-փոստ:";
+$text_post["missing_message"]="Դուք պետք է ներառեք հաղորդագրություն գրառելու համար:";
+$text_post["missing_email"]="Դուք պետք է ներառեք էլ-փոստի հասցե:";
+$text_post["missing_name"]="Դուք պետք է ներառեք անուն կամ գոնե մականուն:";
+$text_post["missing_subject"]="Դուք պետք է ներառեք թեմա:";
+$text_post["button_post"]="Գրառել հոդված";
+$text_post["remember"]="Հիշել անունը";
+$text_post["message"]="Հաղորդագրություն";
+$text_post["group_head"]="Գրել գրառում ";
+$text_post["group_head_reply"]="Պատասխանել գրառմանը ";
+$text_post["group_tail"]="ում";
+$text_post["followup_not_allowed"]="Դուք իրավունք չունեք գրառել այս խմբերում:";
+$text_post["message_posted"]="Հաղորդագրությունը գրառված է";
+$text_post["message_posted2"]="Հաղորդագրությունը հաջողությամբ գրառվել է:";
+$text_post["button_back"]="Վերադառնալ";
+$text_post["button_back2"]="դեպի";
+$text_post["error_newsserver"]="Հաղորդագրությունների սերվերը մերժել է հաղորդագրությունը:";
+$text_post["error_readonly"]="Խումբը պաշտպանված է գրելուց";
+$text_post["error_wrong_email"]="Սխալ էլ-փոստի հասցե:";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" գրել է:";
+$text_post["quote"]="Մեջբերում";
+$text_post["captchafail"]='Դուք ձախողվել եք CAPTCHA թեստում: Խնդրում ենք փորձել կրկին';
+$text_post["captchainfo1"]='վերաշարել այն այստեղ';
+$text_post["captchainfo2"]='Մուտքագրեք ճիշտ տառերը և թվերը նկարից տեքստային արկղում: Այս փոքր թեստը ծառայում է որպես մուտքի սահմանափակում սպամ-ռոբոտների դեմ:';
+
+$text_error["error:"]='<font color="red">Սխال:</font>';
+$text_error["connection_failed"]="Հաղորդագրությունների սերվերի հետ կապը ձախողվեց";
+$text_error["article_not_found"]="<p>Հոդվածը գոյություն չունի:</p>";
+$text_error["read_access_denied"]="<p>Կարդալու թույլտվություն չկա!</p>";
+$text_error["post_failed"]="Կապը ձախողվեց: Փորձեք վերաբեռնել ավելի ուշ:";
+$text_error["auth_error"]="Նույնականացումը ձախողվեց:";
+$text_error["spool_error"]="Սխալ սպուլ ֆայլում: Խնդրում ենք վերաբեռնել:";
+
+$text_register["must_register_group"]="Դուք պետք է գրանցված լինեք այս խմբին մուտք գործելու համար:";
+$text_register["must_register_post"]="Դուք պետք է գրանցված լինեք այս խմբում գրառելու համար:";
+$text_register["no_access_group"]="Դուք մուտք չունեք այս խմբին:";
+$text_register["no_access_post"]="Դուք իրավունք չունեք գրառել այս խմբում:";
+
+?>

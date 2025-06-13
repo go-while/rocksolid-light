@@ -1,0 +1,81 @@
+<?php
+// Greek (el) translation for RockSolid Light
+$text_header["from"]="<b>Από:</b> ";
+$text_header["subject"]="<b>Θέμα:</b> ";
+$text_header["newsgroups"]="<b>Ομάδες νέων:</b> ";
+$text_header["followup"]="<b>Παρακολούθηση:</b> ";
+$text_header["organization"]="<b>Οργανισμός:</b> ";
+$text_header["date"]="<b>Ημερομηνία:</b> ";
+$text_header["message-id"]="<b>ID μηνύματος:</b> ";
+$text_header["references"]="<b>Αναφορές:</b> ";
+$text_header["user-agent"]="<b>Πράκτορας χρήστη:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Συνημμένα:</b> ";
+
+$text_thread["no_articles"]="<p><b>Δεν υπάρχουν διαθέσιμα άρθρα</b></p>";
+$text_thread["button_write"]="νέο νήμα";
+$text_thread["button_grouplist"]="ομάδες νέων";
+$text_thread["button_latest"]="προβολή τελευταίων";
+$text_thread["button_overboard"]="γενικός πίνακας";
+$text_thread["button_search"]="αναζήτηση";
+$text_thread["button_top"]="Επιστροφή στην κορυφή";
+$text_thread["date"]="<b>Ημερομηνία</b>";
+$text_thread["subject"]="<b>Θέμα</b>";
+$text_thread["threadsize"]="<b>Απαντήσεις</b>";
+$text_thread["author"]="<b>Συγγραφέας</b>";
+$text_thread["lastmessage"]="<b>Τελευταίο μήνυμα</b>";
+$text_thread["no_such_group"]="Δεν υπάρχει τέτοια ομάδα.";
+$text_thread["pages"]="Σελίδες:";
+
+$text_groups["newsgroup"]="<b>Ομάδα νέων</b>";
+$text_groups["description"]="<b>Περιγραφή</b>";
+
+$text_article["back_to_group"]="λίστα άρθρων";
+$text_article["refresh"]="ανανέωση";
+$text_article["button_answer"]="Απάντηση";
+$text_article["button_cancel"]="Διαγραφή";
+$text_article["block-xnoarchive"]="Αυτό το σύστημα δεν είναι αρχείο, αλλά ο διαχειριστής του συστήματος αποφάσισε να μπλοκάρει αναρτήσεις όπου ο συγγραφέας δεν θέλει αρχειοθέτηση.";
+$text_article["full_article"]="Κάντε κλικ εδώ για να διαβάσετε το πλήρες άρθρο";
+
+$text_post["name"]="Όνομα χρήστη:";
+$text_post["password"]="Κωδικός πρόσβασης:";
+$text_post["email"]="Το email σας:";
+$text_post["missing_message"]="Πρέπει να συμπεριλάβετε ένα μήνυμα για να δημοσιεύσετε.";
+$text_post["missing_email"]="Πρέπει να συμπεριλάβετε μια διεύθυνση email.";
+$text_post["missing_name"]="Πρέπει να συμπεριλάβετε ένα όνομα ή τουλάχιστον ένα ψευδώνυμο.";
+$text_post["missing_subject"]="Πρέπει να συμπεριλάβετε ένα θέμα.";
+$text_post["button_post"]="Δημοσίευση άρθρου";
+$text_post["remember"]="Απομνημόνευση ονόματος";
+$text_post["message"]="Μήνυμα";
+$text_post["group_head"]="Σύνταξη ανάρτησης στο ";
+$text_post["group_head_reply"]="Απάντηση σε ανάρτηση στο ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Δεν επιτρέπεται να δημοσιεύσετε στις ομάδες:";
+$text_post["message_posted"]="Μήνυμα δημοσιεύτηκε";
+$text_post["message_posted2"]="Το μήνυμα δημοσιεύτηκε επιτυχώς.";
+$text_post["button_back"]="Πίσω";
+$text_post["button_back2"]="στο";
+$text_post["error_newsserver"]="Ο διακομιστής μηνυμάτων απέρριψε το μήνυμα:";
+$text_post["error_readonly"]="Η ομάδα είναι προστατευμένη από εγγραφή";
+$text_post["error_wrong_email"]="Λάθος διεύθυνση email.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" έγραψε:";
+$text_post["quote"]="Παράθεση";
+$text_post["captchafail"]='Αποτύχατε στο τεστ CAPTCHA. Παρακαλώ δοκιμάστε ξανά';
+$text_post["captchainfo1"]='ξαναγράψτε αυτό εδώ';
+$text_post["captchainfo2"]='Εισαγάγετε τα σωστά γράμματα και αριθμούς από την εικόνα στο πλαίσιο κειμένου. Αυτό το μικρό τεστ χρησιμεύει ως περιορισμός πρόσβασης κατά των spam-bots.';
+
+$text_error["error:"]='<font color="red">Σφάλμα:</font>';
+$text_error["connection_failed"]="Η σύνδεση με τον διακομιστή μηνυμάτων απέτυχε";
+$text_error["article_not_found"]="<p>Το άρθρο δεν υπάρχει.</p>";
+$text_error["read_access_denied"]="<p>Δεν υπάρχει άδεια για ανάγνωση!</p>";
+$text_error["post_failed"]="Η σύνδεση απέτυχε. Δοκιμάστε να επαναφορτώσετε αργότερα.";
+$text_error["auth_error"]="Η αυθεντικοποίηση απέτυχε.";
+$text_error["spool_error"]="Σφάλμα στο αρχείο spool. Παρακαλώ επαναφορτώστε.";
+
+$text_register["must_register_group"]="Πρέπει να είστε εγγεγραμμένος για να έχετε πρόσβαση σε αυτή την ομάδα.";
+$text_register["must_register_post"]="Πρέπει να είστε εγγεγραμμένος για να δημοσιεύσετε σε αυτή την ομάδα.";
+$text_register["no_access_group"]="Δεν έχετε πρόσβαση σε αυτή την ομάδα.";
+$text_register["no_access_post"]="Δεν επιτρέπεται να δημοσιεύσετε σε αυτή την ομάδα.";
+
+?>

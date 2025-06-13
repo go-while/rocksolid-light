@@ -1,0 +1,86 @@
+<?php
+// quechua.lang
+$text_header["from"]="<b>Maymanta:</b> ";
+$text_header["subject"]="<b>Rimay:</b> ";
+$text_header["newsgroups"]="<b>Willakuy huñunkuna:</b> ";
+$text_header["followup"]="<b>Qatipay:</b> ";
+$text_header["organization"]="<b>Tantanakuy:</b> ";
+$text_header["date"]="<b>P'unchay:</b> ";
+$text_header["message-id"]="<b>Willay-ID:</b> ";
+$text_header["references"]="<b>Rikuy:</b> ";
+$text_header["user-agent"]="<b>Ruwaq-Agent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Yapasqakuna:</b> ";
+
+$text_thread["no_articles"]="<p><b>Mana willakuykuna kanchu</b></p>";
+$text_thread["button_write"]="musuq rimay";
+$text_thread["button_grouplist"]="willakuy huñunkuna";
+$text_thread["button_latest"]="qhipaq rikunapak";
+$text_thread["button_overboard"]="lliw huñunkuna";
+$text_thread["button_search"]="maskay";
+$text_thread["button_top"]="Hanaqman kutiy";
+$text_thread["date"]="<b>P'unchay</b>";
+$text_thread["subject"]="<b>Rimay</b>";
+$text_thread["threadsize"]="<b>Kutichiy</b>";
+$text_thread["author"]="<b>Qillqaq</b>";
+$text_thread["lastmessage"]="<b>Qhipa willay</b>";
+$text_thread["no_such_group"]="Mana chay huñu kanchu.";
+$text_thread["pages"]="Panqakuna:";
+
+$text_groups["newsgroup"]="<b>Willakuy huñu</b>";
+$text_groups["description"]="<b>Willay</b>";
+
+$text_article["back_to_group"]="willakuy sutinkuna";
+$text_article["refresh"]="musuqyachiy";
+$text_article["button_answer"]="Kutichiy";
+$text_article["button_cancel"]="Ayqiy";
+$text_article["block-xnoarchive"]="Kay llamkana mana archivo kanchu ichaqa llamkana kamachiq akllaran qillqaqkuna mana archivo munasqanku rayku chinkachiy.";
+$text_article["full_article"]="Lliw willakuy ñawinchay kaypi ñit'iy";
+
+$text_post["name"]="Ruwaq suti:";
+$text_post["password"]="Yaykuna rimay:";
+$text_post["email"]="Qam chaski qillqa:";
+$text_post["missing_message"]="Qillqanapaq willay necesitan.";
+$text_post["missing_email"]="Chaski qillqa dirección necesitan.";
+$text_post["missing_name"]="Suti utaq aylla suti necesitan.";
+$text_post["missing_subject"]="Rimay necesitan.";
+$text_post["button_post"]="Willakuy apachiy";
+$text_post["remember"]="Sutita yuyariy";
+$text_post["message"]="Willay";
+$text_post["group_head"]="Huñupi qillqay ";
+$text_post["group_head_reply"]="Huñupi kutichiy ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Mana kay huñukunapi qillqayta atinkichu:";
+$text_post["message_posted"]="Willay apachinakuq";
+$text_post["message_posted2"]="Willay sumaqta apachinakuq.";
+$text_post["button_back"]="Kutiy";
+$text_post["button_back2"]="man";
+$text_post["error_newsserver"]="Willakuy sirwiq kay willayta mana munanchu:";
+$text_post["error_readonly"]="Kay huñu qillqay kichaqchu";
+$text_post["error_wrong_email"]="Chaski qillqa mana allinchu.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" qillqarqan:";
+$text_post["quote"]="Willay";
+$text_post["captchafail"]='CAPTCHA pruebapi pantasqanki. Yapamanta ruwayküy.';
+$text_post["captchainfo1"]='kaypi wakmanta qillqay';
+$text_post["captchainfo2"]='Rikuypi kaq allin qillqakuna hinaspa yupanakuna qillqana kaxunman churay. Kay huchuy pruebaqa spam-botkunamanta harkakuypaq sirvin.';
+
+$text_nav["first_page"]="Ñawpaq panqa";
+$text_nav["last_page"]="Qhipa panqa";
+$text_nav["next_page"]="Qatiq panqa";
+$text_nav["prev_page"]="Ñawpaq panqa";
+
+$text_error["error:"]='<font color="red">Pantay:</font>';
+$text_error["connection_failed"]="Willakuy sirwiqwan tinkiypakuq pantarqan.";
+$text_error["article_not_found"]="<p>Willakuy mana tariqchu.</p>";
+$text_error["read_access_denied"]="<p>Ñawinayninqa mana saqisqachu.</p>";
+$text_error["post_failed"]="Tinkiy pantarqan. Huk ratopi kutilla ruway.";
+$text_error["auth_error"]="Qhapaq kasqay mana allinchu.";
+$text_error["spool_error"]="Spool willana pantay. Ama hina kaspa musuqmanta apamuy.";
+
+$text_register["must_register_group"]="Kay huñuman yaykuypaq registrakuynan.";
+$text_register["must_register_post"]="Kay huñupi qillqanapaq registrakuynan.";
+$text_register["no_access_group"]="Mana kay huñuman yaykuy atiyniyuqchu.";
+$text_register["no_access_post"]="Mana kay huñupi qillqay saqisqachu.";
+
+?>

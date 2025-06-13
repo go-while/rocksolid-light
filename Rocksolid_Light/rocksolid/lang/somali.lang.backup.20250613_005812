@@ -1,0 +1,81 @@
+<?php
+// somali.lang
+$text_header["from"]="<b>Laga soo diray:</b> ";
+$text_header["subject"]="<b>Mawduuca:</b> ";
+$text_header["newsgroups"]="<b>Kooxaha wararka:</b> ";
+$text_header["followup"]="<b>Raac:</b> ";
+$text_header["organization"]="<b>Ururka:</b> ";
+$text_header["date"]="<b>Taariikh:</b> ";
+$text_header["message-id"]="<b>Fariin-ID:</b> ";
+$text_header["references"]="<b>Tixraacyo:</b> ";
+$text_header["user-agent"]="<b>Qalabka isticmaale:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Lifaaqyo:</b> ";
+
+$text_thread["no_articles"]="<p><b>Maqaallo lama heli karo</b></p>";
+$text_thread["button_write"]="qor mowduuc cusub";
+$text_thread["button_grouplist"]="kooxaha wararka";
+$text_thread["button_latest"]="eeg kuwa ugu dambeeyay";
+$text_thread["button_overboard"]="dhammaan kooxaha";
+$text_thread["button_search"]="raadso";
+$text_thread["button_top"]="Ku noqo sare";
+$text_thread["date"]="<b>Taariikh</b>";
+$text_thread["subject"]="<b>Mawduuc</b>";
+$text_thread["threadsize"]="<b>Jawaabo</b>";
+$text_thread["author"]="<b>Qoraa</b>";
+$text_thread["lastmessage"]="<b>Fariintii ugu dambeysay</b>";
+$text_thread["no_such_group"]="Kooxdan lama heli karo.";
+$text_thread["pages"]="Bogagga:";
+
+$text_groups["newsgroup"]="<b>Kooxda wararka</b>";
+$text_groups["description"]="<b>Sharaxaad</b>";
+
+$text_article["back_to_group"]="liiska maqaallada";
+$text_article["refresh"]="cusbooneysii";
+$text_article["button_answer"]="Jawaab";
+$text_article["button_cancel"]="Tirtir";
+$text_article["block-xnoarchive"]="Nidaamkan ma ahan kayd, laakiin maamulaha nidaamkan wuxuu go'aansaday inuu xannibo qoraallada, halka qoraagu uusan rabin in la kaydiyo.";
+$text_article["full_article"]="Guji halkan si aad u akhrido maqaalka oo dhan";
+
+$text_post["name"]="Magaca isticmaalaha:";
+$text_post["password"]="Furaha sirta:";
+$text_post["email"]="E-mailkaaga:";
+$text_post["missing_message"]="Waa inaad gelisaa fariin si aad u dirto.";
+$text_post["missing_email"]="Waa inaad gelisaa cinwaan e-mail.";
+$text_post["missing_name"]="Waa inaad gelisaa magac ama ugu yaraan naanays.";
+$text_post["missing_subject"]="Waa inaad gelisaa mawduuc.";
+$text_post["button_post"]="Dir Maqaal";
+$text_post["remember"]="Xasuuso magaca";
+$text_post["message"]="Fariin";
+$text_post["group_head"]="Qor fariin cusub ee ";
+$text_post["group_head_reply"]="Jawaab u dir qoraal ee ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Lama oggola inaad wax ku qorto kooxahan:";
+$text_post["message_posted"]="Fariinta waa la diray";
+$text_post["message_posted2"]="Fariinta si guul leh ayaa loo diray.";
+$text_post["button_back"]="Dib u noqo";
+$text_post["button_back2"]="ku";
+$text_post["error_newsserver"]="Server-ka fariimaha ayaa diiday fariinta:";
+$text_post["error_readonly"]="Kooxdu waa la xannibay";
+$text_post["error_wrong_email"]="Cinwaanka e-mail waa khalad.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" wuxuu qoray:";
+$text_post["quote"]="Xigasho";
+$text_post["captchafail"]='Waad ku guuldareysatay tijaabada CAPTCHA. Fadlan isku day mar kale';
+$text_post["captchainfo1"]='ku qor halkan';
+$text_post["captchainfo2"]='Geli xarfaha iyo lambarrada saxda ah ee sawirka ku jira sanduuqa qoraalka. Tijaabadan yar waxay ka hortagtaa spam-bots.';
+
+$text_error["error:"]='<font color="red">Khalad:</font>';
+$text_error["connection_failed"]="Xiriirka Server-ka fariimaha wuu guuldareystay";
+$text_error["article_not_found"]="<p>Maqaalka lama helin.</p>";
+$text_error["read_access_denied"]="<p>Lama oggola in la akhriyo!</p>";
+$text_error["post_failed"]="Xiriirku wuu guuldareystay. Isku day dib u cusbooneysiin.";
+$text_error["auth_error"]="Aqoonsi waa guuldareystay.";
+$text_error["spool_error"]="Khalad ku yimid faylka kaydka. Fadlan dib u cusbooneysii.";
+
+$text_register["must_register_group"]="Waa inaad iska diiwaangelisaa si aad u gasho kooxdan.";
+$text_register["must_register_post"]="Waa inaad iska diiwaangelisaa si aad wax ugu qorto kooxdan.";
+$text_register["no_access_group"]="Ma heli kartid kooxdan.";
+$text_register["no_access_post"]="Lama oggola inaad wax ku qorto kooxdan.";
+
+?>

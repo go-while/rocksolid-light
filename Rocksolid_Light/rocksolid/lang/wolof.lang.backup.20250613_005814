@@ -1,0 +1,86 @@
+<?php
+// wolof.lang
+$text_header["from"]="<b>Ci:</b> ";
+$text_header["subject"]="<b>Xët:</b> ";
+$text_header["newsgroups"]="<b>Kàddu yi:</b> ";
+$text_header["followup"]="<b>Topp:</b> ";
+$text_header["organization"]="<b>Mbooloom:</b> ";
+$text_header["date"]="<b>Bis:</b> ";
+$text_header["message-id"]="<b>ID-u bataaxal:</b> ";
+$text_header["references"]="<b>Waytu yi:</b> ";
+$text_header["user-agent"]="<b>Jëfandikukat-Agent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Yëpp yi jàpp:</b> ";
+
+$text_thread["no_articles"]="<p><b>Amul wax-waxeet</b></p>";
+$text_thread["button_write"]="xët bu bees";
+$text_thread["button_grouplist"]="kàddu yi";
+$text_thread["button_latest"]="gis yu bees yi";
+$text_thread["button_overboard"]="lu ëpp";
+$text_thread["button_search"]="ceet";
+$text_thread["button_top"]="Dellu ci kaw";
+$text_thread["date"]="<b>Bis</b>";
+$text_thread["subject"]="<b>Xët</b>";
+$text_thread["threadsize"]="<b>Jàpp yi</b>";
+$text_thread["author"]="<b>Bindkat</b>";
+$text_thread["lastmessage"]="<b>Bataaxal bu mujj</b>";
+$text_thread["no_such_group"]="Amul benn kàddu bu mel.";
+$text_thread["pages"]="Xët yi:";
+
+$text_groups["newsgroup"]="<b>Kàddu bu xabaar</b>";
+$text_groups["description"]="<b>Wone</b>";
+
+$text_article["back_to_group"]="limu wax-waxeet yi";
+$text_article["refresh"]="yees";
+$text_article["button_answer"]="Jàpp";
+$text_article["button_cancel"]="Wuute";
+$text_article["block-xnoarchive"]="Ndimbal bii du nooy arkif, waaye juur-ndimbal bi décide na wax ne bu bindkat la bëgga du arkife.";
+$text_article["full_article"]="Bësal fii ngir jàng lépp-lépp li bindii";
+
+$text_post["name"]="Tur-jëfandikukat:";
+$text_post["password"]="Bàttukaayu sutura:";
+$text_post["email"]="Sa email:";
+$text_post["missing_message"]="Danga soxla bataaxal ngir post.";
+$text_post["missing_email"]="Danga soxla email.";
+$text_post["missing_name"]="Danga soxla tur walla su jëkkee sant.";
+$text_post["missing_subject"]="Danga soxla xët.";
+$text_post["button_post"]="Jox wax-waxeet";
+$text_post["remember"]="Fattaliku tur bi";
+$text_post["message"]="Bataaxal";
+$text_post["group_head"]="Bind ci kàddu ";
+$text_post["group_head_reply"]="Jàpp ci kàddu ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Jariñu la bëgg post ci kàddu ñi:";
+$text_post["message_posted"]="Bataaxal bi joxe";
+$text_post["message_posted2"]="Bataaxal bi joxe ak mbir.";
+$text_post["button_back"]="Dellu";
+$text_post["button_back2"]="ci";
+$text_post["error_newsserver"]="Serwer-xabaar bi bàyyi bataaxal bi:";
+$text_post["error_readonly"]="Kàddu bii tëj na ci bind";
+$text_post["error_wrong_email"]="Email bi baaxul.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" bindee:";
+$text_post["quote"]="Waytu";
+$text_post["captchafail"]='Baaxul nga ci test CAPTCHA bi. Jariñ ko tubaab.';
+$text_post["captchainfo1"]='bind ko fii tubaab';
+$text_post["captchainfo2"]='Duggal ay xarnu ak ay limu yu baax ci biir nataal bi ci bopp baatu mbind mi. Test bii ndaw na ngi leer ci spam-bot yi.';
+
+$text_nav["first_page"]="Xët bu njëkk";
+$text_nav["last_page"]="Xët bu mujj";
+$text_nav["next_page"]="Xët bu ñëw";
+$text_nav["prev_page"]="Xët bu jiitu";
+
+$text_error["error:"]='<font color="red">Njumte:</font>';
+$text_error["connection_failed"]="Jokkoo ak serwer-xabaar bi njumte.";
+$text_error["article_not_found"]="<p>Gisul wax-waxeet bi.</p>";
+$text_error["read_access_denied"]="<p>Jàng amul dara.</p>";
+$text_error["post_failed"]="Jokkoo bi njumte. Jéem ci kanam.";
+$text_error["auth_error"]="Jëfandoo bi baaxul.";
+$text_error["spool_error"]="Njumte ci fiise spool. Jariñu reessil.";
+
+$text_register["must_register_group"]="War nga bind ngir dugg ci kàddu bii.";
+$text_register["must_register_post"]="War nga bind ngir post ci kàddu bii.";
+$text_register["no_access_group"]="Amul sa dugg ci kàddu bii.";
+$text_register["no_access_post"]="Yamuul la post ci kàddu bii.";
+
+?>

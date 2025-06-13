@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="kàddu yi";
 $text_thread["button_latest"]="gis yu bees yi";
 $text_thread["button_overboard"]="lu ëpp";
 $text_thread["button_search"]="ceet";
-$text_thread["button_top"]="Dellu ci kaw";
 $text_thread["date"]="<b>Bis</b>";
 $text_thread["subject"]="<b>Xët</b>";
 $text_thread["threadsize"]="<b>Jàpp yi</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Bataaxal bu mujj</b>";
 $text_thread["no_such_group"]="Amul benn kàddu bu mel.";
 $text_thread["pages"]="Xët yi:";
 
-$text_groups["newsgroup"]="<b>Kàddu bu xabaar</b>";
-$text_groups["description"]="<b>Wone</b>";
 
 $text_article["back_to_group"]="limu wax-waxeet yi";
 $text_article["refresh"]="yees";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Bësal fii ngir jàng lépp-lépp li bindii";
 
 $text_post["name"]="Tur-jëfandikukat:";
 $text_post["password"]="Bàttukaayu sutura:";
-$text_post["email"]="Sa email:";
 $text_post["missing_message"]="Danga soxla bataaxal ngir post.";
 $text_post["missing_email"]="Danga soxla email.";
 $text_post["missing_name"]="Danga soxla tur walla su jëkkee sant.";
 $text_post["missing_subject"]="Danga soxla xët.";
 $text_post["button_post"]="Jox wax-waxeet";
-$text_post["remember"]="Fattaliku tur bi";
 $text_post["message"]="Bataaxal";
 $text_post["group_head"]="Bind ci kàddu ";
 $text_post["group_head_reply"]="Jàpp ci kàddu ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Jariñu la bëgg post ci kàddu ñi:";
-$text_post["message_posted"]="Bataaxal bi joxe";
 $text_post["message_posted2"]="Bataaxal bi joxe ak mbir.";
 $text_post["button_back"]="Dellu";
 $text_post["button_back2"]="ci";
@@ -76,11 +70,7 @@ $text_error["article_not_found"]="<p>Gisul wax-waxeet bi.</p>";
 $text_error["read_access_denied"]="<p>Jàng amul dara.</p>";
 $text_error["post_failed"]="Jokkoo bi njumte. Jéem ci kanam.";
 $text_error["auth_error"]="Jëfandoo bi baaxul.";
-$text_error["spool_error"]="Njumte ci fiise spool. Jariñu reessil.";
 
-$text_register["must_register_group"]="War nga bind ngir dugg ci kàddu bii.";
-$text_register["must_register_post"]="War nga bind ngir post ci kàddu bii.";
 $text_register["no_access_group"]="Amul sa dugg ci kàddu bii.";
-$text_register["no_access_post"]="Yamuul la post ci kàddu bii.";
 
 ?>

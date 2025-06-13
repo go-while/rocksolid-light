@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="新闻组";
 $text_thread["button_latest"]="查看最新";
 $text_thread["button_overboard"]="总览板";
 $text_thread["button_search"]="搜索";
-$text_thread["button_top"]="返回顶部";
 $text_thread["date"]="<b>日期</b>";
 $text_thread["subject"]="<b>主题</b>";
 $text_thread["threadsize"]="<b>回复</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>最后消息</b>";
 $text_thread["no_such_group"]="该组不存在。";
 $text_thread["pages"]="页面:";
 
-$text_groups["newsgroup"]="<b>新闻组</b>";
-$text_groups["description"]="<b>描述</b>";
 
 $text_article["back_to_group"]="文章列表";
 $text_article["refresh"]="刷新";
@@ -39,19 +36,16 @@ $text_article["full_article"]="点击此处阅读完整文章";
 
 $text_post["name"]="用户名:";
 $text_post["password"]="密码:";
-$text_post["email"]="您的邮箱:";
 $text_post["missing_message"]="您必须包含一条消息才能发帖。";
 $text_post["missing_email"]="您必须包含邮箱地址。";
 $text_post["missing_name"]="您必须包含姓名或至少一个昵称。";
 $text_post["missing_subject"]="您必须包含主题。";
 $text_post["button_post"]="发表文章";
-$text_post["remember"]="记住姓名";
 $text_post["message"]="消息";
 $text_post["group_head"]="在 ";
 $text_post["group_head_reply"]="回复 ";
 $text_post["group_tail"]=" 中的帖子";
 $text_post["followup_not_allowed"]="您不被允许在这些组中发帖:";
-$text_post["message_posted"]="消息已发表";
 $text_post["message_posted2"]="消息发表成功。";
 $text_post["button_back"]="返回";
 $text_post["button_back2"]="到";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>文章不存在。</p>";
 $text_error["read_access_denied"]="<p>没有阅读权限!</p>";
 $text_error["post_failed"]="连接失败。请稍后重试。";
 $text_error["auth_error"]="身份验证失败。";
-$text_error["spool_error"]="假脱机文件错误。请刷新。";
 
-$text_register["must_register_group"]="您必须注册才能访问此组。";
-$text_register["must_register_post"]="您必须注册才能在此组中发帖。";
 $text_register["no_access_group"]="您无权访问此组。";
-$text_register["no_access_post"]="您没有在此组中发帖的权限。";
 
 ?>

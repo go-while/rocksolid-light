@@ -1,0 +1,86 @@
+<?php
+// guarani.lang
+$text_header["from"]="<b>Guive:</b> ";
+$text_header["subject"]="<b>Mba'e:</b> ";
+$text_header["newsgroups"]="<b>Marandu aty:</b> ";
+$text_header["followup"]="<b>Hapykuévo:</b> ";
+$text_header["organization"]="<b>Mba'apo renda:</b> ";
+$text_header["date"]="<b>Ára:</b> ";
+$text_header["message-id"]="<b>Ñe'ẽ-ID:</b> ";
+$text_header["references"]="<b>Jehechaukaha:</b> ";
+$text_header["user-agent"]="<b>Jepuru-Agent:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Ñemoirũ:</b> ";
+
+$text_thread["no_articles"]="<p><b>Ndaipóri jehaipyre</b></p>";
+$text_thread["button_write"]="mba'e pyahu";
+$text_thread["button_grouplist"]="marandu aty";
+$text_thread["button_latest"]="ehecha ipyahúva";
+$text_thread["button_overboard"]="opa";
+$text_thread["button_search"]="heka";
+$text_thread["button_top"]="Jaju yvate gotyo";
+$text_thread["date"]="<b>Ára</b>";
+$text_thread["subject"]="<b>Mba'e</b>";
+$text_thread["threadsize"]="<b>Ñembohovái</b>";
+$text_thread["author"]="<b>Jehaipyre</b>";
+$text_thread["lastmessage"]="<b>Ñe'ẽ ipahagua</b>";
+$text_thread["no_such_group"]="Ndaipóri upe aty.";
+$text_thread["pages"]="Kuatia rogue:";
+
+$text_groups["newsgroup"]="<b>Marandu aty</b>";
+$text_groups["description"]="<b>Ñemyesakã</b>";
+
+$text_article["back_to_group"]="jehaipyre rysýi";
+$text_article["refresh"]="mbopiro";
+$text_article["button_answer"]="Ñembohovái";
+$text_article["button_cancel"]="Jeheja";
+$text_article["block-xnoarchive"]="Ko sistema ndaha'éi archivo ha katu sistema ñangarekohára odesidí jehaipyre ndoipotái archivo omboguete jehaipyre.";
+$text_article["full_article"]="Eñemi ko'ápe emoñe'ẽ hag̃ua jehaipyre tuichakue";
+
+$text_post["name"]="Jepuru réra:";
+$text_post["password"]="Ñe'ẽ kañy:";
+$text_post["email"]="Nde email:";
+$text_post["missing_message"]="Omondose hag̃ua ñe'ẽ tekotevẽ.";
+$text_post["missing_email"]="Email kundaha tekotevẽ.";
+$text_post["missing_name"]="Téra téra ndive térã sa'ive téra jeporu tekotevẽ.";
+$text_post["missing_subject"]="Mba'e tekotevẽ.";
+$text_post["button_post"]="Mondo Jehaipyre";
+$text_post["remember"]="Mandu'a téra";
+$text_post["message"]="Ñe'ẽ";
+$text_post["group_head"]="Ehai aty-pe ";
+$text_post["group_head_reply"]="Embohovái aty-pe ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Ndereikuaavéi emondo hag̃ua ko'ã aty-pe:";
+$text_post["message_posted"]="Ñe'ẽ mondopyre";
+$text_post["message_posted2"]="Ñe'ẽ oñemondo porã.";
+$text_post["button_back"]="Jaju";
+$text_post["button_back2"]="gotyo";
+$text_post["error_newsserver"]="Marandu servidor omboyke ko ñe'ẽ:";
+$text_post["error_readonly"]="Ko aty oñemboty jehai guive";
+$text_post["error_wrong_email"]="Email kundaha ndoikói.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ohai:";
+$text_post["quote"]="Je'epy";
+$text_post["captchafail"]="Rejavy CAPTCHA ñeha'ãme. Eha'ãjey.";
+$text_post["captchainfo1"]="ehai jey ko'ápe";
+$text_post["captchainfo2"]="Emoinge ta'anga pegua tai ha papapy hekopete moñe'ẽrã ryru'ípe. Ko ñeha'ã michĩmi oñemoñondive spam-bot kuérare.";
+
+$text_nav["first_page"]="Kuatia rogue peteĩha";
+$text_nav["last_page"]="Kuatia rogue paha";
+$text_nav["next_page"]="Kuatia rogue oúva";
+$text_nav["prev_page"]="Kuatia rogue ohasáva";
+
+$text_error["error:"]='<font color="red">Jejavy:</font>';
+$text_error["connection_failed"]="Marandu servidor ndive joaju ndoikói.";
+$text_error["article_not_found"]="<p>Jehaipyre ndojejuhúi.</p>";
+$text_error["read_access_denied"]="<p>Ñemoñe'ẽ jeike noñemoneĩri.</p>";
+$text_error["post_failed"]="Joaju ndoikói. Eha'arõ jey upe rire.";
+$text_error["auth_error"]="Ñemoneĩ ndoikói.";
+$text_error["spool_error"]="Jejavy spool marandurenda-pe. Ehupi jey.";
+
+$text_register["must_register_group"]="Ejeregistravaerã eike hag̃ua ko aty-pe.";
+$text_register["must_register_post"]="Ejeregistravaerã emondo hag̃ua ko aty-pe.";
+$text_register["no_access_group"]="Ndererekói ñemoneĩ eike hag̃ua ko aty-pe.";
+$text_register["no_access_post"]="Ndereñemoneĩvéi emondo hag̃ua ko aty-pe.";
+
+?>

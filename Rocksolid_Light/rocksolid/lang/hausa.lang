@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="kungiyoyin labarai";
 $text_thread["button_latest"]="duba na baya-bayan nan";
 $text_thread["button_overboard"]="dukan kungiyoyi";
 $text_thread["button_search"]="nema";
-$text_thread["button_top"]="Koma sama";
 $text_thread["date"]="<b>Kwanan wata</b>";
 $text_thread["subject"]="<b>Taken</b>";
 $text_thread["threadsize"]="<b>Amsoshi</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Saƙo na ƙarshe</b>";
 $text_thread["no_such_group"]="Babu irin wannan kungiya.";
 $text_thread["pages"]="Shafuka:";
 
-$text_groups["newsgroup"]="<b>Kungiyar Labarai</b>";
-$text_groups["description"]="<b>Bayani</b>";
 
 $text_article["back_to_group"]="jerin labarai";
 $text_article["refresh"]="sabunta";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Danna nan don karanta cikakken labarin";
 
 $text_post["name"]="Sunan mai amfani:";
 $text_post["password"]="Kalmar shiga:";
-$text_post["email"]="Imel ɗinku:";
 $text_post["missing_message"]="Dole ne ku haɗa saƙo don aikawa.";
 $text_post["missing_email"]="Dole ne ku haɗa adireshin imel.";
 $text_post["missing_name"]="Dole ne ku haɗa suna ko aƙalla lakabi.";
 $text_post["missing_subject"]="Dole ne ku haɗa taken.";
 $text_post["button_post"]="Aika Labarin";
-$text_post["remember"]="Ka tuna da suna";
 $text_post["message"]="Saƙo";
 $text_post["group_head"]="Rubuta post a ";
 $text_post["group_head_reply"]="Amsa post a ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Ba a ba ku izinin aikawa ga kungiyoyi:";
-$text_post["message_posted"]="An aika saƙo";
 $text_post["message_posted2"]="An aika saƙon cikin nasara.";
 $text_post["button_back"]="Baya";
 $text_post["button_back2"]="zuwa";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Labarin ba ya wanzuwa.</p>";
 $text_error["read_access_denied"]="<p>Babu izinin karatu!</p>";
 $text_error["post_failed"]="Haɗin ya gaza. Gwada sake lodi daga baya.";
 $text_error["auth_error"]="Tabbatar da gaskiya ya gaza.";
-$text_error["spool_error"]="Kuskure a fayil spool. Don Allah sake lodi.";
 
-$text_register["must_register_group"]="Dole ne ku yi rajista don samun shiga wannan kungiya.";
-$text_register["must_register_post"]="Dole ne ku yi rajista don aikawa ga wannan kungiya.";
 $text_register["no_access_group"]="Ba ku da shiga wannan kungiya.";
-$text_register["no_access_post"]="Ba a ba ku izinin aikawa ga wannan kungiya.";
 
 ?>

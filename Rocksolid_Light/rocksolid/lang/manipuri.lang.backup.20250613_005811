@@ -1,0 +1,80 @@
+<?php
+// manipuri.lang
+$text_header["from"]="<b>ꯃꯐꯝ ꯑꯗꯨꯗꯒꯤ:</b> ";
+$text_header["subject"]="<b>ꯋꯥꯍꯪ:</b> ";
+$text_header["newsgroups"]="<b>ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯀꯥꯡꯂꯨꯄꯁꯤꯡ:</b> ";
+$text_header["followup"]="<b>ꯃꯇꯨꯡꯗꯥ:</b> ";
+$text_header["organization"]="<b>ꯄꯨꯟꯅ:</b> ";
+$text_header["date"]="<b>ꯇꯥꯡꯈꯥꯏ:</b> ";
+$text_header["message-id"]="<b>ꯄꯥꯎ-ꯈꯪꯗꯣꯀꯄ:</b> ";
+$text_header["references"]="<b>ꯔꯤꯐꯔꯦꯟꯁꯁꯤꯡ:</b> ";
+$text_header["user-agent"]="<b>ꯁꯤꯖꯤꯟꯅꯔꯤꯕ-ꯑꯦꯖꯦꯟꯇ:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>ꯄꯨꯟꯅꯥ ꯊꯝꯂꯤꯕꯁꯤꯡ:</b> ";
+
+$text_thread["no_articles"]="<p><b>ꯑꯥꯔꯇꯤꯀꯂ ꯑꯃꯠꯇꯥ ꯂꯩꯇꯦ</b></p>";
+$text_thread["button_write"]="ꯑꯅꯧꯕꯥ ꯋꯥꯍꯪ";
+$text_thread["button_grouplist"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯀꯥꯡꯂꯨꯄꯁꯤꯡ";
+$text_thread["button_latest"]="ꯑꯅꯧꯕꯥ ꯌꯦꯡꯕ";
+$text_thread["button_overboard"]="ꯑꯄꯨꯝꯕ";
+$text_thread["button_search"]="ꯊꯤꯕ";
+$text_thread["button_top"]="ꯃꯊꯛꯇꯥ ꯍꯟꯗꯣꯀꯄ";
+$text_thread["date"]="<b>ꯇꯥꯡꯈꯥꯏ</b>";
+$text_thread["subject"]="<b>ꯋꯥꯍꯪ</b>";
+$text_thread["threadsize"]="<b>ꯄꯥꯎꯈꯨꯝ</b>";
+$text_thread["author"]="<b>ꯏꯔꯤꯕ</b>";
+$text_thread["lastmessage"]="<b>ꯑꯔꯣꯏꯕꯥ ꯄꯥꯎ</b>";
+$text_thread["no_such_group"]="ꯑꯁꯤꯒꯨꯝꯕꯥ ꯀꯥꯡꯂꯨꯞ ꯑꯃꯠꯇꯥ ꯂꯩꯇꯦ.";
+$text_thread["pages"]="ꯂꯥꯏꯔꯤꯀꯁꯤꯡ:";
+
+$text_groups["newsgroup"]="<b>ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯀꯥꯡꯂꯨꯞ</b>";
+$text_groups["description"]="<b>ꯃꯁꯛ ꯇꯥꯀꯄ</b>";
+
+$text_article["back_to_group"]="ꯑꯥꯔꯇꯤꯀꯂꯁꯤꯡꯒꯤ ꯂꯤꯁ";
+$text_article["refresh"]="ꯑꯅꯧꯕꯥ ꯑꯣꯏꯍꯟꯕ";
+$text_article["button_answer"]="ꯄꯥꯎꯈꯨꯝ";
+$text_article["button_cancel"]="ꯀꯦꯟꯁꯦꯜ";
+$text_article["block-xnoarchive"]="ꯁꯤꯁ꯭ꯇꯦꯝ ꯑꯁꯤ ꯑꯥꯔꯀꯥꯏꯚ ꯅꯠꯇꯦ ꯑꯗꯨꯕꯨ ꯁꯤꯁ꯭ꯇꯦꯝ ꯑꯦꯗꯃꯤꯟꯅ ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯅ ꯑꯥꯔꯀꯥꯏꯚ ꯄꯥꯝꯗꯕ ꯁꯤꯟ ꯑꯥꯔꯇꯤꯀꯂꯁꯤꯡ ꯇꯥꯍꯅꯕꯒꯤ ꯋꯥꯐꯝ ꯂꯧꯔꯦ.";
+$text_article["full_article"]="ꯃꯄꯨꯡ ꯐꯥꯕꯥ ꯑꯥꯔꯇꯤꯀꯂ ꯄꯥꯕꯒꯤꯗꯃꯛ ꯃꯁꯤꯗ ꯃꯤꯠ ꯊꯣꯅꯕꯤꯌꯨ";
+
+$text_post["name"]="ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯒꯤ ꯃꯤꯡ:";
+$text_post["password"]="ꯄꯥꯁꯋꯥꯔꯗ:";
+$text_post["email"]="ꯅꯪꯒꯤ ꯏꯃꯦꯏꯜ:";
+$text_post["missing_message"]="ꯄꯣꯁ꯭ꯠ ꯇꯧꯅꯕꯒꯤꯗꯃꯛ ꯄꯥꯎ ꯃꯊꯧ ꯇꯥꯏ.";
+$text_post["missing_email"]="ꯏꯃꯦꯏꯜ ꯑꯦꯗ꯭ꯔꯦꯁ ꯃꯊꯧ ꯇꯥꯏ.";
+$text_post["missing_name"]="ꯃꯤꯡ ꯅꯠꯔꯒ ꯌꯥꯃꯗ꯭ꯔꯕꯗ ꯃꯤꯁꯥꯅ ꯃꯤꯡ ꯃꯊꯧ ꯇꯥꯏ.";
+$text_post["missing_subject"]="ꯋꯥꯍꯪ ꯃꯊꯧ ꯇꯥꯏ.";
+$text_post["button_post"]="ꯑꯥꯔꯇꯤꯀꯂ ꯄꯣꯁ꯭ꯠ ꯇꯧꯕ";
+$text_post["remember"]="ꯃꯤꯡ ꯅꯤꯡꯁꯤꯡꯕ";
+$text_post["message"]="ꯄꯥꯎ";
+$text_post["group_head"]="ꯀꯥꯡꯂꯨꯄꯇꯥ ꯏꯕ ";
+$text_post["group_head_reply"]="ꯀꯥꯡꯂꯨꯄꯇꯥ ꯄꯥꯎꯈꯨꯝ ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ꯅꯪꯅ ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤꯁꯤꯡꯗ ꯄꯣꯁ꯭ꯠ ꯇꯧꯕꯒꯤ ꯍꯀ ꯂꯩꯇꯦ:";
+$text_post["message_posted"]="ꯄꯥꯎ ꯊꯥꯔꯦ";
+$text_post["message_posted2"]="ꯄꯥꯎ ꯃꯌꯥꯏ ꯑꯣꯏꯅ ꯊꯥꯔꯦ.";
+$text_post["button_back"]="ꯍꯟꯗꯣꯀꯄ";
+$text_post["button_back2"]="ꯒꯤ";
+$text_post["error_newsserver"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯁꯔꯚꯔꯅ ꯄꯥꯎ ꯑꯁꯤ ꯌꯥꯗꯦ:";
+$text_post["error_readonly"]="ꯀꯥꯡꯂꯨꯞ ꯑꯁꯤ ꯏꯕꯗꯒꯤ ꯊꯣꯈꯥꯏꯗꯅ";
+$text_post["error_wrong_email"]="ꯏꯃꯦꯏꯜ ꯑꯦꯗ꯭ꯔꯦꯁ ꯌꯥꯃꯗ꯭ꯔꯦ.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ꯅ ꯏꯔꯦ:";
+$text_post["quote"]="ꯋꯥꯐꯝ";
+$text_post["captchafail"]='CAPTCHA ꯇꯦꯁ꯭ꯇꯇ ꯅꯪꯡ ꯆꯥꯟꯈꯤꯗꯦ. ꯆꯥꯡꯅꯕ ꯍꯣꯠꯅꯧ.';
+$text_post["captchainfo1"]='ꯃꯐꯝ ꯑꯗꯨꯗ ꯑꯃꯨꯛ ꯍꯟꯅ ꯏꯕꯤꯌꯨ';
+$text_post["captchainfo2"]='ꯃꯆꯤꯟ ꯃꯅꯥꯎꯗꯒꯤ ꯑꯆꯨꯝꯕ ꯑꯛꯁꯔꯁꯤꯡ ꯑꯃꯁꯨꯡ ꯅꯝꯕꯔꯁꯤꯡ ꯇꯦꯛꯁ ꯕꯣꯛꯁꯇ ꯊꯥꯖꯤꯟ ꯄꯤꯌꯨ. ꯃꯁꯤꯒꯤ ꯑꯄꯤꯀꯄ ꯇꯦꯁ꯭ꯇ ꯑꯁꯤ ꯁ꯭ꯄꯦꯝ-ꯕꯣꯠꯁꯤꯡꯒꯤ ꯃꯇꯥꯡꯗ ꯑꯊꯤꯡꯕ ꯌꯥꯅꯤꯡ ꯍꯤꯁꯥꯕꯅꯤ.';
+
+$text_nav["first_page"]="ꯑꯍꯥꯅꯕ ꯂꯥꯏꯔꯤꯛ";
+$text_nav["last_page"]="ꯑꯔꯣꯏꯕ ꯂꯥꯏꯔꯤꯛ";
+$text_nav["next_page"]="ꯃꯇꯨꯡꯒꯤ ꯂꯥꯏꯔꯤꯛ";
+$text_nav["prev_page"]="ꯃꯃꯥꯡꯒꯤ ꯂꯥꯏꯔꯤꯛ";
+
+$text_error["error:"]='<font color="red">ꯑꯁꯣꯏꯕ:</font>';
+$text_error["connection_failed"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯁꯔꯚꯔꯒꯥ ꯁꯝꯅꯕ ꯉꯃꯈꯤꯗꯦ.";
+$text_error["article_not_found"]="<p>ꯑꯥꯔꯇꯤꯀꯂ ꯐꯪꯈꯤꯗꯦ.</p>";
+$text_error["read_access_denied"]="<p>ꯄꯥꯕꯒꯤ ꯑꯌꯥꯕ ꯌꯥꯗꯕ.</p>";
+$text_error["post_failed"]="ꯀꯅꯦꯛꯁꯟ ꯐꯦꯜ ꯇꯧꯈꯤ. ꯇꯨꯡꯗ ꯑꯃꯨꯛ ꯔꯤꯂꯣꯗ ꯇꯧ.";
+$text_error["auth_error"]="ꯑꯣꯊꯦꯟꯇꯤꯀꯦꯁꯟ ꯐꯦꯜ ꯇꯧꯈꯤ.";
+$text_register["no_access_group"]="ꯅꯪꯡꯗ ꯃꯁꯤꯒꯤ ꯒ꯭ꯔꯨꯄꯇ ꯑꯦꯛꯁꯦꯁ ꯂꯩꯇꯦ.";
+?>

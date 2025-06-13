@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="Nieuwsgroepen";
 $text_thread["button_latest"]="Bekijk nieuwste";
 $text_thread["button_overboard"]="Algemeen bord";
 $text_thread["button_search"]="Zoeken";
-$text_thread["button_top"]="Terug naar boven";
 $text_thread["date"]="<b>Datum</b>";
 $text_thread["subject"]="<b>Onderwerp</b>";
 $text_thread["threadsize"]="<b>Antwoorden</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Laatste bericht</b>";
 $text_thread["no_such_group"]="Groep bestaat niet.";
 $text_thread["pages"]="Pagina's:";
 
-$text_groups["newsgroup"]="<b>Nieuwsgroep</b>";
-$text_groups["description"]="<b>Beschrijving</b>";
 
 $text_article["back_to_group"]="Artikellijst";
 $text_article["refresh"]="Vernieuwen";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Klik hier om het volledige artikel te lezen";
 
 $text_post["name"]="Gebruikersnaam:";
 $text_post["password"]="Wachtwoord:";
-$text_post["email"]="Uw e-mail:";
 $text_post["missing_message"]="Je moet een bericht schrijven om te posten.";
 $text_post["missing_email"]="Je moet een e-mailadres invullen.";
 $text_post["missing_name"]="Je moet je naam, of tenminste een alias invullen.";
 $text_post["missing_subject"]="Je moet een onderwerp invullen.";
 $text_post["button_post"]="Post";
-$text_post["remember"]="Onthoud naam en e-mailadres";
 $text_post["message"]="Bericht";
 $text_post["group_head"]="Schrijf bericht voor ";
 $text_post["group_head_reply"]="Antwoord op bericht in ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Je bent niet gemachtigd om te posten in de groepen:";
-$text_post["message_posted"]="Bericht gepost";
 $text_post["message_posted2"]="Het bericht is succesvol gepost.";
 $text_post["button_back"]="Terug";
 $text_post["button_back2"]="naar";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Dit artikel bestaat niet.</p>";
 $text_error["read_access_denied"]="<p>Geen rechten om te lezen!</p>";
 $text_error["post_failed"]="Verbinding mislukt. Probeer de pagina opnieuw in te laden.";
 $text_error["auth_error"]="Authenticatie op de nieuwsserver is mislukt.";
-$text_error["spool_error"]="Fout in het spooler bestand. Laad de pagina opnieuw.";
 
-$text_register["must_register_group"]="U moet geregistreerd zijn om toegang te krijgen tot deze groep.";
-$text_register["must_register_post"]="U moet geregistreerd zijn om te posten in deze groep.";
 $text_register["no_access_group"]="U heeft geen toegang tot deze groep.";
-$text_register["no_access_post"]="U mag niet posten in deze groep.";
 
 ?>

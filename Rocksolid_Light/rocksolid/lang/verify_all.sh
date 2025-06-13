@@ -7,6 +7,7 @@ if [ $RET -gt 0 ]; then
 	echo "ERROR in $RES";	
 	let ERRORS="ERRORS+1"
 else
+	test "$1" = "-verbose" && echo "[✅] $RES"
 	let GOOD="GOOD+1"
 fi
 done< <(ls *.lang)

@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="amanneɛbɔ akuo";
 $text_thread["button_latest"]="hwɛ foforɔ";
 $text_thread["button_overboard"]="akuo nyinaa";
 $text_thread["button_search"]="hwehwɛ";
-$text_thread["button_top"]="San kɔ Atifi";
 $text_thread["date"]="<b>Da</b>";
 $text_thread["subject"]="<b>Asɛm</b>";
 $text_thread["threadsize"]="<b>Mmuae</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Nkrasɛm a Etwa Toɔ</b>";
 $text_thread["no_such_group"]="Saa akuo no nni hɔ.";
 $text_thread["pages"]="Nkratafa:";
 
-$text_groups["newsgroup"]="<b>Amanneɛbɔ Akuo</b>";
-$text_groups["description"]="<b>Nkyerɛkyerɛmu</b>";
 
 $text_article["back_to_group"]="nsɛm din";
 $text_article["refresh"]="yɛ foforɔ";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Klik ha na kenkan nsɛm no nyinaa";
 
 $text_post["name"]="Odwumfo din:";
 $text_post["password"]="Akokoɔdan:";
-$text_post["email"]="Wo Imel:";
 $text_post["missing_message"]="Ɛsɛ sɛ wode nkrasɛm ka ho ansa na woatumi de akɔ.";
 $text_post["missing_email"]="Ɛsɛ sɛ wode imel adres ka ho.";
 $text_post["missing_name"]="Ɛsɛ sɛ wode din anaa mmerɛ din ka ho.";
 $text_post["missing_subject"]="Ɛsɛ sɛ wode asɛm ka ho.";
 $text_post["button_post"]="De Nsɛm Kɔ";
-$text_post["remember"]="Kae din";
 $text_post["message"]="Nkrasɛm";
 $text_post["group_head"]="Kyerɛw nsɛm wɔ ";
 $text_post["group_head_reply"]="Bua nsɛm wɔ ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Wontumi mfa nsɛm nkɔ akuo yi mu:";
-$text_post["message_posted"]="Wɔde nkrasɛm akɔ";
 $text_post["message_posted2"]="Wɔde nkrasɛm no kɔɔ yiye.";
 $text_post["button_back"]="San";
 $text_post["button_back2"]="kɔ";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Nsɛm no nni hɔ.</p>";
 $text_error["read_access_denied"]="<p>Wontumi nkenkan!</p>";
 $text_error["post_failed"]="Nkitaho annya ntumi. Sɔ bio akyiri yi.";
 $text_error["auth_error"]="Nhyɛso annya ntumi.";
-$text_error["spool_error"]="Mfomso wɔ spool fael mu. Yɛ srɛ wo lood bio.";
 
-$text_register["must_register_group"]="Ɛsɛ sɛ wo kyerɛw wo din ansa na woatumi akɔ akuo yi mu.";
-$text_register["must_register_post"]="Ɛsɛ sɛ wo kyerɛw wo din ansa na woatumi de nsɛm akɔ akuo yi mu.";
 $text_register["no_access_group"]="Wontumi nkɔ akuo yi mu.";
-$text_register["no_access_post"]="Wontumi mfa nsɛm nkɔ akuo yi mu.";
 
 ?>

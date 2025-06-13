@@ -1,0 +1,81 @@
+<?php
+// Russian (ru) translation for RockSolid Light
+$text_header["from"]="<b>От:</b> ";
+$text_header["subject"]="<b>Тема:</b> ";
+$text_header["newsgroups"]="<b>Группы новостей:</b> ";
+$text_header["followup"]="<b>Продолжение:</b> ";
+$text_header["organization"]="<b>Организация:</b> ";
+$text_header["date"]="<b>Дата:</b> ";
+$text_header["message-id"]="<b>ID сообщения:</b> ";
+$text_header["references"]="<b>Ссылки:</b> ";
+$text_header["user-agent"]="<b>Агент пользователя:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Вложения:</b> ";
+
+$text_thread["no_articles"]="<p><b>Статьи отсутствуют</b></p>";
+$text_thread["button_write"]="новая тема";
+$text_thread["button_grouplist"]="группы новостей";
+$text_thread["button_latest"]="показать последние";
+$text_thread["button_overboard"]="общая доска";
+$text_thread["button_search"]="поиск";
+$text_thread["button_top"]="Наверх";
+$text_thread["date"]="<b>Дата</b>";
+$text_thread["subject"]="<b>Тема</b>";
+$text_thread["threadsize"]="<b>Ответы</b>";
+$text_thread["author"]="<b>Автор</b>";
+$text_thread["lastmessage"]="<b>Последнее сообщение</b>";
+$text_thread["no_such_group"]="Нет такой группы.";
+$text_thread["pages"]="Страницы:";
+
+$text_groups["newsgroup"]="<b>Группа новостей</b>";
+$text_groups["description"]="<b>Описание</b>";
+
+$text_article["back_to_group"]="список статей";
+$text_article["refresh"]="обновить";
+$text_article["button_answer"]="Ответить";
+$text_article["button_cancel"]="Удалить";
+$text_article["block-xnoarchive"]="Эта система не является архивом, но администратор этой системы решил заблокировать сообщения, где автор не хочет архивирования.";
+$text_article["full_article"]="Нажмите здесь, чтобы прочитать полную статью";
+
+$text_post["name"]="Имя пользователя:";
+$text_post["password"]="Пароль:";
+$text_post["email"]="Ваш e-mail:";
+$text_post["missing_message"]="Вы должны включить сообщение для публикации.";
+$text_post["missing_email"]="Необходимо указать адрес эл. почты.";
+$text_post["missing_name"]="Необходимо указать имя или какой-то псевдоним.";
+$text_post["missing_subject"]="Необходимо указать тему.";
+$text_post["button_post"]="Опубликовать";
+$text_post["remember"]="Запомнить имя и E-Mail";
+$text_post["message"]="Сообщение";
+$text_post["group_head"]="Написать сообщение в группе ";
+$text_post["group_head_reply"]="Ответить на сообщение в ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Вам не разрешено публиковать в этих группах:";
+$text_post["message_posted"]="Сообщение опубликовано";
+$text_post["message_posted2"]="Ваше сообщение было успешно опубликовано.";
+$text_post["button_back"]="Назад";
+$text_post["button_back2"]="к";
+$text_post["error_newsserver"]="Сервер новостей не принял сообщение:";
+$text_post["error_readonly"]="Эта группа защищена только для чтения";
+$text_post["error_wrong_email"]="Неправильный адрес эл. почты";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" написал:";
+$text_post["quote"]="Цитировать";
+$text_post["captchafail"]='Вы не прошли тест CAPTCHA. Пожалуйста, попробуйте снова';
+$text_post["captchainfo1"]='введите это здесь снова';
+$text_post["captchainfo2"]='Введите правильные буквы и цифры с изображения в текстовое поле. Этот небольшой тест служит ограничением доступа против спам-ботов.';
+
+$text_error["error:"]='<font color="red">Ошибка:</font>';
+$text_error["connection_failed"]="Сбой соединения с сервером новостей";
+$text_error["article_not_found"]="<p>Данная статья отсутствует.</p>";
+$text_error["read_access_denied"]="<p>Доступ на чтение запрещен!</p>";
+$text_error["post_failed"]="Сбой соединения. Попробуйте перезагрузить (Reload) позднее.";
+$text_error["auth_error"]="Сбой аутентификации не удался попытаться.";
+$text_error["spool_error"]="Ошибка в спуловом файле. Пожалуйста, перезагрузите (Reload).";
+
+$text_register["must_register_group"]="Вы должны быть зарегистрированы для доступа к этой группе.";
+$text_register["must_register_post"]="Вы должны быть зарегистрированы для публикации в этой группе.";
+$text_register["no_access_group"]="У вас нет доступа к этой группе.";
+$text_register["no_access_post"]="Вам не разрешено публиковать в этой группе.";
+
+?>

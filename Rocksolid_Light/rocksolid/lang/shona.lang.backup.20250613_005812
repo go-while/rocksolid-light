@@ -1,0 +1,81 @@
+<?php
+// shona.lang
+$text_header["from"]="<b>Kubva:</b> ";
+$text_header["subject"]="<b>Musoro:</b> ";
+$text_header["newsgroups"]="<b>Mapoka eNhau:</b> ";
+$text_header["followup"]="<b>Kutevera:</b> ";
+$text_header["organization"]="<b>Sangano:</b> ";
+$text_header["date"]="<b>Zuva:</b> ";
+$text_header["message-id"]="<b>ID Meseji:</b> ";
+$text_header["references"]="<b>Mareferenzi:</b> ";
+$text_header["user-agent"]="<b>Mumiriri Mushandisi:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Zvakabatanidzwa:</b> ";
+
+$text_thread["no_articles"]="<p><b>Hapana zvinyorwa zviripo</b></p>";
+$text_thread["button_write"]="musoro mutsva";
+$text_thread["button_grouplist"]="mapoka enhau";
+$text_thread["button_latest"]="ona zvazvino";
+$text_thread["button_overboard"]="mapoka ose";
+$text_thread["button_search"]="tsvaga";
+$text_thread["button_top"]="Dzokera Kumusoro";
+$text_thread["date"]="<b>Zuva</b>";
+$text_thread["subject"]="<b>Musoro</b>";
+$text_thread["threadsize"]="<b>Mhinduro</b>";
+$text_thread["author"]="<b>Munyori</b>";
+$text_thread["lastmessage"]="<b>Meseji Yekupedzisira</b>";
+$text_thread["no_such_group"]="Hapana boka rakadaro.";
+$text_thread["pages"]="Mapeji:";
+
+$text_groups["newsgroup"]="<b>Boka reNhau</b>";
+$text_groups["description"]="<b>Dudziro</b>";
+
+$text_article["back_to_group"]="runyorwa rwezvinyorwa";
+$text_article["refresh"]="vandudzira";
+$text_article["button_answer"]="Pindura";
+$text_article["button_cancel"]="Dzima";
+$text_article["block-xnoarchive"]="Hurongwa huno haisi dura, asi mutungamiriri wehurongwa huno akasarudza kuvhara zvinyorwa apo munyori asingadi kuchengetwa.";
+$text_article["full_article"]="Tinya pano kuti uverenga chinyorwa chakazara";
+
+$text_post["name"]="Zita Reshandisi:";
+$text_post["password"]="Pasiwedhi:";
+$text_post["email"]="Iimeri Yako:";
+$text_post["missing_message"]="Unofanira kuisa meseji kuti utumire.";
+$text_post["missing_email"]="Unofanira kuisa kero yeiimeri.";
+$text_post["missing_name"]="Unofanira kuisa zita kana zita rekuzidzwa.";
+$text_post["missing_subject"]="Unofanira kuisa musoro.";
+$text_post["button_post"]="Tumira Chinyorwa";
+$text_post["remember"]="Rangarira zita";
+$text_post["message"]="Meseji";
+$text_post["group_head"]="Nyora post mu ";
+$text_post["group_head_reply"]="Pindura post mu ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Hauna mvunzo yekutumira kumapoka:";
+$text_post["message_posted"]="Meseji yatumirwa";
+$text_post["message_posted2"]="Meseji yakatumirwa zvakanaka.";
+$text_post["button_back"]="Dzokera";
+$text_post["button_back2"]="ku";
+$text_post["error_newsserver"]="Sevha yeMemeseji yakaramba meseji:";
+$text_post["error_readonly"]="Boka rakadzivirirwa pakanyora";
+$text_post["error_wrong_email"]="Kero yeiimeri isiri yakanaka.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" akanyora:";
+$text_post["quote"]="Dudzira";
+$text_post["captchafail"]='Wakundikana bvunzo reCAPTCHA. Ndokumbira uyedze zvakare';
+$text_post["captchainfo1"]='dhayipa iyi pano';
+$text_post["captchainfo2"]='Isa mavara nemakadhi akaringana kubva pamifananidzo mukati mebhokisi remanyorwa. Bvunzo diki iri rinoshanda sekudzivirira spam-bots.';
+
+$text_error["error:"]='<font color="red">Kukanganisa:</font>';
+$text_error["connection_failed"]="Kubatana neSevha yeMemeseji kwakundikana";
+$text_error["article_not_found"]="<p>Chinyorwa hachipo.</p>";
+$text_error["read_access_denied"]="<p>Hapana mvunzo yekuverenga!</p>";
+$text_error["post_failed"]="Kubatana kwakundikana. Edza kurodha pashure.";
+$text_error["auth_error"]="Kusimbisa kwakundikana.";
+$text_error["spool_error"]="Kukanganisa mufaira respool. Ndokumbira urodhe zvakare.";
+
+$text_register["must_register_group"]="Unofanira kunyoresa kuti uwane mukana kuboka iri.";
+$text_register["must_register_post"]="Unofanira kunyoresa kuti ugone kutumira kuboka iri.";
+$text_register["no_access_group"]="Hauna mukana kuboka iri.";
+$text_register["no_access_post"]="Hauna mvunzo yekutumira kuboka iri.";
+
+?>

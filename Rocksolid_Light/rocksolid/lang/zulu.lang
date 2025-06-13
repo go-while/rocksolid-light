@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="amaqembu ezindaba";
 $text_thread["button_latest"]="buka okwakamuva";
 $text_thread["button_overboard"]="wonke amaqembu";
 $text_thread["button_search"]="sesha";
-$text_thread["button_top"]="Buyela Phezulu";
 $text_thread["date"]="<b>Usuku</b>";
 $text_thread["subject"]="<b>Isihloko</b>";
 $text_thread["threadsize"]="<b>Izimpendulo</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Umlayezo Wokugcina</b>";
 $text_thread["no_such_group"]="Alikho iqembu elinjalo.";
 $text_thread["pages"]="Amakhasi:";
 
-$text_groups["newsgroup"]="<b>Iqembu Lezindaba</b>";
-$text_groups["description"]="<b>Incazelo</b>";
 
 $text_article["back_to_group"]="uhlu lwezindatshana";
 $text_article["refresh"]="vuselela";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Chofoza lapha ukufunda indatshana ephelele";
 
 $text_post["name"]="Igama Lomsebenzisi:";
 $text_post["password"]="Iphasiwedi:";
-$text_post["email"]="I-imeyili Yakho:";
 $text_post["missing_message"]="Kufanele ufake umlayezo ukuze uthumele.";
 $text_post["missing_email"]="Kufanele ufake ikheli le-imeyili.";
 $text_post["missing_name"]="Kufanele ufake igama noma okungenani igama lokuzithiya.";
 $text_post["missing_subject"]="Kufanele ufake isihloko.";
 $text_post["button_post"]="Thumela Indatshana";
-$text_post["remember"]="Khumbula igama";
 $text_post["message"]="Umlayezo";
 $text_post["group_head"]="Bhala ukuthunyelwa ku ";
 $text_post["group_head_reply"]="Phendula ukuthunyelwa ku ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Awuvunyelwe ukuthumela emaqenjini:";
-$text_post["message_posted"]="Umlayezo uthunyelwe";
 $text_post["message_posted2"]="Umlayezo uthunyelwe ngempumelelo.";
 $text_post["button_back"]="Buyela";
 $text_post["button_back2"]="ku";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Indatshana ayikho.</p>";
 $text_error["read_access_denied"]="<p>Awunalo ilungelo lokufunda!</p>";
 $text_error["post_failed"]="Ukuxhuma kuhlulekile. Zama ukulayisha futhi kamuva.";
 $text_error["auth_error"]="Ukuqinisekisa kuhlulekile.";
-$text_error["spool_error"]="Iphutha kufayili ye-spool. Sicela ulayishe futhi.";
 
-$text_register["must_register_group"]="Kufanele ubhalise ukuze uthole ukufinyelela kuleli qembu.";
-$text_register["must_register_post"]="Kufanele ubhalise ukuze ukwazi ukuthumela kuleli qembu.";
 $text_register["no_access_group"]="Awunalo ukufinyelela kuleli qembu.";
-$text_register["no_access_post"]="Awuvunyelwe ukuthumela kuleli qembu.";
 
 ?>

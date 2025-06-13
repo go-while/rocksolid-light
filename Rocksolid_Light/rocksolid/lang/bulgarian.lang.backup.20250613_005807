@@ -1,0 +1,81 @@
+<?php
+// Bulgarian (bg) translation for RockSolid Light
+$text_header["from"]="<b>От:</b> ";
+$text_header["subject"]="<b>Тема:</b> ";
+$text_header["newsgroups"]="<b>Новинарски групи:</b> ";
+$text_header["followup"]="<b>Продължение:</b> ";
+$text_header["organization"]="<b>Организация:</b> ";
+$text_header["date"]="<b>Дата:</b> ";
+$text_header["message-id"]="<b>ID на съобщението:</b> ";
+$text_header["references"]="<b>Препратки:</b> ";
+$text_header["user-agent"]="<b>Потребителски агент:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Прикачени файлове:</b> ";
+
+$text_thread["no_articles"]="<p><b>Няма налични статии</b></p>";
+$text_thread["button_write"]="нова тема";
+$text_thread["button_grouplist"]="новинарски групи";
+$text_thread["button_latest"]="вижте най-новите";
+$text_thread["button_overboard"]="общ преглед";
+$text_thread["button_search"]="търсене";
+$text_thread["button_top"]="Назад към върха";
+$text_thread["date"]="<b>Дата</b>";
+$text_thread["subject"]="<b>Тема</b>";
+$text_thread["threadsize"]="<b>Отговори</b>";
+$text_thread["author"]="<b>Автор</b>";
+$text_thread["lastmessage"]="<b>Последно съобщение</b>";
+$text_thread["no_such_group"]="Няма такава група.";
+$text_thread["pages"]="Страници:";
+
+$text_groups["newsgroup"]="<b>Новинарска група</b>";
+$text_groups["description"]="<b>Описание</b>";
+
+$text_article["back_to_group"]="списък със статии";
+$text_article["refresh"]="опресняване";
+$text_article["button_answer"]="Отговор";
+$text_article["button_cancel"]="Изтриване";
+$text_article["block-xnoarchive"]="Тази система не е архив, но администраторът на тази система реши да блокира публикации, където авторът не иска архивиране.";
+$text_article["full_article"]="Кликнете тук, за да прочетете пълната статия";
+
+$text_post["name"]="Потребителско име:";
+$text_post["password"]="Парола:";
+$text_post["email"]="Вашият имейл:";
+$text_post["missing_message"]="Трябва да включите съобщение за публикуване.";
+$text_post["missing_email"]="Трябва да включите имейл адрес.";
+$text_post["missing_name"]="Трябва да включите име или поне псевдоним.";
+$text_post["missing_subject"]="Трябва да включите тема.";
+$text_post["button_post"]="Публикувай статия";
+$text_post["remember"]="Запомни името";
+$text_post["message"]="Съобщение";
+$text_post["group_head"]="Съставяне на публикация в ";
+$text_post["group_head_reply"]="Отговор на публикация в ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Не ви е разрешено да публикувате в групите:";
+$text_post["message_posted"]="Съобщението е публикувано";
+$text_post["message_posted2"]="Съобщението беше успешно публикувано.";
+$text_post["button_back"]="Назад";
+$text_post["button_back2"]="към";
+$text_post["error_newsserver"]="Сървърът за съобщения отхвърли съобщението:";
+$text_post["error_readonly"]="Групата е защитена срещу писане";
+$text_post["error_wrong_email"]="Грешен имейл адрес.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" написа:";
+$text_post["quote"]="Цитат";
+$text_post["captchafail"]='Провалихте CAPTCHA теста. Моля, опитайте отново';
+$text_post["captchainfo1"]='препишете това тук';
+$text_post["captchainfo2"]='Въведете правилните букви и цифри от изображението в текстовото поле. Този малък тест служи като ограничение за достъп срещу спам-ботове.';
+
+$text_error["error:"]='<font color="red">Грешка:</font>';
+$text_error["connection_failed"]="Връзката със сървъра за съобщения се провали";
+$text_error["article_not_found"]="<p>Статията не съществува.</p>";
+$text_error["read_access_denied"]="<p>Няма разрешение за четене!</p>";
+$text_error["post_failed"]="Връзката се провали. Опитайте да презаредите по-късно.";
+$text_error["auth_error"]="Удостоверяването се провали.";
+$text_error["spool_error"]="Грешка в spool файла. Моля, презаредете.";
+
+$text_register["must_register_group"]="Трябва да се регистрирате, за да имате достъп до тази група.";
+$text_register["must_register_post"]="Трябва да се регистрирате, за да публикувате в тази група.";
+$text_register["no_access_group"]="Нямате достъп до тази група.";
+$text_register["no_access_post"]="Не ви е разрешено да публикувате в тази група.";
+
+?>

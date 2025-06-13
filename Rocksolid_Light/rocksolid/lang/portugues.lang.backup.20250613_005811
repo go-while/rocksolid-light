@@ -1,0 +1,81 @@
+<?php
+// Portuguese (pt) translation for RockSolid Light
+$text_header["from"]="<b>De:</b> ";
+$text_header["subject"]="<b>Assunto:</b> ";
+$text_header["newsgroups"]="<b>Newsgroups:</b> ";
+$text_header["followup"]="<b>Seguimento:</b> ";
+$text_header["organization"]="<b>Organização:</b> ";
+$text_header["date"]="<b>Data:</b> ";
+$text_header["message-id"]="<b>Mensagem-ID:</b> ";
+$text_header["references"]="<b>Referências:</b> ";
+$text_header["user-agent"]="<b>Utilizador-Agente:</b> ";
+$text_header["date_format"]="d M Y H:i:s";
+$text_header["attachments"]="<b>Anexos:</b> ";
+
+$text_thread["no_articles"]="<p><b>Não existem artigos disponíveis</b></p>";
+$text_thread["button_write"]="Nova thread";
+$text_thread["button_grouplist"]="Newsgroups";
+$text_thread["button_latest"]="Ver mais recentes";
+$text_thread["button_overboard"]="Quadro geral";
+$text_thread["button_search"]="Buscar";
+$text_thread["button_top"]="Voltar acima";
+$text_thread["date"]="<b>Data</b>";
+$text_thread["subject"]="<b>Assunto</b>";
+$text_thread["threadsize"]="<b>Respostas</b>";
+$text_thread["author"]="<b>Autor</b>";
+$text_thread["lastmessage"]="<b>Última mensagem</b>";
+$text_thread["no_such_group"]="Grupo não existente.";
+$text_thread["pages"]="Páginas:";
+
+$text_groups["newsgroup"]="<b>Newsgroup</b>";
+$text_groups["description"]="<b>Descrição</b>";
+
+$text_article["back_to_group"]="Lista de artigos";
+$text_article["refresh"]="Atualizar";
+$text_article["button_answer"]="Resposta";
+$text_article["button_cancel"]="Eliminar";
+$text_article["block-xnoarchive"]="Este sistema não é um arquivo, mas o administrador deste sistema decidiu bloquear posts onde o autor não quer arquivamento.";
+$text_article["full_article"]="Clique aqui para ler o artigo completo";
+
+$text_post["name"]="Nome de utilizador:";
+$text_post["password"]="Palavra-passe:";
+$text_post["email"]="O seu e-mail:";
+$text_post["missing_message"]="Deve incluir uma mensagem para enviar";
+$text_post["missing_email"]="Deve incluir o seu endereço de Correio Eletrónico";
+$text_post["missing_name"]="Deve incluir o seu nome ou pseudónimo";
+$text_post["missing_subject"]="Deve incluir um assunto";
+$text_post["button_post"]="Enviar";
+$text_post["remember"]="Lembrar nome e Correio-E";
+$text_post["message"]="Mensagem";
+$text_post["group_head"]="Compor artigo para ";
+$text_post["group_head_reply"]="Responder ao post em ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Não é permitido enviar artigos:";
+$text_post["message_posted"]="Mensagem enviada";
+$text_post["message_posted2"]="A mensagem foi enviada com sucesso";
+$text_post["button_back"]="Voltar";
+$text_post["button_back2"]="para";
+$text_post["error_newsserver"]="O servidor de news não aceita a mensagem:";
+$text_post["error_readonly"]="O grupo está protegido contra escrita";
+$text_post["error_wrong_email"]="O endereço do Correio-E está errado";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" escreveu:";
+$text_post["quote"]="Citação";
+$text_post["captchafail"]='Falhou no teste CAPTCHA. Tente novamente';
+$text_post["captchainfo1"]='Digite novamente aqui';
+$text_post["captchainfo2"]='Insira as letras e números corretos da imagem na caixa de texto. Este pequeno teste serve como limitação de acesso contra spam-bots.';
+
+$text_error["error:"]='<font color="red">Erro:</font>';
+$text_error["connection_failed"]="A conexão com o servidor de news falhou";
+$text_error["article_not_found"]="<p>O artigo não existe.</p>";
+$text_error["read_access_denied"]="<p>Não tem permissão para ler!</p>";
+$text_error["post_failed"]="Conexão falhada. Tente novamente mais tarde.";
+$text_error["auth_error"]="Autenticação no servidor de news falhou";
+$text_error["spool_error"]="Erro no spoolfile. Por favor refresque o navegador.";
+
+$text_register["must_register_group"]="Deve registrar-se para aceder a este grupo.";
+$text_register["must_register_post"]="Deve registrar-se para postar neste grupo.";
+$text_register["no_access_group"]="Não tem acesso a este grupo.";
+$text_register["no_access_post"]="Não tem permissão para postar neste grupo.";
+
+?>

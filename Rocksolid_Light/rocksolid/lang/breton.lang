@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="strolladoù-keleier";
 $text_thread["button_latest"]="gwelet ar re ziwezhañ";
 $text_thread["button_overboard"]="roll hollek";
 $text_thread["button_search"]="klask";
-$text_thread["button_top"]="Distreiñ d'ar c'hrec'h";
 $text_thread["date"]="<b>Deiziad</b>";
 $text_thread["subject"]="<b>Danvez</b>";
 $text_thread["threadsize"]="<b>Respontoù</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Kemennadenn Ziwezhañ</b>";
 $text_thread["no_such_group"]="N'eus ket eus ar strollad-se.";
 $text_thread["pages"]="Pajennoù:";
 
-$text_groups["newsgroup"]="<b>Strollad-keleier</b>";
-$text_groups["description"]="<b>Deskrivadur</b>";
 
 $text_article["back_to_group"]="roll ar pennadoù";
 $text_article["refresh"]="freskaat";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Klikit amañ evit lenn ar pennad klok";
 
 $text_post["name"]="Anv an implijer:";
 $text_post["password"]="Ger-tremen:";
-$text_post["email"]="Ho postel:";
 $text_post["missing_message"]="Ret eo deoc'h lakaat ur gemennadenn evit embann.";
 $text_post["missing_email"]="Ret eo deoc'h lakaat ur chomlec'h postel.";
 $text_post["missing_name"]="Ret eo deoc'h lakaat un anv pe d'an nebeutañ un anv-pleg.";
 $text_post["missing_subject"]="Ret eo deoc'h lakaat un danvez.";
 $text_post["button_post"]="Embann ar Pennad";
-$text_post["remember"]="Derc'hel soñj eus an anv";
 $text_post["message"]="Kemennadenn";
 $text_post["group_head"]="Sevel ur gemennadenn e ";
 $text_post["group_head_reply"]="Respont d'ar gemennadenn e ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="N'oc'h ket aotreet da embann er strolladoù:";
-$text_post["message_posted"]="Kemennadenn embannet";
 $text_post["message_posted2"]="Embannet eo bet ar gemennadenn gant berzh.";
 $text_post["button_back"]="Distreiñ";
 $text_post["button_back2"]="da";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>N'eus ket eus ar pennad.</p>";
 $text_error["read_access_denied"]="<p>Hep an aotre da lenn!</p>";
 $text_error["post_failed"]="Kevreadur c'hwitet. Klaskit kargañ diwezhatoc'h.";
 $text_error["auth_error"]="Dilesadur c'hwitet.";
-$text_error["spool_error"]="Fazi er restr spool. Kargit en-dro mar plij.";
 
-$text_register["must_register_group"]="Ret eo deoc'h bezañ enrollet evit kaout moned d'ar strollad-mañ.";
-$text_register["must_register_post"]="Ret eo deoc'h bezañ enrollet evit embann er strollad-mañ.";
 $text_register["no_access_group"]="N'ho peus ket moned d'ar strollad-mañ.";
-$text_register["no_access_post"]="N'oc'h ket aotreet da embann er strollad-mañ.";
 
 ?>

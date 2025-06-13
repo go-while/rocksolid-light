@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="grupe lajmesh";
 $text_thread["button_latest"]="shiko të fundit";
 $text_thread["button_overboard"]="pano e përgjithshme";
 $text_thread["button_search"]="kërko";
-$text_thread["button_top"]="Kthehu në krye";
 $text_thread["date"]="<b>Data</b>";
 $text_thread["subject"]="<b>Tema</b>";
 $text_thread["threadsize"]="<b>Përgjigjet</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Mesazhi i fundit</b>";
 $text_thread["no_such_group"]="Nuk ekziston një grup i tillë.";
 $text_thread["pages"]="Faqet:";
 
-$text_groups["newsgroup"]="<b>Grupi i lajmeve</b>";
-$text_groups["description"]="<b>Përshkrimi</b>";
 
 $text_article["back_to_group"]="lista e artikujve";
 $text_article["refresh"]="rifresko";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Kliko këtu për të lexuar artikullin e plotë";
 
 $text_post["name"]="Emri i përdoruesit:";
 $text_post["password"]="Fjalëkalimi:";
-$text_post["email"]="E-Mail-i juaj:";
 $text_post["missing_message"]="Duhet të përfshini një mesazh për të postuar.";
 $text_post["missing_email"]="Duhet të përfshini një adresë e-mail.";
 $text_post["missing_name"]="Duhet të përfshini një emër ose të paktën një pseudonim.";
 $text_post["missing_subject"]="Duhet të përfshini një temë.";
 $text_post["button_post"]="Posto artikullin";
-$text_post["remember"]="Mbaj mend emrin";
 $text_post["message"]="Mesazhi";
 $text_post["group_head"]="Shkruaj një postim në ";
 $text_post["group_head_reply"]="Përgjigju postimit në ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Nuk ju lejohet të postoni në grupet:";
-$text_post["message_posted"]="Mesazhi u postua";
 $text_post["message_posted2"]="Mesazhi u postua me sukses.";
 $text_post["button_back"]="Prapa";
 $text_post["button_back2"]="tek";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Artikulli nuk ekziston.</p>";
 $text_error["read_access_denied"]="<p>Nuk ka leje për të lexuar!</p>";
 $text_error["post_failed"]="Lidhja dështoi. Provoni të rinkarkoni më vonë.";
 $text_error["auth_error"]="Verifikimi dështoi.";
-$text_error["spool_error"]="Gabim në skedarin spool. Ju lutemi rinkarkoni.";
 
-$text_register["must_register_group"]="Duhet të regjistroheni për të pasur qasje në këtë grup.";
-$text_register["must_register_post"]="Duhet të regjistroheni për të postuar në këtë grup.";
 $text_register["no_access_group"]="Nuk keni qasje në këtë grup.";
-$text_register["no_access_post"]="Nuk ju lejohet të postoni në këtë grup.";
 
 ?>

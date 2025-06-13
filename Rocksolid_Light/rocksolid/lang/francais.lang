@@ -18,7 +18,6 @@ $text_thread["button_overboard"]="Vue d'ensemble";
 $text_thread["button_search"]="Rechercher";
 $text_thread["button_write"]="Poster";
 $text_thread["button_grouplist"]="Liste des Groupes";
-$text_thread["button_top"]="Haut de page";
 $text_thread["date"]="<b>Date</b>";
 $text_thread["subject"]="<b>Sujet</b>";
 $text_thread["author"]="<b>Auteur</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Dernier message</b>";
 $text_thread["pages"]="<b>Pages</b>";
 $text_thread["no_such_group"]="Aucun groupe.";
 
-$text_groups["newsgroup"]="<b>Groupe</b>";
-$text_groups["description"]="<b>Description</b>";
 
 $text_article["button_answer"]="Répondre";
 $text_article["button_cancel"]="Annuler";
@@ -39,18 +36,15 @@ $text_article["full_article"]="Article complet";
 
 $text_post["name"]="Nom:";
 $text_post["password"]="Mot de passe:";
-$text_post["email"]="Email:";
 $text_post["missing_message"]="Vous devez inclure du texte dans votre message.";
 $text_post["missing_email"]="Vous devez préciser une adresse email.";
 $text_post["missing_name"]="Vous devez préciser un nom ou au moins un surnom.";
 $text_post["missing_subject"]="Vous devez préciser un sujet.";
 $text_post["button_post"]="Poster";
-$text_post["remember"]="Retenir le nom et l'adresse email";
 $text_post["message"]="Message";
 $text_post["group_head"]="Rédiger un article pour ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Vous n'êtes pas autorisé à poster dans les groupes :";
-$text_post["message_posted"]="Article posté";
 $text_post["message_posted2"]="L'article a été posté avec succès.";
 $text_post["button_back"]="Retour";
 $text_post["button_back2"]="à";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>L'article n'existe pas.</p>";
 $text_error["read_access_denied"]="<p>Lecture non autorisée!</p>";
 $text_error["post_failed"]="Le serveur de news ne répond pas. Réessayez plus tard.";
 $text_error["auth_error"]="L'authentification auprès du serveur de news a échoué.";
-$text_error["spool_error"]="Erreur dans le fichier de spool. Rechargez la page.";
 
-$text_register["must_register_group"]="Vous devez être enregistré pour accéder à ce forum.";
-$text_register["must_register_post"]="Vous devez être enregistré pour écrire un article.";
 $text_register["no_access_group"]="Vous n'avez pas accès à ce forum";
-$text_register["no_access_post"]="Vous ne pouvez pas écrire un article dans ce forum.";
 
 ?>

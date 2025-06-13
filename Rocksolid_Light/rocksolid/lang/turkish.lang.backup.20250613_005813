@@ -1,0 +1,81 @@
+// Turkish (tr) translation for RockSolid Light
+<?php
+$text_header["attachments"]="<b>Ekler:</b> ";
+$text_header["from"]="<b>Kimden:</b> ";
+$text_header["subject"]="<b>Konu:</b> ";
+$text_header["newsgroups"]="<b>Haber grupları:</b> ";
+$text_header["followup"]="<b>Üyelik:</b> ";
+$text_header["organization"]="<b>Organizasyon:</b> ";
+$text_header["date"]="<b>Gün:</b> ";
+$text_header["message-id"]="<b>Mesaj-ID:</b> ";
+$text_header["references"]="<b>Referanslar:</b> ";
+$text_header["user-agent"]="<b>Kullanıcı:</b> ";
+$text_header["date_format"]="M d Y H:i:s";
+
+$text_thread["no_articles"]="<p><b>Makale mevcut değil</b></p>";
+$text_thread["button_latest"]="Son";
+$text_thread["button_overboard"]="Genel Bakış";
+$text_thread["button_search"]="Ara";
+$text_thread["button_write"]="Yaz";
+$text_thread["button_grouplist"]="Haber grupları";
+$text_thread["button_top"]="Üste Dön";
+$text_thread["date"]="<b>Gün</b>";
+$text_thread["subject"]="<b>Konu</b>";
+$text_thread["author"]="<b>Yazar</b>";
+$text_thread["threadsize"]="<b>Konu boyutu</b>";
+$text_thread["lastmessage"]="<b>Son mesaj</b>";
+$text_thread["pages"]="<b>Sayfalar</b>";
+$text_thread["no_such_group"]="Böyle bir grup yok.";
+
+$text_groups["newsgroup"]="<b>Haber Grubu</b>";
+$text_groups["description"]="<b>Tanımlama</b>";
+
+$text_article["button_answer"]="Yanıtla";
+$text_article["button_cancel"]="İptal";
+$text_article["back_to_group"]="Gruba geri dön";
+$text_article["refresh"]="Yenile";
+$text_article["block-xnoarchive"]="[Engellenmiş: X-No-Archive]";
+$text_article["full_article"]="Tam makale";
+
+$text_post["name"]="Ad:";
+$text_post["password"]="Şifre:";
+$text_post["email"]="E-posta:";
+$text_post["missing_message"]="Mesajı postalamak için birşey yazmak zorundasınız.";
+$text_post["missing_email"]="Bir e-posta adresi girmelisiniz.";
+$text_post["missing_name"]="Adınızı yada lakabınızı girmelisiniz.";
+$text_post["missing_subject"]="Bir konu başlığı girmelisiniz.";
+$text_post["button_post"]="Postala";
+$text_post["remember"]="Adı ve e-posta adresini kaydet";
+$text_post["message"]="Mesaj";
+$text_post["group_head"]="Makale yaz ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Bu gruplara postalamaya yetkili değilsiniz:";
+$text_post["message_posted"]="Mesaj gönderildi";
+$text_post["message_posted2"]="Mesaj başarıyla gönderildi.";
+$text_post["button_back"]="Geri";
+$text_post["button_back2"]="Kime";
+$text_post["error_newsserver"]="Haber grubu sunucusu bu mesajı kabul etmedi:";
+$text_post["error_readonly"]="Bu Grup yazma korumalıdır";
+$text_post["error_wrong_email"]="Geçerli bir e-posta adresi girmediniz";
+$text_post["group_head_reply"]="Yanıtla";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]="yazdı:";
+$text_post["quote"]="Alıntı";
+$text_post["captchafail"]="CAPTCHA başarısız";
+$text_post["captchainfo1"]="Lütfen görüntüdeki metni girin";
+$text_post["captchainfo2"]="Bu otomatik spam koruması için gereklidir";
+
+$text_error["error:"]='<font color="red">Hata:</font>';
+$text_error["connection_failed"]="Haber Grubu sunucusuna bağlanılamadı";
+$text_error["article_not_found"]="<p>Böyle bir makale yok.</p>";
+$text_error["read_access_denied"]="<p>Okuma izniniz yok!</p>";
+$text_error["post_failed"]="Bağlantı koptu. Tekrar deneyin.";
+$text_error["auth_error"]="Kullanıcı kimliği denetimi başarısız.";
+$text_error["spool_error"]="spoolfile dosyasında hata. Lütfen tekrar yükleyin.";
+
+$text_register["must_register_group"]="Bu foruma erişmek için kayıt olmalısınız.";
+$text_register["must_register_post"]="Bir makale yazmak için kayıt olmalısınız.";
+$text_register["no_access_group"]="Bu foruma erişiminiz yok";
+$text_register["no_access_post"]="Bu forumda makale yazamazsınız.";
+
+?>

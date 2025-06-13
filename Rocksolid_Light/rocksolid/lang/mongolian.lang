@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="мэдээний бүлгүүд";
 $text_thread["button_latest"]="хамгийн сүүлийн үеийн";
 $text_thread["button_overboard"]="overboard";
 $text_thread["button_search"]="хайх";
-$text_thread["button_top"]="Дээш очих";
 $text_thread["date"]="<b>Огноо</b>";
 $text_thread["subject"]="<b>Сэдэв</b>";
 $text_thread["threadsize"]="<b>Хариултууд</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Сүүлийн зурвас</b>";
 $text_thread["no_such_group"]="Тийм бүлэг байхгүй.";
 $text_thread["pages"]="Хуудаснууд:";
 
-$text_groups["newsgroup"]="<b>Мэдээний бүлэг</b>";
-$text_groups["description"]="<b>Тайлбар</b>";
 
 $text_article["back_to_group"]="нийтлэлийн жагсаалт";
 $text_article["refresh"]="шинэчлэх";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Бүх нийтлэлийг уншихын тул
 
 $text_post["name"]="Хэрэглэгчийн нэр:";
 $text_post["password"]="Нууц үг:";
-$text_post["email"]="Таны и-мэйл:";
 $text_post["missing_message"]="Нийтлэхийн тулд зурвас оруулах шаардлагатай.";
 $text_post["missing_email"]="И-мэйл хаяг оруулах шаардлагатай.";
 $text_post["missing_name"]="Нэр эсвэл дор хаяж хоч оруулах шаардлагатай.";
 $text_post["missing_subject"]="Сэдэв оруулах шаардлагатай.";
 $text_post["button_post"]="Нийтлэл илгээх";
-$text_post["remember"]="Нэрийг санах";
 $text_post["message"]="Зурвас";
 $text_post["group_head"]="Бүлэгт нийтлэл бичих ";
 $text_post["group_head_reply"]="Бүлэгт нийтлэлд хариулах ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Танд эдгээр бүлгүүдэд нийтлэх эрх байхгүй:";
-$text_post["message_posted"]="Зурвас илгээгдсэн";
 $text_post["message_posted2"]="Зурвас амжилттай илгээгдлээ.";
 $text_post["button_back"]="Буцах";
 $text_post["button_back2"]="руу";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Нийтлэл олдсонгүй.</p>";
 $text_error["read_access_denied"]="<p>Унших эрхгүй!</p>";
 $text_error["post_failed"]="Холболт амжилтгүй боллоо. Дараа дахин оролдоно уу.";
 $text_error["auth_error"]="Баталгаажуулалт амжилтгүй боллоо.";
-$text_error["spool_error"]="spool файлд алдаа гарлаа. Дахин ачаална уу.";
 
-$text_register["must_register_group"]="Энэ бүлэгт нэвтрэхийн тулд бүртгүүлэх шаардлагатай.";
-$text_register["must_register_post"]="Энэ бүлэгт нийтлэхийн тулд бүртгүүлэх шаардлагатай.";
 $text_register["no_access_group"]="Танд энэ бүлэгт нэвтрэх эрх байхгүй.";
-$text_register["no_access_post"]="Танд энэ бүлэгт нийтлэх эрх байхгүй.";
 
 ?>

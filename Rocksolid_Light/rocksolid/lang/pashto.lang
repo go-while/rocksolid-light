@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="د خبرونو ډلې";
 $text_thread["button_latest"]="وروستي وګورئ";
 $text_thread["button_overboard"]="ټولې ډلې";
 $text_thread["button_search"]="لټون";
-$text_thread["button_top"]="بیرته پورته ته";
 $text_thread["date"]="<b>نېټه</b>";
 $text_thread["subject"]="<b>موضوع</b>";
 $text_thread["threadsize"]="<b>ځوابونه</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>وروستی پیغام</b>";
 $text_thread["no_such_group"]="دا ډله شتون نلري.";
 $text_thread["pages"]="پاڼې:";
 
-$text_groups["newsgroup"]="<b>د خبرونو ډله</b>";
-$text_groups["description"]="<b>تشریح</b>";
 
 $text_article["back_to_group"]="د مقالو لیست";
 $text_article["refresh"]="تازه کول";
@@ -39,19 +36,16 @@ $text_article["full_article"]="دلته ټک ورکړئ د بشپړې مقالې
 
 $text_post["name"]="د کارونکي نوم:";
 $text_post["password"]="پاسورډ:";
-$text_post["email"]="ستاسو بریښنالیک:";
 $text_post["missing_message"]="تاسو باید د پوست کولو لپاره پیغام ورسره شاملول کړئ.";
 $text_post["missing_email"]="تاسو باید د بریښنالیک پته ورسره شاملول کړئ.";
 $text_post["missing_name"]="تاسو باید نوم یا لږ تر لږه مستعار نوم ورسره شاملول کړئ.";
 $text_post["missing_subject"]="تاسو باید موضوع ورسره شاملول کړئ.";
 $text_post["button_post"]="مقاله ولیکئ";
-$text_post["remember"]="نوم په یاد وساتئ";
 $text_post["message"]="پیغام";
 $text_post["group_head"]="په ";
 $text_post["group_head_reply"]="ډله کې پوست ته ځواب ورکړئ ";
 $text_post["group_tail"]=" کې پوست ولیکئ";
 $text_post["followup_not_allowed"]="تاسو ته اجازه نشته په دغو ډلو کې پوست ولیکئ:";
-$text_post["message_posted"]="پیغام ولیکل شو";
 $text_post["message_posted2"]="پیغام په بریالیتوب سره ولیکل شو.";
 $text_post["button_back"]="بیرته";
 $text_post["button_back2"]="ته";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>مقاله شتون نلري.</p>";
 $text_error["read_access_denied"]="<p>د لوستلو اجازه نشته!</p>";
 $text_error["post_failed"]="اړیکه ناکامه شوه. وروسته د بیا لوډولو هڅه وکړئ.";
 $text_error["auth_error"]="تصدیق ناکام شو.";
-$text_error["spool_error"]="په سپول فایل کې تېروتنه. مهرباني وکړئ بیا لوډ کړئ.";
 
-$text_register["must_register_group"]="تاسو باید د دې ډلې ته د لاسرسۍ لپاره نوم لیکنه وکړئ.";
-$text_register["must_register_post"]="تاسو باید د دې ډلې کې د پوست کولو لپاره نوم لیکنه وکړئ.";
 $text_register["no_access_group"]="تاسو دې ډلې ته لاسرسی نلرئ.";
-$text_register["no_access_post"]="تاسو ته اجازه نشته په دې ډله کې پوست ولیکئ.";
 
 ?>

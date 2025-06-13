@@ -1,0 +1,81 @@
+<?php
+// kinyarwanda.lang
+$text_header["from"]="<b>Kuva:</b> ";
+$text_header["subject"]="<b>Inyandiko:</b> ";
+$text_header["newsgroups"]="<b>Amatsinda y'Amakuru:</b> ";
+$text_header["followup"]="<b>Gukurikirana:</b> ";
+$text_header["organization"]="<b>Umuryango:</b> ";
+$text_header["date"]="<b>Italiki:</b> ";
+$text_header["message-id"]="<b>ID Ubutumwa:</b> ";
+$text_header["references"]="<b>Indango:</b> ";
+$text_header["user-agent"]="<b>Uhagarariye Ukoresha:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Ibyongerwaho:</b> ";
+
+$text_thread["no_articles"]="<p><b>Nta nyandiko ziboneka</b></p>";
+$text_thread["button_write"]="inyandiko nshya";
+$text_thread["button_grouplist"]="amatsinda y'amakuru";
+$text_thread["button_latest"]="reba ibya vuba";
+$text_thread["button_overboard"]="amatsinda yose";
+$text_thread["button_search"]="shakisha";
+$text_thread["button_top"]="Garuka Hejuru";
+$text_thread["date"]="<b>Italiki</b>";
+$text_thread["subject"]="<b>Inyandiko</b>";
+$text_thread["threadsize"]="<b>Ibisubizo</b>";
+$text_thread["author"]="<b>Uwanditse</b>";
+$text_thread["lastmessage"]="<b>Ubutumwa bwa Nyuma</b>";
+$text_thread["no_such_group"]="Nta tsinda nk'iryo.";
+$text_thread["pages"]="Impapuro:";
+
+$text_groups["newsgroup"]="<b>Itsinda ry'Amakuru</b>";
+$text_groups["description"]="<b>Ibisobanuro</b>";
+
+$text_article["back_to_group"]="urutonde rw'inyandiko";
+$text_article["refresh"]="kuvugurura";
+$text_article["button_answer"]="Subiza";
+$text_article["button_cancel"]="Gusiba";
+$text_article["block-xnoarchive"]="Iyi sisitemu ntabwo ari ububiko, ariko umuyobozi wa sisitemu yafashe icyemezo cyo guhagarika inyandiko aho uwanditse adashaka kubikwa.";
+$text_article["full_article"]="Kanda hano usome inyandiko yuzuye";
+
+$text_post["name"]="Izina ry'Ukoresha:";
+$text_post["password"]="Ijambo ry'Ibanga:";
+$text_post["email"]="Imeyili Yawe:";
+$text_post["missing_message"]="Ugomba gushyiramo ubutumwa kugira ngo wohereze.";
+$text_post["missing_email"]="Ugomba gushyiramo aderesi ya imeyili.";
+$text_post["missing_name"]="Ugomba gushyiramo izina cyangwa byibuze irihimbano.";
+$text_post["missing_subject"]="Ugomba gushyiramo inyandiko.";
+$text_post["button_post"]="Ohereza Inyandiko";
+$text_post["remember"]="Wibuke izina";
+$text_post["message"]="Ubutumwa";
+$text_post["group_head"]="Wandika post muri ";
+$text_post["group_head_reply"]="Subiza post muri ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Ntibwemewe kohereza mu matsinda:";
+$text_post["message_posted"]="Ubutumwa bwoherejwe";
+$text_post["message_posted2"]="Ubutumwa bwoherejwe neza.";
+$text_post["button_back"]="Gusubira";
+$text_post["button_back2"]="kuri";
+$text_post["error_newsserver"]="Seriveri y'Ubutumwa yanze ubutumwa:";
+$text_post["error_readonly"]="Itsinda ririnzwe kwandikamo";
+$text_post["error_wrong_email"]="Aderesi ya imeyili idakwiye.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" yanditse:";
+$text_post["quote"]="Guhitiza";
+$text_post["captchafail"]='Wabuze ikizamini cya CAPTCHA. Nyamuneka ongera ugerageze';
+$text_post["captchainfo1"]='ongera wandike hano';
+$text_post["captchainfo2"]='Shyira inyuguti n\'imibare by\'ukuri kuva ku ishusho mu gasanduku k\'inyandiko. Iki kizamini gito gikora nk\'urwego rwo kwirinda spam-bots.';
+
+$text_error["error:"]='<font color="red">Ikosa:</font>';
+$text_error["connection_failed"]="Guhuza na Seriveri y'Ubutumwa byanze";
+$text_error["article_not_found"]="<p>Inyandiko ntibaho.</p>";
+$text_error["read_access_denied"]="<p>Nta burenganzira bwo gusoma!</p>";
+$text_error["post_failed"]="Guhuza byanze. Gerageza kongera upakire nyuma.";
+$text_error["auth_error"]="Kwemeza byanze.";
+$text_error["spool_error"]="Ikosa muri dosiye ya spool. Nyamuneka ongera upakire.";
+
+$text_register["must_register_group"]="Ugomba kwiyandikisha kugira ngo ubone uburenganzira ku itsinda.";
+$text_register["must_register_post"]="Ugomba kwiyandikisha kugira ngo ushoboze kohereza ku itsinda.";
+$text_register["no_access_group"]="Nta burenganzira ufite ku itsinda.";
+$text_register["no_access_post"]="Ntibwemewe kohereza ku itsinda.";
+
+?>

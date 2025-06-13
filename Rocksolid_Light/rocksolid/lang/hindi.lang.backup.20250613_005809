@@ -1,0 +1,81 @@
+<?php
+// Hindi (hi) translation for RockSolid Light
+$text_header["from"]="<b>की तरफ से:</b> ";
+$text_header["subject"]="<b>विषय:</b> ";
+$text_header["newsgroups"]="<b>समाचार समूह:</b> ";
+$text_header["followup"]="<b>अनुवर्ती:</b> ";
+$text_header["organization"]="<b>संगठन:</b> ";
+$text_header["date"]="<b>दिनांक:</b> ";
+$text_header["message-id"]="<b>संदेश ID:</b> ";
+$text_header["references"]="<b>संदर्भ:</b> ";
+$text_header["user-agent"]="<b>उपयोगकर्ता एजेंट:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>संलग्नक:</b> ";
+
+$text_thread["no_articles"]="<p><b>कोई लेख उपलब्ध नहीं</b></p>";
+$text_thread["button_write"]="नया थ्रेड";
+$text_thread["button_grouplist"]="समाचार समूह";
+$text_thread["button_latest"]="नवीनतम देखें";
+$text_thread["button_overboard"]="सामान्य बोर्ड";
+$text_thread["button_search"]="खोजें";
+$text_thread["button_top"]="शीर्ष पर वापस";
+$text_thread["date"]="<b>दिनांक</b>";
+$text_thread["subject"]="<b>विषय</b>";
+$text_thread["threadsize"]="<b>उत्तर</b>";
+$text_thread["author"]="<b>लेखक</b>";
+$text_thread["lastmessage"]="<b>अंतिम संदेश</b>";
+$text_thread["no_such_group"]="ऐसा कोई समूह नहीं।";
+$text_thread["pages"]="पृष्ठ:";
+
+$text_groups["newsgroup"]="<b>समाचार समूह</b>";
+$text_groups["description"]="<b>विवरण</b>";
+
+$text_article["back_to_group"]="लेख सूची";
+$text_article["refresh"]="ताज़ा करें";
+$text_article["button_answer"]="उत्तर दें";
+$text_article["button_cancel"]="हटाएं";
+$text_article["block-xnoarchive"]="यह सिस्टम एक अभिलेखागार नहीं है, लेकिन इस सिस्टम के प्रशासक ने उन पोस्ट्स को ब्लॉक करने का निर्णय लिया है जहाँ लेखक संग्रहीकरण नहीं चाहता।";
+$text_article["full_article"]="पूरा लेख पढ़ने के लिए यहाँ क्लिक करें";
+
+$text_post["name"]="उपयोगकर्ता नाम:";
+$text_post["password"]="पासवर्ड:";
+$text_post["email"]="आपका ईमेल:";
+$text_post["missing_message"]="पोस्ट करने के लिए आपको एक संदेश शामिल करना होगा।";
+$text_post["missing_email"]="आपको एक ईमेल पता शामिल करना होगा।";
+$text_post["missing_name"]="आपको एक नाम या कम से कम एक उपनाम शामिल करना होगा।";
+$text_post["missing_subject"]="आपको एक विषय शामिल करना होगा।";
+$text_post["button_post"]="लेख पोस्ट करें";
+$text_post["remember"]="नाम याद रखें";
+$text_post["message"]="संदेश";
+$text_post["group_head"]="में एक पोस्ट लिखें ";
+$text_post["group_head_reply"]="में पोस्ट का उत्तर दें ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="आपको इन समूहों में पोस्ट करने की अनुमति नहीं है:";
+$text_post["message_posted"]="संदेश पोस्ट किया गया";
+$text_post["message_posted2"]="संदेश सफलतापूर्वक पोस्ट किया गया।";
+$text_post["button_back"]="वापस";
+$text_post["button_back2"]="को";
+$text_post["error_newsserver"]="संदेश सर्वर ने संदेश को अस्वीकार कर दिया:";
+$text_post["error_readonly"]="समूह लेखन से सुरक्षित है";
+$text_post["error_wrong_email"]="गलत ईमेल पता।";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" ने लिखा:";
+$text_post["quote"]="उद्धरण";
+$text_post["captchafail"]='आप CAPTCHA परीक्षा में असफल रहे। कृपया पुनः प्रयास करें';
+$text_post["captchainfo1"]='इसे यहाँ फिर से टाइप करें';
+$text_post["captchainfo2"]='छवि से सही अक्षर और संख्याएं टेक्स्ट बॉक्स में दर्ज करें। यह छोटा परीक्षण स्पैम-बॉट्स के विरुद्ध पहुंच प्रतिबंध के रूप में कार्य करता है।';
+
+$text_error["error:"]='<font color="red">त्रुटि:</font>';
+$text_error["connection_failed"]="संदेश सर्वर से कनेक्शन असफल";
+$text_error["article_not_found"]="<p>लेख मौजूद नहीं है।</p>";
+$text_error["read_access_denied"]="<p>पढ़ने की अनुमति नहीं!</p>";
+$text_error["post_failed"]="कनेक्शन असफल। बाद में फिर से लोड करने का प्रयास करें।";
+$text_error["auth_error"]="प्रमाणीकरण असफल।";
+$text_error["spool_error"]="स्पूल फ़ाइल में त्रुटि। कृपया फिर से लोड करें।";
+
+$text_register["must_register_group"]="इस समूह तक पहुंच के लिए आपको पंजीकृत होना चाहिए।";
+$text_register["must_register_post"]="इस समूह में पोस्ट करने के लिए आपको पंजीकृत होना चाहिए।";
+$text_register["no_access_group"]="आपको इस समूह तक पहुंच नहीं है।";
+$text_register["no_access_post"]="आपको इस समूह में पोस्ट करने की अनुमति नहीं है।";
+
+?>

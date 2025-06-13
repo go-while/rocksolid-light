@@ -1,0 +1,81 @@
+<?php
+// Romanian (ro) translation for RockSolid Light
+$text_header["from"]="<b>De la:</b> ";
+$text_header["subject"]="<b>Subiect:</b> ";
+$text_header["newsgroups"]="<b>Grupuri de știri:</b> ";
+$text_header["followup"]="<b>Urmărire:</b> ";
+$text_header["organization"]="<b>Organizație:</b> ";
+$text_header["date"]="<b>Data:</b> ";
+$text_header["message-id"]="<b>ID mesaj:</b> ";
+$text_header["references"]="<b>Referințe:</b> ";
+$text_header["user-agent"]="<b>Agent utilizator:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>Atașamente:</b> ";
+
+$text_thread["no_articles"]="<p><b>Nu sunt articole disponibile</b></p>";
+$text_thread["button_write"]="fir nou";
+$text_thread["button_grouplist"]="grupuri de știri";
+$text_thread["button_latest"]="vezi cele mai recente";
+$text_thread["button_overboard"]="tablou general";
+$text_thread["button_search"]="caută";
+$text_thread["button_top"]="Înapoi în sus";
+$text_thread["date"]="<b>Data</b>";
+$text_thread["subject"]="<b>Subiect</b>";
+$text_thread["threadsize"]="<b>Răspunsuri</b>";
+$text_thread["author"]="<b>Autor</b>";
+$text_thread["lastmessage"]="<b>Ultimul mesaj</b>";
+$text_thread["no_such_group"]="Nu există un astfel de grup.";
+$text_thread["pages"]="Pagini:";
+
+$text_groups["newsgroup"]="<b>Grup de știri</b>";
+$text_groups["description"]="<b>Descriere</b>";
+
+$text_article["back_to_group"]="lista articolelor";
+$text_article["refresh"]="reîmprospătează";
+$text_article["button_answer"]="Răspunde";
+$text_article["button_cancel"]="Șterge";
+$text_article["block-xnoarchive"]="Acest sistem nu este o arhivă, dar administratorul acestui sistem a decis să blocheze postările unde autorul nu dorește arhivarea.";
+$text_article["full_article"]="Faceți clic aici pentru a citi articolul complet";
+
+$text_post["name"]="Nume utilizator:";
+$text_post["password"]="Parolă:";
+$text_post["email"]="E-mailul dumneavoastră:";
+$text_post["missing_message"]="Trebuie să includeți un mesaj pentru a posta.";
+$text_post["missing_email"]="Trebuie să includeți o adresă de e-mail.";
+$text_post["missing_name"]="Trebuie să includeți un nume sau cel puțin un pseudonim.";
+$text_post["missing_subject"]="Trebuie să includeți un subiect.";
+$text_post["button_post"]="Postează articol";
+$text_post["remember"]="Reține numele";
+$text_post["message"]="Mesaj";
+$text_post["group_head"]="Compune o postare în ";
+$text_post["group_head_reply"]="Răspunde la postarea din ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="Nu aveți permisiunea să postați în grupurile:";
+$text_post["message_posted"]="Mesaj postat";
+$text_post["message_posted2"]="Mesajul a fost postat cu succes.";
+$text_post["button_back"]="Înapoi";
+$text_post["button_back2"]="la";
+$text_post["error_newsserver"]="Serverul de mesaje a respins mesajul:";
+$text_post["error_readonly"]="Grupul este protejat împotriva scrierii";
+$text_post["error_wrong_email"]="Adresa de e-mail greșită.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" a scris:";
+$text_post["quote"]="Citează";
+$text_post["captchafail"]='Ați eșuat testul CAPTCHA. Vă rugăm să încercați din nou';
+$text_post["captchainfo1"]='retastați-l aici';
+$text_post["captchainfo2"]='Introduceți literele și cifrele corecte din imagine în caseta de text. Acest mic test servește ca restricție de acces împotriva roboților spam.';
+
+$text_error["error:"]='<font color="red">Eroare:</font>';
+$text_error["connection_failed"]="Conexiunea la serverul de mesaje a eșuat";
+$text_error["article_not_found"]="<p>Articolul nu există.</p>";
+$text_error["read_access_denied"]="<p>Nu aveți permisiunea de citire!</p>";
+$text_error["post_failed"]="Conexiunea a eșuat. Încercați să reîncărcați mai târziu.";
+$text_error["auth_error"]="Autentificarea a eșuat.";
+$text_error["spool_error"]="Eroare în fișierul spool. Vă rugăm să reîncărcați.";
+
+$text_register["must_register_group"]="Trebuie să fiți înregistrat pentru a avea acces la acest grup.";
+$text_register["must_register_post"]="Trebuie să fiți înregistrat pentru a posta în acest grup.";
+$text_register["no_access_group"]="Nu aveți acces la acest grup.";
+$text_register["no_access_post"]="Nu aveți permisiunea să postați în acest grup.";
+
+?>

@@ -1,0 +1,86 @@
+<?php
+// konkani.lang
+$text_header["from"]="<b>कडल्यान:</b> ";
+$text_header["subject"]="<b>विशय:</b> ";
+$text_header["newsgroups"]="<b>बातमी गट:</b> ";
+$text_header["followup"]="<b>फुडे:</b> ";
+$text_header["organization"]="<b>संस्था:</b> ";
+$text_header["date"]="<b>दीस:</b> ";
+$text_header["message-id"]="<b>संदेश-ID:</b> ";
+$text_header["references"]="<b>संदर्भ:</b> ";
+$text_header["user-agent"]="<b>वापरप्यो-एजेंट:</b> ";
+$text_header["date_format"]="D, j M Y H:i T";
+$text_header["attachments"]="<b>जोडल्यात:</b> ";
+
+$text_thread["no_articles"]="<p><b>कसलेच लेख ना</b></p>";
+$text_thread["button_write"]="नवो विशय";
+$text_thread["button_grouplist"]="बातमी गट";
+$text_thread["button_latest"]="नवे पळेयात";
+$text_thread["button_overboard"]="सगळे";
+$text_thread["button_search"]="सोद";
+$text_thread["button_top"]="वयर परत";
+$text_thread["date"]="<b>दीस</b>";
+$text_thread["subject"]="<b>विशय</b>";
+$text_thread["threadsize"]="<b>जवाब</b>";
+$text_thread["author"]="<b>बरयणारो</b>";
+$text_thread["lastmessage"]="<b>निमाणो संदेश</b>";
+$text_thread["no_such_group"]="असलो गट ना.";
+$text_thread["pages"]="पानां:";
+
+$text_groups["newsgroup"]="<b>बातमी गट</b>";
+$text_groups["description"]="<b>वर्णन</b>";
+
+$text_article["back_to_group"]="लेख वळेरी";
+$text_article["refresh"]="नवकरात";
+$text_article["button_answer"]="जवाब";
+$text_article["button_cancel"]="रद्द";
+$text_article["block-xnoarchive"]="हे सिस्टीम आर्काइव ना पूण सिस्टीम अॅडमिनान ठरयलां बरयणारो आर्काइव ना जाय म्हणून लेख काडून उडयतले.";
+$text_article["full_article"]="पुरो लेख वाचपाक इठे दबा";
+
+$text_post["name"]="वापरप्याचे नांव:";
+$text_post["password"]="गुप्त शब्द:";
+$text_post["email"]="तुमचो ईमेल:";
+$text_post["missing_message"]="पोस्ट करपाक संदेश जाय.";
+$text_post["missing_email"]="ईमेल पत्तो जाय.";
+$text_post["missing_name"]="नांव वा उणे करन टोपणनांव जाय.";
+$text_post["missing_subject"]="विशय जाय.";
+$text_post["button_post"]="लेख पाठयात";
+$text_post["remember"]="नांव उर्गता दवरात";
+$text_post["message"]="संदेश";
+$text_post["group_head"]="गटांत बरयात ";
+$text_post["group_head_reply"]="गटांत जवाब द्यात ";
+$text_post["group_tail"]="";
+$text_post["followup_not_allowed"]="ह्या गटांनी पोस्ट करचे परवानगी ना:";
+$text_post["message_posted"]="संदेश पाठयलो";
+$text_post["message_posted2"]="संदेश यशस्वीपणान पाठयलो.";
+$text_post["button_back"]="परत";
+$text_post["button_back2"]="कडे";
+$text_post["error_newsserver"]="बातमी सर्वरान हो संदेश नाकारलो:";
+$text_post["error_readonly"]="हो गट बरयप सावन बंद";
+$text_post["error_wrong_email"]="ईमेल पत्तो बरो ना.";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" बरयलां:";
+$text_post["quote"]="अवतरण";
+$text_post["captchafail"]='तुमी CAPTCHA परीक्षेंत नापास झाता. कृपया परत प्रयत्न करा.';
+$text_post["captchainfo1"]='ते इगें परत टायप करा';
+$text_post["captchainfo2"]='चित्रांतलीं बरोबर अक्षरां आनी संख्या मजकूर पेट्यांत घाला. हो ल्हान परीक्षा स्पॅम-बॉट्सांक आड थावपी म्हणून काम करता.';
+
+$text_nav["first_page"]="पयलें पान";
+$text_nav["last_page"]="निमाणें पान";
+$text_nav["next_page"]="फुडलें पान";
+$text_nav["prev_page"]="आदलें पान";
+
+$text_error["error:"]='<font color="red">चूक:</font>';
+$text_error["connection_failed"]="बातमी सर्वर कडे जोडणी फासली.";
+$text_error["article_not_found"]="<p>लेख मेळ्यो ना.</p>";
+$text_error["read_access_denied"]="<p>वाचपाची परवानगी नाकारली.</p>";
+$text_error["post_failed"]="जोडणी फासली. उपरांत परत यत्न करात.";
+$text_error["auth_error"]="अधिकृतता फासली.";
+$text_error["spool_error"]="स्पूल फायलींत चूक. उपकार करन परत लोड करात.";
+
+$text_register["must_register_group"]="ह्या गटांत वचपाक नोंदणी करची पडटली.";
+$text_register["must_register_post"]="ह्या गटांत पोस्ट करपाक नोंदणी करची पडटली.";
+$text_register["no_access_group"]="तुमकां ह्या गटांत वचपाचो हक्क ना.";
+$text_register["no_access_post"]="तुमकां ह्या गटांत पोस्ट करपाची परवानगी ना.";
+
+?>

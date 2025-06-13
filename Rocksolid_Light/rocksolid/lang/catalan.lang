@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="grups de notícies";
 $text_thread["button_latest"]="veure els últims";
 $text_thread["button_overboard"]="tauler general";
 $text_thread["button_search"]="cercar";
-$text_thread["button_top"]="Tornar a dalt";
 $text_thread["date"]="<b>Data</b>";
 $text_thread["subject"]="<b>Assumpte</b>";
 $text_thread["threadsize"]="<b>Respostes</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Últim missatge</b>";
 $text_thread["no_such_group"]="Aquest grup no existeix.";
 $text_thread["pages"]="Pàgines:";
 
-$text_groups["newsgroup"]="<b>Grup de notícies</b>";
-$text_groups["description"]="<b>Descripció</b>";
 
 $text_article["back_to_group"]="llista d'articles";
 $text_article["refresh"]="actualitzar";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Feu clic aquí per llegir l'article complet";
 
 $text_post["name"]="Nom d'usuari:";
 $text_post["password"]="Contrasenya:";
-$text_post["email"]="El vostre correu electrònic:";
 $text_post["missing_message"]="Heu d'incloure un missatge per publicar.";
 $text_post["missing_email"]="Heu d'incloure una adreça de correu electrònic.";
 $text_post["missing_name"]="Heu d'incloure un nom o almenys un àlies.";
 $text_post["missing_subject"]="Heu d'incloure un assumpte.";
 $text_post["button_post"]="Publicar article";
-$text_post["remember"]="Recordar nom";
 $text_post["message"]="Missatge";
 $text_post["group_head"]="Redactar un missatge a ";
 $text_post["group_head_reply"]="Respondre al missatge a ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="No teniu permís per publicar als grups:";
-$text_post["message_posted"]="Missatge publicat";
 $text_post["message_posted2"]="El missatge s'ha publicat correctament.";
 $text_post["button_back"]="Enrere";
 $text_post["button_back2"]="a";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>L'article no existeix.</p>";
 $text_error["read_access_denied"]="<p>No teniu permís per llegir!</p>";
 $text_error["post_failed"]="Connexió fallida. Intenteu recarregar més tard.";
 $text_error["auth_error"]="Ha fallat l'autenticació.";
-$text_error["spool_error"]="Error en el fitxer spool. Recarregueu.";
 
-$text_register["must_register_group"]="Heu d'estar registrat per tenir accés a aquest grup.";
-$text_register["must_register_post"]="Heu d'estar registrat per publicar en aquest grup.";
 $text_register["no_access_group"]="No teniu accés a aquest grup.";
-$text_register["no_access_post"]="No teniu permís per publicar en aquest grup.";
 
 ?>

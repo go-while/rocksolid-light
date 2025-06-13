@@ -1,0 +1,82 @@
+<?php
+// Czech (cz) translation for RockSolid Light
+$text_header["from"]="<b>Odesílatel:</b> ";
+$text_header["subject"]="<b>Nadpis:</b> ";
+$text_header["newsgroups"]="<b>Diskusní skupiny:</b> ";
+$text_header["followup"]="<b>Followup:</b> ";
+$text_header["organization"]="<b>Organizace:</b> ";
+$text_header["date"]="<b>Datum:</b> ";
+$text_header["message-id"]="<b>ID zprávy:</b> ";
+$text_header["references"]="<b>References:</b> ";
+$text_header["user-agent"]="<b>User-Agent:</b> ";
+$text_header["date_format"]="M d Y H:i:s";
+$text_header["attachments"]="<b>Přílohy:</b> ";
+
+$text_thread["no_articles"]="<p><b>Žádné články k dispozici</b></p>";
+$text_thread["button_write"]="Přidej zprávu";
+$text_thread["button_grouplist"]="Diskusní skupiny";
+$text_thread["button_latest"]="Zobrazit nejnovější";
+$text_thread["button_overboard"]="Hlavní nástěnka";
+$text_thread["button_search"]="Hledat";
+$text_thread["button_top"]="Zpět nahoru";
+$text_thread["date"]="<b>Datum</b>";
+$text_thread["subject"]="<b>Nadpis</b>";
+$text_thread["threadsize"]="<b>Odpovědi</b>";
+$text_thread["author"]="<b>Autor</b>";
+$text_thread["lastmessage"]="<b>Poslední zpráva</b>";
+$text_thread["no_such_group"]="Žádná taková skupina.";
+$text_thread["pages"]="Stránky:";
+
+$text_groups["newsgroup"]="<b>Skupina</b>";
+$text_groups["description"]="<b>Popis</b>";
+
+$text_article["back_to_group"]="Seznam článků";
+$text_article["refresh"]="Obnovit";
+$text_article["button_answer"]="Odpověz";
+$text_article["button_cancel"]="Smazat";
+$text_article["block-xnoarchive"]="Tento systém není archiv, ale správce tohoto systému se rozhodl blokovat příspěvky, kde autor nechce archivaci.";
+$text_article["full_article"]="Klikněte zde pro přečtení celého článku";
+
+$text_post["name"]="Uživatelské jméno:";
+$text_post["password"]="Heslo:";
+$text_post["email"]="Váš e-mail:";
+
+$text_post["missing_message"]="Nezadal jste příspěvek.";
+$text_post["missing_email"]="Nezadal jste email.";
+$text_post["missing_name"]="Nezadal jste jméno.";
+$text_post["missing_subject"]="Nezadal jste nadpis.";
+$text_post["button_post"]="Odešli";
+$text_post["remember"]="Zapamatujte si jméno a emailovou adresu";
+$text_post["message"]="Zpráva";
+$text_post["group_head"]="Psaní zprávy do:<B> ";
+$text_post["group_head_reply"]="Odpověď na příspěvek v ";
+$text_post["group_tail"]="</B>";
+$text_post["followup_not_allowed"]="Nemáte povolení přispívat do těchto skupin:";
+$text_post["message_posted"]="Zpráva odeslána";
+$text_post["message_posted2"]="Zpráva úspěšně odeslána.";
+$text_post["button_back"]="Zpět";
+$text_post["button_back2"]="do";
+$text_post["error_newsserver"]="News-server nepřijal tuto zprávu:";
+$text_post["error_readonly"]="Tato skupina je chráněna proti zápisu";
+$text_post["error_wrong_email"]="Emailová adresa je chybná";
+$text_post["wrote_prefix"]="";
+$text_post["wrote_suffix"]=" napsal:";
+$text_post["quote"]="Citace";
+$text_post["captchafail"]='CAPTCHA test jste neprošli. Zkuste to prosím znovu';
+$text_post["captchainfo1"]='Opište to zde znovu';
+$text_post["captchainfo2"]='Zadejte správná písmena a čísla z obrázku do textového pole. Tento malý test slouží jako omezení přístupu proti spam-botům.';
+
+$text_error["error:"]='<font color="red">Chyba:</font>';
+$text_error["connection_failed"]="Spojení na news-server se nepodařilo";
+$text_error["article_not_found"]="<p>Takový článek neexistuje.</p>";
+$text_error["read_access_denied"]="<p>Nemáte právo pro čtení!</p>";
+$text_error["post_failed"]="Nepovedlo se připojit. Zkuste po chvíli obnovit stránku.";
+$text_error["auth_error"]="Autentifikace na news-server se nepodařila.";
+$text_error["spool_error"]="Chyba v spool-souboru. Obnovte, prosím stránku.";
+
+$text_register["must_register_group"]="Musíte se zaregistrovat pro přístup k této skupině.";
+$text_register["must_register_post"]="Musíte se zaregistrovat pro přispívání do této skupiny.";
+$text_register["no_access_group"]="Nemáte přístup k této skupině.";
+$text_register["no_access_post"]="Nemáte povolení přispívat do této skupiny.";
+
+?>

@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="klompok pawarta";
 $text_thread["button_latest"]="deleng sing paling anyar";
 $text_thread["button_overboard"]="kabeh klompok";
 $text_thread["button_search"]="goleki";
-$text_thread["button_top"]="Bali menyang dhuwur";
 $text_thread["date"]="<b>Tanggal</b>";
 $text_thread["subject"]="<b>Jejer</b>";
 $text_thread["threadsize"]="<b>Wangsulan</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Pesen Pungkasan</b>";
 $text_thread["no_such_group"]="Ora ana klompok kaya mangkono.";
 $text_thread["pages"]="Kaca:";
 
-$text_groups["newsgroup"]="<b>Klompok Pawarta</b>";
-$text_groups["description"]="<b>Katrangan</b>";
 
 $text_article["back_to_group"]="dhaptar artikel";
 $text_article["refresh"]="seger maneh";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Klik kene kanggo maca artikel lengkap";
 
 $text_post["name"]="Jeneng pangguna:";
 $text_post["password"]="Sandhi:";
-$text_post["email"]="E-mail sampeyan:";
 $text_post["missing_message"]="Sampeyan kudu nyertakake pesen kanggo ngirim.";
 $text_post["missing_email"]="Sampeyan kudu nyertakake alamat e-mail.";
 $text_post["missing_name"]="Sampeyan kudu nyertakake jeneng utawa paling ora alias.";
 $text_post["missing_subject"]="Sampeyan kudu nyertakake jejer.";
 $text_post["button_post"]="Kirim Artikel";
-$text_post["remember"]="Elinga jeneng";
 $text_post["message"]="Pesen";
 $text_post["group_head"]="Nulis kiriman ing ";
 $text_post["group_head_reply"]="Wangsuli kiriman ing ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Sampeyan ora diijini ngirim menyang klompok:";
-$text_post["message_posted"]="Pesen dikirim";
 $text_post["message_posted2"]="Pesen kasil dikirim.";
 $text_post["button_back"]="Bali";
 $text_post["button_back2"]="menyang";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Artikel ora ana.</p>";
 $text_error["read_access_denied"]="<p>Ora ana ijin kanggo maca!</p>";
 $text_error["post_failed"]="Sambungan gagal. Coba dimuat maneh mengko.";
 $text_error["auth_error"]="Otentikasi gagal.";
-$text_error["spool_error"]="Kesalahan ing berkas spool. Monggo dimuat maneh.";
 
-$text_register["must_register_group"]="Sampeyan kudu ndhaptar kanggo nduweni akses menyang klompok iki.";
-$text_register["must_register_post"]="Sampeyan kudu ndhaptar kanggo ngirim menyang klompok iki.";
 $text_register["no_access_group"]="Sampeyan ora nduweni akses menyang klompok iki.";
-$text_register["no_access_post"]="Sampeyan ora diijini ngirim menyang klompok iki.";
 
 ?>

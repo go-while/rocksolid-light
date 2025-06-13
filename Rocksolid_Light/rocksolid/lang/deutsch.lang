@@ -18,7 +18,6 @@ $text_thread["button_overboard"]="Übersicht";
 $text_thread["button_search"]="Suchen";
 $text_thread["button_write"]="Schreiben";
 $text_thread["button_grouplist"]="Zur Gruppenliste";
-$text_thread["button_top"]="Nach oben";
 $text_thread["date"]="<b>Datum</b>";
 $text_thread["subject"]="<b>Thema</b>";
 $text_thread["threadsize"]="<b>#</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Letzte Nachricht</b>";
 $text_thread["no_such_group"]="Die Gruppe existiert nicht.";
 $text_thread["pages"]="Seiten:";
 
-$text_groups["newsgroup"]="<b>Newsgruppe</b>";
-$text_groups["description"]="<b>Beschreibung</b>";
 
 $text_article["button_answer"]="Beantworten";
 $text_article["button_cancel"]="Abbrechen";
@@ -39,18 +36,15 @@ $text_article["full_article"]="Den ganzen Artikel anzeigen";
 
 $text_post["name"]="Dein Name: ";
 $text_post["password"]="Passwort: ";
-$text_post["email"]="Deine E-Mail: ";
 $text_post["missing_message"]="Du musst natürlich das Nachrichtenfeld ausfüllen.";
 $text_post["missing_email"]="Die E-Mailadresse muss angegeben werden.";
 $text_post["missing_name"]="Du musst einen Namen angeben, wenigstens einen Spitznamen.";
 $text_post["missing_subject"]="Das Subject muss angegeben werden.";
 $text_post["button_post"]="Absenden";
-$text_post["remember"]="Name und eMail abspeichern";
 $text_post["message"]="Nachricht";
 $text_post["group_head"]="Artikel nach ";
 $text_post["group_tail"]=" schreiben";
 $text_post["followup_not_allowed"]="Du darfst auf den Artikel nicht antworten, da dieser in Folgende Gruppen geschrieben werden soll, zu denen Du kein Schreibrecht hast:";
-$text_post["message_posted"]="Nachricht verschickt";
 $text_post["message_posted2"]="Die Nachricht wurde erfolgreich verschickt.";
 $text_post["button_back"]="Zurück";
 $text_post["button_back2"]="nach";
@@ -71,11 +65,7 @@ $text_error["article_not_found"]="<p>Der Artikel ist nicht vorhanden</p>";
 $text_error["read_access_denied"]="<p>Keine Leseberechtigung!</p>";
 $text_error["post_failed"]="Verbindungsaufbau zum Newsserver fehlgeschlagen. Versuche es vielleicht später nochmal einen Reload.";
 $text_error["auth_error"]="Authentifikation beim Newsserver fehlgeschlagen.";
-$text_error["spool_error"]="Fehler in Spooldatei. Bitte neuladen.";
 
-$text_register["must_register_group"]="Du musst registriert sein, um auf dieses Forum zugreifen zu können.";
-$text_register["must_register_post"]="Du musst registriert sein, um einen Artikel zu schreiben.";
 $text_register["no_access_group"]="Du hast keinen Zugang zu diesem Forum";
-$text_register["no_access_post"]="Du darfst keinen Artikel in diesem Forum schreiben.";
 
 ?>

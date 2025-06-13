@@ -18,7 +18,6 @@ $text_thread["button_grouplist"]="ditlhogo tsa dikgang";
 $text_thread["button_latest"]="bona tse di farologaneng";
 $text_thread["button_overboard"]="tsotlhe";
 $text_thread["button_search"]="batla";
-$text_thread["button_top"]="Boela kwa godimo";
 $text_thread["date"]="<b>Letlha</b>";
 $text_thread["subject"]="<b>Kgang</b>";
 $text_thread["threadsize"]="<b>Dikarabo</b>";
@@ -27,8 +26,6 @@ $text_thread["lastmessage"]="<b>Molaetsa wa bofelo</b>";
 $text_thread["no_such_group"]="Ga go na setlhopha se se jalo.";
 $text_thread["pages"]="Matlhare:";
 
-$text_groups["newsgroup"]="<b>Setlhopha sa dikgang</b>";
-$text_groups["description"]="<b>Tlhaloso</b>";
 
 $text_article["back_to_group"]="lenaane la dikgatiso";
 $text_article["refresh"]="ntšhafatsa";
@@ -39,19 +36,16 @@ $text_article["full_article"]="Tobetsa fano go buisa kgatiso yotlhe";
 
 $text_post["name"]="Leina la modirisi:";
 $text_post["password"]="Lefoko la sephiri:";
-$text_post["email"]="Imeile ya gago:";
 $text_post["missing_message"]="O tlhoka molaetsa go ka romela.";
 $text_post["missing_email"]="O tlhoka aterese ya imeile.";
 $text_post["missing_name"]="O tlhoka leina kgotsa bonyenyane leina la seriti.";
 $text_post["missing_subject"]="O tlhoka kgang.";
 $text_post["button_post"]="Romela Kgatiso";
-$text_post["remember"]="Gopola leina";
 $text_post["message"]="Molaetsa";
 $text_post["group_head"]="Kwala mo setlhopheng ";
 $text_post["group_head_reply"]="Araba mo setlhopheng ";
 $text_post["group_tail"]="";
 $text_post["followup_not_allowed"]="Ga o letlelelwe go romela mo ditlhopheng tse:";
-$text_post["message_posted"]="Molaetsa o rometse";
 $text_post["message_posted2"]="Molaetsa o rometse ka katlego.";
 $text_post["button_back"]="Boela morago";
 $text_post["button_back2"]="go ya";
@@ -76,11 +70,7 @@ $text_error["article_not_found"]="<p>Kgatiso ga ya bonwa.</p>";
 $text_error["read_access_denied"]="<p>Go bala ga gannwe.</p>";
 $text_error["post_failed"]="Kgolagano e paletse. Leka gape mo nakong e e tlang.";
 $text_error["auth_error"]="Netefatso e paletse.";
-$text_error["spool_error"]="Phoso mo faileng ya spool. Tsweetswee laisa gape.";
 
-$text_register["must_register_group"]="O tshwanetse go ingodisa go tsena mo setlhopheng se.";
-$text_register["must_register_post"]="O tshwanetse go ingodisa go romela mo setlhopheng se.";
 $text_register["no_access_group"]="Ga o na tumelelo ya go tsena mo setlhopheng se.";
-$text_register["no_access_post"]="Ga o letlelelwe go romela mo setlhopheng se.";
 
 ?>
