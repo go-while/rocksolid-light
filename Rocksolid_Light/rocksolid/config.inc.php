@@ -135,7 +135,29 @@ $file_article_full = "article.php";
 $file_attachment = "attachment.php";
 $file_post = "post.php";
 $file_cancel = "cancel.php";
-$file_language = "lang/english.lang";
+
+// Language selection: Check for user preference in cookie, fallback to default
+include_once "allowed_languages.inc.php";
+$default_language = "lang/english.lang";
+
+if (isset($_COOKIE['user_language']) && !empty($_COOKIE['user_language'])) {
+    $requested_lang = $_COOKIE['user_language'];
+
+    // Security: Only allow languages from hardcoded approved list
+    if (is_language_allowed($requested_lang)) {
+        $requested_lang_path = "lang/" . $requested_lang;
+        if (file_exists($requested_lang_path)) {
+            $file_language = $requested_lang_path;
+        } else {
+            $file_language = $default_language;
+        }
+    } else {
+        $file_language = $default_language;
+    }
+} else {
+    $file_language = $default_language;
+}
+
 $file_footer = "footer.inc";
 $file_groups = $config_path . "groups.txt";
 

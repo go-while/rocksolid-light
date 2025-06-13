@@ -102,7 +102,15 @@ if (isset($user)) {
 } else {
     echo 'login';
 }
-echo '</a>';
+echo '</a>&nbsp;&nbsp;';
+
+// Add language selector link
+$current_page = $_SERVER['REQUEST_URI'];
+echo '<a class="header_links_text" href="../rocksolid/language_selector.php?return=' . urlencode($current_page) . '" title="Change Language">';
+$current_lang = isset($_COOKIE['user_language']) ? $_COOKIE['user_language'] : 'english.lang';
+$lang_display = ucfirst(str_replace(['_', '.lang'], [' ', ''], $current_lang));
+echo '🌐 ' . htmlspecialchars($lang_display) . '</a>';
+
 echo '</div></td></tr>';
 echo '</table>';
 
