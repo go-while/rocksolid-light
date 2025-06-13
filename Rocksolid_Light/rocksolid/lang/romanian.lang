@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referințe:</b> ";
 $text_header["user-agent"]="<b>Agent utilizator:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Atașamente:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nu sunt articole disponibile</b></p>";
 $text_thread["button_write"]="fir nou";
 $text_thread["button_grouplist"]="grupuri de știri";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Ultimul mesaj</b>";
 $text_thread["no_such_group"]="Nu există un astfel de grup.";
 $text_thread["pages"]="Pagini:";
-
-
 $text_article["back_to_group"]="lista articolelor";
 $text_article["refresh"]="reîmprospătează";
 $text_article["button_answer"]="Răspunde";
 $text_article["button_cancel"]="Șterge";
 $text_article["block-xnoarchive"]="Acest sistem nu este o arhivă, dar administratorul acestui sistem a decis să blocheze postările unde autorul nu dorește arhivarea.";
 $text_article["full_article"]="Faceți clic aici pentru a citi articolul complet";
-
 $text_post["name"]="Nume utilizator:";
 $text_post["password"]="Parolă:";
 $text_post["missing_message"]="Trebuie să includeți un mesaj pentru a posta.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citează";
 $text_post["captchafail"]='Ați eșuat testul CAPTCHA. Vă rugăm să încercați din nou';
 $text_post["captchainfo1"]='retastați-l aici';
 $text_post["captchainfo2"]='Introduceți literele și cifrele corecte din imagine în caseta de text. Acest mic test servește ca restricție de acces împotriva roboților spam.';
-
 $text_error["error:"]='<font color="red">Eroare:</font>';
 $text_error["connection_failed"]="Conexiunea la serverul de mesaje a eșuat";
 $text_error["article_not_found"]="<p>Articolul nu există.</p>";
 $text_error["read_access_denied"]="<p>Nu aveți permisiunea de citire!</p>";
 $text_error["post_failed"]="Conexiunea a eșuat. Încercați să reîncărcați mai târziu.";
 $text_error["auth_error"]="Autentificarea a eșuat.";
-
 $text_register["no_access_group"]="Nu aveți acces la acest grup.";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referenzi:</b> ";
 $text_header["user-agent"]="<b>Aġent tal-Utent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Annessi:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ebda artikolu disponibbli</b></p>";
 $text_thread["button_write"]="thread ġdid";
 $text_thread["button_grouplist"]="gruppi ta' aħbarijiet";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Awtur</b>";
 $text_thread["lastmessage"]="<b>Aħħar Messaġġ</b>";
 $text_thread["no_such_group"]="M'hemm ebda grupp bħal dan.";
 $text_thread["pages"]="Paġni:";
-
-
 $text_article["back_to_group"]="lista ta' artikoli";
 $text_article["refresh"]="aġġorna";
 $text_article["button_answer"]="Tweġiba";
 $text_article["button_cancel"]="Ħassar";
 $text_article["block-xnoarchive"]="Dan is-sistema mhix arkivju, iżda l-amministratur tas-sistema ddeċieda li jimblokka posts fejn l-awtur ma jridx l-arkivjar.";
 $text_article["full_article"]="Ikklikkja hawn biex taqra l-artikolu sħiħ";
-
 $text_post["name"]="Isem tal-Utent:";
 $text_post["password"]="Password:";
 $text_post["missing_message"]="Trid tinkludi messaġġ biex tibgħat.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Ikkwota";
 $text_post["captchafail"]='Fallejt it-test CAPTCHA. Jekk jogħġbok erġa\' pprova';
 $text_post["captchainfo1"]='ikteb dan hawn';
 $text_post["captchainfo2"]='Daħħal il-ittri u n-numri korretti mill-immaġni fil-kaxxa tat-test. Dan it-test żgħir iservi bħala restrizzjoni tal-aċċess kontra spam-bots.';
-
 $text_error["error:"]='<font color="red">Żball:</font>';
 $text_error["connection_failed"]="Il-konnessjoni mas-Server tal-Messaġġi falliet";
 $text_error["article_not_found"]="<p>L-artikolu ma jeżistix.</p>";
 $text_error["read_access_denied"]="<p>Ebda permess biex taqra!</p>";
 $text_error["post_failed"]="Konnessjoni falliet. Ipprova erġa' load aktar tard.";
 $text_error["auth_error"]="Awtentikazzjoni falliet.";
-
 $text_register["no_access_group"]="M'għandekx aċċess għal dan il-grupp.";
-
 ?>

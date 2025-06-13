@@ -11,7 +11,6 @@ $text_header["references"]="<b>Rujukan:</b> ";
 $text_header["user-agent"]="<b>Ejen Pengguna:</b> ";
 $text_header["date_format"]="d/m/Y H:i";
 $text_header["attachments"]="<b>Lampiran:</b> ";
-
 $text_thread["no_articles"]="<p><b>Tiada artikel tersedia</b></p>";
 $text_thread["button_write"]="Thread Baru";
 $text_thread["button_grouplist"]="Kumpulan Berita";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Pengarang</b>";
 $text_thread["lastmessage"]="<b>Mesej Terakhir</b>";
 $text_thread["no_such_group"]="Kumpulan tersebut tidak wujud.";
 $text_thread["pages"]="Halaman:";
-
-
 $text_article["back_to_group"]="Senarai Artikel";
 $text_article["refresh"]="Segarkan";
 $text_article["button_answer"]="Balas";
 $text_article["button_cancel"]="Padam";
 $text_article["block-xnoarchive"]="Sistem ini bukan arkib, tetapi pentadbir sistem memutuskan untuk menyekat pos di mana pengarang tidak mahu pengarkiban.";
 $text_article["full_article"]="Klik di sini untuk membaca artikel penuh";
-
 $text_post["name"]="Nama pengguna:";
 $text_post["password"]="Kata laluan:";
 $text_post["missing_message"]="Anda mesti menyertakan mesej untuk pos.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Petik";
 $text_post["captchafail"]='Anda gagal dalam ujian CAPTCHA. Sila cuba lagi';
 $text_post["captchainfo1"]='Taip semula di sini';
 $text_post["captchainfo2"]='Masukkan huruf dan nombor yang betul dari imej ke dalam kotak teks. Ujian kecil ini berfungsi sebagai sekatan akses terhadap spam-bot.';
-
 $text_error["error:"]='<font color="red">Ralat:</font>';
 $text_error["connection_failed"]="Sambungan ke pelayan mesej gagal";
 $text_error["article_not_found"]="<p>Artikel tidak wujud.</p>";
 $text_error["read_access_denied"]="<p>Tiada kebenaran membaca!</p>";
 $text_error["post_failed"]="Sambungan gagal. Cuba lagi kemudian.";
 $text_error["auth_error"]="Pengesahan gagal.";
-
 $text_register["no_access_group"]="Anda tiada akses ke kumpulan ini.";
-
 ?>

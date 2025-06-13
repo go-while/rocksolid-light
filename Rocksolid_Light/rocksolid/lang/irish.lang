@@ -11,7 +11,6 @@ $text_header["references"]="<b>Tagairtí:</b> ";
 $text_header["user-agent"]="<b>Gníomhaire úsáideora:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Ceangaltáin:</b> ";
-
 $text_thread["no_articles"]="<p><b>Níl aon alt ar fáil</b></p>";
 $text_thread["button_write"]="snáithe nua";
 $text_thread["button_grouplist"]="grúpaí nuachta";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Údar</b>";
 $text_thread["lastmessage"]="<b>An Teachtaireacht Dheireanach</b>";
 $text_thread["no_such_group"]="Níl a leithéid de ghrúpa ann.";
 $text_thread["pages"]="Leathanaigh:";
-
-
 $text_article["back_to_group"]="liosta alt";
 $text_article["refresh"]="athnuachan";
 $text_article["button_answer"]="Freagair";
 $text_article["button_cancel"]="Scrios";
 $text_article["block-xnoarchive"]="Ní cartlann í an córas seo, ach tá cinneadh déanta ag riarthóir an chórais seo postálacha a chur ar ceal sa chás nach dteastaíonn ón údar iad a chur i gcartlann.";
 $text_article["full_article"]="Cliceáil anseo chun an t-alt iomlán a léamh";
-
 $text_post["name"]="Ainm úsáideora:";
 $text_post["password"]="Pasfhocal:";
 $text_post["missing_message"]="Caithfidh tú teachtaireacht a chur san áireamh le postáil.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Luaigh";
 $text_post["captchafail"]='Theip ort sa tástáil CAPTCHA. Bain triail eile as le do thoil';
 $text_post["captchainfo1"]='athchló é sin anseo';
 $text_post["captchainfo2"]='Cuir isteach na litreacha agus na huimhreacha cearta ón íomhá sa bhosca téacs. Feidhmíonn an tástáil bheag seo mar shrianadh rochtana in aghaidh róbónna turscair.';
-
 $text_error["error:"]='<font color="red">Earráid:</font>';
 $text_error["connection_failed"]="Theip ar an nasc leis an bhFreastalaí Teachtaireachta";
 $text_error["article_not_found"]="<p>Níl an t-alt ann.</p>";
 $text_error["read_access_denied"]="<p>Níl cead léimh ann!</p>";
 $text_error["post_failed"]="Theip ar nasc. Bain triail as athluchtú níos déanaí.";
 $text_error["auth_error"]="Theip ar fhíordheimhniú.";
-
 $text_register["no_access_group"]="Níl rochtain agat ar an ngrúpa seo.";
-
 ?>

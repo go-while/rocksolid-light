@@ -11,7 +11,6 @@ $text_header["references"]="<b>Tixraacyo:</b> ";
 $text_header["user-agent"]="<b>Qalabka isticmaale:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Lifaaqyo:</b> ";
-
 $text_thread["no_articles"]="<p><b>Maqaallo lama heli karo</b></p>";
 $text_thread["button_write"]="qor mowduuc cusub";
 $text_thread["button_grouplist"]="kooxaha wararka";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Qoraa</b>";
 $text_thread["lastmessage"]="<b>Fariintii ugu dambeysay</b>";
 $text_thread["no_such_group"]="Kooxdan lama heli karo.";
 $text_thread["pages"]="Bogagga:";
-
-
 $text_article["back_to_group"]="liiska maqaallada";
 $text_article["refresh"]="cusbooneysii";
 $text_article["button_answer"]="Jawaab";
 $text_article["button_cancel"]="Tirtir";
 $text_article["block-xnoarchive"]="Nidaamkan ma ahan kayd, laakiin maamulaha nidaamkan wuxuu go'aansaday inuu xannibo qoraallada, halka qoraagu uusan rabin in la kaydiyo.";
 $text_article["full_article"]="Guji halkan si aad u akhrido maqaalka oo dhan";
-
 $text_post["name"]="Magaca isticmaalaha:";
 $text_post["password"]="Furaha sirta:";
 $text_post["missing_message"]="Waa inaad gelisaa fariin si aad u dirto.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Xigasho";
 $text_post["captchafail"]='Waad ku guuldareysatay tijaabada CAPTCHA. Fadlan isku day mar kale';
 $text_post["captchainfo1"]='ku qor halkan';
 $text_post["captchainfo2"]='Geli xarfaha iyo lambarrada saxda ah ee sawirka ku jira sanduuqa qoraalka. Tijaabadan yar waxay ka hortagtaa spam-bots.';
-
 $text_error["error:"]='<font color="red">Khalad:</font>';
 $text_error["connection_failed"]="Xiriirka Server-ka fariimaha wuu guuldareystay";
 $text_error["article_not_found"]="<p>Maqaalka lama helin.</p>";
 $text_error["read_access_denied"]="<p>Lama oggola in la akhriyo!</p>";
 $text_error["post_failed"]="Xiriirku wuu guuldareystay. Isku day dib u cusbooneysiin.";
 $text_error["auth_error"]="Aqoonsi waa guuldareystay.";
-
 $text_register["no_access_group"]="Ma heli kartid kooxdan.";
-
 ?>

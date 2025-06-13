@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referèntzias:</b> ";
 $text_header["user-agent"]="<b>Agente Usuàriu:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Allèghidos:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nudda artìculu disponìbile</b></p>";
 $text_thread["button_write"]="tema noa";
 $text_thread["button_grouplist"]="gruppos de noticias";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autore</b>";
 $text_thread["lastmessage"]="<b>Ùrtimu Messàgiu</b>";
 $text_thread["no_such_group"]="Nuddu gruppu giai.";
 $text_thread["pages"]="Pàginas:";
-
-
 $text_article["back_to_group"]="lista artìculos";
 $text_article["refresh"]="agiorna";
 $text_article["button_answer"]="Risponde";
 $text_article["button_cancel"]="Boga";
 $text_article["block-xnoarchive"]="Custu sistema no est un archìviu, ma s'amministradore de su sistema at decìdidu de bloccare is publicatziones ue s'autore no bolet s'archiviatzione.";
 $text_article["full_article"]="Incarca inoghe pro lèghere s'artìculu cumpletu";
-
 $text_post["name"]="Nùmene Usuàriu:";
 $text_post["password"]="Password:";
 $text_post["missing_message"]="Depes includere unu messàgiu pro publicare.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Cita";
 $text_post["captchafail"]='No as passadu sa prova CAPTCHA. Pro praghere prova·nche torra';
 $text_post["captchainfo1"]='torra a iscrìere cussu inoghe';
 $text_post["captchainfo2"]='Inserta is lìteras e is nùmeros curetos dae s\'imàgine in sa casella de testu. Custa prova pìtica serbit comente limitatzione de atzessu contra is spam-bots.';
-
 $text_error["error:"]='<font color="red">Faddina:</font>';
 $text_error["connection_failed"]="Sa connessione cun su Server de Messàgios est fallida";
 $text_error["article_not_found"]="<p>S'artìculu no esistit.</p>";
 $text_error["read_access_denied"]="<p>Nudda permissu pro lèghere!</p>";
 $text_error["post_failed"]="Connessione fallida. Prova a carrigare prus a tardu.";
 $text_error["auth_error"]="Autenticatzione fallida.";
-
 $text_register["no_access_group"]="No tenes atzessu a custu gruppu.";
-
 ?>

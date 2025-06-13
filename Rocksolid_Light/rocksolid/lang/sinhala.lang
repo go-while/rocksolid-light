@@ -11,7 +11,6 @@ $text_header["references"]="<b>යොමු:</b> ";
 $text_header["user-agent"]="<b>පරිශීලක නියෝජිතයා:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ඇමුණුම්:</b> ";
-
 $text_thread["no_articles"]="<p><b>ලිපි නොමැත</b></p>";
 $text_thread["button_write"]="නව ත්‍රෙඩ් එකක්";
 $text_thread["button_grouplist"]="පුවත් කණ්ඩායම්";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>කතෘ</b>";
 $text_thread["lastmessage"]="<b>අවසන් පණිවිඩය</b>";
 $text_thread["no_such_group"]="එවැනි කණ්ඩායමක් නොමැත.";
 $text_thread["pages"]="පිටු:";
-
-
 $text_article["back_to_group"]="ලිපි ලැයිස්තුව";
 $text_article["refresh"]="නවීකරණය කරන්න";
 $text_article["button_answer"]="පිළිතුරු දෙන්න";
 $text_article["button_cancel"]="මකන්න";
 $text_article["block-xnoarchive"]="මෙම පද්ධතිය ආරක්ෂකයක් නොවෙයි, නමුත් පද්ධති පරිපාලකයා ලේඛකයා ආරක්ෂාව නොකැමති නම් පළ කිරීම් අවහිර කිරීමට තීරණය කර ඇත.";
 $text_article["full_article"]="සම්පූර්ණ ලිපිය කියවීමට මෙතන ක්ලික් කරන්න";
-
 $text_post["name"]="පරිශීලක නාමය:";
 $text_post["password"]="මුරපදය:";
 $text_post["missing_message"]="පළ කිරීමට පණිවිඩයක් ඇතුළත් කළ යුතුය.";
@@ -58,14 +54,11 @@ $text_post["quote"]="උපුටා දැක්වීම";
 $text_post["captchafail"]='ඔබ CAPTCHA පරීක්ෂණය අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න';
 $text_post["captchainfo1"]='මෙහි නැවත ටයිප් කරන්න';
 $text_post["captchainfo2"]='රූපයෙන් නිවැරදි අකුරු සහ ඉලක්කම් පෙළ කොටුවට ඇතුළත් කරන්න. මෙම කුඩා පරීක්ෂණය spam-bots වලට එරෙහිව ප්‍රවේශ සීමාවක් ලෙස ක්‍රියා කරයි.';
-
 $text_error["error:"]='<font color="red">දෝෂය:</font>';
 $text_error["connection_failed"]="පණිවිඩ සේවාදායකයට සම්බන්ධ වීම අසාර්ථක විය";
 $text_error["article_not_found"]="<p>ලිපිය නොපවතී.</p>";
 $text_error["read_access_denied"]="<p>කියවීමට අවසර නැත!</p>";
 $text_error["post_failed"]="සම්බන්ධ වීම අසාර්ථක විය. කරුණාකර පසුව නැවත උත්සාහ කරන්න.";
 $text_error["auth_error"]="සත්‍යාපනය අසාර්ථක විය.";
-
 $text_register["no_access_group"]="ඔබට මෙම කණ්ඩායමට ප්‍රවේශ වීමට අවසර නැත.";
-
 ?>

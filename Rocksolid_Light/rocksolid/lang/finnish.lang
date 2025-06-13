@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referenssit:</b> ";
 $text_header["user-agent"]="<b>Käyttäjäohjelmisto:</b> ";
 $text_header["date_format"]="M d Y H:i:s";
 $text_header["attachments"]="<b>Liitteet:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ei artikkeleita</b></p>";
 $text_thread["button_write"]="Uusi säie";
 $text_thread["button_grouplist"]="Uutisryhmät";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Tekijä</b>";
 $text_thread["lastmessage"]="<b>Viimeinen viesti</b>";
 $text_thread["no_such_group"]="Ryhmää ei ole.";
 $text_thread["pages"]="Sivut:";
-
-
 $text_article["back_to_group"]="Artikkelilista";
 $text_article["refresh"]="Päivitä";
 $text_article["button_answer"]="Vastaa";
 $text_article["button_cancel"]="Poista";
 $text_article["block-xnoarchive"]="Tämä järjestelmä ei ole arkisto, mutta tämän järjestelmän ylläpitäjä on päättänyt estää viestit, joissa kirjoittaja ei halua arkivointia.";
 $text_article["full_article"]="Klikkaa tästä lukeaksesi koko artikkelin";
-
 $text_post["name"]="Käyttäjänimi:";
 $text_post["password"]="Salasana:";
 $text_post["missing_message"]="Viestiosa on tyhjä";
@@ -58,14 +54,11 @@ $text_post["quote"]="Lainaus";
 $text_post["captchafail"]='CAPTCHA-testi epäonnistui. Yritä uudelleen';
 $text_post["captchainfo1"]='Kirjoita se tähän uudelleen';
 $text_post["captchainfo2"]='Syötä kuvasta oikeat kirjaimet ja numerot tekstikenttään. Tämä pieni testi toimii pääsynrajoituksena spam-botteja vastaan.';
-
 $text_error["error:"]='<font color="red">Virhe:</font>';
 $text_error["connection_failed"]="Ei yhteyttä uutispalvelimeen";
 $text_error["article_not_found"]="<p>Artikkelia ei ole.</p>";
 $text_error["read_access_denied"]="<p>Ei oikeutta lukea!</p>";
 $text_error["post_failed"]="Yhteys epäonnistui. Kokeile myöhemmin uudelleen.";
 $text_error["auth_error"]="Käyttäjätunnistus palvelimella epäonnistui.";
-
 $text_register["no_access_group"]="Sinulla ei ole pääsyä tähän ryhmään.";
-
 ?>

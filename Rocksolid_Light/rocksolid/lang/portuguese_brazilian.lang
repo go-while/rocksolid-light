@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referências:</b> ";
 $text_header["user-agent"]="<b>Agente do Usuário:</b> ";
 $text_header["date_format"]="d/m/Y H:i";
 $text_header["attachments"]="<b>Anexos:</b> ";
-
 $text_thread["no_articles"]="<p><b>Não há artigos disponíveis</b></p>";
 $text_thread["button_write"]="Nova thread";
 $text_thread["button_grouplist"]="Newsgroups";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Última mensagem</b>";
 $text_thread["no_such_group"]="Grupo não existe.";
 $text_thread["pages"]="Páginas:";
-
-
 $text_article["back_to_group"]="Lista de artigos";
 $text_article["refresh"]="Atualizar";
 $text_article["button_answer"]="Responder";
 $text_article["button_cancel"]="Excluir";
 $text_article["block-xnoarchive"]="Este sistema não é um arquivo, mas o administrador decidiu bloquear posts onde o autor não quer arquivamento.";
 $text_article["full_article"]="Clique aqui para ler o artigo completo";
-
 $text_post["name"]="Nome de usuário:";
 $text_post["password"]="Senha:";
 $text_post["missing_message"]="Você deve incluir uma mensagem para postar.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citar";
 $text_post["captchafail"]='Você falhou no teste CAPTCHA. Tente novamente';
 $text_post["captchainfo1"]='Digite novamente aqui';
 $text_post["captchainfo2"]='Insira as letras e números corretos da imagem na caixa de texto. Este pequeno teste funciona como limitação de acesso contra spam-bots.';
-
 $text_error["error:"]='<font color="red">Erro:</font>';
 $text_error["connection_failed"]="Falha na conexão com o servidor de mensagens";
 $text_error["article_not_found"]="<p>O artigo não existe.</p>";
 $text_error["read_access_denied"]="<p>Sem permissão de leitura!</p>";
 $text_error["post_failed"]="Falha na conexão. Tente novamente mais tarde.";
 $text_error["auth_error"]="Falha na autenticação.";
-
 $text_register["no_access_group"]="Você não tem acesso a este grupo.";
-
 ?>

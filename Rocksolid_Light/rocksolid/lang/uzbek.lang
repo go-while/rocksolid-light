@@ -11,7 +11,6 @@ $text_header["references"]="<b>Havolalar:</b> ";
 $text_header["user-agent"]="<b>Foydalanuvchi-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Qo'shimchalar:</b> ";
-
 $text_thread["no_articles"]="<p><b>Maqolalar mavjud emas</b></p>";
 $text_thread["button_write"]="yangi mavzu";
 $text_thread["button_grouplist"]="yangilik guruhlari";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Muallif</b>";
 $text_thread["lastmessage"]="<b>So'nggi Xabar</b>";
 $text_thread["no_such_group"]="Bunday guruh yo'q.";
 $text_thread["pages"]="Sahifalar:";
-
-
 $text_article["back_to_group"]="maqolalar ro'yxati";
 $text_article["refresh"]="yangilash";
 $text_article["button_answer"]="Javob berish";
 $text_article["button_cancel"]="O'chirish";
 $text_article["block-xnoarchive"]="Bu tizim arxiv emas, lekin bu tizim administratori muallif arxivlashni istamaydigan xabarlarni bloklashga qaror qildi.";
 $text_article["full_article"]="To'liq maqolani o'qish uchun bu yerga bosing";
-
 $text_post["name"]="Foydalanuvchi nomi:";
 $text_post["password"]="Parol:";
 $text_post["missing_message"]="Xabar yuborish uchun xabar kiriting.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Iqtibos";
 $text_post["captchafail"]='CAPTCHA testidan o\'ta olmadingiz. Iltimos, qayta urinib ko\'ring';
 $text_post["captchainfo1"]='uni bu yerga qayta yozing';
 $text_post["captchainfo2"]='Rasmdan to\'g\'ri harflar va raqamlarni matn maydoniga kiriting. Bu kichik test spam-botlarga qarshi kirish cheklovlari sifatida xizmat qiladi.';
-
 $text_error["error:"]='<font color="red">Xato:</font>';
 $text_error["connection_failed"]="Xabar serveriga ulanish amalga oshmadi";
 $text_error["article_not_found"]="<p>Maqola mavjud emas.</p>";
 $text_error["read_access_denied"]="<p>O'qish uchun ruxsat yo'q!</p>";
 $text_error["post_failed"]="Ulanish amalga oshmadi. Keyinroq qayta yuklashga harakat qiling.";
 $text_error["auth_error"]="Autentifikatsiya amalga oshmadi.";
-
 $text_register["no_access_group"]="Bu guruhga kirishingiz mumkin emas.";
-
 ?>

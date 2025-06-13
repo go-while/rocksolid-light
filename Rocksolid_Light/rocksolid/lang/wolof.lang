@@ -11,7 +11,6 @@ $text_header["references"]="<b>Waytu yi:</b> ";
 $text_header["user-agent"]="<b>Jëfandikukat-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Yëpp yi jàpp:</b> ";
-
 $text_thread["no_articles"]="<p><b>Amul wax-waxeet</b></p>";
 $text_thread["button_write"]="xët bu bees";
 $text_thread["button_grouplist"]="kàddu yi";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Bindkat</b>";
 $text_thread["lastmessage"]="<b>Bataaxal bu mujj</b>";
 $text_thread["no_such_group"]="Amul benn kàddu bu mel.";
 $text_thread["pages"]="Xët yi:";
-
-
 $text_article["back_to_group"]="limu wax-waxeet yi";
 $text_article["refresh"]="yees";
 $text_article["button_answer"]="Jàpp";
 $text_article["button_cancel"]="Wuute";
 $text_article["block-xnoarchive"]="Ndimbal bii du nooy arkif, waaye juur-ndimbal bi décide na wax ne bu bindkat la bëgga du arkife.";
 $text_article["full_article"]="Bësal fii ngir jàng lépp-lépp li bindii";
-
 $text_post["name"]="Tur-jëfandikukat:";
 $text_post["password"]="Bàttukaayu sutura:";
 $text_post["missing_message"]="Danga soxla bataaxal ngir post.";
@@ -58,15 +54,11 @@ $text_post["quote"]="Waytu";
 $text_post["captchafail"]='Baaxul nga ci test CAPTCHA bi. Jariñ ko tubaab.';
 $text_post["captchainfo1"]='bind ko fii tubaab';
 $text_post["captchainfo2"]='Duggal ay xarnu ak ay limu yu baax ci biir nataal bi ci bopp baatu mbind mi. Test bii ndaw na ngi leer ci spam-bot yi.';
-
-
 $text_error["error:"]='<font color="red">Njumte:</font>';
 $text_error["connection_failed"]="Jokkoo ak serwer-xabaar bi njumte.";
 $text_error["article_not_found"]="<p>Gisul wax-waxeet bi.</p>";
 $text_error["read_access_denied"]="<p>Jàng amul dara.</p>";
 $text_error["post_failed"]="Jokkoo bi njumte. Jéem ci kanam.";
 $text_error["auth_error"]="Jëfandoo bi baaxul.";
-
 $text_register["no_access_group"]="Amul sa dugg ci kàddu bii.";
-
 ?>

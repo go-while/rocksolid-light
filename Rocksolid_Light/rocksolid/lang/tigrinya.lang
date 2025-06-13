@@ -11,7 +11,6 @@ $text_header["references"]="<b>ቅጥዒታት:</b> ";
 $text_header["user-agent"]="<b>ተጠቃሚ-ወኪል:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ተተሒዞም:</b> ";
-
 $text_thread["no_articles"]="<p><b>ዓንቀጻት ኣይተረኽቡን</b></p>";
 $text_thread["button_write"]="ሓድሽ ኣርእስቲ";
 $text_thread["button_grouplist"]="ሓበሬታ ጉጅለታት";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ደራሲ</b>";
 $text_thread["lastmessage"]="<b>ናይ መወዳእታ መልእኽቲ</b>";
 $text_thread["no_such_group"]="እንደሞኑ ጉጅለ የለን።";
 $text_thread["pages"]="ገጽታት:";
-
-
 $text_article["back_to_group"]="ዓንቀጻት ዝርዝር";
 $text_article["refresh"]="ሐድሽ";
 $text_article["button_answer"]="መልሲ";
 $text_article["button_cancel"]="ሰረዝ";
 $text_article["block-xnoarchive"]="እዚ ስርዓት ኣርካይቭ ኣይኮነን ግን ናይ ስርዓት አስተዳዳሪ ወሰነ ደራሲ ኣርካይቭ እንተዘይደሊዩ ዓንቀጻት ይድፈኑ።";
 $text_article["full_article"]="ዝኾነ ዓንቀጽ ንምንባብ ኣብዚ ጠውቅ";
-
 $text_post["name"]="ተጠቃሚ ስም:";
 $text_post["password"]="መሸፈኒ ቃል:";
 $text_post["missing_message"]="ንምልኣኽ መልእኽቲ የድሊ።";
@@ -58,15 +54,11 @@ $text_post["quote"]="ቅጥዒ";
 $text_post["captchafail"]='ናይ CAPTCHA ፈተና ፈሺልካ። በጃኻ ተመለስ ፈትነዮ።';
 $text_post["captchainfo1"]='ኣብዚ ተመለስ ጽሓፎ';
 $text_post["captchainfo2"]='ካብቲ ስእሊ ዝለዓሉ ቅኑዓት ፊደላትን ቁጽርን ናብቲ ናይ ጽሑፍ ሳንዱቅ ኣእትዎ። እዚ ንእሽቶ ፈተና እዚ ናይ spam-bot ዕገት እዩ።';
-
-
 $text_error["error:"]='<font color="red">ጌጋ:</font>';
 $text_error["connection_failed"]="ምስ ሓበሬታ ሰርቨር ምትእስሳር ወደቐ።";
 $text_error["article_not_found"]="<p>ዓንቀጽ ኣይተረኽበን።</p>";
 $text_error["read_access_denied"]="<p>ምንባብ ተከልክሏል።</p>";
 $text_error["post_failed"]="ምትእስሳር ወደቐ። ገለ እዋን ድሕሪኡ እንደገና ፈትን።";
 $text_error["auth_error"]="ሓቅነት ስልጣን ወደቐ።";
-
 $text_register["no_access_group"]="ናብዚ ጉጅለ መብጽሓ የብልካን።";
-
 ?>

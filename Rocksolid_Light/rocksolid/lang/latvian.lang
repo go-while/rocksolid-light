@@ -11,7 +11,6 @@ $text_header["references"]="<b>Atsauces:</b> ";
 $text_header["user-agent"]="<b>Lietotāja aģents:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Pielikumi:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nav pieejamu rakstu</b></p>";
 $text_thread["button_write"]="jauna tēma";
 $text_thread["button_grouplist"]="ziņu grupas";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autors</b>";
 $text_thread["lastmessage"]="<b>Pēdējais ziņojums</b>";
 $text_thread["no_such_group"]="Nav šādas grupas.";
 $text_thread["pages"]="Lapas:";
-
-
 $text_article["back_to_group"]="rakstu saraksts";
 $text_article["refresh"]="atjaunot";
 $text_article["button_answer"]="Atbildēt";
 $text_article["button_cancel"]="Dzēst";
 $text_article["block-xnoarchive"]="Šī sistēma nav arhīvs, bet šīs sistēmas administrators nolēma bloķēt ierakstus, kur autors nevēlas arhivēšanu.";
 $text_article["full_article"]="Noklikšķiniet šeit, lai izlasītu pilnu rakstu";
-
 $text_post["name"]="Lietotājvārds:";
 $text_post["password"]="Parole:";
 $text_post["missing_message"]="Jums jāiekļauj ziņojums, lai publicētu.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citāts";
 $text_post["captchafail"]='Jūs neizturējāt CAPTCHA testu. Lūdzu, mēģiniet vēlreiz';
 $text_post["captchainfo1"]='ievadiet to šeit vēlreiz';
 $text_post["captchainfo2"]='Ievadiet pareizos burtus un ciparus no attēla teksta laukā. Šis mazais tests kalpo kā piekļuves ierobežojums pret surogātpasta robotiem.';
-
 $text_error["error:"]='<font color="red">Kļūda:</font>';
 $text_error["connection_failed"]="Savienojums ar ziņojumu serveri neizdevās";
 $text_error["article_not_found"]="<p>Raksts neeksistē.</p>";
 $text_error["read_access_denied"]="<p>Nav atļaujas lasīt!</p>";
 $text_error["post_failed"]="Savienojums neizdevās. Mēģiniet ielādēt vēlāk.";
 $text_error["auth_error"]="Autentifikācija neizdevās.";
-
 $text_register["no_access_group"]="Jums nav piekļuves šai grupai.";
-
 ?>

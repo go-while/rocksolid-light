@@ -11,7 +11,6 @@ $text_header["references"]="<b>संदर्भ:</b> ";
 $text_header["user-agent"]="<b>उपयोगकर्ता-एजेंट:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>अटैचमेंट:</b> ";
-
 $text_thread["no_articles"]="<p><b>कवनो लेख उपलब्ध नाहीं</b></p>";
 $text_thread["button_write"]="नयो धागो";
 $text_thread["button_grouplist"]="न्यूजग्रुप";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>लेखक</b>";
 $text_thread["lastmessage"]="<b>अंतिम संदेश</b>";
 $text_thread["no_such_group"]="एकरो समूह नाहीं।";
 $text_thread["pages"]="पन्ना:";
-
-
 $text_article["back_to_group"]="लेख सूची";
 $text_article["refresh"]="ताजो करौ";
 $text_article["button_answer"]="जवाब";
 $text_article["button_cancel"]="मिटावौ";
 $text_article["block-xnoarchive"]="इ सिस्टम आर्काइव नाहीं, बाकी एकरो प्रशासक उ पोस्ट ब्लॉक करे को फैसलो कइलो जहाँ लेखक आर्काइव नाहीं चाहत।";
 $text_article["full_article"]="पूरो लेख पढ़े खातिर इहाँ क्लिक करौ";
-
 $text_post["name"]="उपयोगकर्ता नाम:";
 $text_post["password"]="पासवर्ड:";
 $text_post["missing_message"]="पोस्ट करे खातिर संदेश शामिल करे को पड़ी।";
@@ -58,14 +54,11 @@ $text_post["quote"]="उद्धरण";
 $text_post["captchafail"]="तुम CAPTCHA टेस्ट में फेल भयो। फेर कोशिश करौ";
 $text_post["captchainfo1"]="एकरो इहाँ फेर टाइप करौ";
 $text_post["captchainfo2"]="छवि सें सही अक्षर अउर संख्या टेक्स्ट बॉक्स में डालौ। इ छोटो परीक्षा स्पैम-बॉट को खिलाफ पहुँच प्रतिबंध को रूप में काम करेला।";
-
 $text_error["error:"]='<font color="red">गलती:</font>';
 $text_error["connection_failed"]="संदेश सर्वर सें कनेक्शन फेल भयो";
 $text_error["article_not_found"]="<p>लेख मौजूद नाहीं।</p>";
 $text_error["read_access_denied"]="<p>पढ़े की अनुमति नाहीं!</p>";
 $text_error["post_failed"]="कनेक्शन फेल भयो। बाद में रीलोड करे की कोशिश करौ।";
 $text_error["auth_error"]="प्रमाणीकरण फेल भयो।";
-
 $text_register["no_access_group"]="तुमको एह समूह तक पहुँच नाहीं।";
-
 ?>

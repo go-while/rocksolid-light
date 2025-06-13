@@ -11,7 +11,6 @@ $text_header["references"]="<b>Αναφορές:</b> ";
 $text_header["user-agent"]="<b>Πράκτορας χρήστη:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Συνημμένα:</b> ";
-
 $text_thread["no_articles"]="<p><b>Δεν υπάρχουν διαθέσιμα άρθρα</b></p>";
 $text_thread["button_write"]="νέο νήμα";
 $text_thread["button_grouplist"]="ομάδες νέων";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Συγγραφέας</b>";
 $text_thread["lastmessage"]="<b>Τελευταίο μήνυμα</b>";
 $text_thread["no_such_group"]="Δεν υπάρχει τέτοια ομάδα.";
 $text_thread["pages"]="Σελίδες:";
-
-
 $text_article["back_to_group"]="λίστα άρθρων";
 $text_article["refresh"]="ανανέωση";
 $text_article["button_answer"]="Απάντηση";
 $text_article["button_cancel"]="Διαγραφή";
 $text_article["block-xnoarchive"]="Αυτό το σύστημα δεν είναι αρχείο, αλλά ο διαχειριστής του συστήματος αποφάσισε να μπλοκάρει αναρτήσεις όπου ο συγγραφέας δεν θέλει αρχειοθέτηση.";
 $text_article["full_article"]="Κάντε κλικ εδώ για να διαβάσετε το πλήρες άρθρο";
-
 $text_post["name"]="Όνομα χρήστη:";
 $text_post["password"]="Κωδικός πρόσβασης:";
 $text_post["missing_message"]="Πρέπει να συμπεριλάβετε ένα μήνυμα για να δημοσιεύσετε.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Παράθεση";
 $text_post["captchafail"]='Αποτύχατε στο τεστ CAPTCHA. Παρακαλώ δοκιμάστε ξανά';
 $text_post["captchainfo1"]='ξαναγράψτε αυτό εδώ';
 $text_post["captchainfo2"]='Εισαγάγετε τα σωστά γράμματα και αριθμούς από την εικόνα στο πλαίσιο κειμένου. Αυτό το μικρό τεστ χρησιμεύει ως περιορισμός πρόσβασης κατά των spam-bots.';
-
 $text_error["error:"]='<font color="red">Σφάλμα:</font>';
 $text_error["connection_failed"]="Η σύνδεση με τον διακομιστή μηνυμάτων απέτυχε";
 $text_error["article_not_found"]="<p>Το άρθρο δεν υπάρχει.</p>";
 $text_error["read_access_denied"]="<p>Δεν υπάρχει άδεια για ανάγνωση!</p>";
 $text_error["post_failed"]="Η σύνδεση απέτυχε. Δοκιμάστε να επαναφορτώσετε αργότερα.";
 $text_error["auth_error"]="Η αυθεντικοποίηση απέτυχε.";
-
 $text_register["no_access_group"]="Δεν έχετε πρόσβαση σε αυτή την ομάδα.";
-
 ?>

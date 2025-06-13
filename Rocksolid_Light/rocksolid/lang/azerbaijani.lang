@@ -11,7 +11,6 @@ $text_header["references"]="<b>İstinadlar:</b> ";
 $text_header["user-agent"]="<b>İstifadəçi-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Əlavələr:</b> ";
-
 $text_thread["no_articles"]="<p><b>Heç bir məqalə mövcud deyil</b></p>";
 $text_thread["button_write"]="yeni mövzu";
 $text_thread["button_grouplist"]="xəbər qrupları";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Müəllif</b>";
 $text_thread["lastmessage"]="<b>Son Mesaj</b>";
 $text_thread["no_such_group"]="Belə bir qrup yoxdur.";
 $text_thread["pages"]="Səhifələr:";
-
-
 $text_article["back_to_group"]="məqalə siyahısı";
 $text_article["refresh"]="yenilə";
 $text_article["button_answer"]="Cavab";
 $text_article["button_cancel"]="Sil";
 $text_article["block-xnoarchive"]="Bu sistem arxiv deyil, lakin bu sistemin administratoru müəllifin arxivləşdirməni istəmədiyi yazıları bloklamaq qərarına gəlib.";
 $text_article["full_article"]="Tam məqaləni oxumaq üçün bura klikləyin";
-
 $text_post["name"]="İstifadəçi adı:";
 $text_post["password"]="Parol:";
 $text_post["missing_message"]="Göndərmək üçün mesaj daxil etməlisiniz.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Sitat";
 $text_post["captchafail"]="CAPTCHA testində uğursuz oldunuz. Lütfən yenidən cəhd edin";
 $text_post["captchainfo1"]="bunu burada yenidən yazın";
 $text_post["captchainfo2"]="Şəkildən düzgün hərfləri və rəqəmləri mətn qutusuna daxil edin. Bu kiçik test spam-botlara qarşı giriş məhdudiyyəti kimi xidmət edir.";
-
 $text_error["error:"]='<font color="red">Xəta:</font>';
 $text_error["connection_failed"]="Mesaj Serverinə qoşulma uğursuz oldu";
 $text_error["article_not_found"]="<p>Məqalə mövcud deyil.</p>";
 $text_error["read_access_denied"]="<p>Oxumaq icazəsi yoxdur!</p>";
 $text_error["post_failed"]="Qoşulma uğursuz oldu. Daha sonra yenidən yükləməyə cəhd edin.";
 $text_error["auth_error"]="Doğrulama uğursuz oldu.";
-
 $text_register["no_access_group"]="Bu qrupa girişiniz yoxdur.";
-
 ?>

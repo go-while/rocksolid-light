@@ -11,7 +11,6 @@ $text_header["references"]="<b>參考:</b> ";
 $text_header["user-agent"]="<b>使用者代理:</b> ";
 $text_header["date_format"]="Y年n月j日 H:i";
 $text_header["attachments"]="<b>附件:</b> ";
-
 $text_thread["no_articles"]="<p><b>沒有可用的文章</b></p>";
 $text_thread["button_write"]="新主題";
 $text_thread["button_grouplist"]="新聞群組";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>作者</b>";
 $text_thread["lastmessage"]="<b>最後訊息</b>";
 $text_thread["no_such_group"]="該群組不存在。";
 $text_thread["pages"]="頁面:";
-
-
 $text_article["back_to_group"]="文章清單";
 $text_article["refresh"]="重新整理";
 $text_article["button_answer"]="回覆";
 $text_article["button_cancel"]="刪除";
 $text_article["block-xnoarchive"]="此系統不是封存庫，但系統管理員決定封鎖作者不希望封存的貼文。";
 $text_article["full_article"]="點擊此處閱讀完整文章";
-
 $text_post["name"]="使用者名稱:";
 $text_post["password"]="密碼:";
 $text_post["missing_message"]="您必須包含一則訊息才能發表。";
@@ -58,14 +54,11 @@ $text_post["quote"]="引用";
 $text_post["captchafail"]='驗證碼測試失敗。請重試';
 $text_post["captchainfo1"]='在此處重新輸入';
 $text_post["captchainfo2"]='在文字方塊中輸入圖像中的正確字母和數字。這個小測試作為反垃圾機器人的存取限制。';
-
 $text_error["error:"]='<font color="red">錯誤:</font>';
 $text_error["connection_failed"]="與訊息伺服器的連線失敗";
 $text_error["article_not_found"]="<p>文章不存在。</p>";
 $text_error["read_access_denied"]="<p>沒有閱讀權限!</p>";
 $text_error["post_failed"]="連線失敗。請稍後重試。";
 $text_error["auth_error"]="身份驗證失敗。";
-
 $text_register["no_access_group"]="您無權存取此群組。";
-
 ?>

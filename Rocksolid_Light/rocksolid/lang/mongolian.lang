@@ -11,7 +11,6 @@ $text_header["references"]="<b>Ишлэлүүд:</b> ";
 $text_header["user-agent"]="<b>Хэрэглэгчийн агент:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Хавсралтууд:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ямар ч нийтлэл алга</b></p>";
 $text_thread["button_write"]="шинэ сэдэв";
 $text_thread["button_grouplist"]="мэдээний бүлгүүд";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Зохиогч</b>";
 $text_thread["lastmessage"]="<b>Сүүлийн зурвас</b>";
 $text_thread["no_such_group"]="Тийм бүлэг байхгүй.";
 $text_thread["pages"]="Хуудаснууд:";
-
-
 $text_article["back_to_group"]="нийтлэлийн жагсаалт";
 $text_article["refresh"]="шинэчлэх";
 $text_article["button_answer"]="Хариулах";
 $text_article["button_cancel"]="Устгах";
 $text_article["block-xnoarchive"]="Энэ систем архив биш боловч системийн админ зохиогч архивлахыг хүсэхгүй бол нийтлэлүүдийг хаах шийдвэр гаргасан.";
 $text_article["full_article"]="Бүх нийтлэлийг уншихын тулд энд дарна уу";
-
 $text_post["name"]="Хэрэглэгчийн нэр:";
 $text_post["password"]="Нууц үг:";
 $text_post["missing_message"]="Нийтлэхийн тулд зурвас оруулах шаардлагатай.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Ишлэл";
 $text_post["captchafail"]='Та CAPTCHA шалгалтад унасан байна. Дахин оролдоно уу';
 $text_post["captchainfo1"]='энд дахин бичнэ үү';
 $text_post["captchainfo2"]='Зурагнаас зөв үсэг, тоог текстийн талбарт оруулна уу. Энэ жижиг шалгалт нь spam-bots-оос хамгаалах зорилготой.';
-
 $text_error["error:"]='<font color="red">Алдаа:</font>';
 $text_error["connection_failed"]="Мэдээний сервертэй холбогдож чадсангүй";
 $text_error["article_not_found"]="<p>Нийтлэл олдсонгүй.</p>";
 $text_error["read_access_denied"]="<p>Унших эрхгүй!</p>";
 $text_error["post_failed"]="Холболт амжилтгүй боллоо. Дараа дахин оролдоно уу.";
 $text_error["auth_error"]="Баталгаажуулалт амжилтгүй боллоо.";
-
 $text_register["no_access_group"]="Танд энэ бүлэгт нэвтрэх эрх байхгүй.";
-
 ?>

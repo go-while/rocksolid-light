@@ -11,7 +11,6 @@ $text_header["references"]="<b>Tilvísingar:</b> ";
 $text_header["user-agent"]="<b>Brúkara-agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Viðfestingar:</b> ";
-
 $text_thread["no_articles"]="<p><b>Eingir greinir tøkir</b></p>";
 $text_thread["button_write"]="nýtt tátt";
 $text_thread["button_grouplist"]="tíðindabólkar";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Høvundur</b>";
 $text_thread["lastmessage"]="<b>Seinasti boðskapur</b>";
 $text_thread["no_such_group"]="Eingin slíkur bólkur.";
 $text_thread["pages"]="Síður:";
-
-
 $text_article["back_to_group"]="grein-listi";
 $text_article["refresh"]="endurnýggja";
 $text_article["button_answer"]="Svara";
 $text_article["button_cancel"]="Strika";
 $text_article["block-xnoarchive"]="Hendan skipanin er ikki eitt arkiv, men umsjónarmaðurin av hesi skipan hevur avgjørt at sparra fyri uppsløgum, har høvundurin ikki vil hava arkivering.";
 $text_article["full_article"]="Trýst her fyri at lesa fulla greinina";
-
 $text_post["name"]="Brúkaranavn:";
 $text_post["password"]="Loyniorð:";
 $text_post["missing_message"]="Tú mást hava við einum boðskapi fyri at leggja út.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Sitat";
 $text_post["captchafail"]='Tú miseydnaðist í CAPTCHA-royndini. Vinarliga royn aftur';
 $text_post["captchainfo1"]='skriv tað aftur her';
 $text_post["captchainfo2"]='Skriva rættu bókstavirnar og tølini frá myndini í tekstkassan. Hendan lítla roynd tænir sum atgongd-avmarkingar móti spam-robotum.';
-
 $text_error["error:"]='<font color="red">Villa:</font>';
 $text_error["connection_failed"]="Sambandið til boðskapa-ambætaran miseydnaðist";
 $text_error["article_not_found"]="<p>Greinin finst ikki.</p>";
 $text_error["read_access_denied"]="<p>Einki loyvi til at lesa!</p>";
 $text_error["post_failed"]="Samband miseydnaðist. Royn at endurløða seinni.";
 $text_error["auth_error"]="Váttan miseydnaðist.";
-
 $text_register["no_access_group"]="Tú hevur ikki atgongd til hendan bólkin.";
-
 ?>

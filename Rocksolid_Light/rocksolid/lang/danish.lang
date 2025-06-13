@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referencer:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="d M Y H:i:s";
 $text_header["attachments"]="<b>Vedhæftning:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ingen artikler tilgængelige</b></p>";
 $text_thread["button_latest"]="Seneste";
 $text_thread["button_overboard"]="Overblik";
@@ -25,15 +24,12 @@ $text_thread["threadsize"]="<b>Tråd størrelse</b>";
 $text_thread["lastmessage"]="<b>Sidste besked</b>";
 $text_thread["pages"]="<b>Sider</b>";
 $text_thread["no_such_group"]="Gruppen findes ikke.";
-
-
 $text_article["button_answer"]="Svar";
 $text_article["button_cancel"]="Annuller";
 $text_article["back_to_group"]="Tilbage til gruppen";
 $text_article["refresh"]="Opdater";
 $text_article["block-xnoarchive"]="[Blokeret: X-No-Archive]";
 $text_article["full_article"]="Fuld artikel";
-
 $text_post["name"]="Dit navn:";
 $text_post["password"]="Adgangskode:";
 $text_post["missing_message"]="Du skal inkludere et indlæg.";
@@ -58,14 +54,11 @@ $text_post["captchainfo1"]="Indtast venligst teksten fra billedet";
 $text_post["captchainfo2"]="Dette er nødvendigt for automatisk spam-beskyttelse";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" skrev:";
-
 $text_error["error:"]='<font color="red">Fejl:</font>';
 $text_error["connection_failed"]="Kunne ikke forbinde til serveren";
 $text_error["article_not_found"]="<p>Artiklen eksisterer ikke.</p>";
 $text_error["read_access_denied"]="<p>Ingen rettigheter til at læse!</p>";
 $text_error["post_failed"]="Kunne ikke koble til, prøv igen senere.";
 $text_error["auth_error"]="Godkendelse på nyhedsserveren fejlede.";
-
 $text_register["no_access_group"]="Du har ikke adgang til dette forum";
-
 ?>

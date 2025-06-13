@@ -11,7 +11,6 @@ $text_header["references"]="<b>Nhwɛso:</b> ";
 $text_header["user-agent"]="<b>Odwumfo Ananmusi:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Nneɛma a wɔde ka ho:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nsɛm biara nni hɔ</b></p>";
 $text_thread["button_write"]="asɛm foforɔ";
 $text_thread["button_grouplist"]="amanneɛbɔ akuo";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Ɔkyerɛwfo</b>";
 $text_thread["lastmessage"]="<b>Nkrasɛm a Etwa Toɔ</b>";
 $text_thread["no_such_group"]="Saa akuo no nni hɔ.";
 $text_thread["pages"]="Nkratafa:";
-
-
 $text_article["back_to_group"]="nsɛm din";
 $text_article["refresh"]="yɛ foforɔ";
 $text_article["button_answer"]="Bua";
 $text_article["button_cancel"]="Yi fi";
 $text_article["block-xnoarchive"]="Saa nhyehyɛe yi nyɛ korabea, nanso nhyehyɛe yi hwɛfo asi gyinae sɛ wɔbɛsiw nsɛm a ɔkyerɛwfo mpɛ koraguo.";
 $text_article["full_article"]="Klik ha na kenkan nsɛm no nyinaa";
-
 $text_post["name"]="Odwumfo din:";
 $text_post["password"]="Akokoɔdan:";
 $text_post["missing_message"]="Ɛsɛ sɛ wode nkrasɛm ka ho ansa na woatumi de akɔ.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Ka bio";
 $text_post["captchafail"]='Woannya CAPTCHA sɔhwɛ no mu. Yɛ srɛ wo sɔ bio';
 $text_post["captchainfo1"]='kyerɛw saa ha';
 $text_post["captchainfo2"]='Fa nkyerɛwee ne nɔma a ɛyɛ nokware fi mfonini no mu gu nkyerɛwde adaka no mu. Saa sɔhwɛ ketewa yi yɛ adwo ma spam-bots.';
-
 $text_error["error:"]='<font color="red">Mfomso:</font>';
 $text_error["connection_failed"]="Nkitaho kɔ Nkrasɛm Server no annya ntumi";
 $text_error["article_not_found"]="<p>Nsɛm no nni hɔ.</p>";
 $text_error["read_access_denied"]="<p>Wontumi nkenkan!</p>";
 $text_error["post_failed"]="Nkitaho annya ntumi. Sɔ bio akyiri yi.";
 $text_error["auth_error"]="Nhyɛso annya ntumi.";
-
 $text_register["no_access_group"]="Wontumi nkɔ akuo yi mu.";
-
 ?>

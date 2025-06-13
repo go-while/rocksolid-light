@@ -11,7 +11,6 @@ $text_header["references"]="<b>Jehechaukaha:</b> ";
 $text_header["user-agent"]="<b>Jepuru-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Ñemoirũ:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ndaipóri jehaipyre</b></p>";
 $text_thread["button_write"]="mba'e pyahu";
 $text_thread["button_grouplist"]="marandu aty";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Jehaipyre</b>";
 $text_thread["lastmessage"]="<b>Ñe'ẽ ipahagua</b>";
 $text_thread["no_such_group"]="Ndaipóri upe aty.";
 $text_thread["pages"]="Kuatia rogue:";
-
-
 $text_article["back_to_group"]="jehaipyre rysýi";
 $text_article["refresh"]="mbopiro";
 $text_article["button_answer"]="Ñembohovái";
 $text_article["button_cancel"]="Jeheja";
 $text_article["block-xnoarchive"]="Ko sistema ndaha'éi archivo ha katu sistema ñangarekohára odesidí jehaipyre ndoipotái archivo omboguete jehaipyre.";
 $text_article["full_article"]="Eñemi ko'ápe emoñe'ẽ hag̃ua jehaipyre tuichakue";
-
 $text_post["name"]="Jepuru réra:";
 $text_post["password"]="Ñe'ẽ kañy:";
 $text_post["missing_message"]="Omondose hag̃ua ñe'ẽ tekotevẽ.";
@@ -58,15 +54,11 @@ $text_post["quote"]="Je'epy";
 $text_post["captchafail"]="Rejavy CAPTCHA ñeha'ãme. Eha'ãjey.";
 $text_post["captchainfo1"]="ehai jey ko'ápe";
 $text_post["captchainfo2"]="Emoinge ta'anga pegua tai ha papapy hekopete moñe'ẽrã ryru'ípe. Ko ñeha'ã michĩmi oñemoñondive spam-bot kuérare.";
-
-
 $text_error["error:"]='<font color="red">Jejavy:</font>';
 $text_error["connection_failed"]="Marandu servidor ndive joaju ndoikói.";
 $text_error["article_not_found"]="<p>Jehaipyre ndojejuhúi.</p>";
 $text_error["read_access_denied"]="<p>Ñemoñe'ẽ jeike noñemoneĩri.</p>";
 $text_error["post_failed"]="Joaju ndoikói. Eha'arõ jey upe rire.";
 $text_error["auth_error"]="Ñemoneĩ ndoikói.";
-
 $text_register["no_access_group"]="Ndererekói ñemoneĩ eike hag̃ua ko aty-pe.";
-
 ?>

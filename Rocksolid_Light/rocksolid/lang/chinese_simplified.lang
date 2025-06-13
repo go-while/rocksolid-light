@@ -11,7 +11,6 @@ $text_header["references"]="<b>引用:</b> ";
 $text_header["user-agent"]="<b>用户代理:</b> ";
 $text_header["date_format"]="Y年n月j日 H:i";
 $text_header["attachments"]="<b>附件:</b> ";
-
 $text_thread["no_articles"]="<p><b>没有可用的文章</b></p>";
 $text_thread["button_write"]="新主题";
 $text_thread["button_grouplist"]="新闻组";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>作者</b>";
 $text_thread["lastmessage"]="<b>最后消息</b>";
 $text_thread["no_such_group"]="该组不存在。";
 $text_thread["pages"]="页面:";
-
-
 $text_article["back_to_group"]="文章列表";
 $text_article["refresh"]="刷新";
 $text_article["button_answer"]="回复";
 $text_article["button_cancel"]="删除";
 $text_article["block-xnoarchive"]="此系统不是存档，但系统管理员决定阻止作者不希望存档的帖子。";
 $text_article["full_article"]="点击此处阅读完整文章";
-
 $text_post["name"]="用户名:";
 $text_post["password"]="密码:";
 $text_post["missing_message"]="您必须包含一条消息才能发帖。";
@@ -58,14 +54,11 @@ $text_post["quote"]="引用";
 $text_post["captchafail"]='验证码测试失败。请重试';
 $text_post["captchainfo1"]='在此处重新输入';
 $text_post["captchainfo2"]='在文本框中输入图像中的正确字母和数字。这个小测试作为反垃圾机器人的访问限制。';
-
 $text_error["error:"]='<font color="red">错误:</font>';
 $text_error["connection_failed"]="与消息服务器的连接失败";
 $text_error["article_not_found"]="<p>文章不存在。</p>";
 $text_error["read_access_denied"]="<p>没有阅读权限!</p>";
 $text_error["post_failed"]="连接失败。请稍后重试。";
 $text_error["auth_error"]="身份验证失败。";
-
 $text_register["no_access_group"]="您无权访问此组。";
-
 ?>

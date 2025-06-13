@@ -11,7 +11,6 @@ $text_header["references"]="<b>Ссылки:</b> ";
 $text_header["user-agent"]="<b>Агент пользователя:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Вложения:</b> ";
-
 $text_thread["no_articles"]="<p><b>Статьи отсутствуют</b></p>";
 $text_thread["button_write"]="новая тема";
 $text_thread["button_grouplist"]="группы новостей";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Автор</b>";
 $text_thread["lastmessage"]="<b>Последнее сообщение</b>";
 $text_thread["no_such_group"]="Нет такой группы.";
 $text_thread["pages"]="Страницы:";
-
-
 $text_article["back_to_group"]="список статей";
 $text_article["refresh"]="обновить";
 $text_article["button_answer"]="Ответить";
 $text_article["button_cancel"]="Удалить";
 $text_article["block-xnoarchive"]="Эта система не является архивом, но администратор этой системы решил заблокировать сообщения, где автор не хочет архивирования.";
 $text_article["full_article"]="Нажмите здесь, чтобы прочитать полную статью";
-
 $text_post["name"]="Имя пользователя:";
 $text_post["password"]="Пароль:";
 $text_post["missing_message"]="Вы должны включить сообщение для публикации.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Цитировать";
 $text_post["captchafail"]='Вы не прошли тест CAPTCHA. Пожалуйста, попробуйте снова';
 $text_post["captchainfo1"]='введите это здесь снова';
 $text_post["captchainfo2"]='Введите правильные буквы и цифры с изображения в текстовое поле. Этот небольшой тест служит ограничением доступа против спам-ботов.';
-
 $text_error["error:"]='<font color="red">Ошибка:</font>';
 $text_error["connection_failed"]="Сбой соединения с сервером новостей";
 $text_error["article_not_found"]="<p>Данная статья отсутствует.</p>";
 $text_error["read_access_denied"]="<p>Доступ на чтение запрещен!</p>";
 $text_error["post_failed"]="Сбой соединения. Попробуйте перезагрузить (Reload) позднее.";
 $text_error["auth_error"]="Сбой аутентификации не удался попытаться.";
-
 $text_register["no_access_group"]="У вас нет доступа к этой группе.";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>ਹਵਾਲੇ:</b> ";
 $text_header["user-agent"]="<b>ਯੂਜ਼ਰ ਏਜੰਟ:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ਅਟੈਚਮੈਂਟਸ:</b> ";
-
 $text_thread["no_articles"]="<p><b>ਕੋਈ ਲੇਖ ਉਪਲਬਧ ਨਹੀਂ</b></p>";
 $text_thread["button_write"]="ਨਵਾਂ ਥ੍ਰਿਡ";
 $text_thread["button_grouplist"]="ਖ਼ਬਰਾਂ ਦੇ ਸਮੂਹ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ਲੇਖਕ</b>";
 $text_thread["lastmessage"]="<b>ਆਖਰੀ ਸੰਦੇਸ਼</b>";
 $text_thread["no_such_group"]="ਅਜਿਹਾ ਕੋਈ ਸਮੂਹ ਨਹੀਂ।";
 $text_thread["pages"]="ਪੰਨੇ:";
-
-
 $text_article["back_to_group"]="ਲੇਖਾਂ ਦੀ ਸੂਚੀ";
 $text_article["refresh"]="ਤਾਜ਼ਾ ਕਰੋ";
 $text_article["button_answer"]="ਜਵਾਬ ਦਿਓ";
 $text_article["button_cancel"]="ਮਿਟਾਓ";
 $text_article["block-xnoarchive"]="ਇਹ ਸਿਸਟਮ ਇੱਕ ਆਰਕਾਈਵ ਨਹੀਂ ਹੈ, ਪਰ ਇਸ ਸਿਸਟਮ ਦੇ ਪ੍ਰਸ਼ਾਸਕ ਨੇ ਉਹਨਾਂ ਪੋਸਟਾਂ ਨੂੰ ਬਲਾਕ ਕਰਨ ਦਾ ਫੈਸਲਾ ਕੀਤਾ ਹੈ ਜਿੱਥੇ ਲੇਖਕ ਆਰਕਾਈਵਿੰਗ ਨਹੀਂ ਚਾਹੁੰਦਾ।";
 $text_article["full_article"]="ਪੂਰਾ ਲੇਖ ਪੜ੍ਹਨ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ";
-
 $text_post["name"]="ਯੂਜ਼ਰ ਨਾਮ:";
 $text_post["password"]="ਪਾਸਵਰਡ:";
 $text_post["missing_message"]="ਪੋਸਟ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਇੱਕ ਸੰਦੇਸ਼ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ।";
@@ -58,14 +54,11 @@ $text_post["quote"]="ਹਵਾਲਾ";
 $text_post["captchafail"]='ਤੁਸੀਂ CAPTCHA ਟੈਸਟ ਵਿੱਚ ਅਸਫਲ ਰਹੇ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ';
 $text_post["captchainfo1"]='ਇਸਨੂੰ ਇੱਥੇ ਦੁਬਾਰਾ ਟਾਈਪ ਕਰੋ';
 $text_post["captchainfo2"]='ਤਸਵੀਰ ਵਿੱਚੋਂ ਸਹੀ ਅੱਖਰ ਅਤੇ ਨੰਬਰ ਟੈਕਸਟ ਬਾਕਸ ਵਿੱਚ ਦਾਖਲ ਕਰੋ। ਇਹ ਛੋਟਾ ਟੈਸਟ ਸਪੈਮ-ਬੋਟਸ ਦੇ ਵਿਰੁੱਧ ਪਹੁੰਚ ਪਾਬੰਦੀ ਵਜੋਂ ਕੰਮ ਕਰਦਾ ਹੈ।';
-
 $text_error["error:"]='<font color="red">ਗਲਤੀ:</font>';
 $text_error["connection_failed"]="ਸੰਦੇਸ਼ ਸਰਵਰ ਨਾਲ ਕਨੈਕਸ਼ਨ ਅਸਫਲ";
 $text_error["article_not_found"]="<p>ਲੇਖ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।</p>";
 $text_error["read_access_denied"]="<p>ਪੜ੍ਹਨ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ!</p>";
 $text_error["post_failed"]="ਕਨੈਕਸ਼ਨ ਅਸਫਲ। ਬਾਅਦ ਵਿੱਚ ਮੁੜ ਲੋਡ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ।";
 $text_error["auth_error"]="ਪ੍ਰਮਾਣਿਕਤਾ ਅਸਫਲ।";
-
 $text_register["no_access_group"]="ਤੁਹਾਨੂੰ ਇਸ ਸਮੂਹ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੈ।";
-
 ?>

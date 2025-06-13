@@ -11,7 +11,6 @@ $text_header["references"]="<b>Nuorodos:</b> ";
 $text_header["user-agent"]="<b>Vartotojo agentas:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Priedai:</b> ";
-
 $text_thread["no_articles"]="<p><b>Straipsnių nėra</b></p>";
 $text_thread["button_write"]="nauja tema";
 $text_thread["button_grouplist"]="naujienų grupės";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autorius</b>";
 $text_thread["lastmessage"]="<b>Paskutinė žinutė</b>";
 $text_thread["no_such_group"]="Tokios grupės nėra.";
 $text_thread["pages"]="Puslapiai:";
-
-
 $text_article["back_to_group"]="straipsnių sąrašas";
 $text_article["refresh"]="atnaujinti";
 $text_article["button_answer"]="Atsakyti";
 $text_article["button_cancel"]="Ištrinti";
 $text_article["block-xnoarchive"]="Ši sistema nėra archyvas, bet šios sistemos administratorius nusprendė blokuoti įrašus, kurių autorius nenori archyvuoti.";
 $text_article["full_article"]="Spustelėkite čia, kad perskaitytumėte visą straipsnį";
-
 $text_post["name"]="Vartotojo vardas:";
 $text_post["password"]="Slaptažodis:";
 $text_post["missing_message"]="Turite įtraukti žinutę, kad galėtumėte skelbti.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Cituoti";
 $text_post["captchafail"]='Jums nepavyko CAPTCHA testas. Prašome bandyti dar kartą';
 $text_post["captchainfo1"]='perrašykite tai čia';
 $text_post["captchainfo2"]='Įveskite teisingas raides ir skaičius iš paveiksliuko į teksto laukelį. Šis mažas testas tarnauja kaip prieigos apribojimas prieš šlamšto robotus.';
-
 $text_error["error:"]='<font color="red">Klaida:</font>';
 $text_error["connection_failed"]="Nepavyko prisijungti prie žinučių serverio";
 $text_error["article_not_found"]="<p>Straipsnis neegzistuoja.</p>";
 $text_error["read_access_denied"]="<p>Nėra leidimo skaityti!</p>";
 $text_error["post_failed"]="Prisijungimas nepavyko. Bandykite perkrauti vėliau.";
 $text_error["auth_error"]="Autentifikacija nepavyko.";
-
 $text_register["no_access_group"]="Neturite prieigos prie šios grupės.";
-
 ?>

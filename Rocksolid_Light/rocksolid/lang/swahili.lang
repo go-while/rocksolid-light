@@ -11,7 +11,6 @@ $text_header["references"]="<b>Marejeleo:</b> ";
 $text_header["user-agent"]="<b>Wakala wa mtumiaji:</b> ";
 $text_header["date_format"]="d/m/Y H:i";
 $text_header["attachments"]="<b>Viambatisho:</b> ";
-
 $text_thread["no_articles"]="<p><b>Hakuna makala zinazopatikana</b></p>";
 $text_thread["button_write"]="Mzizi mpya";
 $text_thread["button_grouplist"]="Vikundi vya habari";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Mwandishi</b>";
 $text_thread["lastmessage"]="<b>Ujumbe wa mwisho</b>";
 $text_thread["no_such_group"]="Hakuna kikundi kama hicho.";
 $text_thread["pages"]="Kurasa:";
-
-
 $text_article["back_to_group"]="Orodha ya makala";
 $text_article["refresh"]="Onyesha upya";
 $text_article["button_answer"]="Jibu";
 $text_article["button_cancel"]="Futa";
 $text_article["block-xnoarchive"]="Mfumo huu si kumbukumbu, lakini msimamizi wa mfumo ameamua kuzuia machapisho ambapo mwandishi hataki kuhifadhi.";
 $text_article["full_article"]="Bofya hapa kusoma makala kamili";
-
 $text_post["name"]="Jina la mtumiaji:";
 $text_post["password"]="Nenosiri:";
 $text_post["missing_message"]="Lazima ujumuishe ujumbe ili kuchapisha.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Nukuu";
 $text_post["captchafail"]='Umeshindwa katika mtihani wa CAPTCHA. Tafadhali jaribu tena';
 $text_post["captchainfo1"]='Chapa tena hapa';
 $text_post["captchainfo2"]='Ingiza herufi na nambari sahihi kutoka kwenye picha katika sanduku la maandishi. Mtihani huu mdogo unafanya kazi kama kizuizi cha ufikiaji dhidi ya spam-bots.';
-
 $text_error["error:"]='<font color="red">Hitilafu:</font>';
 $text_error["connection_failed"]="Muunganisho wa seva ya ujumbe umeshindwa";
 $text_error["article_not_found"]="<p>Makala haipo.</p>";
 $text_error["read_access_denied"]="<p>Hakuna ruhusa ya kusoma!</p>";
 $text_error["post_failed"]="Muunganisho umeshindwa. Jaribu tena baadaye.";
 $text_error["auth_error"]="Uthibitishaji umeshindwa.";
-
 $text_register["no_access_group"]="Huna ufikiaji wa kikundi hiki.";
-
 ?>

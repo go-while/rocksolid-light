@@ -11,7 +11,6 @@ $text_header["references"]="<b>Viited:</b> ";
 $text_header["user-agent"]="<b>Kasutajaagent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Manused:</b> ";
-
 $text_thread["no_articles"]="<p><b>Artikleid pole saadaval</b></p>";
 $text_thread["button_write"]="uus lõng";
 $text_thread["button_grouplist"]="uudistegrupid";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Viimane sõnum</b>";
 $text_thread["no_such_group"]="Sellist gruppi pole.";
 $text_thread["pages"]="Leheküljed:";
-
-
 $text_article["back_to_group"]="artiklite nimekiri";
 $text_article["refresh"]="värskenda";
 $text_article["button_answer"]="Vasta";
 $text_article["button_cancel"]="Kustuta";
 $text_article["block-xnoarchive"]="See süsteem ei ole arhiiv, kuid selle süsteemi administraator otsustas blokeerida postitusi, kus autor ei soovi arhiveerimist.";
 $text_article["full_article"]="Klõpsa siia, et lugeda täielikku artiklit";
-
 $text_post["name"]="Kasutajanimi:";
 $text_post["password"]="Parool:";
 $text_post["missing_message"]="Postitamiseks peate lisama sõnumi.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Tsitaat";
 $text_post["captchafail"]='CAPTCHA test ebaõnnestus. Palun proovige uuesti';
 $text_post["captchainfo1"]='tippige see siia uuesti';
 $text_post["captchainfo2"]='Sisestage pildilt õiged tähed ja numbrid tekstikasti. See väike test teenib juurdepääsu piiranguna rämpsposti-robotite vastu.';
-
 $text_error["error:"]='<font color="red">Viga:</font>';
 $text_error["connection_failed"]="Ühendus sõnumiserveriga ebaõnnestus";
 $text_error["article_not_found"]="<p>Artikkel ei eksisteeri.</p>";
 $text_error["read_access_denied"]="<p>Lugemisõigus puudub!</p>";
 $text_error["post_failed"]="Ühendus ebaõnnestus. Proovige hiljem uuesti laadida.";
 $text_error["auth_error"]="Autentimine ebaõnnestus.";
-
 $text_register["no_access_group"]="Teil ei ole juurdepääsu sellele grupile.";
-
 ?>

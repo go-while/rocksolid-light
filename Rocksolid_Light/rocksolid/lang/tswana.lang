@@ -11,7 +11,6 @@ $text_header["references"]="<b>Diponelopele:</b> ";
 $text_header["user-agent"]="<b>Modirisi-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Tse di kopantsweng:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ga go na dikgatiso tse di teng</b></p>";
 $text_thread["button_write"]="kgang e ntšhwa";
 $text_thread["button_grouplist"]="ditlhogo tsa dikgang";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Mokwadi</b>";
 $text_thread["lastmessage"]="<b>Molaetsa wa bofelo</b>";
 $text_thread["no_such_group"]="Ga go na setlhopha se se jalo.";
 $text_thread["pages"]="Matlhare:";
-
-
 $text_article["back_to_group"]="lenaane la dikgatiso";
 $text_article["refresh"]="ntšhafatsa";
 $text_article["button_answer"]="Araba";
 $text_article["button_cancel"]="Khansela";
 $text_article["block-xnoarchive"]="Tsamaiso eno ga se archive mme modirammananeo o wetse tshwetso ya gore fa mokwadi ga a batle archive ba tlose dikgatiso.";
 $text_article["full_article"]="Tobetsa fano go buisa kgatiso yotlhe";
-
 $text_post["name"]="Leina la modirisi:";
 $text_post["password"]="Lefoko la sephiri:";
 $text_post["missing_message"]="O tlhoka molaetsa go ka romela.";
@@ -58,15 +54,11 @@ $text_post["quote"]="Sekai";
 $text_post["captchafail"]='O paletse mo tekong ya CAPTCHA. Tsweetswee leka gape.';
 $text_post["captchainfo1"]='kwala fale gape fa';
 $text_post["captchainfo2"]='Tsenya ditlhaka le dinomoro tse di siameng go tswa mo setshwantshong mo lebokosong la mokwalo. Teko e nnye e e direla go thibela di-spam bot.';
-
-
 $text_error["error:"]='<font color="red">Phoso:</font>';
 $text_error["connection_failed"]="Kgolagano le seva ya dikgang e paletse.";
 $text_error["article_not_found"]="<p>Kgatiso ga ya bonwa.</p>";
 $text_error["read_access_denied"]="<p>Go bala ga gannwe.</p>";
 $text_error["post_failed"]="Kgolagano e paletse. Leka gape mo nakong e e tlang.";
 $text_error["auth_error"]="Netefatso e paletse.";
-
 $text_register["no_access_group"]="Ga o na tumelelo ya go tsena mo setlhopheng se.";
-
 ?>

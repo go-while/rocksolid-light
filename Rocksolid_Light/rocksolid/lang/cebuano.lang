@@ -11,7 +11,6 @@ $text_header["references"]="<b>Mga Reperensya:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Mga Attachment:</b> ";
-
 $text_thread["no_articles"]="<p><b>Walay mga artikulo nga available</b></p>";
 $text_thread["button_write"]="bag-ong thread";
 $text_thread["button_grouplist"]="mga newsgroup";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Tagsulat</b>";
 $text_thread["lastmessage"]="<b>Katapusang Mensahe</b>";
 $text_thread["no_such_group"]="Walay ingana nga Grupo.";
 $text_thread["pages"]="Mga Panid:";
-
-
 $text_article["back_to_group"]="listahan sa artikulo";
 $text_article["refresh"]="i-refresh";
 $text_article["button_answer"]="Tubag";
 $text_article["button_cancel"]="Papas";
 $text_article["block-xnoarchive"]="Kining sistema dili archive, apan ang administrator niining sistema nakadesisyon nga i-block ang mga posting diin ang tagsulat dili gusto og archivation.";
 $text_article["full_article"]="I-click dinhi aron mabasa ang tibuok artikulo";
-
 $text_post["name"]="Username:";
 $text_post["password"]="Password:";
 $text_post["missing_message"]="Kinahanglan ninyong mag-apil og mensahe aron maka-post.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Quote";
 $text_post["captchafail"]="Napakyas mo sa CAPTCHA test. Palihug sulayi pag-usab";
 $text_post["captchainfo1"]="i-type pag-usab kana dinhi";
 $text_post["captchainfo2"]="Ibutang ang saktong mga letra ug numero gikan sa hulagway sa text box. Kining gamhang test nagsilbi isip access restriction batok sa mga spam-bot.";
-
 $text_error["error:"]='<font color="red">Sayup:</font>';
 $text_error["connection_failed"]="Napakyas ang koneksyon sa Message Server";
 $text_error["article_not_found"]="<p>Wala na ang artikulo.</p>";
 $text_error["read_access_denied"]="<p>Walay pagtugot nga makabasa!</p>";
 $text_error["post_failed"]="Napakyas ang koneksyon. Sulayi ang pag-reload unya.";
 $text_error["auth_error"]="Napakyas ang authentication.";
-
 $text_register["no_access_group"]="Walay access ninyo niining grupoa.";
-
 ?>

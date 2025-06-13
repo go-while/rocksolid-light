@@ -11,7 +11,6 @@ $text_header["references"]="<b>குறிப்புகள்:</b> ";
 $text_header["user-agent"]="<b>பயனர் முகவர்:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>இணைப்புகள்:</b> ";
-
 $text_thread["no_articles"]="<p><b>கட்டுரைகள் எதுவும் கிடைக்கவில்லை</b></p>";
 $text_thread["button_write"]="புதிய தொடர்";
 $text_thread["button_grouplist"]="செய்தி குழுக்கள்";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ஆசிரியர்</b>";
 $text_thread["lastmessage"]="<b>கடைசி செய்தி</b>";
 $text_thread["no_such_group"]="அத்தகைய குழு இல்லை.";
 $text_thread["pages"]="பக்கங்கள்:";
-
-
 $text_article["back_to_group"]="கட்டுரைப் பட்டியல்";
 $text_article["refresh"]="புதுப்பிக்கு";
 $text_article["button_answer"]="பதிலளி";
 $text_article["button_cancel"]="நீக்கு";
 $text_article["block-xnoarchive"]="இந்த அமைப்பு ஒரு காப்பகம் அல்ல, ஆனால் இந்த அமைப்பின் நிர்வாகி ஆசிரியர் காப்பகப்படுத்துதலை விரும்பாத இடுகைகளைத் தடுக்க முடிவு செய்துள்ளார்.";
 $text_article["full_article"]="முழு கட்டுரையைப் படிக்க இங்கே கிளிக் செய்யவும்";
-
 $text_post["name"]="பயனர் பெயர்:";
 $text_post["password"]="கடவுச்சொல்:";
 $text_post["missing_message"]="இடுகை செய்ய நீங்கள் ஒரு செய்தியைச் சேர்க்க வேண்டும்.";
@@ -58,14 +54,11 @@ $text_post["quote"]="மேற்கோள்";
 $text_post["captchafail"]='நீங்கள் CAPTCHA சோதனையில் தோல்வியடைந்தீர்கள். தயவு செய்து மீண்டும் முயற்சிக்கவும்';
 $text_post["captchainfo1"]='அதை இங்கே மீண்டும் தட்டச்சு செய்யவும்';
 $text_post["captchainfo2"]='படத்திலிருந்து சரியான எழுத்துக்களையும் எண்களையும் உரை பெட்டியில் உள்ளிடவும். இந்த சிறிய சோதனை ஸ்பாம்-பாட்களுக்கு எதிரான அணுகல் கட்டுப்பாடாக செயல்படுகிறது.';
-
 $text_error["error:"]='<font color="red">பிழை:</font>';
 $text_error["connection_failed"]="செய்தி சேவையகத்துடனான இணைப்பு தோல்வியடைந்தது";
 $text_error["article_not_found"]="<p>கட்டுரை இல்லை.</p>";
 $text_error["read_access_denied"]="<p>படிக்க அனுமதி இல்லை!</p>";
 $text_error["post_failed"]="இணைப்பு தோல்வியடைந்தது. பின்னர் மீண்டும் ஏற்ற முயற்சிக்கவும்.";
 $text_error["auth_error"]="அங்கீகாரம் தோல்வியடைந்தது.";
-
 $text_register["no_access_group"]="இந்த குழுவிற்கு உங்களுக்கு அணுகல் இல்லை.";
-
 ?>

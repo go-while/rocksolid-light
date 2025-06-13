@@ -11,7 +11,6 @@ $text_header["references"]="<b>Референце:</b> ";
 $text_header["user-agent"]="<b>Кориснички агент:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Прилози:</b> ";
-
 $text_thread["no_articles"]="<p><b>Нема доступних чланака</b></p>";
 $text_thread["button_write"]="нова тема";
 $text_thread["button_grouplist"]="групе вести";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Аутор</b>";
 $text_thread["lastmessage"]="<b>Последња порука</b>";
 $text_thread["no_such_group"]="Група не постоји.";
 $text_thread["pages"]="Стране:";
-
-
 $text_article["back_to_group"]="листа чланака";
 $text_article["refresh"]="освежи";
 $text_article["button_answer"]="Одговори";
 $text_article["button_cancel"]="Обриши";
 $text_article["block-xnoarchive"]="Овај систем није архива, али је администратор система одлучио да блокира постове где аутор не жели архивирање.";
 $text_article["full_article"]="Кликните овде да прочитате комплетан чланак";
-
 $text_post["name"]="Корисничко име:";
 $text_post["password"]="Лозинка:";
 $text_post["missing_message"]="Морате укључити поруку за постављање.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Цитирај";
 $text_post["captchafail"]='Нисте прошли CAPTCHA тест. Молимо покушајте поново';
 $text_post["captchainfo1"]='откуцајте то овде';
 $text_post["captchainfo2"]='Унесите тачна слова и бројеве са слике у текстуално поље. Овај мали тест служи као ограничење приступа против спам-ботова.';
-
 $text_error["error:"]='<font color="red">Грешка:</font>';
 $text_error["connection_failed"]="Веза са сервером за поруке није успостављена";
 $text_error["article_not_found"]="<p>Чланак не постоји.</p>";
 $text_error["read_access_denied"]="<p>Нема дозволе за читање!</p>";
 $text_error["post_failed"]="Веза није успостављена. Покушајте поново касније.";
 $text_error["auth_error"]="Аутентификација није успела.";
-
 $text_register["no_access_group"]="Немате приступ овој групи.";
-
 ?>

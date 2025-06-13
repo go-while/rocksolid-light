@@ -11,7 +11,6 @@ $text_header["references"]="<b>Nassoshi:</b> ";
 $text_header["user-agent"]="<b>Mai amfani Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Abubuwan da aka haɗe:</b> ";
-
 $text_thread["no_articles"]="<p><b>Babu labarin da ake samu</b></p>";
 $text_thread["button_write"]="sabon taken";
 $text_thread["button_grouplist"]="kungiyoyin labarai";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Marubuci</b>";
 $text_thread["lastmessage"]="<b>Saƙo na ƙarshe</b>";
 $text_thread["no_such_group"]="Babu irin wannan kungiya.";
 $text_thread["pages"]="Shafuka:";
-
-
 $text_article["back_to_group"]="jerin labarai";
 $text_article["refresh"]="sabunta";
 $text_article["button_answer"]="Amsa";
 $text_article["button_cancel"]="Share";
 $text_article["block-xnoarchive"]="Wannan tsarin ba rumbun ajiya ba ne, amma mai kula da tsarin ya yanke shawarar toshe posts inda marubuci bai so a ajiye ba.";
 $text_article["full_article"]="Danna nan don karanta cikakken labarin";
-
 $text_post["name"]="Sunan mai amfani:";
 $text_post["password"]="Kalmar shiga:";
 $text_post["missing_message"]="Dole ne ku haɗa saƙo don aikawa.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Naql";
 $text_post["captchafail"]='Kun gaza gwajin CAPTCHA. Don Allah sake gwadawa';
 $text_post["captchainfo1"]='sake rubuta wannan nan';
 $text_post["captchainfo2"]='Shigar da daidaitattun haruffa da lambobi daga hoton a cikin akwatin rubutu. Wannan ƙaramin gwaji yana aiki azaman hani ga spam-bots.';
-
 $text_error["error:"]='<font color="red">Kuskure:</font>';
 $text_error["connection_failed"]="Haɗin kai da Uwar garken Saƙo ya gaza";
 $text_error["article_not_found"]="<p>Labarin ba ya wanzuwa.</p>";
 $text_error["read_access_denied"]="<p>Babu izinin karatu!</p>";
 $text_error["post_failed"]="Haɗin ya gaza. Gwada sake lodi daga baya.";
 $text_error["auth_error"]="Tabbatar da gaskiya ya gaza.";
-
 $text_register["no_access_group"]="Ba ku da shiga wannan kungiya.";
-
 ?>

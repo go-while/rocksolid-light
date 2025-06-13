@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referencat:</b> ";
 $text_header["user-agent"]="<b>Agjenti-Përdoruesit:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Bashkëngjitjet:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nuk ka artikuj të disponueshëm</b></p>";
 $text_thread["button_write"]="temë e re";
 $text_thread["button_grouplist"]="grupe lajmesh";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autori</b>";
 $text_thread["lastmessage"]="<b>Mesazhi i fundit</b>";
 $text_thread["no_such_group"]="Nuk ekziston një grup i tillë.";
 $text_thread["pages"]="Faqet:";
-
-
 $text_article["back_to_group"]="lista e artikujve";
 $text_article["refresh"]="rifresko";
 $text_article["button_answer"]="Përgjigju";
 $text_article["button_cancel"]="Fshij";
 $text_article["block-xnoarchive"]="Ky sistem nuk është arkiv, por administratori i këtij sistemi vendosi të bllokojë postimet, ku autori nuk dëshiron arkivimin.";
 $text_article["full_article"]="Kliko këtu për të lexuar artikullin e plotë";
-
 $text_post["name"]="Emri i përdoruesit:";
 $text_post["password"]="Fjalëkalimi:";
 $text_post["missing_message"]="Duhet të përfshini një mesazh për të postuar.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citim";
 $text_post["captchafail"]='Dështuat testin CAPTCHA. Ju lutemi provoni përsëri';
 $text_post["captchainfo1"]='rishkruajeni këtu';
 $text_post["captchainfo2"]='Vendosni shkronjat dhe numrat e saktë nga imazhi në kutinë e tekstit. Ky test i vogël shërben si kufizim qasje kundër spam-botëve.';
-
 $text_error["error:"]='<font color="red">Gabim:</font>';
 $text_error["connection_failed"]="Lidhja me Serverin e Mesazheve dështoi";
 $text_error["article_not_found"]="<p>Artikulli nuk ekziston.</p>";
 $text_error["read_access_denied"]="<p>Nuk ka leje për të lexuar!</p>";
 $text_error["post_failed"]="Lidhja dështoi. Provoni të rinkarkoni më vonë.";
 $text_error["auth_error"]="Verifikimi dështoi.";
-
 $text_register["no_access_group"]="Nuk keni qasje në këtë grup.";
-
 ?>

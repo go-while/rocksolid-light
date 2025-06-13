@@ -11,7 +11,6 @@ $text_header["references"]="<b>Çavkanî:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Pêvek:</b> ";
-
 $text_thread["no_articles"]="<p><b>Tu gotar tune</b></p>";
 $text_thread["button_write"]="mijarê nû";
 $text_thread["button_grouplist"]="komên nûçeyan";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Nivîskar</b>";
 $text_thread["lastmessage"]="<b>Peyama Dawî</b>";
 $text_thread["no_such_group"]="Ev kom tune.";
 $text_thread["pages"]="Rûpel:";
-
-
 $text_article["back_to_group"]="lîsteya gotaran";
 $text_article["refresh"]="nûkirin";
 $text_article["button_answer"]="Bersiv";
 $text_article["button_cancel"]="Jêbirin";
 $text_article["block-xnoarchive"]="Ev sîstem arşîv nine, lê rêveberê vê sîstemê biryar da ku ew şandî asteng bike ku nivîskar nexwaze arşîvkirin.";
 $text_article["full_article"]="Li vir bitikîne da ku gotara tevahî bixwîne";
-
 $text_post["name"]="Navê Bikarhêner:";
 $text_post["password"]="Şîfre:";
 $text_post["missing_message"]="Divê hûn peyamek zêde bikin da ku bişînin.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Iddiakirin";
 $text_post["captchafail"]="Hûn di ceribandina CAPTCHA de têk çûn. Ji kerema xwe dîsa biceribîne";
 $text_post["captchainfo1"]="vê li vir dîsa binivîse";
 $text_post["captchainfo2"]="Tîp û jimarên rast ji wêneyê di qutiya nivîsê de binivîse. Ev ceribandina piçûk wekî astengkirina gihiştinê li dijî spam-botan kar dike.";
-
 $text_error["error:"]='<font color="red">Çewtî:</font>';
 $text_error["connection_failed"]="Girêdana bi Servera Peyaman re têk çû";
 $text_error["article_not_found"]="<p>Gotar tune.</p>";
 $text_error["read_access_denied"]="<p>Destûra xwendinê tune!</p>";
 $text_error["post_failed"]="Girêdan têk çû. Paşê dîsa bar bike.";
 $text_error["auth_error"]="Nasandina rast têk çû.";
-
 $text_register["no_access_group"]="Gihiştina we ya vê komê tune.";
-
 ?>

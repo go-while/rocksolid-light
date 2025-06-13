@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referències:</b> ";
 $text_header["user-agent"]="<b>Agent d'usuari:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Adjunts:</b> ";
-
 $text_thread["no_articles"]="<p><b>No hi ha articles disponibles</b></p>";
 $text_thread["button_write"]="nou fil";
 $text_thread["button_grouplist"]="grups de notícies";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Últim missatge</b>";
 $text_thread["no_such_group"]="Aquest grup no existeix.";
 $text_thread["pages"]="Pàgines:";
-
-
 $text_article["back_to_group"]="llista d'articles";
 $text_article["refresh"]="actualitzar";
 $text_article["button_answer"]="Respondre";
 $text_article["button_cancel"]="Suprimir";
 $text_article["block-xnoarchive"]="Aquest sistema no és un arxiu, però l'administrador d'aquest sistema ha decidit bloquejar els missatges on l'autor no vol l'arxivament.";
 $text_article["full_article"]="Feu clic aquí per llegir l'article complet";
-
 $text_post["name"]="Nom d'usuari:";
 $text_post["password"]="Contrasenya:";
 $text_post["missing_message"]="Heu d'incloure un missatge per publicar.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citar";
 $text_post["captchafail"]='Heu fallat la prova CAPTCHA. Torneu-ho a intentar';
 $text_post["captchainfo1"]='torneu a escriure això aquí';
 $text_post["captchainfo2"]='Introduïu les lletres i números correctes de la imatge al quadre de text. Aquesta petita prova serveix com a restricció d\'accés contra els robots de spam.';
-
 $text_error["error:"]='<font color="red">Error:</font>';
 $text_error["connection_failed"]="Ha fallat la connexió al servidor de missatges";
 $text_error["article_not_found"]="<p>L'article no existeix.</p>";
 $text_error["read_access_denied"]="<p>No teniu permís per llegir!</p>";
 $text_error["post_failed"]="Connexió fallida. Intenteu recarregar més tard.";
 $text_error["auth_error"]="Ha fallat l'autenticació.";
-
 $text_register["no_access_group"]="No teniu accés a aquest grup.";
-
 ?>

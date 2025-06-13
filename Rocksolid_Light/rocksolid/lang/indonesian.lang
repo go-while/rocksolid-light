@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referensi:</b> ";
 $text_header["user-agent"]="<b>Agen Pengguna:</b> ";
 $text_header["date_format"]="d M Y H:i";
 $text_header["attachments"]="<b>Lampiran:</b> ";
-
 $text_thread["no_articles"]="<p><b>Tidak ada artikel yang tersedia</b></p>";
 $text_thread["button_write"]="Thread Baru";
 $text_thread["button_grouplist"]="Newsgroup";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Penulis</b>";
 $text_thread["lastmessage"]="<b>Pesan Terakhir</b>";
 $text_thread["no_such_group"]="Grup tersebut tidak ada.";
 $text_thread["pages"]="Halaman:";
-
-
 $text_article["back_to_group"]="Daftar Artikel";
 $text_article["refresh"]="Segarkan";
 $text_article["button_answer"]="Balas";
 $text_article["button_cancel"]="Hapus";
 $text_article["block-xnoarchive"]="Sistem ini bukan arsip, tetapi administrator sistem memutuskan untuk memblokir pos di mana penulis tidak menginginkan pengarsipan.";
 $text_article["full_article"]="Klik di sini untuk membaca artikel lengkap";
-
 $text_post["name"]="Nama pengguna:";
 $text_post["password"]="Kata sandi:";
 $text_post["missing_message"]="Anda harus menyertakan pesan untuk posting.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Kutip";
 $text_post["captchafail"]='Anda gagal dalam tes CAPTCHA. Silakan coba lagi';
 $text_post["captchainfo1"]='Ketik ulang di sini';
 $text_post["captchainfo2"]='Masukkan huruf dan angka yang benar dari gambar ke dalam kotak teks. Tes kecil ini berfungsi sebagai pembatasan akses terhadap spam-bot.';
-
 $text_error["error:"]='<font color="red">Kesalahan:</font>';
 $text_error["connection_failed"]="Koneksi ke server pesan gagal";
 $text_error["article_not_found"]="<p>Artikel tidak ada.</p>";
 $text_error["read_access_denied"]="<p>Tidak memiliki izin baca!</p>";
 $text_error["post_failed"]="Koneksi gagal. Coba lagi nanti.";
 $text_error["auth_error"]="Autentikasi gagal.";
-
 $text_register["no_access_group"]="Anda tidak memiliki akses ke grup ini.";
-
 ?>

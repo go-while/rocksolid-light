@@ -11,7 +11,6 @@ $text_header["references"]="<b>הפניות:</b> ";
 $text_header["user-agent"]="<b>סוכן משתמש:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>קבצים מצורפים:</b> ";
-
 $text_thread["no_articles"]="<p><b>אין מאמרים זמינים</b></p>";
 $text_thread["button_write"]="שרשור חדש";
 $text_thread["button_grouplist"]="קבוצות חדשות";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>מחבר</b>";
 $text_thread["lastmessage"]="<b>הודעה אחרונה</b>";
 $text_thread["no_such_group"]="אין קבוצה כזו.";
 $text_thread["pages"]="עמודים:";
-
-
 $text_article["back_to_group"]="רשימת מאמרים";
 $text_article["refresh"]="רענון";
 $text_article["button_answer"]="תגובה";
 $text_article["button_cancel"]="מחיקה";
 $text_article["block-xnoarchive"]="המערכת הזו איננה ארכיון, אבל מנהל המערכת החליט לחסום הודעות שבהן המחבר לא רוצה ארכוב.";
 $text_article["full_article"]="לחץ כאן לקריאת המאמר המלא";
-
 $text_post["name"]="שם משתמש:";
 $text_post["password"]="סיסמה:";
 $text_post["missing_message"]="עליך לכלול הודעה כדי לפרסם.";
@@ -58,14 +54,11 @@ $text_post["quote"]="ציטוט";
 $text_post["captchafail"]='נכשלת במבחן CAPTCHA. אנא נסה שוב';
 $text_post["captchainfo1"]='הקלד זאת כאן שוב';
 $text_post["captchainfo2"]='הזן את האותיות והמספרים הנכונים מהתמונה לתיבת הטקסט. המבחן הקטן הזה משמש כהגבלת גישה נגד בוטי ספאם.';
-
 $text_error["error:"]='<font color="red">שגיאה:</font>';
 $text_error["connection_failed"]="החיבור לשרת ההודעות נכשל";
 $text_error["article_not_found"]="<p>המאמר לא קיים.</p>";
 $text_error["read_access_denied"]="<p>אין הרשאה לקריאה!</p>";
 $text_error["post_failed"]="החיבור נכשל. נסה לטעון מחדש מאוחר יותר.";
 $text_error["auth_error"]="האימות נכשל.";
-
 $text_register["no_access_group"]="אין לך גישה לקבוצה זו.";
-
 ?>

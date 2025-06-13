@@ -11,7 +11,6 @@ $text_header["message-id"]="<b>Mesaj-ID:</b> ";
 $text_header["references"]="<b>Referanslar:</b> ";
 $text_header["user-agent"]="<b>Kullanıcı:</b> ";
 $text_header["date_format"]="M d Y H:i:s";
-
 $text_thread["no_articles"]="<p><b>Makale mevcut değil</b></p>";
 $text_thread["button_latest"]="Son";
 $text_thread["button_overboard"]="Genel Bakış";
@@ -25,15 +24,12 @@ $text_thread["threadsize"]="<b>Konu boyutu</b>";
 $text_thread["lastmessage"]="<b>Son mesaj</b>";
 $text_thread["pages"]="<b>Sayfalar</b>";
 $text_thread["no_such_group"]="Böyle bir grup yok.";
-
-
 $text_article["button_answer"]="Yanıtla";
 $text_article["button_cancel"]="İptal";
 $text_article["back_to_group"]="Gruba geri dön";
 $text_article["refresh"]="Yenile";
 $text_article["block-xnoarchive"]="[Engellenmiş: X-No-Archive]";
 $text_article["full_article"]="Tam makale";
-
 $text_post["name"]="Ad:";
 $text_post["password"]="Şifre:";
 $text_post["missing_message"]="Mesajı postalamak için birşey yazmak zorundasınız.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Alıntı";
 $text_post["captchafail"]="CAPTCHA başarısız";
 $text_post["captchainfo1"]="Lütfen görüntüdeki metni girin";
 $text_post["captchainfo2"]="Bu otomatik spam koruması için gereklidir";
-
 $text_error["error:"]='<font color="red">Hata:</font>';
 $text_error["connection_failed"]="Haber Grubu sunucusuna bağlanılamadı";
 $text_error["article_not_found"]="<p>Böyle bir makale yok.</p>";
 $text_error["read_access_denied"]="<p>Okuma izniniz yok!</p>";
 $text_error["post_failed"]="Bağlantı koptu. Tekrar deneyin.";
 $text_error["auth_error"]="Kullanıcı kimliği denetimi başarısız.";
-
 $text_register["no_access_group"]="Bu foruma erişiminiz yok";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referencia:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="d. M Y, H:i:s";
 $text_header["attachments"]="<b>Adjuntos:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ningún Artículo</b></p>";
 $text_thread["button_write"]="Nuevo hilo";
 $text_thread["button_grouplist"]="Grupos de noticias";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Último mensaje</b>";
 $text_thread["no_such_group"]="El grupo no existe.";
 $text_thread["pages"]="Páginas:";
-
-
 $text_article["back_to_group"]="Lista de artículos";
 $text_article["refresh"]="Actualizar";
 $text_article["button_answer"]="Responder";
 $text_article["button_cancel"]="Eliminar";
 $text_article["block-xnoarchive"]="Este sistema no es un archivo, pero el administrador de este sistema decidió bloquear publicaciones donde el autor no quiere archivar.";
 $text_article["full_article"]="Haga clic aquí para leer el artículo completo";
-
 $text_post["name"]="Nombre de usuario:";
 $text_post["password"]="Contraseña:";
 $text_post["missing_message"]="Naturalmente debes ingresar un texto como cuerpo de la noticia.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Cita";
 $text_post["captchafail"]='Fallaste la prueba CAPTCHA. Por favor intenta de nuevo';
 $text_post["captchainfo1"]='Escríbelo aquí otra vez';
 $text_post["captchainfo2"]='Ingresa las letras y números correctos de la imagen en el cuadro de texto. Esta pequeña prueba sirve como restricción de acceso contra spam-bots.';
-
 $text_error["error:"]='<font color="red">Error:</font>';
 $text_error["connection_failed"]="Hubo problemas al intentar contactar el servidor de noticias";
 $text_error["article_not_found"]="<p>El Artículo no existe.</p>";
 $text_error["read_access_denied"]="<p>Sin permisos de lectura!</p>";
 $text_error["post_failed"]="Conexión al servidor con complicaciones. Por favor trate de cargar la página nuevamente más tarde.";
 $text_error["auth_error"]="Autenticación en el servidor de noticias con problemas. Intente nuevamente.";
-
 $text_register["no_access_group"]="No tiene acceso a este grupo.";
-
 ?>

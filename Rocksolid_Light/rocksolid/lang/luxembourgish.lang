@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referenzen:</b> ";
 $text_header["user-agent"]="<b>Benotzer-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Unhäng:</b> ";
-
 $text_thread["no_articles"]="<p><b>Keng Artikelen disponibel</b></p>";
 $text_thread["button_write"]="neien Thread";
 $text_thread["button_grouplist"]="Newsgroupen";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Auteur</b>";
 $text_thread["lastmessage"]="<b>Lescht Message</b>";
 $text_thread["no_such_group"]="Keng esou Grupp.";
 $text_thread["pages"]="Säiten:";
-
-
 $text_article["back_to_group"]="Artikel Lëscht";
 $text_article["refresh"]="aktualiséieren";
 $text_article["button_answer"]="Äntweren";
 $text_article["button_cancel"]="Läschen";
 $text_article["block-xnoarchive"]="Dëse System ass keng Archiv, awer den Administrateur vum System huet decidéiert Posts ze blockéieren wou den Auteur keng Archivéierung wëll.";
 $text_article["full_article"]="Klickt hei fir de kompletten Artikel ze liesen";
-
 $text_post["name"]="Benotzernumm:";
 $text_post["password"]="Passwuert:";
 $text_post["missing_message"]="Dir musst eng Message androen fir ze posten.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Zitéieren";
 $text_post["captchafail"]='Dir hutt den CAPTCHA Test net bestanen. Probéiert w.e.g. nach emol';
 $text_post["captchainfo1"]='tippt dat hei an';
 $text_post["captchainfo2"]='Gitt déi richteg Buschtawen an Zuelen aus dem Bild an d\'Textfeld an. Dësen klengen Test déngt als Accès-Restriktioun géint Spam-Boten.';
-
 $text_error["error:"]='<font color="red">Feeler:</font>';
 $text_error["connection_failed"]="D'Verbindung mam Message Server ass feelgeschloen";
 $text_error["article_not_found"]="<p>Den Artikel existéiert net.</p>";
 $text_error["read_access_denied"]="<p>Keng Berechtigung fir ze liesen!</p>";
 $text_error["post_failed"]="Verbindung feelgeschloen. Probéiert méi spéit ze lueden.";
 $text_error["auth_error"]="Authentifikatioun feelgeschloen.";
-
 $text_register["no_access_group"]="Dir hutt keen Zugang zu dëser Grupp.";
-
 ?>

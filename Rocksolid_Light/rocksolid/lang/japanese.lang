@@ -11,7 +11,6 @@ $text_header["references"]="<b>参照:</b> ";
 $text_header["user-agent"]="<b>ユーザーエージェント:</b> ";
 $text_header["date_format"]="Y年n月j日 H:i";
 $text_header["attachments"]="<b>添付ファイル:</b> ";
-
 $text_thread["no_articles"]="<p><b>利用可能な記事がありません</b></p>";
 $text_thread["button_write"]="新しいスレッド";
 $text_thread["button_grouplist"]="ニュースグループ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>作者</b>";
 $text_thread["lastmessage"]="<b>最後のメッセージ</b>";
 $text_thread["no_such_group"]="そのようなグループは存在しません。";
 $text_thread["pages"]="ページ:";
-
-
 $text_article["back_to_group"]="記事リスト";
 $text_article["refresh"]="更新";
 $text_article["button_answer"]="返信";
 $text_article["button_cancel"]="削除";
 $text_article["block-xnoarchive"]="このシステムはアーカイブではありませんが、システム管理者は作者がアーカイブを望まない投稿をブロックすることを決定しました。";
 $text_article["full_article"]="完全な記事を読むにはここをクリック";
-
 $text_post["name"]="ユーザー名:";
 $text_post["password"]="パスワード:";
 $text_post["missing_message"]="投稿するにはメッセージを含める必要があります。";
@@ -58,14 +54,11 @@ $text_post["quote"]="引用";
 $text_post["captchafail"]='CAPTCHAテストに失敗しました。再試行してください';
 $text_post["captchainfo1"]='ここに再入力してください';
 $text_post["captchainfo2"]='画像から正しい文字と数字をテキストボックスに入力してください。この小さなテストは、スパムボット対策のアクセス制限として機能します。';
-
 $text_error["error:"]='<font color="red">エラー:</font>';
 $text_error["connection_failed"]="メッセージサーバーへの接続が失敗しました";
 $text_error["article_not_found"]="<p>記事が存在しません。</p>";
 $text_error["read_access_denied"]="<p>読み取り権限がありません！</p>";
 $text_error["post_failed"]="接続が失敗しました。後でもう一度試してください。";
 $text_error["auth_error"]="認証に失敗しました。";
-
 $text_register["no_access_group"]="このグループへのアクセス権がありません。";
-
 ?>

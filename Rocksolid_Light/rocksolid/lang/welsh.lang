@@ -11,7 +11,6 @@ $text_header["references"]="<b>Cyfeiriadau:</b> ";
 $text_header["user-agent"]="<b>Asiant defnyddiwr:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Atodiadau:</b> ";
-
 $text_thread["no_articles"]="<p><b>Dim erthyglau ar gael</b></p>";
 $text_thread["button_write"]="trywydd newydd";
 $text_thread["button_grouplist"]="grwpiau newyddion";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Awdur</b>";
 $text_thread["lastmessage"]="<b>Neges Olaf</b>";
 $text_thread["no_such_group"]="Does dim grŵp o'r fath.";
 $text_thread["pages"]="Tudalennau:";
-
-
 $text_article["back_to_group"]="rhestr erthyglau";
 $text_article["refresh"]="adnewyddu";
 $text_article["button_answer"]="Ateb";
 $text_article["button_cancel"]="Dileu";
 $text_article["block-xnoarchive"]="Nid yw'r system hon yn archif, ond mae gweinyddwr y system hon wedi penderfynu rhwystro postiadau lle nad yw'r awdur eisiau archifo.";
 $text_article["full_article"]="Cliciwch yma i ddarllen yr erthygl gyflawn";
-
 $text_post["name"]="Enw defnyddiwr:";
 $text_post["password"]="Cyfrinair:";
 $text_post["missing_message"]="Rhaid i chi gynnwys neges i'w phostio.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Dyfynnu";
 $text_post["captchafail"]='Rydych wedi methu'r prawf CAPTCHA. Rhowch gynnig arall arni';
 $text_post["captchainfo1"]='ail-deipiwch hynny yma';
 $text_post["captchainfo2"]='Rhowch y llythrennau a\'r rhifau cywir o\'r ddelwedd yn y blwch testun. Mae\'r prawf bach hwn yn gwasanaethu fel cyfyngiad mynediad yn erbyn robotaid sbam.';
-
 $text_error["error:"]='<font color="red">Gwall:</font>';
 $text_error["connection_failed"]="Methodd y cysylltiad â'r Gweinydd Negeseuon";
 $text_error["article_not_found"]="<p>Nid yw'r erthygl yn bodoli.</p>";
 $text_error["read_access_denied"]="<p>Dim caniatâd i ddarllen!</p>";
 $text_error["post_failed"]="Methodd y cysylltiad. Ceisiwch ail-lwytho yn ddiweddarach.";
 $text_error["auth_error"]="Methodd y dilysu.";
-
 $text_register["no_access_group"]="Does gennych chi ddim mynediad i'r grŵp hwn.";
-
 ?>

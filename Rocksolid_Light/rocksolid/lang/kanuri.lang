@@ -11,7 +11,6 @@ $text_header["references"]="<b>Alamara:</b> ";
 $text_header["user-agent"]="<b>Nyibe-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Kampaye:</b> ";
-
 $text_thread["no_articles"]="<p><b>Haber ye nana</b></p>";
 $text_thread["button_write"]="kanem keshe";
 $text_thread["button_grouplist"]="kabar kure";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Nyiram</b>";
 $text_thread["lastmessage"]="<b>Haber ngamaje</b>";
 $text_thread["no_such_group"]="Aya kure nana.";
 $text_thread["pages"]="Tabo:";
-
-
 $text_article["back_to_group"]="haber lista";
 $text_article["refresh"]="keshe";
 $text_article["button_answer"]="Kajibe";
 $text_article["button_cancel"]="Tuje";
 $text_article["block-xnoarchive"]="Aya sistem bera arkayif nana amma sistem jarmai kajin nyiram bera arkayif kata haber tujo.";
 $text_article["full_article"]="Ka nyami haber kambura nyana fiye";
-
 $text_post["name"]="Nyibe nji:";
 $text_post["password"]="Kapta kalam:";
 $text_post["missing_message"]="Kirim dole haber kamata.";
@@ -55,20 +51,14 @@ $text_post["error_wrong_email"]="Email alamat bawo nana.";
 $text_post["wrote_prefix"]="";
 $text_post["wrote_suffix"]=" nyiramka:";
 $text_post["quote"]="Kalam";
-
-// CAPTCHA keys
 $text_post["captchafail"]='Ka wulto CAPTCHA gwambe. Ka lau kura.';
 $text_post["captchainfo1"]='nyi kura ka nde';
 $text_post["captchainfo2"]='Kura hajin kanam wuro ngaski a sa kargal ngaski. Wanan gwamben wori nda spam-bot wuro ngaski.';
-
-
 $text_error["error:"]='<font color="red">Kuskur:</font>';
 $text_error["connection_failed"]="Kabar saba kombura kuskurka.";
 $text_error["article_not_found"]="<p>Haber nyenana.</p>";
 $text_error["read_access_denied"]="<p>Karantawu wori dole.</p>";
 $text_error["post_failed"]="Kombura kuskurka. Kowa wuro kajin nyana.";
 $text_error["auth_error"]="Taskir kuskurka.";
-
 $text_register["no_access_group"]="Alyen aya kure gan dola ijaza nana.";
-
 ?>

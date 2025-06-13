@@ -11,7 +11,6 @@ $text_header["references"]="<b>مراجع:</b> ";
 $text_header["user-agent"]="<b>نماینده کاربر:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>پیوست‌ها:</b> ";
-
 $text_thread["no_articles"]="<p><b>هیچ مقاله‌ای در دسترس نیست</b></p>";
 $text_thread["button_write"]="رشته جدید";
 $text_thread["button_grouplist"]="گروه‌های خبری";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>نویسنده</b>";
 $text_thread["lastmessage"]="<b>آخرین پیام</b>";
 $text_thread["no_such_group"]="چنین گروهی وجود ندارد.";
 $text_thread["pages"]="صفحات:";
-
-
 $text_article["back_to_group"]="فهرست مقالات";
 $text_article["refresh"]="تازه‌سازی";
 $text_article["button_answer"]="پاسخ";
 $text_article["button_cancel"]="حذف";
 $text_article["block-xnoarchive"]="این سیستم یک بایگانی نیست، اما مدیر این سیستم تصمیم گرفته است پست‌هایی را که نویسنده آن‌ها بایگانی‌سازی نمی‌خواهد، مسدود کند.";
 $text_article["full_article"]="برای خواندن مقاله کامل اینجا کلیک کنید";
-
 $text_post["name"]="نام کاربری:";
 $text_post["password"]="رمز عبور:";
 $text_post["missing_message"]="برای ارسال باید پیامی وارد کنید.";
@@ -58,14 +54,11 @@ $text_post["quote"]="نقل قول";
 $text_post["captchafail"]='آزمون CAPTCHA را رد کردید. لطفاً دوباره تلاش کنید';
 $text_post["captchainfo1"]='آن را دوباره اینجا تایپ کنید';
 $text_post["captchainfo2"]='حروف و اعداد صحیح را از تصویر در کادر متن وارد کنید. این آزمون کوچک به عنوان محدودیت دسترسی در برابر ربات‌های هرزنامه عمل می‌کند.';
-
 $text_error["error:"]='<font color="red">خطا:</font>';
 $text_error["connection_failed"]="اتصال به سرور پیام ناموفق بود";
 $text_error["article_not_found"]="<p>مقاله وجود ندارد.</p>";
 $text_error["read_access_denied"]="<p>مجوز خواندن وجود ندارد!</p>";
 $text_error["post_failed"]="اتصال ناموفق بود. بعداً دوباره بارگذاری کنید.";
 $text_error["auth_error"]="احراز هویت ناموفق بود.";
-
 $text_register["no_access_group"]="به این گروه دسترسی ندارید.";
-
 ?>

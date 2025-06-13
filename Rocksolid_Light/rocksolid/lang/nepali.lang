@@ -11,7 +11,6 @@ $text_header["references"]="<b>सन्दर्भहरू:</b> ";
 $text_header["user-agent"]="<b>प्रयोगकर्ता-एजेन्ट:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>संलग्नहरू:</b> ";
-
 $text_thread["no_articles"]="<p><b>कुनै लेखहरू उपलब्ध छैनन्</b></p>";
 $text_thread["button_write"]="नयाँ थ्रेड";
 $text_thread["button_grouplist"]="समाचार समूहहरू";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>लेखक</b>";
 $text_thread["lastmessage"]="<b>अन्तिम सन्देश</b>";
 $text_thread["no_such_group"]="त्यस्तो समूह छैन।";
 $text_thread["pages"]="पृष्ठहरू:";
-
-
 $text_article["back_to_group"]="लेख सूची";
 $text_article["refresh"]="रिफ्रेश गर्नुहोस्";
 $text_article["button_answer"]="जवाफ दिनुहोस्";
 $text_article["button_cancel"]="हटाउनुहोस्";
 $text_article["block-xnoarchive"]="यो प्रणाली अभिलेख होइन, तर यस प्रणालीका प्रशासकले लेखकले अभिलेख चाहँदैनन् भने पोस्टहरू रोक्ने निर्णय गरेका छन्।";
 $text_article["full_article"]="पूरा लेख पढ्न यहाँ क्लिक गर्नुहोस्";
-
 $text_post["name"]="प्रयोगकर्ता नाम:";
 $text_post["password"]="पासवर्ड:";
 $text_post["missing_message"]="पोस्ट गर्न सन्देश आवश्यक छ।";
@@ -58,14 +54,11 @@ $text_post["quote"]="उद्धरण";
 $text_post["captchafail"]='तपाईंले CAPTCHA परीक्षण असफल गर्नुभयो। कृपया फेरि प्रयास गर्नुहोस्';
 $text_post["captchainfo1"]='यहाँ पुन: टाइप गर्नुहोस्';
 $text_post["captchainfo2"]='छविबाट सही अक्षर र अंकहरू पाठ बाकसमा प्रविष्ट गर्नुहोस्। यो सानो परीक्षण स्प्याम-बोटहरू विरुद्ध पहुँच प्रतिबन्धको रूपमा कार्य गर्दछ।';
-
 $text_error["error:"]='<font color="red">त्रुटि:</font>';
 $text_error["connection_failed"]="सन्देश सर्भरमा जडान असफल भयो";
 $text_error["article_not_found"]="<p>लेख फेला परेन।</p>";
 $text_error["read_access_denied"]="<p>पढ्न अनुमति छैन!</p>";
 $text_error["post_failed"]="जडान असफल भयो। पछि पुन: प्रयास गर्नुहोस्।";
 $text_error["auth_error"]="प्रमाणीकरण असफल भयो।";
-
 $text_register["no_access_group"]="तपाईंलाई यस समूहमा पहुँच छैन।";
-
 ?>

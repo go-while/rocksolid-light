@@ -11,7 +11,6 @@ $text_header["message-id"]="<b>Message-ID:</b> ";
 $text_header["references"]="<b>Referanser:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="M d Y H:i:s";
-
 $text_thread["no_articles"]="<p><b>Ingen artikler tilgjenglig</b></p>";
 $text_thread["button_latest"]="Siste";
 $text_thread["button_overboard"]="Oversikt";
@@ -25,15 +24,12 @@ $text_thread["threadsize"]="<b>Tråd størrelse</b>";
 $text_thread["lastmessage"]="<b>Siste melding</b>";
 $text_thread["pages"]="<b>Sider</b>";
 $text_thread["no_such_group"]="Ingen slik gruppe.";
-
-
 $text_article["button_answer"]="Svar";
 $text_article["button_cancel"]="Avbryt";
 $text_article["back_to_group"]="Tilbake til gruppen";
 $text_article["refresh"]="Oppfrisk";
 $text_article["block-xnoarchive"]="[Blokkert: X-No-Archive]";
 $text_article["full_article"]="Full artikkel";
-
 $text_post["name"]="Navn:";
 $text_post["password"]="Passord:";
 $text_post["missing_message"]="Du må inkludere en melding.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Sitat";
 $text_post["captchafail"]="CAPTCHA mislyktes";
 $text_post["captchainfo1"]="Vennligst skriv inn teksten fra bildet";
 $text_post["captchainfo2"]="Dette er nødvendig for automatisert søppelpost-beskyttelse";
-
 $text_error["error:"]='<font color="red">Feil:</font>';
 $text_error["connection_failed"]="Kunne ikke koble til tjeneren";
 $text_error["article_not_found"]="<p>Artikkelen eksisterer ikke.</p>";
 $text_error["read_access_denied"]="<p>Ingen rettigheter til å lese!</p>";
 $text_error["post_failed"]="Kunne ikke koble til, venneligst prøv senere.";
 $text_error["auth_error"]="Autentisering på nyhetstjeneren feilet.";
-
 $text_register["no_access_group"]="Du har ikke tilgang til dette forumet";
-
 ?>

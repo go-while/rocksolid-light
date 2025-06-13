@@ -11,7 +11,6 @@ $text_header["references"]="<b>Cifagol:</b> ";
 $text_header["user-agent"]="<b>Wakiilaaɗo Kuutoro:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Ɗisɗe:</b> ";
-
 $text_thread["no_articles"]="<p><b>Alaa mbaadi kabaruuji</b></p>";
 $text_thread["button_write"]="tiitoonde hesere";
 $text_thread["button_grouplist"]="polle kabaruuji";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Winndikaajo</b>";
 $text_thread["lastmessage"]="<b>Battal Gadanal</b>";
 $text_thread["no_such_group"]="Alaa fedde ngoo.";
 $text_thread["pages"]="Hello:";
-
-
 $text_article["back_to_group"]="doggol kabaruuji";
 $text_article["refresh"]="hesɗitin";
 $text_article["button_answer"]="Jaabo";
 $text_article["button_cancel"]="Momtu";
 $text_article["block-xnoarchive"]="Ngoo yuɓɓo wonaa mooftirde, kono ardiiɗo yuɓɓoo laɓii momtude postuuji ndi winndikaajo waɗaa ina yiɗi mooftinde.";
 $text_article["full_article"]="Dobo ɗoo ngam tarin kabaaru timmuɗo";
-
 $text_post["name"]="Innde kuutoro:";
 $text_post["password"]="Finndegol:";
 $text_post["missing_message"]="Aɗa sokli naatde battal ngam neldude.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Cifol";
 $text_post["captchafail"]='A paɗaali geɗe CAPTCHA. Tiiɗaa etaade kadi';
 $text_post["captchainfo1"]='winndito ɗoo ɗoo';
 $text_post["captchainfo2"]='Naatu harfuuji e limaaji ngonɗaaki iwde natal to pakkaande finndu. Ngoo geɗe keeññe ɗee nder haɗde e spam-bots.';
-
 $text_error["error:"]='<font color="red">Juumre:</font>';
 $text_error["connection_failed"]="Jokkondi e Sarworde Battal paɗii";
 $text_error["article_not_found"]="<p>Kabaaru nduu alaa.</p>";
 $text_error["read_access_denied"]="<p>Alaa jamiraaɗi tarin!</p>";
 $text_error["post_failed"]="Jokkondi paɗii. Etaade loddude ɓaawo.";
 $text_error["auth_error"]="Teeŋtingol paɗii.";
-
 $text_register["no_access_group"]="Aɗa alaa duuɓi to ngoo fedde.";
-
 ?>

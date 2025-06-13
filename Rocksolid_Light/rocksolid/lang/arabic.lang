@@ -11,7 +11,6 @@ $text_header["references"]="<b>المراجع:</b> ";
 $text_header["user-agent"]="<b>وكيل المستخدم:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>المرفقات:</b> ";
-
 $text_thread["no_articles"]="<p><b>لا توجد مقالات متاحة</b></p>";
 $text_thread["button_write"]="موضوع جديد";
 $text_thread["button_grouplist"]="مجموعات الأخبار";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>المؤلف</b>";
 $text_thread["lastmessage"]="<b>آخر رسالة</b>";
 $text_thread["no_such_group"]="لا توجد مجموعة بهذا الاسم.";
 $text_thread["pages"]="الصفحات:";
-
-
 $text_article["back_to_group"]="قائمة المقالات";
 $text_article["refresh"]="تحديث";
 $text_article["button_answer"]="رد";
 $text_article["button_cancel"]="حذف";
 $text_article["block-xnoarchive"]="هذا النظام ليس أرشيفاً، لكن مدير هذا النظام قرر حظر المنشورات التي لا يريد المؤلف أرشفتها.";
 $text_article["full_article"]="انقر هنا لقراءة المقال كاملاً";
-
 $text_post["name"]="اسم المستخدم:";
 $text_post["password"]="كلمة المرور:";
 $text_post["missing_message"]="يجب تضمين رسالة للنشر.";
@@ -58,14 +54,11 @@ $text_post["quote"]="اقتباس";
 $text_post["captchafail"]='فشلت في اختبار CAPTCHA. يرجى المحاولة مرة أخرى';
 $text_post["captchainfo1"]='أعد كتابة ذلك هنا';
 $text_post["captchainfo2"]='أدخل الأحرف والأرقام الصحيحة من الصورة في مربع النص. يعمل هذا الاختبار الصغير كقيد وصول ضد روبوتات الرسائل المزعجة.';
-
 $text_error["error:"]='<font color="red">خطأ:</font>';
 $text_error["connection_failed"]="فشل الاتصال بخادم الرسائل";
 $text_error["article_not_found"]="<p>المقال غير موجود.</p>";
 $text_error["read_access_denied"]="<p>لا توجد صلاحية للقراءة!</p>";
 $text_error["post_failed"]="فشل الاتصال. حاول إعادة التحميل لاحقاً.";
 $text_error["auth_error"]="فشل التوثيق.";
-
 $text_register["no_access_group"]="ليس لديك صلاحية للوصول إلى هذه المجموعة.";
-
 ?>

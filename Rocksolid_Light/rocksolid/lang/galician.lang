@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referencias:</b> ";
 $text_header["user-agent"]="<b>Axente de usuario:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Adxuntos:</b> ";
-
 $text_thread["no_articles"]="<p><b>Non hai artigos dispoñibles</b></p>";
 $text_thread["button_write"]="novo fío";
 $text_thread["button_grouplist"]="grupos de noticias";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Última mensaxe</b>";
 $text_thread["no_such_group"]="Non existe tal grupo.";
 $text_thread["pages"]="Páxinas:";
-
-
 $text_article["back_to_group"]="lista de artigos";
 $text_article["refresh"]="actualizar";
 $text_article["button_answer"]="Responder";
 $text_article["button_cancel"]="Eliminar";
 $text_article["block-xnoarchive"]="Este sistema non é un arquivo, pero o administrador deste sistema decidiu bloquear publicacións onde o autor non quere o arquivamento.";
 $text_article["full_article"]="Fai clic aquí para ler o artigo completo";
-
 $text_post["name"]="Nome de usuario:";
 $text_post["password"]="Contrasinal:";
 $text_post["missing_message"]="Debes incluír unha mensaxe para publicar.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citar";
 $text_post["captchafail"]='Fallaches na proba CAPTCHA. Por favor, téntao de novo';
 $text_post["captchainfo1"]='reescribe iso aquí';
 $text_post["captchainfo2"]='Introduce as letras e números correctos da imaxe na caixa de texto. Esta pequena proba serve como restrición de acceso contra robots de spam.';
-
 $text_error["error:"]='<font color="red">Erro:</font>';
 $text_error["connection_failed"]="Fallou a conexión co servidor de mensaxes";
 $text_error["article_not_found"]="<p>O artigo non existe.</p>";
 $text_error["read_access_denied"]="<p>Sen permiso para ler!</p>";
 $text_error["post_failed"]="Conexión fallida. Tenta recargar máis tarde.";
 $text_error["auth_error"]="Fallou a autenticación.";
-
 $text_register["no_access_group"]="Non tes acceso a este grupo.";
-
 ?>

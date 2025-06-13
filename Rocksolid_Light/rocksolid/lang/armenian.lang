@@ -11,7 +11,6 @@ $text_header["references"]="<b>Հղումներ:</b> ";
 $text_header["user-agent"]="<b>Օգտատիրոջ գործակալ:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Կցորդներ:</b> ";
-
 $text_thread["no_articles"]="<p><b>Հոդվածներ չկան</b></p>";
 $text_thread["button_write"]="նոր թեմա";
 $text_thread["button_grouplist"]="լուրերի խմբեր";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Հեղինակ</b>";
 $text_thread["lastmessage"]="<b>Վերջին հաղորդագրություն</b>";
 $text_thread["no_such_group"]="Այդպիսի խումբ չկա:";
 $text_thread["pages"]="Էջեր:";
-
-
 $text_article["back_to_group"]="հոդվածների ցուցակ";
 $text_article["refresh"]="թարմացնել";
 $text_article["button_answer"]="Պատասխանել";
 $text_article["button_cancel"]="Ջնջել";
 $text_article["block-xnoarchive"]="Այս համակարգը արխիվ չէ, բայց այս համակարգի ադմինիստրատորը որոշել է արգելափակել այն գրառումները, որտեղ հեղինակը չի ցանկանում արխիվացում:";
 $text_article["full_article"]="Սեղմեք այստեղ ամբողջական հոդվածը կարդալու համար";
-
 $text_post["name"]="Օգտատիրոջ անուն:";
 $text_post["password"]="Գաղտնաբառ:";
 $text_post["missing_message"]="Դուք պետք է ներառեք հաղորդագրություն գրառելու համար:";
@@ -58,14 +54,11 @@ $text_post["quote"]="Մեջբերում";
 $text_post["captchafail"]='Դուք ձախողվել եք CAPTCHA թեստում: Խնդրում ենք փորձել կրկին';
 $text_post["captchainfo1"]='վերաշարել այն այստեղ';
 $text_post["captchainfo2"]='Մուտքագրեք ճիշտ տառերը և թվերը նկարից տեքստային արկղում: Այս փոքր թեստը ծառայում է որպես մուտքի սահմանափակում սպամ-ռոբոտների դեմ:';
-
 $text_error["error:"]='<font color="red">Սխال:</font>';
 $text_error["connection_failed"]="Հաղորդագրությունների սերվերի հետ կապը ձախողվեց";
 $text_error["article_not_found"]="<p>Հոդվածը գոյություն չունի:</p>";
 $text_error["read_access_denied"]="<p>Կարդալու թույլտվություն չկա!</p>";
 $text_error["post_failed"]="Կապը ձախողվեց: Փորձեք վերաբեռնել ավելի ուշ:";
 $text_error["auth_error"]="Նույնականացումը ձախողվեց:";
-
 $text_register["no_access_group"]="Դուք մուտք չունեք այս խմբին:";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>Indango:</b> ";
 $text_header["user-agent"]="<b>Uhagarariye Ukoresha:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Ibyongerwaho:</b> ";
-
 $text_thread["no_articles"]="<p><b>Nta nyandiko ziboneka</b></p>";
 $text_thread["button_write"]="inyandiko nshya";
 $text_thread["button_grouplist"]="amatsinda y'amakuru";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Uwanditse</b>";
 $text_thread["lastmessage"]="<b>Ubutumwa bwa Nyuma</b>";
 $text_thread["no_such_group"]="Nta tsinda nk'iryo.";
 $text_thread["pages"]="Impapuro:";
-
-
 $text_article["back_to_group"]="urutonde rw'inyandiko";
 $text_article["refresh"]="kuvugurura";
 $text_article["button_answer"]="Subiza";
 $text_article["button_cancel"]="Gusiba";
 $text_article["block-xnoarchive"]="Iyi sisitemu ntabwo ari ububiko, ariko umuyobozi wa sisitemu yafashe icyemezo cyo guhagarika inyandiko aho uwanditse adashaka kubikwa.";
 $text_article["full_article"]="Kanda hano usome inyandiko yuzuye";
-
 $text_post["name"]="Izina ry'Ukoresha:";
 $text_post["password"]="Ijambo ry'Ibanga:";
 $text_post["missing_message"]="Ugomba gushyiramo ubutumwa kugira ngo wohereze.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Guhitiza";
 $text_post["captchafail"]='Wabuze ikizamini cya CAPTCHA. Nyamuneka ongera ugerageze';
 $text_post["captchainfo1"]='ongera wandike hano';
 $text_post["captchainfo2"]='Shyira inyuguti n\'imibare by\'ukuri kuva ku ishusho mu gasanduku k\'inyandiko. Iki kizamini gito gikora nk\'urwego rwo kwirinda spam-bots.';
-
 $text_error["error:"]='<font color="red">Ikosa:</font>';
 $text_error["connection_failed"]="Guhuza na Seriveri y'Ubutumwa byanze";
 $text_error["article_not_found"]="<p>Inyandiko ntibaho.</p>";
 $text_error["read_access_denied"]="<p>Nta burenganzira bwo gusoma!</p>";
 $text_error["post_failed"]="Guhuza byanze. Gerageza kongera upakire nyuma.";
 $text_error["auth_error"]="Kwemeza byanze.";
-
 $text_register["no_access_group"]="Nta burenganzira ufite ku itsinda.";
-
 ?>

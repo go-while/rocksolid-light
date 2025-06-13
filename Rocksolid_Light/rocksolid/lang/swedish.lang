@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referenser:</b> ";
 $text_header["user-agent"]="<b>Användaragent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Bilagor:</b> ";
-
 $text_thread["no_articles"]="<p><b>Inga artiklar tillgängliga</b></p>";
 $text_thread["button_write"]="ny tråd";
 $text_thread["button_grouplist"]="nyhetsgrupper";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Författare</b>";
 $text_thread["lastmessage"]="<b>Senaste meddelandet</b>";
 $text_thread["no_such_group"]="Ingen sådan grupp.";
 $text_thread["pages"]="Sidor:";
-
-
 $text_article["back_to_group"]="artikellista";
 $text_article["refresh"]="uppdatera";
 $text_article["button_answer"]="Svara";
 $text_article["button_cancel"]="Radera";
 $text_article["block-xnoarchive"]="Detta system är inte ett arkiv, men administratören för detta system bestämde sig för att blockera inlägg där författaren inte vill ha arkivering.";
 $text_article["full_article"]="Klicka här för att läsa hela artikeln";
-
 $text_post["name"]="Användarnamn:";
 $text_post["password"]="Lösenord:";
 $text_post["missing_message"]="Du måste inkludera ett meddelande för att posta.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citera";
 $text_post["captchafail"]='Du misslyckades med CAPTCHA-testet. Vänligen försök igen';
 $text_post["captchainfo1"]='skriv om det här';
 $text_post["captchainfo2"]='Ange rätt bokstäver och siffror från bilden i textrutan. Detta lilla test tjänar som åtkomstbegränsning mot spam-robotar.';
-
 $text_error["error:"]='<font color="red">Fel:</font>';
 $text_error["connection_failed"]="Anslutningen till meddelandeservern misslyckades";
 $text_error["article_not_found"]="<p>Artikeln existerar inte.</p>";
 $text_error["read_access_denied"]="<p>Ingen behörighet att läsa!</p>";
 $text_error["post_failed"]="Anslutning misslyckades. Försök ladda om senare.";
 $text_error["auth_error"]="Autentisering misslyckades.";
-
 $text_register["no_access_group"]="Du har inte tillgång till denna grupp.";
-
 ?>

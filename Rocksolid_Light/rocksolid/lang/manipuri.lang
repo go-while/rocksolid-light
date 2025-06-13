@@ -11,7 +11,6 @@ $text_header["references"]="<b>ꯔꯤꯐꯔꯦꯟꯁꯁꯤꯡ:</b> ";
 $text_header["user-agent"]="<b>ꯁꯤꯖꯤꯟꯅꯔꯤꯕ-ꯑꯦꯖꯦꯟꯇ:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ꯄꯨꯟꯅꯥ ꯊꯝꯂꯤꯕꯁꯤꯡ:</b> ";
-
 $text_thread["no_articles"]="<p><b>ꯑꯥꯔꯇꯤꯀꯂ ꯑꯃꯠꯇꯥ ꯂꯩꯇꯦ</b></p>";
 $text_thread["button_write"]="ꯑꯅꯧꯕꯥ ꯋꯥꯍꯪ";
 $text_thread["button_grouplist"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯀꯥꯡꯂꯨꯄꯁꯤꯡ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ꯏꯔꯤꯕ</b>";
 $text_thread["lastmessage"]="<b>ꯑꯔꯣꯏꯕꯥ ꯄꯥꯎ</b>";
 $text_thread["no_such_group"]="ꯑꯁꯤꯒꯨꯝꯕꯥ ꯀꯥꯡꯂꯨꯞ ꯑꯃꯠꯇꯥ ꯂꯩꯇꯦ.";
 $text_thread["pages"]="ꯂꯥꯏꯔꯤꯀꯁꯤꯡ:";
-
-
 $text_article["back_to_group"]="ꯑꯥꯔꯇꯤꯀꯂꯁꯤꯡꯒꯤ ꯂꯤꯁ";
 $text_article["refresh"]="ꯑꯅꯧꯕꯥ ꯑꯣꯏꯍꯟꯕ";
 $text_article["button_answer"]="ꯄꯥꯎꯈꯨꯝ";
 $text_article["button_cancel"]="ꯀꯦꯟꯁꯦꯜ";
 $text_article["block-xnoarchive"]="ꯁꯤꯁ꯭ꯇꯦꯝ ꯑꯁꯤ ꯑꯥꯔꯀꯥꯏꯚ ꯅꯠꯇꯦ ꯑꯗꯨꯕꯨ ꯁꯤꯁ꯭ꯇꯦꯝ ꯑꯦꯗꯃꯤꯟꯅ ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯅ ꯑꯥꯔꯀꯥꯏꯚ ꯄꯥꯝꯗꯕ ꯁꯤꯟ ꯑꯥꯔꯇꯤꯀꯂꯁꯤꯡ ꯇꯥꯍꯅꯕꯒꯤ ꯋꯥꯐꯝ ꯂꯧꯔꯦ.";
 $text_article["full_article"]="ꯃꯄꯨꯡ ꯐꯥꯕꯥ ꯑꯥꯔꯇꯤꯀꯂ ꯄꯥꯕꯒꯤꯗꯃꯛ ꯃꯁꯤꯗ ꯃꯤꯠ ꯊꯣꯅꯕꯤꯌꯨ";
-
 $text_post["name"]="ꯁꯤꯖꯤꯟꯅꯔꯤꯕꯒꯤ ꯃꯤꯡ:";
 $text_post["password"]="ꯄꯥꯁꯋꯥꯔꯗ:";
 $text_post["missing_message"]="ꯄꯣꯁ꯭ꯠ ꯇꯧꯅꯕꯒꯤꯗꯃꯛ ꯄꯥꯎ ꯃꯊꯧ ꯇꯥꯏ.";
@@ -58,8 +54,6 @@ $text_post["quote"]="ꯋꯥꯐꯝ";
 $text_post["captchafail"]='CAPTCHA ꯇꯦꯁ꯭ꯇꯇ ꯅꯪꯡ ꯆꯥꯟꯈꯤꯗꯦ. ꯆꯥꯡꯅꯕ ꯍꯣꯠꯅꯧ.';
 $text_post["captchainfo1"]='ꯃꯐꯝ ꯑꯗꯨꯗ ꯑꯃꯨꯛ ꯍꯟꯅ ꯏꯕꯤꯌꯨ';
 $text_post["captchainfo2"]='ꯃꯆꯤꯟ ꯃꯅꯥꯎꯗꯒꯤ ꯑꯆꯨꯝꯕ ꯑꯛꯁꯔꯁꯤꯡ ꯑꯃꯁꯨꯡ ꯅꯝꯕꯔꯁꯤꯡ ꯇꯦꯛꯁ ꯕꯣꯛꯁꯇ ꯊꯥꯖꯤꯟ ꯄꯤꯌꯨ. ꯃꯁꯤꯒꯤ ꯑꯄꯤꯀꯄ ꯇꯦꯁ꯭ꯇ ꯑꯁꯤ ꯁ꯭ꯄꯦꯝ-ꯕꯣꯠꯁꯤꯡꯒꯤ ꯃꯇꯥꯡꯗ ꯑꯊꯤꯡꯕ ꯌꯥꯅꯤꯡ ꯍꯤꯁꯥꯕꯅꯤ.';
-
-
 $text_error["error:"]='<font color="red">ꯑꯁꯣꯏꯕ:</font>';
 $text_error["connection_failed"]="ꯄꯥꯎ ꯐꯥꯎꯕꯒꯤ ꯁꯔꯚꯔꯒꯥ ꯁꯝꯅꯕ ꯉꯃꯈꯤꯗꯦ.";
 $text_error["article_not_found"]="<p>ꯑꯥꯔꯇꯤꯀꯂ ꯐꯪꯈꯤꯗꯦ.</p>";

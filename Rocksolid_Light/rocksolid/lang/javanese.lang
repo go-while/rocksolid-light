@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referensi:</b> ";
 $text_header["user-agent"]="<b>Agen-Pangguna:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Lampiran:</b> ";
-
 $text_thread["no_articles"]="<p><b>Ora ana artikel sing kasedhiya</b></p>";
 $text_thread["button_write"]="topik anyar";
 $text_thread["button_grouplist"]="klompok pawarta";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Penulis</b>";
 $text_thread["lastmessage"]="<b>Pesen Pungkasan</b>";
 $text_thread["no_such_group"]="Ora ana klompok kaya mangkono.";
 $text_thread["pages"]="Kaca:";
-
-
 $text_article["back_to_group"]="dhaptar artikel";
 $text_article["refresh"]="seger maneh";
 $text_article["button_answer"]="Wangsul";
 $text_article["button_cancel"]="Busak";
 $text_article["block-xnoarchive"]="Sistem iki dudu arsip, nanging administrator sistem iki mutusake kanggo mblokir kiriman sing penulis ora pengin diarsipake.";
 $text_article["full_article"]="Klik kene kanggo maca artikel lengkap";
-
 $text_post["name"]="Jeneng pangguna:";
 $text_post["password"]="Sandhi:";
 $text_post["missing_message"]="Sampeyan kudu nyertakake pesen kanggo ngirim.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Kutipan";
 $text_post["captchafail"]='Sampeyan gagal tes CAPTCHA. Monggo dicoba maneh';
 $text_post["captchainfo1"]='ketik maneh ing kene';
 $text_post["captchainfo2"]='Lebokna huruf lan angka sing bener saka gambar menyang kothak teks. Tes cilik iki minangka watesan akses marang bot spam.';
-
 $text_error["error:"]='<font color="red">Kesalahan:</font>';
 $text_error["connection_failed"]="Sambungan menyang Server Pesen gagal";
 $text_error["article_not_found"]="<p>Artikel ora ana.</p>";
 $text_error["read_access_denied"]="<p>Ora ana ijin kanggo maca!</p>";
 $text_error["post_failed"]="Sambungan gagal. Coba dimuat maneh mengko.";
 $text_error["auth_error"]="Otentikasi gagal.";
-
 $text_register["no_access_group"]="Sampeyan ora nduweni akses menyang klompok iki.";
-
 ?>

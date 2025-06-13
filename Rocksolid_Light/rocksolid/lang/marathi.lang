@@ -11,7 +11,6 @@ $text_header["references"]="<b>संदर्भ:</b> ";
 $text_header["user-agent"]="<b>वापरकर्ता एजंट:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>संलग्नक:</b> ";
-
 $text_thread["no_articles"]="<p><b>लेख उपलब्ध नाहीत</b></p>";
 $text_thread["button_write"]="नवीन धागा";
 $text_thread["button_grouplist"]="बातमी गट";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>लेखक</b>";
 $text_thread["lastmessage"]="<b>शेवटचा संदेश</b>";
 $text_thread["no_such_group"]="असा कोणताही गट नाही.";
 $text_thread["pages"]="पृष्ठे:";
-
-
 $text_article["back_to_group"]="लेख यादी";
 $text_article["refresh"]="रिफ्रेश";
 $text_article["button_answer"]="उत्तर द्या";
 $text_article["button_cancel"]="हटवा";
 $text_article["block-xnoarchive"]="ही प्रणाली संग्रहालय नाही, परंतु या प्रणालीच्या प्रशासकाने अशा पोस्ट्स ब्लॉक करण्याचा निर्णय घेतला आहे जिथे लेखक संग्रहण नको.";
 $text_article["full_article"]="संपूर्ण लेख वाचण्यासाठी इथे क्लिक करा";
-
 $text_post["name"]="वापरकर्ता नाव:";
 $text_post["password"]="पासवर्ड:";
 $text_post["missing_message"]="पोस्ट करण्यासाठी तुम्ही संदेश समाविष्ट करणे आवश्यक आहे.";
@@ -58,14 +54,11 @@ $text_post["quote"]="उद्धरण";
 $text_post["captchafail"]='तुम्ही CAPTCHA चाचणीत अयशस्वी झालात. कृपया पुन्हा प्रयत्न करा';
 $text_post["captchainfo1"]='ते येथे पुन्हा टाइप करा';
 $text_post["captchainfo2"]='चित्रातील योग्य अक्षरे आणि संख्या टेक्स्ट बॉक्समध्ये प्रविष्ट करा. ही छोटी चाचणी स्पॅम-बॉट्स विरुद्ध प्रवेश निर्बंध म्हणून काम करते.';
-
 $text_error["error:"]='<font color="red">त्रुटी:</font>';
 $text_error["connection_failed"]="संदेश सर्व्हरशी कनेक्शन अयशस्वी";
 $text_error["article_not_found"]="<p>लेख अस्तित्वात नाही.</p>";
 $text_error["read_access_denied"]="<p>वाचण्याची परवानगी नाही!</p>";
 $text_error["post_failed"]="कनेक्शन अयशस्वी. नंतर पुन्हा लोड करण्याचा प्रयत्न करा.";
 $text_error["auth_error"]="प्रमाणीकरण अयशस्वी.";
-
 $text_register["no_access_group"]="तुम्हाला या गटात प्रवेश नाही.";
-
 ?>

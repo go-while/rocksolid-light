@@ -11,7 +11,6 @@ $text_header["references"]="<b>Mga Reperensya:</b> ";
 $text_header["user-agent"]="<b>User-Agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Mga Attachment:</b> ";
-
 $text_thread["no_articles"]="<p><b>Walang available na mga artikulo</b></p>";
 $text_thread["button_write"]="bagong thread";
 $text_thread["button_grouplist"]="mga newsgroup";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>May-akda</b>";
 $text_thread["lastmessage"]="<b>Huling Mensahe</b>";
 $text_thread["no_such_group"]="Walang ganitong Grupo.";
 $text_thread["pages"]="Mga Pahina:";
-
-
 $text_article["back_to_group"]="listahan ng artikulo";
 $text_article["refresh"]="i-refresh";
 $text_article["button_answer"]="Sumagot";
 $text_article["button_cancel"]="Burahin";
 $text_article["block-xnoarchive"]="Ang sistema na ito ay hindi archive, ngunit ang administrator ng sistemang ito ay nagpasyang i-block ang mga posting kung saan ang may-akda ay ayaw ng archivation.";
 $text_article["full_article"]="I-click dito para basahin ang kumpletong artikulo";
-
 $text_post["name"]="Username:";
 $text_post["password"]="Password:";
 $text_post["missing_message"]="Kailangan ninyong magsama ng mensahe para mag-post.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Quote";
 $text_post["captchafail"]="Nabigo kayo sa CAPTCHA test. Pakisubukan ulit";
 $text_post["captchainfo1"]="i-type ulit yan dito";
 $text_post["captchainfo2"]="Ilagay ang tamang mga titik at numero mula sa larawan sa text box. Ang maliit na test na ito ay nagsisilbi bilang access restriction laban sa mga spam-bot.";
-
 $text_error["error:"]='<font color="red">Error:</font>';
 $text_error["connection_failed"]="Nabigo ang koneksyon sa Message Server";
 $text_error["article_not_found"]="<p>Hindi umiiral ang artikulo.</p>";
 $text_error["read_access_denied"]="<p>Walang pahintulot na magbasa!</p>";
 $text_error["post_failed"]="Nabigo ang koneksyon. Subukang i-reload mamaya.";
 $text_error["auth_error"]="Nabigo ang authentication.";
-
 $text_register["no_access_group"]="Wala kayong access sa grupong ito.";
-
 ?>

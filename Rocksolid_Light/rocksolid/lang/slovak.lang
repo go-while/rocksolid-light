@@ -11,7 +11,6 @@ $text_header["references"]="<b>Odkazy:</b> ";
 $text_header["user-agent"]="<b>Užívateľský agent:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Prílohy:</b> ";
-
 $text_thread["no_articles"]="<p><b>Žiadne články nie sú dostupné</b></p>";
 $text_thread["button_write"]="nová téma";
 $text_thread["button_grouplist"]="novinové skupiny";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Autor</b>";
 $text_thread["lastmessage"]="<b>Posledná správa</b>";
 $text_thread["no_such_group"]="Taká skupina neexistuje.";
 $text_thread["pages"]="Stránky:";
-
-
 $text_article["back_to_group"]="zoznam článkov";
 $text_article["refresh"]="obnoviť";
 $text_article["button_answer"]="Odpovedať";
 $text_article["button_cancel"]="Odstrániť";
 $text_article["block-xnoarchive"]="Tento systém nie je archív, ale správca tohto systému sa rozhodol zablokovať príspevky, kde autor nechce archiváciu.";
 $text_article["full_article"]="Kliknite sem na prečítanie celého článku";
-
 $text_post["name"]="Užívateľské meno:";
 $text_post["password"]="Heslo:";
 $text_post["missing_message"]="Musíte zahrnúť správu na zverejnenie.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Citovať";
 $text_post["captchafail"]='Neuspeli ste v CAPTCHA teste. Prosím skúste znovu';
 $text_post["captchainfo1"]='prepíšte to sem znovu';
 $text_post["captchainfo2"]='Zadajte správne písmená a čísla z obrázka do textového poľa. Tento malý test slúži ako obmedzenie prístupu proti spam-robotom.';
-
 $text_error["error:"]='<font color="red">Chyba:</font>';
 $text_error["connection_failed"]="Pripojenie k serveru správ zlyhalo";
 $text_error["article_not_found"]="<p>Článok neexistuje.</p>";
 $text_error["read_access_denied"]="<p>Žiadne povolenie na čítanie!</p>";
 $text_error["post_failed"]="Pripojenie zlyhalo. Skúste načítať znovu neskôr.";
 $text_error["auth_error"]="Overenie zlyhalo.";
-
 $text_register["no_access_group"]="Nemáte prístup k tejto skupine.";
-
 ?>

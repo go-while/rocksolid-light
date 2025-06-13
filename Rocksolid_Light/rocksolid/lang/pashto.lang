@@ -11,7 +11,6 @@ $text_header["references"]="<b>حوالې:</b> ";
 $text_header["user-agent"]="<b>د کارونکي استازی:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ضمیمې:</b> ";
-
 $text_thread["no_articles"]="<p><b>هیڅ مقالې شتون نلري</b></p>";
 $text_thread["button_write"]="نوی موضوع";
 $text_thread["button_grouplist"]="د خبرونو ډلې";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>لیکوال</b>";
 $text_thread["lastmessage"]="<b>وروستی پیغام</b>";
 $text_thread["no_such_group"]="دا ډله شتون نلري.";
 $text_thread["pages"]="پاڼې:";
-
-
 $text_article["back_to_group"]="د مقالو لیست";
 $text_article["refresh"]="تازه کول";
 $text_article["button_answer"]="ځواب";
 $text_article["button_cancel"]="ړنګول";
 $text_article["block-xnoarchive"]="دا سیسټم د ارشیف نه دی، مګر د دې سیسټم مدیر پریکړه کړې چې هغه پوسټونه بنده کړي چې لیکوال یې د ارشیف کولو نه نه غواړي.";
 $text_article["full_article"]="دلته ټک ورکړئ د بشپړې مقالې د لوستلو لپاره";
-
 $text_post["name"]="د کارونکي نوم:";
 $text_post["password"]="پاسورډ:";
 $text_post["missing_message"]="تاسو باید د پوست کولو لپاره پیغام ورسره شاملول کړئ.";
@@ -58,14 +54,11 @@ $text_post["quote"]="اقتباس";
 $text_post["captchafail"]='تاسو د CAPTCHA ازموینه ناکامه کړئ. مهرباني وکړئ بیا هڅه وکړئ';
 $text_post["captchainfo1"]='دلته بیا ولیکئ';
 $text_post["captchainfo2"]='د انځور څخه سمې کرښې او شمېرې د متن په بکس کې داخل کړئ. دا کشر ازموینه د سپام روبوټونو پر وړاندې د لاسرسۍ د محدودیت په توګه کار کوي.';
-
 $text_error["error:"]='<font color="red">تېروتنه:</font>';
 $text_error["connection_failed"]="د پیغام سرور سره اړیکه ناکامه شوه";
 $text_error["article_not_found"]="<p>مقاله شتون نلري.</p>";
 $text_error["read_access_denied"]="<p>د لوستلو اجازه نشته!</p>";
 $text_error["post_failed"]="اړیکه ناکامه شوه. وروسته د بیا لوډولو هڅه وکړئ.";
 $text_error["auth_error"]="تصدیق ناکام شو.";
-
 $text_register["no_access_group"]="تاسو دې ډلې ته لاسرسی نلرئ.";
-
 ?>

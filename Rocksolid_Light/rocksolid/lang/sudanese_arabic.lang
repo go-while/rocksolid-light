@@ -11,7 +11,6 @@ $text_header["references"]="<b>المراجع:</b> ";
 $text_header["user-agent"]="<b>وكيل المستخدم:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>المرفقات:</b> ";
-
 $text_thread["no_articles"]="<p><b>ما في مقالات متاحة</b></p>";
 $text_thread["button_write"]="موضوع جديد";
 $text_thread["button_grouplist"]="مجموعات الأخبار";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>الكاتب</b>";
 $text_thread["lastmessage"]="<b>آخر رسالة</b>";
 $text_thread["no_such_group"]="ما في مجموعة زي كدا.";
 $text_thread["pages"]="الصفحات:";
-
-
 $text_article["back_to_group"]="قائمة المقالات";
 $text_article["refresh"]="حدث";
 $text_article["button_answer"]="رد";
 $text_article["button_cancel"]="امسح";
 $text_article["block-xnoarchive"]="النظام دا مش أرشيف، بس مدير النظام قرر يمنع المشاركات لي الكاتب ما بيريد أرشفتها.";
 $text_article["full_article"]="اضغط هنا عشان تقرا المقال كامل";
-
 $text_post["name"]="اسم المستخدم:";
 $text_post["password"]="كلمة المرور:";
 $text_post["missing_message"]="لازم تكتب رسالة عشان تنشر.";
@@ -58,14 +54,11 @@ $text_post["quote"]="اقتباس";
 $text_post["captchafail"]="فشلت في اختبار CAPTCHA. جرب تاني";
 $text_post["captchainfo1"]="اكتب دا هنا تاني";
 $text_post["captchainfo2"]="ادخل الحروف والأرقام الصحيحة من الصورة في صندوق النص. الاختبار الصغير دا بيخدم كقيد وصول ضد السبام-بوتس.";
-
 $text_error["error:"]='<font color="red">خطأ:</font>';
 $text_error["connection_failed"]="فشل الاتصال بخادم الرسائل";
 $text_error["article_not_found"]="<p>المقال مش موجود.</p>";
 $text_error["read_access_denied"]="<p>ما في إذن للقراءة!</p>";
 $text_error["post_failed"]="فشل الاتصال. جرب تحديث بعدين.";
 $text_error["auth_error"]="فشل التوثيق.";
-
 $text_register["no_access_group"]="ما عندك وصول للمجموعة دي.";
-
 ?>

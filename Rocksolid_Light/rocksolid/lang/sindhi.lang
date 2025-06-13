@@ -11,7 +11,6 @@ $text_header["references"]="<b>حوالا:</b> ";
 $text_header["user-agent"]="<b>استعمال ڪندڙ-ايجنٽ:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>منسلڪات:</b> ";
-
 $text_thread["no_articles"]="<p><b>ڪو مضمون موجود ناهي</b></p>";
 $text_thread["button_write"]="نئون موضوع";
 $text_thread["button_grouplist"]="خبرن جا گروپ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ليکڪ</b>";
 $text_thread["lastmessage"]="<b>آخري پيغام</b>";
 $text_thread["no_such_group"]="اهڙو گروپ ناهي.";
 $text_thread["pages"]="صفحا:";
-
-
 $text_article["back_to_group"]="مضمونن جي فهرست";
 $text_article["refresh"]="تازو ڪريو";
 $text_article["button_answer"]="جواب";
 $text_article["button_cancel"]="منسوخ";
 $text_article["block-xnoarchive"]="هي سسٽم آرڪائيو نه آهي پر سسٽم ايڊمن فيصلو ڪيو آهي ته ليکڪ آرڪائيو نٿو چاهي ته مضمون بند ڪرڻ.";
 $text_article["full_article"]="مڪمل مضمون پڙهڻ لاء هتي ڪلڪ ڪريو";
-
 $text_post["name"]="استعمال ڪندڙ جو نالو:";
 $text_post["password"]="پاس ورڊ:";
 $text_post["missing_message"]="پوسٽ ڪرڻ لاء پيغام گهرجي.";
@@ -58,15 +54,11 @@ $text_post["quote"]="حوالو";
 $text_post["captchafail"]='توهان CAPTCHA ٽيسٽ ۾ ناڪام ٿيا. مهرباني ڪري ٻيهر ڪوشش ڪريو.';
 $text_post["captchainfo1"]='ان کي هتي ٻيهر ٽائيپ ڪريو';
 $text_post["captchainfo2"]='تصوير مان صحيح اکر ۽ نمبر ٽيڪسٽ باڪس ۾ داخل ڪريو. هي ننڍو ٽيسٽ اسپام بوٽس جي خلاف رسائي جي پابندي جي طور تي ڪم ڪري ٿو.';
-
-
 $text_error["error:"]='<font color="red">خرابي:</font>';
 $text_error["connection_failed"]="خبرن جي سرور سان رابطو ناڪام.";
 $text_error["article_not_found"]="<p>مضمون نه مليو.</p>";
 $text_error["read_access_denied"]="<p>پڙهڻ جي رسائي رد ڪئي وئي.</p>";
 $text_error["post_failed"]="رابطو ناڪام. ٿوري دير بعد ٻيهر ڪوشش ڪريو.";
 $text_error["auth_error"]="تصديق ناڪام.";
-
 $text_register["no_access_group"]="توهان کي هن گروپ تڪ رسائي ناهي.";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>సూచనలు:</b> ";
 $text_header["user-agent"]="<b>వినియోగదారు ఏజెంట్:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>అనుబంధాలు:</b> ";
-
 $text_thread["no_articles"]="<p><b>వ్యాసాలు అందుబాటులో లేవు</b></p>";
 $text_thread["button_write"]="కొత్త థ్రెడ్";
 $text_thread["button_grouplist"]="వార్తా సమూహాలు";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>రచయిత</b>";
 $text_thread["lastmessage"]="<b>చివరి సందేశం</b>";
 $text_thread["no_such_group"]="అలాంటి సమూహం లేదు.";
 $text_thread["pages"]="పేజీలు:";
-
-
 $text_article["back_to_group"]="వ్యాసాల జాబితా";
 $text_article["refresh"]="రిఫ్రెష్";
 $text_article["button_answer"]="జవాబు";
 $text_article["button_cancel"]="తొలగించు";
 $text_article["block-xnoarchive"]="ఈ వ్యవస్థ ఒక ఆర్కైవ్ కాదు, కానీ ఈ వ్యవస్థ యొక్క నిర్వాహకుడు రచయిత ఆర్కైవింగ్ కోరుకోని పోస్ట్‌లను బ్లాక్ చేయాలని నిర్ణయించుకున్నాడు.";
 $text_article["full_article"]="పూర్తి వ్యాసం చదవడానికి ఇక్కడ క్లిక్ చేయండి";
-
 $text_post["name"]="వినియోగదారు పేరు:";
 $text_post["password"]="పాస్‌వర్డ్:";
 $text_post["missing_message"]="పోస్ట్ చేయడానికి మీరు సందేశాన్ని చేర్చాలి.";
@@ -58,14 +54,11 @@ $text_post["quote"]="కోట్";
 $text_post["captchafail"]='మీరు CAPTCHA పరీక్షలో విఫలమయ్యారు. దయచేసి మళ్లీ ప్రయత్నించండి';
 $text_post["captchainfo1"]='దాన్ని ఇక్కడ మళ్లీ టైప్ చేయండి';
 $text_post["captchainfo2"]='చిత్రం నుండి సరైన అక్షరాలు మరియు సంఖ్యలను టెక్స్ట్ బాక్స్‌లో నమోదు చేయండి. ఈ చిన్న పరీక్ష స్పామ్-బాట్‌లకు వ్యతిరేకంగా యాక్సెస్ పరిమితిగా పనిచేస్తుంది.';
-
 $text_error["error:"]='<font color="red">లోపం:</font>';
 $text_error["connection_failed"]="సందేశ సర్వర్‌తో కనెక్షన్ విఫలమైంది";
 $text_error["article_not_found"]="<p>వ్యాసం లేదు.</p>";
 $text_error["read_access_denied"]="<p>చదవడానికి అనుమతి లేదు!</p>";
 $text_error["post_failed"]="కనెక్షన్ విఫలమైంది. తర్వాత మళ్లీ లోడ్ చేయడానికి ప్రయత్నించండి.";
 $text_error["auth_error"]="ప్రామాణీకరణ విఫలమైంది.";
-
 $text_register["no_access_group"]="ఈ సమూహానికి మీకు యాక్సెస్ లేదు.";
-
 ?>

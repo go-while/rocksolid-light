@@ -11,7 +11,6 @@ $text_header["references"]="<b>Referencje:</b> ";
 $text_header["user-agent"]="<b>Czytnik:</b> ";
 $text_header["date_format"]="j.m.Y H:i:s";
 $text_header["attachments"]="<b>Załączniki:</b> ";
-
 $text_thread["no_articles"]="<p><b>Brak artykułów</b></p>";
 $text_thread["button_latest"]="Najnowsze";
 $text_thread["button_overboard"]="Przegląd";
@@ -25,15 +24,12 @@ $text_thread["threadsize"]="<b>Rozmiar wątku</b>";
 $text_thread["lastmessage"]="<b>Ostatnia wiadomość</b>";
 $text_thread["pages"]="<b>Strony</b>";
 $text_thread["no_such_group"]="Nie ma takiej grupy.";
-
-
 $text_article["button_answer"]="Odpowiedz";
 $text_article["button_cancel"]="Anuluj";
 $text_article["back_to_group"]="Powrót do grupy";
 $text_article["refresh"]="Odśwież";
 $text_article["block-xnoarchive"]="[Zablokowano: X-No-Archive]";
 $text_article["full_article"]="Pełny artykuł";
-
 $text_post["name"]="Twoje Nazwisko:";
 $text_post["password"]="Hasło:";
 $text_post["missing_message"]="Musisz wpisać treść wiadomości.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Cytat";
 $text_post["captchafail"]="CAPTCHA niepowodzenie";
 $text_post["captchainfo1"]="Proszę wpisać tekst z obrazka";
 $text_post["captchainfo2"]="Jest to wymagane dla automatycznej ochrony przed spamem";
-
 $text_error["error:"]='<font color="red">Błąd:</font>';
 $text_error["connection_failed"]="Nie udało się nawiązanie połączenia z serwerem Usenetu";
 $text_error["article_not_found"]="<p>Wiadomość nie istnieje.</p>";
 $text_error["read_access_denied"]="<p>Brak uprawnień do odczytu!</p>";
 $text_error["post_failed"]="Połączenie zerwane. Spróbuj ponownie za jakiś czas.";
 $text_error["auth_error"]="Błąd autoryzacji na serwerze.";
-
 $text_register["no_access_group"]="Nie masz dostępu do tego forum";
-
 ?>

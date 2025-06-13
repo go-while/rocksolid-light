@@ -11,7 +11,6 @@ $text_header["references"]="<b>संदर्भ सभ:</b> ";
 $text_header["user-agent"]="<b>उपयोगकर्ता-एजेंट:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>संलग्नक सभ:</b> ";
-
 $text_thread["no_articles"]="<p><b>कोनो लेख उपलब्ध नहि अछि</b></p>";
 $text_thread["button_write"]="नव धागा";
 $text_thread["button_grouplist"]="न्यूजग्रुप सभ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>लेखक</b>";
 $text_thread["lastmessage"]="<b>अंतिम संदेश</b>";
 $text_thread["no_such_group"]="एहन कोनो समूह नहि अछि।";
 $text_thread["pages"]="पन्ना सभ:";
-
-
 $text_article["back_to_group"]="लेख सूची";
 $text_article["refresh"]="नव करू";
 $text_article["button_answer"]="उत्तर";
 $text_article["button_cancel"]="मिटाबू";
 $text_article["block-xnoarchive"]="ई सिस्टम आर्काइव नहि अछि, मुदा एकर प्रशासक ओहि पोस्ट सभ केँ ब्लॉक करब निर्धारित कएलक जतए लेखक आर्काइवेशन नहि चाहैत छथि।";
 $text_article["full_article"]="पूर्ण लेख पढ़बाक लेल एतए क्लिक करू";
-
 $text_post["name"]="उपयोगकर्ता नाम:";
 $text_post["password"]="पासवर्ड:";
 $text_post["missing_message"]="पोस्ट करबाक लेल अहाँ केँ संदेश शामिल करबाक पड़त।";
@@ -58,14 +54,11 @@ $text_post["quote"]="उद्धरण";
 $text_post["captchafail"]="अहाँ CAPTCHA परीक्षा मे असफल भेलहुँ। कृपया फेर कोशिश करू";
 $text_post["captchainfo1"]="एकरा एतए फेर टाइप करू";
 $text_post["captchainfo2"]="छवि सँ सही अक्षर आ संख्या सभ केँ टेक्स्ट बॉक्स मे दर्ज करू। ई छोट परीक्षा स्पैम-बॉट सभक विरुद्ध पहुँच प्रतिबंधक रूप मे काम करैत अछि।";
-
 $text_error["error:"]='<font color="red">त्रुटि:</font>';
 $text_error["connection_failed"]="संदेश सर्वर सँ कनेक्शन असफल भेल";
 $text_error["article_not_found"]="<p>लेख अस्तित्व मे नहि अछि।</p>";
 $text_error["read_access_denied"]="<p>पढ़बाक अनुमति नहि अछि!</p>";
 $text_error["post_failed"]="कनेक्शन असफल भेल। बाद मे रीलोड करबाक कोशिश करू।";
 $text_error["auth_error"]="प्रमाणीकरण असफल भेल।";
-
 $text_register["no_access_group"]="अहाँक एहि समूह मे पहुँच नहि अछि।";
-
 ?>

@@ -11,7 +11,6 @@ $text_header["references"]="<b>റഫറൻസുകൾ:</b> ";
 $text_header["user-agent"]="<b>ഉപയോക്താവിന്റെ ഏജന്റ്:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>അറ്റാച്ച്മെന്റുകൾ:</b> ";
-
 $text_thread["no_articles"]="<p><b>ലേഖനങ്ങൾ ലഭ്യമല്ല</b></p>";
 $text_thread["button_write"]="പുതിയ ത്രെഡ്";
 $text_thread["button_grouplist"]="വാർത്താ ഗ്രൂപ്പുകൾ";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>രചയിതാവ്</b>";
 $text_thread["lastmessage"]="<b>അവസാന സന്ദേശം</b>";
 $text_thread["no_such_group"]="അത്തരമൊരു ഗ്രൂപ്പ് ഇല്ല.";
 $text_thread["pages"]="പേജുകൾ:";
-
-
 $text_article["back_to_group"]="ലേഖന പട്ടിക";
 $text_article["refresh"]="പുതുക്കുക";
 $text_article["button_answer"]="മറുപടി";
 $text_article["button_cancel"]="ഇല്ലാതാക്കുക";
 $text_article["block-xnoarchive"]="ഈ സിസ്റ്റം ഒരു ആർക്കൈവ് അല്ല, എന്നാൽ ഈ സിസ്റ്റത്തിന്റെ അഡ്മിനിസ്ട്രേറ്റർ രചയിതാവ് ആർക്കൈവിംഗ് ആഗ്രഹിക്കാത്ത പോസ്റ്റുകൾ ബ്ലോക്ക് ചെയ്യാൻ തീരുമാനിച്ചു.";
 $text_article["full_article"]="പൂർണ്ണ ലേഖനം വായിക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക";
-
 $text_post["name"]="ഉപയോക്തൃനാമം:";
 $text_post["password"]="പാസ്‌വേഡ്:";
 $text_post["missing_message"]="പോസ്റ്റ് ചെയ്യാൻ നിങ്ങൾ ഒരു സന്ദേശം ഉൾപ്പെടുത്തണം.";
@@ -58,14 +54,11 @@ $text_post["quote"]="ഉദ്ധരണി";
 $text_post["captchafail"]='നിങ്ങൾ CAPTCHA ടെസ്റ്റിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക';
 $text_post["captchainfo1"]='അത് ഇവിടെ വീണ്ടും ടൈപ്പ് ചെയ്യുക';
 $text_post["captchainfo2"]='ചിത്രത്തിൽ നിന്നുള്ള ശരിയായ അക്ഷരങ്ങളും അക്കങ്ങളും ടെക്സ്റ്റ് ബോക്സിൽ നൽകുക. ഈ ചെറിയ ടെസ്റ്റ് സ്പാം-ബോട്ടുകൾക്കെതിരായ ആക്സസ് നിയന്ത്രണമായി പ്രവർത്തിക്കുന്നു.';
-
 $text_error["error:"]='<font color="red">പിശക്:</font>';
 $text_error["connection_failed"]="സന്ദേശ സെർവറിലേക്കുള്ള കണക്ഷൻ പരാജയപ്പെട്ടു";
 $text_error["article_not_found"]="<p>ലേഖനം നിലവിലില്ല.</p>";
 $text_error["read_access_denied"]="<p>വായിക്കാൻ അനുമതിയില്ല!</p>";
 $text_error["post_failed"]="കണക്ഷൻ പരാജയപ്പെട്ടു. പിന്നീട് വീണ്ടും ലോഡ് ചെയ്യാൻ ശ്രമിക്കുക.";
 $text_error["auth_error"]="പ്രാമാണീകരണം പരാജയപ്പെട്ടു.";
-
 $text_register["no_access_group"]="ഈ ഗ്രൂപ്പിലേക്ക് നിങ്ങൾക്ക് ആക്സസ് ഇല്ല.";
-
 ?>

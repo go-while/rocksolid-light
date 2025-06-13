@@ -11,7 +11,6 @@ $text_header["references"]="<b>ಉಲ್ಲೇಖಗಳು:</b> ";
 $text_header["user-agent"]="<b>ಬಳಕೆದಾರ-ಏಜೆಂಟ್:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>ಅಟ್ಯಾಚ್‌ಮೆಂಟ್‌ಗಳು:</b> ";
-
 $text_thread["no_articles"]="<p><b>ಯಾವುದೇ ಲೇಖನಗಳು ಲಭ್ಯವಿಲ್ಲ</b></p>";
 $text_thread["button_write"]="ಹೊಸ ಥ್ರೆಡ್";
 $text_thread["button_grouplist"]="ನ್ಯೂಸ್‌ಗ್ರೂಪ್‌ಗಳು";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>ಲೇಖಕ</b>";
 $text_thread["lastmessage"]="<b>ಕೊನೆಯ ಸಂದೇಶ</b>";
 $text_thread["no_such_group"]="ಅಂತಹ ಗುಂಪು ಇಲ್ಲ.";
 $text_thread["pages"]="ಪುಟಗಳು:";
-
-
 $text_article["back_to_group"]="ಲೇಖನ ಪಟ್ಟಿ";
 $text_article["refresh"]="ರಿಫ್ರೆಶ್";
 $text_article["button_answer"]="ಉತ್ತರ";
 $text_article["button_cancel"]="ಅಳಿಸಿ";
 $text_article["block-xnoarchive"]="ಈ ಸಿಸ್ಟಮ್ ಆರ್ಕೈವ್ ಅಲ್ಲ, ಆದರೆ ಈ ಸಿಸ್ಟಮ್‌ನ ನಿರ್ವಾಹಕರು ಲೇಖಕರು ಆರ್ಕೈವ್ ಮಾಡಲು ಬಯಸದ ಪೋಸ್ಟ್‌ಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲು ನಿರ್ಧರಿಸಿದ್ದಾರೆ.";
 $text_article["full_article"]="ಸಂಪೂರ್ಣ ಲೇಖನವನ್ನು ಓದಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ";
-
 $text_post["name"]="ಬಳಕೆದಾರ ಹೆಸರು:";
 $text_post["password"]="ಪಾಸ್‌ವರ್ಡ್:";
 $text_post["missing_message"]="ಪೋಸ್ಟ್ ಮಾಡಲು ನೀವು ಸಂದೇಶವನ್ನು ಸೇರಿಸಬೇಕು.";
@@ -58,14 +54,11 @@ $text_post["quote"]="ಉಲ್ಲೇಖ";
 $text_post["captchafail"]="ನೀವು CAPTCHA ಪರೀಕ್ಷೆಯಲ್ಲಿ ವಿಫಲರಾಗಿದ್ದೀರಿ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ";
 $text_post["captchainfo1"]="ಇದನ್ನು ಇಲ್ಲಿ ಮತ್ತೆ ಟೈಪ್ ಮಾಡಿ";
 $text_post["captchainfo2"]="ಚಿತ್ರದಿಂದ ಸರಿಯಾದ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳನ್ನು ಪಠ್ಯ ಪೆಟ್ಟಿಗೆಯಲ್ಲಿ ನಮೂದಿಸಿ. ಈ ಸಣ್ಣ ಪರೀಕ್ಷೆಯು ಸ್ಪ್ಯಾಮ್-ಬಾಟ್‌ಗಳ ವಿರುದ್ಧ ಪ್ರವೇಶ ನಿರ್ಬಂಧವಾಗಿ ಕಾಗಿ ಮಾಡುತ್ತದೆ.";
-
 $text_error["error:"]='<font color="red">ದೋಷ:</font>';
 $text_error["connection_failed"]="ಮೆಸೇಜ್ ಸರ್ವರ್‌ಗೆ ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ";
 $text_error["article_not_found"]="<p>ಲೇಖನ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.</p>";
 $text_error["read_access_denied"]="<p>ಓದಲು ಅನುಮತಿ ಇಲ್ಲ!</p>";
 $text_error["post_failed"]="ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ. ನಂತರ ರೀಲೋಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.";
 $text_error["auth_error"]="ದೃಢೀಕರಣ ವಿಫಲವಾಗಿದೆ.";
-
 $text_register["no_access_group"]="ನಿಮಗೆ ಈ ಗುಂಪಿನ ಪ್ರವೇಶ ಇಲ್ಲ.";
-
 ?>

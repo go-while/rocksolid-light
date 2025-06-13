@@ -11,7 +11,6 @@ $text_header["references"]="<b>Daveennoù:</b> ";
 $text_header["user-agent"]="<b>Arval-implijer:</b> ";
 $text_header["date_format"]="D, j M Y H:i T";
 $text_header["attachments"]="<b>Stagadennoù:</b> ";
-
 $text_thread["no_articles"]="<p><b>Pennad ebet da gaout</b></p>";
 $text_thread["button_write"]="neudennad nevez";
 $text_thread["button_grouplist"]="strolladoù-keleier";
@@ -25,15 +24,12 @@ $text_thread["author"]="<b>Aozer</b>";
 $text_thread["lastmessage"]="<b>Kemennadenn Ziwezhañ</b>";
 $text_thread["no_such_group"]="N'eus ket eus ar strollad-se.";
 $text_thread["pages"]="Pajennoù:";
-
-
 $text_article["back_to_group"]="roll ar pennadoù";
 $text_article["refresh"]="freskaat";
 $text_article["button_answer"]="Respont";
 $text_article["button_cancel"]="Dilemel";
 $text_article["block-xnoarchive"]="N'eo ket ar reizhiad-mañ un diellad, met an ardeor eus ar reizhiad-mañ en deus dibabet stankañ ar c'hemennadennoù ma ne fell ket d'o aozer e vefent diellet.";
 $text_article["full_article"]="Klikit amañ evit lenn ar pennad klok";
-
 $text_post["name"]="Anv an implijer:";
 $text_post["password"]="Ger-tremen:";
 $text_post["missing_message"]="Ret eo deoc'h lakaat ur gemennadenn evit embann.";
@@ -58,14 +54,11 @@ $text_post["quote"]="Arrañ";
 $text_post["captchafail"]='C\'hwitet ho peus gant ar test CAPTCHA. Klaskit en-dro mar plij';
 $text_post["captchainfo1"]='skrivit-se amañ en-dro';
 $text_post["captchainfo2"]='Lakait al lizherennoù hag an niveroù mat eus ar skeudenn er voest testenn. Ar test-se a dalvez da vevenniñ an haeziñ evit ren-robot ar spam.';
-
 $text_error["error:"]='<font color="red">Fazi:</font>';
 $text_error["connection_failed"]="C'hwitet eo ar gevreadur gant an dafariad keleier";
 $text_error["article_not_found"]="<p>N'eus ket eus ar pennad.</p>";
 $text_error["read_access_denied"]="<p>Hep an aotre da lenn!</p>";
 $text_error["post_failed"]="Kevreadur c'hwitet. Klaskit kargañ diwezhatoc'h.";
 $text_error["auth_error"]="Dilesadur c'hwitet.";
-
 $text_register["no_access_group"]="N'ho peus ket moned d'ar strollad-mañ.";
-
 ?>
