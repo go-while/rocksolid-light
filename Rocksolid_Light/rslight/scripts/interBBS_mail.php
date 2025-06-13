@@ -1,7 +1,8 @@
 <?php
 include "config.inc.php";
 include("$file_newsportal");
-require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+// Include security functions with production-ready path resolution
+include_once "security_loader.inc.php";
 include $config_dir . "/gpg.conf";
 
 $logfile = $logdir . '/mail.log';

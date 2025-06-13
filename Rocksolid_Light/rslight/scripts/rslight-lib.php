@@ -1,6 +1,7 @@
 <?php
 
-require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+// Include security functions with production-ready path resolution
+include_once "security_loader.inc.php";
 
 function interact($msgsock, $use_crypto = false)
 {

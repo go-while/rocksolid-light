@@ -129,7 +129,7 @@ function nntp_open($nserver = 0, $nport = 0)
 
 function nntp2_open($nserver = 0, $nport = 0)
 {
-    global $text_error, $CONFIG;
+    global $text_error, $CONFIG, $debug_log, $config_name;
 
     $authorize = ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != ""));
     if ($nserver == 0) {
@@ -138,14 +138,19 @@ function nntp2_open($nserver = 0, $nport = 0)
     if ($nport == 0) {
         $nport = $CONFIG['remote_port'];
     }
+
+    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, FILE_APPEND);
+
     if ($CONFIG['remote_ssl']) {
         if ($nport == $CONFIG['remote_port']) {
             $nport = $CONFIG['remote_ssl'];
         }
         $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
         if (! $ns) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, FILE_APPEND);
             return false;
         }
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $nport, FILE_APPEND);
     } else {
         if (isset($CONFIG['socks_host']) && $CONFIG['socks_host'] !== '') {
             $ns = fsocks4asockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $nserver, $nport);

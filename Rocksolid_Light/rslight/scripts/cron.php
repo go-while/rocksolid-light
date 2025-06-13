@@ -1,7 +1,9 @@
 <?php
 // This file runs maintenance scripts and should be executed by cron regularly
 include "config.inc.php";
-require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
+// Include security functions with production-ready path resolution
+include_once "security_loader.inc.php";
 include "newsportal.php";
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
@@ -158,7 +160,9 @@ foreach ($menulist as $menu) {
         echo exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/send.php");
         # Refresh spool
         if (isset($spoolnews) && ($spoolnews == true)) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Starting spoolnews for " . $menuitem[0], FILE_APPEND);
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
+            file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Completed spoolnews for " . $menuitem[0], FILE_APPEND);
             echo "\nRefreshed spoolnews\n";
         }
     } else {

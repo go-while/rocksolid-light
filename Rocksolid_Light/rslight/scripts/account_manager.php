@@ -2,7 +2,9 @@
 include("paths.inc.php");
 chdir($spoolnews_path);
 include "config.inc.php";
-require_once(__DIR__ . '/../../rocksolid/security.inc.php');
+
+// Include security functions with production-ready path resolution
+include_once "security_loader.inc.php";
 include "newsportal.php";
 
 $processUser = posix_getpwuid(posix_geteuid());

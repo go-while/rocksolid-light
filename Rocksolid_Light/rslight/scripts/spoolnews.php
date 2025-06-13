@@ -148,12 +148,20 @@ if ($CONFIG['remote_server'] != '') {
         }
         $name = preg_split("/( |\t)/", $findgroup, 2);
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Starting article retrieval for group: " . $name[0], FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
         if ($ns == false) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to: " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Lost connection to newsserver, breaking loop", FILE_APPEND);
             break;
         }
         $groupstat = get_articles($ns, $name[0]);
+
+        if ($groupstat === false) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: get_articles returned false for group: " . $name[0], FILE_APPEND);
+        } else {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: get_articles completed successfully for group: " . $name[0], FILE_APPEND);
+        }
 
         if ($enable_rslight == 1 && $groupstat != false) {
             $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
@@ -190,4 +198,5 @@ if ($CONFIG['remote_server'] != '') {
     nntp_close($ns);
 }
 unlink($lockfile);
+file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Spoolnews completed successfully", FILE_APPEND);
 echo "\nSpoolnews Done\n";
