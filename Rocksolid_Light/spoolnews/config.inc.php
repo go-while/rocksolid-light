@@ -1,1 +1,0 @@
-../rocksolid/config.inc.php

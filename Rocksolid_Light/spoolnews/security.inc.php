@@ -1,1 +1,0 @@
-../rocksolid/security.inc.php
