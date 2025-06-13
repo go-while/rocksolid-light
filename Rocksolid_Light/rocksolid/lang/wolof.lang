@@ -59,10 +59,6 @@ $text_post["captchafail"]='Baaxul nga ci test CAPTCHA bi. Jariñ ko tubaab.';
 $text_post["captchainfo1"]='bind ko fii tubaab';
 $text_post["captchainfo2"]='Duggal ay xarnu ak ay limu yu baax ci biir nataal bi ci bopp baatu mbind mi. Test bii ndaw na ngi leer ci spam-bot yi.';
 
-$text_nav["first_page"]="Xët bu njëkk";
-$text_nav["last_page"]="Xët bu mujj";
-$text_nav["next_page"]="Xët bu ñëw";
-$text_nav["prev_page"]="Xët bu jiitu";
 
 $text_error["error:"]='<font color="red">Njumte:</font>';
 $text_error["connection_failed"]="Jokkoo ak serwer-xabaar bi njumte.";

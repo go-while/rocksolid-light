@@ -68,8 +68,8 @@ EOF
 )
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <langfile>"
-    echo "Example: $0 english.lang"
+    echo "Usage: $0 <langfile> -verbose"
+    echo "Example: $0 english.lang -verbose"
     exit 1
 fi
 
@@ -98,10 +98,11 @@ if [ -n "$MISSING_IN_LANG" ]; then
     exit 1
 else
     echo "✅ All required keys are present"
-    exit 0
+    test "$2" = "" && exit 0
 fi
 
-if [ "$1" = "-verbose" ]; then
+echo "$2"
+if [ "$2" = "-verbose" ]; then
  # Find extra keys in language file
  EXTRA_IN_LANG=$(comm -13 <(echo "$REFERENCE_KEYS" | sort) <(echo "$LANG_KEYS" | sort))
  if [ -n "$EXTRA_IN_LANG" ]; then

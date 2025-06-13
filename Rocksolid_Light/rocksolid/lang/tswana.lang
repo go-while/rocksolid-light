@@ -59,10 +59,6 @@ $text_post["captchafail"]='O paletse mo tekong ya CAPTCHA. Tsweetswee leka gape.
 $text_post["captchainfo1"]='kwala fale gape fa';
 $text_post["captchainfo2"]='Tsenya ditlhaka le dinomoro tse di siameng go tswa mo setshwantshong mo lebokosong la mokwalo. Teko e nnye e e direla go thibela di-spam bot.';
 
-$text_nav["first_page"]="Tsebe ya ntlha";
-$text_nav["last_page"]="Tsebe ya bofelo";
-$text_nav["next_page"]="Tsebe e e latelang";
-$text_nav["prev_page"]="Tsebe e e fetileng";
 
 $text_error["error:"]='<font color="red">Phoso:</font>';
 $text_error["connection_failed"]="Kgolagano le seva ya dikgang e paletse.";

@@ -10,17 +10,11 @@ if [ $# -eq 0 ]; then
     echo "Example: $0 english.lang"
     echo ""
     echo "This script removes unused translation variables from language files."
-    echo "It removes 10 variables that are not used in the PHP codebase:"
-    echo "  - \$text_error[\"spool_error\"]"
-    echo "  - \$text_groups[\"description\"]"
-    echo "  - \$text_groups[\"newsgroup\"]"
-    echo "  - \$text_post[\"email\"]"
-    echo "  - \$text_post[\"message_posted\"]"
-    echo "  - \$text_post[\"remember\"]"
-    echo "  - \$text_register[\"must_register_group\"]"
-    echo "  - \$text_register[\"must_register_post\"]"
-    echo "  - \$text_register[\"no_access_post\"]"
-    echo "  - \$text_thread[\"button_top\"]"
+    echo "It removes 4 navigation variables that are not used in the PHP codebase:"
+    echo "  - \$text_nav[\"first_page\"]"
+    echo "  - \$text_nav[\"last_page\"]"
+    echo "  - \$text_nav[\"next_page\"]"
+    echo "  - \$text_nav[\"prev_page\"]"
     exit 1
 fi
 
@@ -53,16 +47,10 @@ LINES_BEFORE=$(wc -l < "$LANGFILE")
 
 # Define the unused variables to remove (these are not used in the PHP codebase)
 UNUSED_VARIABLES=(
-    '\$text_error\["spool_error"\]'
-    '\$text_groups\["description"\]'
-    '\$text_groups\["newsgroup"\]'
-    '\$text_post\["email"\]'
-    '\$text_post\["message_posted"\]'
-    '\$text_post\["remember"\]'
-    '\$text_register\["must_register_group"\]'
-    '\$text_register\["must_register_post"\]'
-    '\$text_register\["no_access_post"\]'
-    '\$text_thread\["button_top"\]'
+    '\$text_nav\["first_page"\]'
+    '\$text_nav\["last_page"\]'
+    '\$text_nav\["next_page"\]'
+    '\$text_nav\["prev_page"\]'
 )
 
 echo "Removing unused variables from $LANGFILE..."

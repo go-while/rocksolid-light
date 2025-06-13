@@ -61,10 +61,6 @@ $text_post["captchafail"]='Ka wulto CAPTCHA gwambe. Ka lau kura.';
 $text_post["captchainfo1"]='nyi kura ka nde';
 $text_post["captchainfo2"]='Kura hajin kanam wuro ngaski a sa kargal ngaski. Wanan gwamben wori nda spam-bot wuro ngaski.';
 
-$text_nav["first_page"]="Tabo kura";
-$text_nav["last_page"]="Tabo ngamaje";
-$text_nav["next_page"]="Tabo lele";
-$text_nav["prev_page"]="Tabo kayi";
 
 $text_error["error:"]='<font color="red">Kuskur:</font>';
 $text_error["connection_failed"]="Kabar saba kombura kuskurka.";

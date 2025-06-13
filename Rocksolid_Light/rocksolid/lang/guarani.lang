@@ -59,10 +59,6 @@ $text_post["captchafail"]="Rejavy CAPTCHA ñeha'ãme. Eha'ãjey.";
 $text_post["captchainfo1"]="ehai jey ko'ápe";
 $text_post["captchainfo2"]="Emoinge ta'anga pegua tai ha papapy hekopete moñe'ẽrã ryru'ípe. Ko ñeha'ã michĩmi oñemoñondive spam-bot kuérare.";
 
-$text_nav["first_page"]="Kuatia rogue peteĩha";
-$text_nav["last_page"]="Kuatia rogue paha";
-$text_nav["next_page"]="Kuatia rogue oúva";
-$text_nav["prev_page"]="Kuatia rogue ohasáva";
 
 $text_error["error:"]='<font color="red">Jejavy:</font>';
 $text_error["connection_failed"]="Marandu servidor ndive joaju ndoikói.";

@@ -59,10 +59,6 @@ $text_post["captchafail"]='Ur tfekkemt ara deg uḥabes CAPTCHA. Ɛreḍ daɣen.
 $text_post["captchainfo1"]='ales tira dha';
 $text_post["captchainfo2"]='Sekcem isekkilen d uṭṭunen iṣeḥḥen seg tugna ɣer tanaka n uḍris. Aḥabes-a meẓẓiyen yettak taɛekkamt mgal imeddayen n spam.';
 
-$text_nav["first_page"]="Asebter amezwaru";
-$text_nav["last_page"]="Asebter aneggaru";
-$text_nav["next_page"]="Asebter d-iteddun";
-$text_nav["prev_page"]="Asebter uzwir";
 
 $text_error["error:"]='<font color="red">Tuccḍa:</font>';
 $text_error["connection_failed"]="Tuqqna ur teddi ara ɣer uqeddac n telɣut.";

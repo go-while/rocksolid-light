@@ -59,10 +59,6 @@ $text_post["captchafail"]='CAPTCHA pruebapi pantasqanki. Yapamanta ruwayküy.';
 $text_post["captchainfo1"]='kaypi wakmanta qillqay';
 $text_post["captchainfo2"]='Rikuypi kaq allin qillqakuna hinaspa yupanakuna qillqana kaxunman churay. Kay huchuy pruebaqa spam-botkunamanta harkakuypaq sirvin.';
 
-$text_nav["first_page"]="Ñawpaq panqa";
-$text_nav["last_page"]="Qhipa panqa";
-$text_nav["next_page"]="Qatiq panqa";
-$text_nav["prev_page"]="Ñawpaq panqa";
 
 $text_error["error:"]='<font color="red">Pantay:</font>';
 $text_error["connection_failed"]="Willakuy sirwiqwan tinkiypakuq pantarqan.";
