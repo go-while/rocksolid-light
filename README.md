@@ -26,7 +26,7 @@ You can connect to existing Usenet newsgroups or set up your own custom forums.
 
 You can also synchronize these forums with other RockSolid Light installations or external NNTP servers worldwide.
 
-# **Core Features** (original RockSolid Light by Retro Guy):
+# **Features** (original RockSolid Light by Retro Guy):
 
   * Uses sqlite3 database. No configuration required
   * JavaScript optional (core functionality works without it)
@@ -154,6 +154,6 @@ RockSolid Light has successfully completed comprehensive security hardening in m
 - ✅ **Zero Performance Impact** (< 1ms overhead)
 
 This security work ensures that Retro Guy's legacy continues to serve the Usenet community safely and reliably for years to come.
-
+./ip
 ## Final Note
 It is quite amazing to see what AI can do now!
