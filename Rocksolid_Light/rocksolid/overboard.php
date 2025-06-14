@@ -5,10 +5,11 @@ header("Pragma: cache");
 
 /*
  * rocksolid overboard - overboard for rslight
- * Download: https://news.novabbs.com/getrslight
+ * Download: https://github.com/go-while/rocksolid-light
+ * Original: https://news.novabbs.com/getrslight (Retro Guy's legacy)
  *
- * E-Mail: retroguy@novabbs.com
- * Web: https://news.novabbs.com
+ * Original Author: Retro Guy (retroguy@novabbs.com)
+ * Web: https://github.com/go-while/rocksolid-light
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@ header("Pragma: cache");
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "config.inc.php";
+include "lib/config.inc.php";
 include "$file_newsportal";
 require_once(__DIR__ . '/security.inc.php');
 
@@ -55,10 +56,10 @@ if (isset($_GET['thisgroup'])) {
 } else {
     $title .= " - " . $config_name . " - overboard";
 }
-include "head.inc";
+include "lib/head.inc";
 if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
     echo "<center>Page Disabled</center>";
-    include "tail.inc";
+    include "lib/tail.inc";
     exit();
 }
 
@@ -752,7 +753,7 @@ function show_overboard_footer($stats, $results, $iscached)
         $arts = 'articles';
     }
     echo "<p class=np_ob_tail><b>" . $results . "</b> " . $recent . " " . $arts . " found.</p>\r\n";
-    include "tail.inc";
+    include "lib/tail.inc";
     if ($iscached) {
         echo "<p class=np_ob_tail><font size='1em'>cached copy: " . date("D M j G:i:s T Y", $stats[9]) . "</font></p>\r\n";
     }

@@ -1,6 +1,6 @@
 <?php
-include "config.inc.php";
-include "newsportal.php";
+include "../rocksolid/lib/config.inc.php";
+include "../rocksolid/newsportal.php";
 require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 // Add security headers
@@ -34,7 +34,7 @@ if (!$logged_in) {
 }
 
 $title .= ' - Upload file';
-include "head.inc";
+include "../rocksolid/lib/head.inc";
 echo '<h1 class="np_thread_headline">';
 echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
 echo htmlspecialchars($_COOKIE['mail_name']) . '</h1>';

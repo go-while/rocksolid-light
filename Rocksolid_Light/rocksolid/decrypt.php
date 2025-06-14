@@ -6,7 +6,7 @@
   $id=$_REQUEST["id"];
   $group=$_REQUEST["group"];
 
-  include "config.inc.php";
+  include "lib/config.inc.php";
 
   $thread_show["replies"]=true;
   $thread_show["lastdate"]=false;
@@ -44,7 +44,7 @@ if(isset($frames_on) && $frames_on === true) {
     header("Last-Modified: ".date("r", $message->header->date));
     $title.= ' - '.$subject;
   }
-  include "head.inc";
+  include "lib/head.inc";
 
   // has the user read-rights on this article?
   if((function_exists("npreg_group_has_read_access") &&
@@ -104,5 +104,5 @@ if(isset($frames_on) && $frames_on === true) {
 //      message_thread($message->header->id,$group,$thread);
 
   }
-  include "tail.inc";
+  include "lib/tail.inc";
 ?>

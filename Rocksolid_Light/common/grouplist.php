@@ -2,6 +2,7 @@
 include "config.inc.php";
 include "../spoolnews/config.inc.php";
 include "../spoolnews/newsportal.php";
+include "../rocksolid/logging_control.php";
 require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 // Add security headers
@@ -142,13 +143,18 @@ function display_search_tools($home = true)
 
 function build_group_list()
 {
-    global $config_dir, $spooldir, $cache_log, $grouplist_cache_filename;
+    global $config_dir, $spooldir, $cache_log, $grouplist_cache_filename, $debug_log, $config_name;
 
     if (file_exists($config_dir . '/cache.inc.php')) {
         include $config_dir . '/cache.inc.php';
     }
 
     $ns = nntp_open();
+    if ($ns == false) {
+        important_log("ERROR: Failed to connect to NNTP server for grouplist", $debug_log);
+        return array();
+    }
+
     $menulist = get_section_menu_array();
     $groups_array = array();
     foreach ($menulist as $menu) {
@@ -176,14 +182,54 @@ function build_group_list()
                 $groups_array[$ok_group[0]]['section'] = $menuitem[0];
                 $groups_array[$ok_group[0]]['group'] = $ok_group[0];
 
-                // Get group message qty
+                // Get group message qty with improved error handling
+                debug_log("Sending GROUP command for " . $ok_group[0], $debug_log);
                 fputs($ns, "group " . $ok_group[0] . "\r\n");
                 $response = line_read($ns);
+
+                // Handle timeout for GROUP command
+                if ($response === false) {
+                    important_log("TIMEOUT: No response to GROUP command for " . $ok_group[0], $debug_log);
+                    $groups_array[$ok_group[0]]['messages'] = 0;
+                    continue;
+                }
+
+                debug_log("GROUP response for " . $ok_group[0] . ": " . trim($response), $debug_log);
                 $messages = explode(' ', $response);
+
                 if (strcmp(substr($response, 0, 3), "211") == 0) {
                     $groups_array[$ok_group[0]]['messages'] = $messages[1];
                 } else {
-                    $groups_array[$ok_group[0]]['messages'] = 0;
+                    important_log("ERROR: Invalid GROUP response for " . $ok_group[0] . ": " . trim($response), $debug_log);
+
+                    // Try to reconnect and retry once
+                    nntp_close($ns);
+                    $ns = nntp_open();
+                    if ($ns == false) {
+                        important_log("ERROR: Failed to reconnect to NNTP server for " . $ok_group[0], $debug_log);
+                        $groups_array[$ok_group[0]]['messages'] = 0;
+                        continue;
+                    }
+
+                    debug_log("Retry GROUP command for " . $ok_group[0], $debug_log);
+                    fputs($ns, "group " . $ok_group[0] . "\r\n");
+                    $retry_response = line_read($ns);
+
+                    if ($retry_response === false) {
+                        important_log("TIMEOUT: No response to retry GROUP command for " . $ok_group[0], $debug_log);
+                        $groups_array[$ok_group[0]]['messages'] = 0;
+                        continue;
+                    }
+
+                    debug_log("Retry GROUP response for " . $ok_group[0] . ": " . trim($retry_response), $debug_log);
+                    $retry_messages = explode(' ', $retry_response);
+
+                    if (strcmp(substr($retry_response, 0, 3), "211") == 0) {
+                        $groups_array[$ok_group[0]]['messages'] = $retry_messages[1];
+                    } else {
+                        important_log("ERROR: Retry GROUP command also failed for " . $ok_group[0] . ": " . trim($retry_response), $debug_log);
+                        $groups_array[$ok_group[0]]['messages'] = 0;
+                    }
                 }
             }
         }

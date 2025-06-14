@@ -9,7 +9,7 @@
  * @date 2025-01-27
  */
 
-require_once __DIR__ . '/../database_optimizer.php';
+require_once __DIR__ . '/../rocksolid/lib/database_optimizer.php';
 
 class DatabaseMonitor {
     private $spooldir;

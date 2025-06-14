@@ -4,7 +4,7 @@
  */
 
 require_once __DIR__ . '/database_monitor.php';
-require_once __DIR__ . '/../database_optimizer.php';
+require_once __DIR__ . '/../rocksolid/lib/database_optimizer.php';
 
 echo "🧪 Database Optimization Integration Test\n";
 echo "==========================================\n\n";

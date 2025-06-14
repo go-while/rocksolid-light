@@ -34,7 +34,7 @@ echo "Choose a path for your spool files for rslight"
 read -p "Use default spool path $spoolpath (y/n)? " default; echo
 if [ "${default^^}" != "Y" ]
 then
-  read -p "Enter spool path for rslight: " spoolpath; echo 
+  read -p "Enter spool path for rslight: " spoolpath; echo
 fi
 echo "Choose a path for rslight configuration files"
 read -p "Use default config path $configpath (y/n)? " default; echo
@@ -91,7 +91,7 @@ cp rslight/*.php $configpath/upgrade
 cp rslight/*.conf $configpath/upgrade
 cp rslight/*.dist $configpath/upgrade
 cp rslight/fortunes.conf.bsd $configpath/upgrade/fortunes.conf
-cp rslight/phpmailer.inc.php.bsd $configpath/upgrades/phpmailer.inc.php
+cp rslight/phpmailer.inc.php.bsd $configpath/upgrade/phpmailer.inc.php
 cp rslight/scripts/create_gpg_keys.sh.bsd $configpath/scripts/create_gpg_keys.sh
 echo "done"
 echo

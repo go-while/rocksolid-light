@@ -5,7 +5,7 @@ header("Pragma: cache");
 
 $_SESSION['group'] = $_SERVER['REQUEST_URI'];
 
-include "config.inc.php";
+include "lib/config.inc.php";
 include ("$file_newsportal");
 require_once(__DIR__ . '/security.inc.php');
 
@@ -49,7 +49,7 @@ if (isset($_COOKIE['mail_name'])) {
 
 $thread_show["latest"] = true;
 $title .= ' - ' . $group;
-include "head.inc";
+include "lib/head.inc";
 
 $logfile = $logdir . '/newsportal.log';
 $CONFIG = include ($config_file);
@@ -167,5 +167,5 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
 }
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
 echo '<h1 class="np_thread_headline">' . $sessions_data . '</h1>';
-include "tail.inc";
+include "lib/tail.inc";
 ?>

@@ -1,12 +1,14 @@
 <?php
 /*
  * NNTP<->HTTP Gateway
- * Download: https://news.novabbs.com/get
+ * Download: https://github.com/go-while/rocksolid-light
+ * Original: https://news.novabbs.com/get (Retro Guy's legacy site)
  *
  * Based on Newsportal by Florian Amrhein
  *
- * E-Mail: retroguy@novabbs.com
- * Web: https://news.novabbs.com
+ * Original Author: Retro Guy (retroguy@novabbs.com)
+ * Legacy Web: https://news.novabbs.com
+ * Current Repository: https://github.com/go-while/rocksolid-light
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +26,12 @@
  */
 
 // Include security functions first for all operations
-require_once("security.inc.php");
+require_once("lib/security.inc.php");
+
+// Include logging control functions
+if (!function_exists('debug_log')) {
+    require_once("logging_control.php");
+}
 
 // Include common menu functions
 include_once("../common/menu_functions.inc.php");
@@ -32,22 +39,22 @@ include_once("../common/menu_functions.inc.php");
 // Add security headers
 add_security_headers();
 
-if (file_exists("lib/types.inc.php")) {
-    include "lib/types.inc.php";
+if (file_exists("../rocksolid/lib/types.inc.php")) {
+    include "../rocksolid/lib/types.inc.php";
 }
-if (file_exists("lib/thread.inc.php")) {
-    include "lib/thread.inc.php";
+if (file_exists("../rocksolid/lib/thread.inc.php")) {
+    include "../rocksolid/lib/thread.inc.php";
 }
-if (file_exists("lib/message.inc.php")) {
-    include "lib/message.inc.php";
+if (file_exists("../rocksolid/lib/message.inc.php")) {
+    include "../rocksolid/lib/message.inc.php";
 }
-if (file_exists("lib/post.inc.php")) {
-    include "lib/post.inc.php";
+if (file_exists("../rocksolid/lib/post.inc.php")) {
+    include "../rocksolid/lib/post.inc.php";
 }
 
 // Include database optimization functions
-if (file_exists("database_optimizer.php")) {
-    include "database_optimizer.php";
+if (file_exists("../rocksolid/lib/database_optimizer.php")) {
+    include "../rocksolid/lib/database_optimizer.php";
 }
 
 $CONFIG = include($config_file);
@@ -139,7 +146,7 @@ function nntp2_open($nserver = 0, $nport = 0)
         $nport = $CONFIG['remote_port'];
     }
 
-    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, FILE_APPEND);
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, $debug_log);
 
     if ($CONFIG['remote_ssl']) {
         if ($nport == $CONFIG['remote_port']) {
@@ -147,10 +154,10 @@ function nntp2_open($nserver = 0, $nport = 0)
         }
         $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
         if (! $ns) {
-            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, FILE_APPEND);
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, $debug_log);
             return false;
         }
-        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $nport, FILE_APPEND);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $nport, $debug_log);
     } else {
         if (isset($CONFIG['socks_host']) && $CONFIG['socks_host'] !== '') {
             $ns = fsocks4asockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $nserver, $nport);
@@ -445,10 +452,26 @@ function testGroups($newsgroups)
  */
 function line_read(&$ns)
 {
+    global $debug_log, $config_name;
     if ($ns != false) {
-        $t = str_replace("\n", "", str_replace("\r", "", fgets($ns, 1200)));
-        return $t;
+        // Add timeout handling to prevent infinite hangs
+        $read = array($ns);
+        $write = null;
+        $except = null;
+        $timeout = 10; // 10 second timeout
+
+        if (stream_select($read, $write, $except, $timeout) > 0) {
+            $t = str_replace("\n", "", str_replace("\r", "", fgets($ns, 1200)));
+            return $t;
+        } else {
+            // Timeout occurred
+            if (isset($debug_log) && isset($config_name)) {
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: line_read() timeout after " . $timeout . " seconds", $debug_log);
+            }
+            return false; // Return false on timeout
+        }
     }
+    return false;
 }
 
 /*
@@ -522,7 +545,7 @@ function address_decode($adrstring, $defaulthost)
  */
 function groups_read($server, $port, $load = 0, $force_reload = false)
 {
-    global $gl_age, $file_groups, $spooldir, $config_name, $cache_index;
+    global $gl_age, $file_groups, $spooldir, $config_name, $cache_index, $debug_log;
     // is there a cached version, and is it actual enough?
     $cachefile = $spooldir . '/' . $config_name . '-groups.dat';
     // if cache is new enough, don't recreate it
@@ -587,8 +610,17 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
                     $desc = "-";
                 }
                 $gruppe->description = $desc;
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Sending GROUP command for " . $gruppe->name, $debug_log);
                 fputs($ns, "GROUP " . $gruppe->name . "\r\n");
                 $t = explode(" ", line_read($ns));
+
+                // Handle timeout for GROUP command
+                if ($t === false || !isset($t[0])) {
+                    important_log("TIMEOUT: No response to GROUP command for " . $gruppe->name, $debug_log);
+                    continue;
+                }
+
+                debug_log("GROUP response for " . $gruppe->name . ": " . implode(" ", $t), $debug_log);
 
                 if ($t[0] == "211") {
                     $gruppe->count = $t[1];
@@ -598,8 +630,17 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
                     if ($ns == false) {
                         return false;
                     }
+                    debug_log("Retry GROUP command for " . $gruppe->name, $debug_log);
                     fputs($ns, "GROUP " . $gruppe->name . "\r\n");
                     $t = explode(" ", line_read($ns));
+
+                    // Handle timeout for retry GROUP command
+                    if ($t === false || !isset($t[0])) {
+                        important_log("TIMEOUT: No response to retry GROUP command for " . $gruppe->name, $debug_log);
+                        continue;
+                    }
+
+                    debug_log("Retry GROUP response for " . $gruppe->name . ": " . implode(" ", $t), $debug_log);
                     if ($t[0] == "211")
                         $gruppe->count = $t[1];
                     else
@@ -721,7 +762,7 @@ function groups_show($gruppen)
                     }
                     if ($lastarticleinfo && file_exists($groupfile) && filemtime($groupfile) <= $lastarticleinfo['date']) {
                         if ($enable_cache_logging) {
-                            file_put_contents($cache_log, "\n" . logging_prefix() . ' (cache hit) ' . $memcache_key, FILE_APPEND);
+                            file_put_contents($cache_log, "\n" . logging_prefix() . " (cache hit) " . $memcache_key, FILE_APPEND);
                         }
                         $found = 1;
                     } else {
@@ -1313,11 +1354,29 @@ function display_links_in_body($text)
  */
 function readPlainHeader(&$ns, $group, $articleNumber)
 {
-    global $text_error;
+    global $text_error, $debug_log, $config_name;
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: readPlainHeader sending GROUP command for " . $group, $debug_log);
     fputs($ns, "GROUP $group\r\n");
     $line = line_read($ns);
+
+    // Handle timeout for GROUP command
+    if ($line === false) {
+        important_log("\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to GROUP command in readPlainHeader for " . $group, $debug_log);
+        return false;
+    }
+
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: readPlainHeader GROUP response for " . $group . ": " . $line, $debug_log);
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: readPlainHeader sending HEAD command for article " . $articleNumber, $debug_log);
     fputs($ns, "HEAD $articleNumber\r\n");
     $line = line_read($ns);
+
+    // Handle timeout for HEAD command
+    if ($line === false) {
+        important_log("\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to HEAD command in readPlainHeader", $debug_log);
+        return false;
+    }
+
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: readPlainHeader HEAD response: " . $line, $debug_log);
     if (substr($line, 0, 3) != "221") {
         echo $text_error["article_not_found"];
         $header = false;
@@ -1491,7 +1550,7 @@ function set_user_logged_in_cookies($name, $keys)
     if (!get_user_config($name_lc, 'encryptionkey')) {
         $key = openssl_random_pseudo_bytes(44);
         set_user_config($name_lc, 'encryptionkey', base64_encode($key));
-        file_put_contents($debug_log, "\n" . logging_prefix() . " Created encryptionkey for: " . $name, FILE_APPEND);
+        debug_log("Created encryptionkey for: " . $name, $debug_log);
     }
 
     $auth_expire = 14400;
@@ -1936,18 +1995,6 @@ function get_date_interval($value)
         $hours = '';
     }
     if ($interval->format('%i') == 0) {
-        $minutes = '';
-    }
-    if ($years > 0) {
-        $days = '';
-        $hours = '';
-        $minutes = '';
-    }
-    if ($months > 0) {
-        $hours = '';
-        $minutes = '';
-    }
-    if ($days > 0) {
         $minutes = '';
     }
     $variance = $interval->format($years . $months . $days . $hours . $minutes . ' ago');
@@ -3484,6 +3531,7 @@ function wrap_post($body)
                 foreach ($line_wrapped as $lw) {
                     if ($lw[0] != '>') {
                         $i = 0;
+
                         while ($i < $depth) {
                             $wrapped .= '>';
                             $i++;

@@ -1,0 +1,19 @@
+{
+    // Prevent VS Code from automatically focusing when tasks complete
+    "window.autoDetectHighContrast": false,
+    "window.restoreWindows": "none",
+    "terminal.integrated.focusAfterRun": false,
+    "problems.autoReveal": false,
+    "notifications.showErrors": false,
+    "notifications.showWarnings": false,
+    "window.newWindowDimensions": "inherit",
+
+    // Task-specific settings to prevent focus stealing
+    "task.autoDetect": "off",
+    "task.showDecorations": false,
+    "task.problemMatchers.neverPrompt": true,
+
+    // Disable automatic reveal behaviors
+    "explorer.autoReveal": false,
+    "search.collapseResults": "alwaysCollapse"
+}

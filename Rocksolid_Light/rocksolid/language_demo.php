@@ -1,6 +1,6 @@
 <?php
 // Simple test script to demonstrate language switching
-include "config.inc.php";
+include "lib/config.inc.php";
 include "allowed_languages.inc.php";
 
 ?><!DOCTYPE html>

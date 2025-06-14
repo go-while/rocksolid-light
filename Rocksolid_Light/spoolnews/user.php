@@ -18,12 +18,12 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $logmeout = false;
 }
 
-include("config.inc.php");
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+include "../rocksolid/lib/config.inc.php";
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
-include("newsportal.php");
+include("../rocksolid/newsportal.php");
 
 $ip_pass = false;
 if (! isset($_SESSION['remote_address'])) {
@@ -39,12 +39,12 @@ if (! isset($_SESSION['remote_address'])) {
 }
 
 if ($logmeout) {
-    include "head.inc";
+    include "../rocksolid/lib/head.inc";
     echo "<center>";
     echo "<hr><p>You have been logged out</p>";
     echo '</center>';
     echo '<br >';
-    include "tail.inc";
+    include "../rocksolid/lib/tail.inc";
     exit(0);
 }
 
@@ -61,11 +61,11 @@ $keyfile = $spooldir . '/keys.dat';
 $keys = secure_unserialize($keyfile, ['stdClass'], false);
 
 $title .= ' - User Configuration';
-include "head.inc";
+include "../rocksolid/lib/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "User")) {
     echo "<center>Page Disabled</center>";
-    include "tail.inc";
+    include "../rocksolid/lib/tail.inc";
     exit();
 }
 
@@ -586,7 +586,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
 } else {
     echo '<br >';
 }
-include "tail.inc";
+include "../rocksolid/lib/tail.inc";
 
 function retry_configuration($message)
 {

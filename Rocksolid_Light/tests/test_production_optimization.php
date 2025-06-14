@@ -25,7 +25,7 @@ echo "========================================================\n\n";
 
 // Test by including the database optimizer directly and testing the actual functions
 try {
-    include_once __DIR__ . '/../database_optimizer.php';
+    include_once __DIR__ . '/../rocksolid/lib/database_optimizer.php';
     echo "✓ DatabaseOptimizer loaded successfully\n\n";
 } catch (Exception $e) {
     echo "✗ Failed to load DatabaseOptimizer: " . $e->getMessage() . "\n";

@@ -3,7 +3,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", time() + (100)) . " GMT");
 header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
-include "config.inc.php";
+include "lib/config.inc.php";
 include "$file_newsportal";
 require_once(__DIR__ . '/security.inc.php');
 
@@ -111,7 +111,7 @@ if (! $message) {
     header("Last-Modified: " . date("r", $message->header->date));
     $title .= ' - ' . $group . ' - ' . $subject;
 }
-include "head.inc";
+include "lib/head.inc";
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
@@ -119,13 +119,41 @@ echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target='
 
 if (! $message) {
     echo "Article not found";
-    include "tail.inc";
+    include "lib/tail.inc";
     exit(0);
 }
 
 if ($message) {
     // load thread-data and get IDs of the actual subthread
     $thread = thread_load($group);
+
+    // DEBUG: Add logging to understand the mismatch
+    error_log("DEBUG: article-flat.php - Group: $group");
+    error_log("DEBUG: article-flat.php - Message ID being looked up: " . ($message->header->id ?? 'NULL'));
+    error_log("DEBUG: article-flat.php - Thread loaded: " . (is_array($thread) ? count($thread) . " articles" : "false"));
+
+    if (is_array($thread) && count($thread) > 0) {
+        $thread_ids = array_keys($thread);
+        error_log("DEBUG: article-flat.php - First 5 thread IDs: " . implode(', ', array_slice($thread_ids, 0, 5)));
+
+        // Check if the message ID exists in thread
+        if (isset($thread[$message->header->id])) {
+            error_log("DEBUG: article-flat.php - Message ID FOUND in thread cache");
+        } else {
+            error_log("DEBUG: article-flat.php - Message ID NOT FOUND in thread cache");
+            error_log("DEBUG: article-flat.php - Checking if any similar IDs exist...");
+
+            $similar_count = 0;
+            foreach ($thread_ids as $tid) {
+                if (strpos($tid, $message->header->id) !== false || strpos($message->header->id, $tid) !== false) {
+                    error_log("DEBUG: article-flat.php - Similar ID found: $tid");
+                    $similar_count++;
+                }
+                if ($similar_count >= 3) break; // Limit output
+            }
+        }
+    }
+
     $subthread = thread_getsubthreadids($message->header->id, $thread);
     if (! $subthread) {
         echo '<center>Group is rebuilding... Please try again later</center>';
@@ -200,5 +228,5 @@ if ($message) {
     echo '</td></tr></table>';
     echo '</form>';
 }
-include "tail.inc";
+include "lib/tail.inc";
 ?>

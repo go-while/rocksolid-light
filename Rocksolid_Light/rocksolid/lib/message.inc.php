@@ -307,9 +307,22 @@ function message_read($id, $bodynum = 0, $group = "")
             if ($group != "") {
                 fputs($ns, "GROUP " . $group . "\r\n");
                 $line = line_read($ns);
+
+                // Handle timeout for GROUP command
+                if ($line === false) {
+                    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to GROUP command in message retrieval", FILE_APPEND);
+                    return false;
+                }
             }
             fputs($ns, 'ARTICLE ' . $id . "\r\n");
             $line = line_read($ns);
+
+            // Handle timeout for ARTICLE command
+            if ($line === false) {
+                file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to ARTICLE command", FILE_APPEND);
+                return false;
+            }
+
             if (substr($line, 0, 3) != "220") {
                 // requested article doesn't exist on the newsserver. Now we
                 // should check if the thread stored in the spool-directory
@@ -321,9 +334,22 @@ function message_read($id, $bodynum = 0, $group = "")
             }
             $rawmessage = array();
             $line = line_read($ns);
+
+            // Handle timeout for initial article data read
+            if ($line === false) {
+                file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No article data received", FILE_APPEND);
+                return false;
+            }
+
             while (strcmp($line, ".") != 0) {
                 $rawmessage[] = $line;
                 $line = line_read($ns);
+
+                // Handle timeout in article reading loop
+                if ($line === false) {
+                    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: Reading article data interrupted", FILE_APPEND);
+                    break; // Exit loop on timeout, use partial data
+                }
             }
         }
         $message = message_parse($rawmessage);

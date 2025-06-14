@@ -13,7 +13,7 @@ echo "Testing database optimizations and integration...\n\n";
 echo "1. Syntax Check:\n";
 $files_to_check = [
     '../rocksolid/newsportal.php',
-    '../database_optimizer.php',
+    '../rocksolid/lib/database_optimizer.php',
     __DIR__ . '/database_monitor.php'
 ];
 

@@ -2,6 +2,9 @@
 
 require_once(__DIR__ . '/../security.inc.php');
 
+// Include logging control functions
+require_once(__DIR__ . '/../logging_control.php');
+
 /*
  * rslight NNTP<->HTTP Gateway
  * Download: https://news.novabbs.com/getrslight
@@ -74,14 +77,33 @@ function thread_pageselect($group, $article_count, $first)
  */
 function thread_cache_load($group)
 {
-    global $spooldir, $config_dir, $logdir, $compress_spoolfiles;
+    global $spooldir, $config_dir, $logdir, $compress_spoolfiles, $config_name;
+    $logfile = $logdir . '/newsportal.log';
+
+    $cache_file = $spooldir . '/' . $group . '-data.dat';
+
+    // Debug: Log cache loading attempt
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Loading cache for " . $group . " from " . $cache_file, $logfile);
+
+    if (!file_exists($cache_file)) {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Cache file does not exist for " . $group, $logfile);
+        return array();
+    }
+
+    $file_size = filesize($cache_file);
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Cache file size: " . $file_size . " bytes", $logfile);
 
     try {
-        $headers = secure_unserialize(file_get_contents($spooldir . '/' . $group . '-data.dat'));
+        // Use secure_unserialize with filename, not content
+        $headers = secure_unserialize($cache_file, ['stdClass'], false);
         if (!is_array($headers)) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " ERROR: Cache unserialize failed for " . $group . ", got: " . gettype($headers), FILE_APPEND);
             $headers = array();
+        } else {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Successfully unserialized " . count($headers) . " articles from cache", $logfile);
         }
     } catch (Exception $e) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " ERROR: Exception loading cache for " . $group . ": " . $e->getMessage(), FILE_APPEND);
         $headers = array();
     }
     return ($headers);
@@ -222,23 +244,64 @@ function thread_overview_interpret($line, $overviewformat, $groupname)
  */
 function thread_overview_read(&$ns)
 {
+    global $logdir, $config_name;
+    $logfile = $logdir . '/newsportal.log';
+
+    // Debug: Log overview.fmt command attempt
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Requesting overview.fmt from server", $logfile);
+
     $overviewfmt = array();
     fputs($ns, "LIST overview.fmt\r\n"); // find out the format of the
+
+    // Debug: Log that command was sent
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: LIST overview.fmt sent, waiting for response...", $logfile);
+
     $tmp = line_read($ns); // xover-command
+
+    // Debug: Log response or timeout
+    if ($tmp === false) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to LIST overview.fmt command", FILE_APPEND);
+        // Use default format on timeout
+        $overviewfmt = array(
+            "Subject:",
+            "From:",
+            "Date:",
+            "Message-ID:",
+            "References:",
+            "Bytes:"
+        );
+    } else {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: LIST overview.fmt response: " . trim($tmp), $logfile);
+    }
+
     if (substr($tmp, 0, 3) == "215") {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Reading overview.fmt data lines...", $logfile);
+
         $line = line_read($ns);
+        $line_count = 0;
         while (strcmp($line, ".") != 0) {
+            $line_count++;
             // workaround for braindead CLNews newsserver
             if ($line == "Author:")
                 $overviewfmt[] = "From:";
             else
                 $overviewfmt[] = $line;
             $line = line_read($ns);
+
+            // Handle timeout in loop
+            if ($line === false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: Reading overview.fmt data after " . $line_count . " lines", FILE_APPEND);
+                break;
+            }
         }
+
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Finished reading overview.fmt, got " . $line_count . " format lines", $logfile);
     } else {
         // some stupid newsservers, like changi, don't send their overview
         // format
         // let's hope, that the format is like that from INN
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Server doesn't support overview.fmt, using default format", $logfile);
+
         $overviewfmt = array(
             "Subject:",
             "From:",
@@ -249,6 +312,10 @@ function thread_overview_read(&$ns)
         );
     }
     $overviewformat = implode("\t", $overviewfmt);
+
+    // Debug: Log completion of overview.fmt reading
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: thread_overview_read completed successfully", $logfile);
+
     return $overviewformat;
 }
 
@@ -292,14 +359,34 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
     $idstring = "0.36," . $server . "," . $compress_spoolfiles . "," . $maxarticles . "," . $maxarticles_extra . "," . $maxfetch . "," . $initialfetch . "," . $www_charset . ',' . $iconv_enable . ',' . $thread_show["replies"];
     $overviewformat = thread_overview_read($ns);
     $spoolfilename = $spooldir . '/' . $groupname . '-data.dat';
+
+    // Debug: Log GROUP command attempt
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Sending GROUP command for: " . $groupname, $logfile);
+
     fputs($ns, "GROUP $groupname\r\n"); // select a group
+
+    // Debug: Log that GROUP command was sent
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: GROUP command sent, waiting for response...", $logfile);
+
     $response = line_read($ns);
+
+    // Debug: Log the response (or timeout)
+    if ($response === false) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to GROUP command for " . $groupname . " - falling back to cached data", FILE_APPEND);
+        fclose($ns);
+        return thread_cache_load($groupname); // Fall back to cached data
+    } else {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: GROUP response received: " . trim($response), $logfile);
+    }
+
     $groupinfo = explode(" ", $response);
     if (strcmp(substr($groupinfo[0], 0, 3), "211") != 0) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Response to group command for " . $groupname . ": " . $response, FILE_APPEND);
         echo "<p>" . $text_error["error:"] . "</p>";
         echo "<p>" . $text_thread["no_such_group"] . "</p>";
         flush();
+        fclose($ns);
+        return false;
     } else {
         $infofilename = $spooldir . "/" . $groupname . "-info.txt";
         // lets find out, in which mode wie want to read articles:
@@ -308,6 +395,12 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
         // n: there are no new articles, no rebuild or actualisation
         // t: low watermark increased, remove expired articles
         $spoolopenmodus = "n";
+
+        // Debug: Log initial processing decision
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Determining spool mode for " . $groupname . ", initial mode: " . $spoolopenmodus, $logfile);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Info file: " . $infofilename . " exists: " . (file_exists($infofilename) ? 'YES' : 'NO'), $logfile);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Spool file: " . $spoolfilename . " exists: " . (file_exists($spoolfilename) ? 'YES' : 'NO'), $logfile);
+
         // if the group-info file doesn't exist: create it
         if (! ((file_exists($infofilename)) && (file_exists($spoolfilename)))) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Threads database does not exist. Rebuilding " . $groupname, FILE_APPEND);
@@ -322,14 +415,21 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
             }
             $oldgroupinfo = explode(" ", trim(fgets($infofile, 200)));
             fclose($infofile);
+
+            // Debug: Log current vs old group info
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Current group info - count: " . $groupinfo[1] . ", low: " . $groupinfo[2] . ", high: " . $groupinfo[3], FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Old group info - low: " . $oldgroupinfo[0] . ", high: " . $oldgroupinfo[1] . ", count: " . $oldgroupinfo[2], FILE_APPEND);
+
             if ($groupinfo[3] < $oldgroupinfo[1]) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " high watermark reduced. Rebuilding " . $groupname, FILE_APPEND);
                 $spoolopenmodus = "w";
             }
             if ($maxarticles == 0) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: maxarticles=0, checking low watermark: current=" . $groupinfo[2] . " vs old=" . $oldgroupinfo[0], FILE_APPEND);
                 if ($groupinfo[2] != $oldgroupinfo[0])
                     $spoolopenmodus = "w";
             } else {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: maxarticles=" . $maxarticles . ", checking low watermark: current=" . $groupinfo[2] . " vs old=" . $oldgroupinfo[0], FILE_APPEND);
                 if ($groupinfo[2] > $oldgroupinfo[0]) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " low watermark increased. Trimming " . $groupname, FILE_APPEND);
                     $spoolopenmodus = "t";
@@ -340,6 +440,9 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Adding articles to " . $groupname, FILE_APPEND);
                 $spoolopenmodus = "a";
             }
+
+            // Debug: Log final spool mode decision
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Final spool mode for " . $groupname . ": " . $spoolopenmodus, FILE_APPEND);
         }
         if ($spoolopenmodus == "a") {
             $firstarticle = $oldgroupinfo[1] + 1;
@@ -393,18 +496,58 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
         }
         // read articles from the newsserver
         if ($spoolopenmodus != "n") {
+            // Debug: Log article fetching parameters
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Fetching articles for " . $groupname . " mode: " . $spoolopenmodus, FILE_APPEND);
+
             // order the article overviews from the newsserver
             if ($firstarticle == 0 && $lastarticle == 0) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: No articles to fetch (firstarticle=0, lastarticle=0)", FILE_APPEND);
                 fclose($ns);
                 return false;
             }
+
+            // Debug: Log XOVER command parameters
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Sending XOVER " . $firstarticle . "-" . $lastarticle . " for " . $groupname, FILE_APPEND);
+
             fputs($ns, "XOVER " . $firstarticle . "-" . $lastarticle . "\r\n");
+
+            // Debug: Log that XOVER was sent
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: XOVER command sent, waiting for response...", FILE_APPEND);
+
             $tmp = line_read($ns);
+
+            // Handle timeout for XOVER command
+            if ($tmp === false) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No response to XOVER command for " . $groupname . " - falling back to cached data", FILE_APPEND);
+                fclose($ns);
+                return thread_cache_load($groupname);
+            } else {
+                // Debug: Log XOVER response
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: XOVER response: " . trim($tmp), FILE_APPEND);
+            }
+
             // have the server accepted our order?
             if (substr($tmp, 0, 3) == "224") {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: XOVER accepted, reading article data...", FILE_APPEND);
+
                 $line = line_read($ns);
+
+                // Handle timeout for initial XOVER data read
+                if ($line === false) {
+                    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: No initial XOVER data for " . $groupname . " - falling back to cached data", FILE_APPEND);
+                    fclose($ns);
+                    return thread_cache_load($groupname);
+                }
+
                 // read overview by overview until the data ends
-                while ($line != ".") {
+                $article_count = 0;
+                while ($line !== false && $line != ".") {
+                    $article_count++;
+                    // Debug: Log progress every 50 articles
+                    if ($article_count % 50 == 0) {
+                        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Processing article " . $article_count . " for " . $groupname, $logfile);
+                    }
+
                     // parse the output of the server...
                     $article = thread_overview_interpret($line, $overviewformat, $groupname);
                     // ... and save it in our data structure
@@ -426,7 +569,16 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
                     }
                     // read the next line from the newsserver
                     $line = line_read($ns);
+
+                    // Handle timeout in loop
+                    if ($line === false) {
+                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " TIMEOUT: Reading XOVER data for " . $groupname . " - breaking loop", FILE_APPEND);
+                        break; // Exit loop on timeout
+                    }
                 }
+                // Debug: Log completion of XOVER data processing
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Completed reading " . $article_count . " articles for " . $groupname, FILE_APPEND);
+
                 // write information about the last article to the spool-directory
                 $infofile = fopen($spooldir . "/" . $groupname . "-lastarticleinfo.dat", "w");
                 $lastarticleinfo['from'] = $article->from;
@@ -491,6 +643,13 @@ function thread_load_newsserver(&$ns, $groupname, $poll)
                     unlink($spooldir . '/' . $cachefile);
             }
         }
+
+        // Debug: Log what happens when no new articles to fetch
+        if ($spoolopenmodus == "n") {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: No new articles to fetch for " . $groupname . ", using existing cache", FILE_APPEND);
+            // $headers was already loaded above when spoolopenmodus != "w" && != "t"
+        }
+
         return ((isset($headers)) ? $headers : false);
     }
 }
@@ -514,8 +673,15 @@ function thread_load($groupname, $readmode = 1, $poll = false)
 {
     global $text_error, $maxarticles, $server, $port;
     global $spooldir, $thread_sort_order, $cache_thread;
-    global $articles_per_page;
+    global $articles_per_page, $logdir, $config_name;
+
+    $logfile = $logdir . '/newsportal.log';
+
+    // Debug: Log thread_load call
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: thread_load called for group: " . $groupname . " readmode: " . $readmode . " poll: " . ($poll ? 'true' : 'false'), FILE_APPEND);
+
     if (! testGroup($groupname)) {
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Access denied for group: " . $groupname, FILE_APPEND);
         echo $text_error["read_access_denied"];
         return;
     }
@@ -544,12 +710,29 @@ function thread_load($groupname, $readmode = 1, $poll = false)
     }
     // do we have to query the newsserver?
     if ($query_ns) {
+        // Debug: Log newsserver query decision
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Querying newsserver for " . $groupname . " (server: " . $server . ":" . $port . ")", FILE_APPEND);
+
         // look if there is new data on the newsserver
         $ns = nntp_open($server, $port);
-        if ($ns == false)
+        if ($ns == false) {
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " ERROR: Failed to connect to newsserver " . $server . ":" . $port, FILE_APPEND);
             return false;
-        if (($ns != false) && ($readmode > 0))
+        }
+
+        // Debug: Log successful connection
+        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: Successfully connected to newsserver, calling thread_load_newsserver", FILE_APPEND);
+
+        if (($ns != false) && ($readmode > 0)) {
             $articles = thread_load_newsserver($ns, $groupname, $poll);
+
+            // Debug: Log result from thread_load_newsserver
+            if ($articles) {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: thread_load_newsserver returned " . count($articles) . " articles for " . $groupname, FILE_APPEND);
+            } else {
+                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG: thread_load_newsserver returned FALSE for " . $groupname, FILE_APPEND);
+            }
+        }
         if ((isset($articles)) && ($articles)) {
 
             // write the file which indicates the time of the last newsserver query
@@ -1132,6 +1315,9 @@ function thread_show(&$headers, $group, $article_first = 0, $article_last = 0, $
  */
 function thread_getsubthreadids($id, $thread)
 {
+    // DEBUG: Add logging to understand the lookup failure
+    error_log("DEBUG: thread_getsubthreadids called with ID: " . ($id ?? 'NULL'));
+    error_log("DEBUG: thread_getsubthreadids thread parameter: " . (is_array($thread) ? count($thread) . " articles" : "not an array"));
 
     // recursive helper function to walk through the subtree
     function thread_getsubthreadids_recursive($id)
@@ -1155,8 +1341,14 @@ function thread_getsubthreadids($id, $thread)
 
     // echo htmlspecialchars(print_r($thread,true));
     // exists the article $id?
-    if (! isset($thread[$id]))
+    if (! isset($thread[$id])) {
+        error_log("DEBUG: thread_getsubthreadids - Article ID '$id' NOT FOUND in thread");
+        if (is_array($thread) && count($thread) > 0) {
+            $available_ids = array_keys($thread);
+            error_log("DEBUG: thread_getsubthreadids - Available IDs (first 10): " . implode(', ', array_slice($available_ids, 0, 10)));
+        }
         return false;
+    }
     // "rewind" the subthread to the first article in the subthread
     $current = $id;
     flush();

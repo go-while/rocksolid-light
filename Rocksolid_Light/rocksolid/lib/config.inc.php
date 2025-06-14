@@ -44,7 +44,17 @@ $installed_path = getcwd();
 $config_path = $config_dir . $config_name . "/";
 $script_path = $config_dir . "/scripts/";
 $CONFIG = include ($config_file);
-$OVERRIDES = include ($config_dir . '/overrides.inc.php');
+
+// Load overrides from local directory (runtime application config)
+if (file_exists(__DIR__ . '/overrides.inc.php')) {
+    $OVERRIDES = include (__DIR__ . '/overrides.inc.php');
+} elseif (file_exists($config_dir . '/overrides.inc.php')) {
+    // Fallback: check config directory for backward compatibility
+    $OVERRIDES = include ($config_dir . '/overrides.inc.php');
+} else {
+    // No overrides file found - use empty array
+    $OVERRIDES = array();
+}
 
 /* Version */
 $rslight_version = file_get_contents('../common/version.txt');

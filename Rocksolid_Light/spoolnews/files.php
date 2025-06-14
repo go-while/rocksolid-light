@@ -1,6 +1,6 @@
 <?php
-include "config.inc.php";
-include "newsportal.php";
+include "../rocksolid/lib/config.inc.php";
+include "../rocksolid/newsportal.php";
 require_once(__DIR__ . '/../rocksolid/security.inc.php');
 
 // Add security headers
@@ -23,11 +23,11 @@ if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_
     exit(0);
 }
 $title .= ' - Browse files';
-include "head.inc";
+include "../rocksolid/lib/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Files")) {
     echo "<center>Page Disabled</center>";
-    include "tail.inc";
+    include "../rocksolid/lib/tail.inc";
     exit();
 }
 

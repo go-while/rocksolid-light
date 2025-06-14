@@ -1,12 +1,13 @@
 <?php
 /*
  * rslight NNTP<->HTTP Gateway
- * Download: https://news.novabbs.com/getrslight
+ * Download: https://github.com/go-while/rocksolid-light
+ * Original: https://news.novabbs.com/getrslight (Retro Guy's legacy)
  *
  * Based on Newsportal by Florian Amrhein
  *
- * E-Mail: retroguy@novabbs.com
- * Web: https://news.novabbs.com
+ * Original Author: Retro Guy (retroguy@novabbs.com)
+ * Web: https://github.com/go-while/rocksolid-light
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +23,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "config.inc.php";
+include "lib/config.inc.php";
 $CONFIG = include($config_file);
 include $file_newsportal;
 require_once(__DIR__ . '/security.inc.php');
@@ -30,11 +31,11 @@ require_once(__DIR__ . '/security.inc.php');
 // Add security headers
 add_security_headers();
 
-include "head.inc";
+include "lib/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Post")) {
     echo "<center>Page Disabled</center>";
-    include "tail.inc";
+    include "lib/tail.inc";
     exit();
 }
 

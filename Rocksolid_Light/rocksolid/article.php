@@ -1,7 +1,7 @@
 <?php
 header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600 * 24)) . " GMT");
 
-include "config.inc.php";
+include "lib/config.inc.php";
 include "auth.inc";
 include "$file_newsportal";
 require_once(__DIR__ . '/security.inc.php');
@@ -70,7 +70,7 @@ if (! $message) {
     header("Last-Modified: " . date("r", $message->header->date));
     $title .= ' - ' . $group . ' - ' . $subject;
 }
-include "head.inc";
+include "lib/head.inc";
 throttle_hits($client_device);
 
 // has the user read-rights on this article?
@@ -106,4 +106,4 @@ else {
         message_thread($message->header->id, $group, $thread);
     }
 }
-include "tail.inc";
+include "lib/tail.inc";

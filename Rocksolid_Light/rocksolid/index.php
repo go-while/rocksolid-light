@@ -3,7 +3,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", time() + (30)) . " GMT");
 header("Cache-Control: max-age=30");
 header("Pragma: cache");
 
-include "config.inc.php";
+include "lib/config.inc.php";
 include ("$file_newsportal");
 require_once(__DIR__ . '/security.inc.php');
 
@@ -29,7 +29,7 @@ if (isset($frames_on) && $frames_on === true) {
 <?php
 }
 $title .= ' - ' . basename(getcwd());
-include "head.inc";
+include "lib/head.inc";
 
 echo '<h1 class="np_thread_headline">' . basename(getcwd()) . '</h1>';
 echo '<table class="np_buttonbar"><tr>';
@@ -132,6 +132,6 @@ if (isset($frames_on) && $frames_on === true) {
 echo '</div>';
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
 echo '<h1 class="np_thread_headline">' . $sessions_data . '</h1>';
-include "tail.inc";
+include "lib/tail.inc";
 ?>
 

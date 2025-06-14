@@ -84,10 +84,20 @@ cp index.php $webroot
 cp -a common $webroot
 cp -a rocksolid $webroot
 cp -a spoolnews $webroot
-cp -a rslight/* $configpath
+# Copy scripts and other files to /usr/local/etc/rslight
+cp -a rslight/scripts $configpath
+cp rslight/admin.inc.php $configpath
+cp rslight/initialize_keys.php $configpath
 cp rslight/fortunes.conf.bsd $configpath/fortunes.conf
 cp rslight/phpmailer.inc.php.bsd $configpath/phpmailer.inc.php
 cp rslight/scripts/create_gpg_keys.sh.bsd $configpath/scripts/create_gpg_keys.sh
+# Copy other config files but not rslight.inc.php yet
+cp rslight/*.conf $configpath/ 2>/dev/null || true
+cp rslight/*.dist $configpath/ 2>/dev/null || true
+# Copy rslight.inc.php to web directory where PHP can access it
+cp rslight/rslight.inc.php $webroot/rocksolid/lib/rslight.inc.php
+# Create symlink from /usr/local/etc/rslight to maintain expected structure
+ln -sf $webroot/rocksolid/lib/rslight.inc.php $configpath/rslight.inc.php
 echo "done"
 echo
 echo -n "Setting permissions..."
@@ -99,21 +109,21 @@ chmod 700 "$configpath/users"
 chown $username "$configpath/userconfig"
 chgrp $username "$configpath/userconfig"
 chmod 700 "$configpath/userconfig"
-chown $username "$configpath/rslight.inc.php"
-chgrp $username "$configpath/rslight.inc.php"
+chown $username "$webroot/rocksolid/lib/rslight.inc.php"
+chgrp $username "$webroot/rocksolid/lib/rslight.inc.php"
 echo "done"
 
 echo
 echo -n "Applying configuration..."
 sed -i -e "s|<spooldir>|$spoolpath/|" $webroot/common/config.inc.php
 sed -i -e "s|<config_dir>|$configpath/|" $webroot/common/config.inc.php
-sed -i -e "s|<webserver_user>|$username|" $configpath/rslight.inc.php
-sed -i -e "s|<site_key>|$site_key|" $configpath/rslight.inc.php
-sed -i -e "s|<anonymous_password>|$anonymous_password|" $configpath/rslight.inc.php
-sed -i -e "s|<local_password>|$local_password|" $configpath/rslight.inc.php
+sed -i -e "s|<webserver_user>|$username|" $webroot/rocksolid/lib/rslight.inc.php
+sed -i -e "s|<site_key>|$site_key|" $webroot/rocksolid/lib/rslight.inc.php
+sed -i -e "s|<anonymous_password>|$anonymous_password|" $webroot/rocksolid/lib/rslight.inc.php
+sed -i -e "s|<local_password>|$local_password|" $webroot/rocksolid/lib/rslight.inc.php
 sed -i -e "s|<admin_password>|$admin_password|" $configpath/admin.inc.php
 sed -i -e "s|<admin_key>|$admin_key|" $configpath/admin.inc.php
-sed -i -e "s|<sessions_path>|/var/lib/php/sessions|" $configpath/rslight.inc.php
+sed -i -e "s|<sessions_path>|/var/lib/php/sessions|" $webroot/rocksolid/lib/rslight.inc.php
 echo "done"
 echo
 
@@ -140,7 +150,7 @@ echo "to complete configuration"
 echo
 echo Add this to crontab for root to link with your remote server, start local
 echo server and manage other tasks:
-echo "*/5 * * * * cd $webroot/spoolnews ; bash -lc \"php $configpath/scripts/cron.php\""
+echo "*/5 * * * * cd $webroot/rocksolid ; bash -lc \"php $configpath/scripts/cron.php\""
 echo
 echo "Once your web server is configured to point to $webroot and serve .php files"
 echo "give it a try. If you have trouble, feel free to ask for help in rocksolid.nodes.help"

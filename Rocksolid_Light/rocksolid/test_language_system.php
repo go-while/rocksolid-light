@@ -13,7 +13,7 @@ echo "-" . str_repeat("-", 25) . "\n";
 
 // Include config to test language loading
 ob_start();
-include "config.inc.php";
+include "lib/config.inc.php";
 $config_output = ob_get_clean();
 
 echo "✅ Config included successfully\n";

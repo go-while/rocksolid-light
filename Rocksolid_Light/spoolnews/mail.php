@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-include "config.inc.php";
-include "newsportal.php";
+include "../rocksolid/lib/config.inc.php";
+include "../rocksolid/newsportal.php";
 require_once(__DIR__ . '/../rocksolid/security.inc.php');
 include $config_dir . "/gpg.conf";
 
@@ -27,11 +27,11 @@ if ($keys === false) {
 }
 
 $title .= ' - Mail';
-include "head.inc";
+include "../rocksolid/lib/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Mail")) {
     echo "<center>Page Disabled</center>";
-    include "tail.inc";
+    include "../rocksolid/lib/tail.inc";
     exit();
 }
 
@@ -402,7 +402,7 @@ function view_mailbox($user)
         $i++;
     }
     echo '</tbody></table><br >';
-    include "tail.inc";
+    include "../rocksolid/lib/tail.inc";
 }
 
 function send_external_mail($sender, $recipient, $date, $subject, $message)

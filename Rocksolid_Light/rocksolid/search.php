@@ -5,7 +5,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
 header("Cache-Control: max-age=120");
 header("Pragma: cache");
 
-include "config.inc.php";
+include "lib/config.inc.php";
 include "$file_newsportal";
 require_once(__DIR__ . '/security.inc.php');
 
@@ -27,10 +27,10 @@ if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
 }
 
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
-    include "head.inc";
+    include "lib/head.inc";
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
         echo "<center>Page Disabled</center>";
-        include "tail.inc";
+        include "lib/tail.inc";
         exit();
     }
 
@@ -110,7 +110,7 @@ $thissite = '.';
 $groupconfig = $config_path . "/groups.txt";
 
 $title .= ' - search results for: ' . $_POST['terms'];
-include "head.inc";
+include "lib/head.inc";
 
 // Handle Block poster
 $post_username = trim(strtolower($_POST['username']));
@@ -318,7 +318,7 @@ foreach ($overview as $overviewline) {
 echo '</table>';
 echo "<p class=np_ob_tail><b>" . $results . "</b> matching articles found.</p>\r\n";
 # echo "<center><i>Rocksolid Overboard</i> version ".$version;
-include "tail.inc";
+include "lib/tail.inc";
 
 $thispage = ob_get_contents();
 

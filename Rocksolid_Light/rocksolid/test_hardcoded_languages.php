@@ -8,7 +8,7 @@ echo "🔒 HARDCODED LANGUAGE ARRAY SECURITY TEST\n";
 echo "========================================\n\n";
 
 // Include the required files
-include "config.inc.php";
+include "lib/config.inc.php";
 include "allowed_languages.inc.php";
 
 // Test 1: Hardcoded Array Validation

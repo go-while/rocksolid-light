@@ -3,7 +3,7 @@ header("Expires: ".gmdate("D, d M Y H:i:s",time()+(3600*24))." GMT");
 $group=$_REQUEST["group"];
 $id=$_REQUEST["id"];
 $attachment=$_REQUEST["attachment"];
-include "config.inc.php";
+include "lib/config.inc.php";
 require("$file_newsportal");
 require_once(__DIR__ . '/security.inc.php');
 
