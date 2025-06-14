@@ -14,7 +14,7 @@
 
   include "auth.inc";
   include "$file_newsportal";
-  require_once(__DIR__ . '/security.inc.php');
+  require_once(__DIR__ . '/lib/security.inc.php');
 
   // Add security headers
   add_security_headers();

@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . '/../security.inc.php');
+require_once(__DIR__ . '/security.inc.php');
 
 // Include logging control functions
 require_once(__DIR__ . '/../logging_control.php');

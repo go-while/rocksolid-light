@@ -1,5 +1,5 @@
 <?php
-include "config.inc.php";
+include "../lib/config.inc.php";
 include("$file_newsportal");
 // Include security functions with production-ready path resolution
 include_once "security_loader.inc.php";

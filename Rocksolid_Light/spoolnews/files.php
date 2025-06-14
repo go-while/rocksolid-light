@@ -1,7 +1,10 @@
 <?php
-include "../rocksolid/lib/config.inc.php";
-include "../rocksolid/newsportal.php";
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+session_start();
+
+require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
+require_once(__DIR__ . '/../rocksolid/newsportal.php');
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
@@ -23,11 +26,11 @@ if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_
     exit(0);
 }
 $title .= ' - Browse files';
-include "../rocksolid/lib/head.inc";
+include "../rocksolid/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Files")) {
     echo "<center>Page Disabled</center>";
-    include "../rocksolid/lib/tail.inc";
+    include "../rocksolid/tail.inc";
     exit();
 }
 

@@ -1,9 +1,9 @@
 <?php
-include "config.inc.php";
-include "../spoolnews/config.inc.php";
-include "../spoolnews/newsportal.php";
-include "../rocksolid/logging_control.php";
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+require __DIR__ . "/../rocksolid/lib/config.inc.php";
+require __DIR__ . "/../rocksolid/newsportal.php";
+require __DIR__ . "/../rocksolid/logging_control.php";
+require __DIR__ . "/../rocksolid/lib/security.inc.php";
 
 // Add security headers
 add_security_headers();

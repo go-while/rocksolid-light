@@ -1,7 +1,10 @@
 <?php
-include "../rocksolid/lib/config.inc.php";
-include "../rocksolid/newsportal.php";
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+
+session_start();
+
+require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
+require_once(__DIR__ . '/../rocksolid/newsportal.php');
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
@@ -34,7 +37,7 @@ if (!$logged_in) {
 }
 
 $title .= ' - Upload file';
-include "../rocksolid/lib/head.inc";
+include "../rocksolid/head.inc";
 echo '<h1 class="np_thread_headline">';
 echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
 echo htmlspecialchars($_COOKIE['mail_name']) . '</h1>';

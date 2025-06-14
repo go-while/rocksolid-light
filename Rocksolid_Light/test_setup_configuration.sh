@@ -78,8 +78,8 @@ echo "   Total configuration fields: $TOTAL_FIELDS"
 echo "🔍 Checking helper descriptions..."
 MISSING_DESCRIPTIONS=0
 
-# Extract field names from config file (left side of =>)
-CONFIG_FIELDS=$(grep "=>" "$CONFIG_FILE" | sed "s/[[:space:]]*'\([^']*\)'[[:space:]]*=>.*/\1/" | grep -v "^$")
+# Extract field names from config file
+CONFIG_FIELDS=$(grep "=>" "$CONFIG_FILE" | sed "s/.*'\([^']*\)'.*/\1/" | grep -v "^$")
 
 for field in $CONFIG_FIELDS; do
     if ! grep -q "'$field'" "$HELPER_FILE"; then

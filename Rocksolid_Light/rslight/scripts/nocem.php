@@ -1,5 +1,5 @@
 <?php
-include "config.inc.php";
+include "../lib/config.inc.php";
 include("$file_newsportal");
 include $config_dir . "/gpg.conf";
 
@@ -53,7 +53,7 @@ foreach ($messages as $message) {
         continue;
     }
     unset($signed_text);
-    
+
     $nocem_list = fopen($nocem_file, 'r');
     $start = 0;
 

@@ -28,6 +28,8 @@ include "../common/config.inc.php";
  * So if installed in /var/www/html/rocksolid
  * it's rocksolid.inc.php in $config_dir
  */
+
+
 $config_name = basename(getcwd());
 if (file_exists($config_dir . $config_name . '.inc.php')) {
     $config_file = $config_dir . $config_name . '.inc.php';
@@ -36,21 +38,23 @@ if (file_exists($config_dir . $config_name . '.inc.php')) {
 }
 $installed_path = getcwd();
 
+
 /*
  * $config_path is a directory off the $config_dir
  * where specific files such as groups.txt
  * are located
  */
+
 $config_path = $config_dir . $config_name . "/";
 $script_path = $config_dir . "/scripts/";
-$CONFIG = include ($config_file);
+$CONFIG = include($config_file);
 
 // Load overrides from local directory (runtime application config)
 if (file_exists(__DIR__ . '/overrides.inc.php')) {
     $OVERRIDES = include (__DIR__ . '/overrides.inc.php');
 } elseif (file_exists($config_dir . '/overrides.inc.php')) {
     // Fallback: check config directory for backward compatibility
-    $OVERRIDES = include ($config_dir . '/overrides.inc.php');
+    $OVERRIDES = require_once($config_dir . '/overrides.inc.php');
 } else {
     // No overrides file found - use empty array
     $OVERRIDES = array();
@@ -147,7 +151,7 @@ $file_post = "post.php";
 $file_cancel = "cancel.php";
 
 // Language selection: Check for user preference in cookie, fallback to default
-include_once "allowed_languages.inc.php";
+include "allowed_languages.inc.php";
 $default_language = "lang/english.lang";
 
 if (isset($_COOKIE['user_language']) && !empty($_COOKIE['user_language'])) {

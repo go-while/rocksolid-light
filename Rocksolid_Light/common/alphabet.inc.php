@@ -1,7 +1,7 @@
 <?php
 
 // Include security functions for data integrity
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();

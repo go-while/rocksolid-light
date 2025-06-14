@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . '/../security.inc.php');
+require_once(__DIR__ . '/security.inc.php');
 
 /*
  * rslight NNTP<->HTTP Gateway

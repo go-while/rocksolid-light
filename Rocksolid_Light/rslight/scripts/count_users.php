@@ -1,6 +1,34 @@
 <?php
-include "config.inc.php";
-include ("$file_newsportal");
+// Handle config include with flexible path resolution
+if (file_exists("../lib/config.inc.php")) {
+    include "../lib/config.inc.php";
+} elseif (file_exists("config.inc.php")) {
+    include "config.inc.php";
+} elseif (file_exists("../config.inc.php")) {
+    include "../config.inc.php";
+} elseif (file_exists("common/config.inc.php")) {
+    include "common/config.inc.php";
+}
+
+// Include newsportal with dynamic path calculation
+$web_root = null;
+if (file_exists("../rslight.inc.php")) {
+    $rslight_path = readlink("../rslight.inc.php");
+    if ($rslight_path) {
+        $web_root = dirname(dirname(dirname($rslight_path))); // Go up 3 levels from /var/www/html/rocksolid/lib/
+    }
+}
+
+// Try to include newsportal.php using calculated web root
+if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
+    include $web_root . "/rocksolid/newsportal.php";
+} elseif (isset($file_newsportal) && file_exists($file_newsportal)) {
+    include $file_newsportal;
+} elseif (file_exists("rocksolid/newsportal.php")) {
+    include "rocksolid/newsportal.php";
+} elseif (file_exists("newsportal.php")) {
+    include "newsportal.php";
+}
 if (trim($CONFIG['tac'] == '')) {
     if (is_file($spooldir . '/sessions.dat')) {
         unlink($spooldir . '/sessions.dat');

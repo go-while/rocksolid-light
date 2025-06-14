@@ -1,9 +1,9 @@
 <?php
 
-include "config.inc.php";
-include "head.inc";
-include ($config_dir.'/admin.inc.php');
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
+require_once(__DIR__ . '/../rocksolid/lib/head.inc');
+require_once($config_dir.'/admin.inc.php');
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
@@ -33,7 +33,7 @@ if(($_POST['configure'] == "Save Configuration") && ($_POST['configkey'] == $adm
 }
 
 if ((isset($_POST["password"]) && ($_POST["password"]==$admin["password"])) && ($_POST['configkey'] == $admin['key'])) {
-  include($config_dir.'/scripts/setup.inc.php');
+  require_once($config_dir.'/scripts/setup.inc.php');
   exit(0);
 } else{
 //Show the wrong password notice

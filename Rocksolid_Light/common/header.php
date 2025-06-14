@@ -5,8 +5,8 @@ if (basename(getcwd()) == 'mods') {
     $rootdir = "../";
 }
 
-include($rootdir . 'common/config.inc.php');
-require_once($rootdir . 'rocksolid/security.inc.php');
+require_once($rootdir . 'common/config.inc.php');
+require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();

@@ -1,8 +1,6 @@
 <?php
+
 session_start();
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
 
 if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $past = time() - 3600;
@@ -18,11 +16,16 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $logmeout = false;
 }
 
-include "../rocksolid/lib/config.inc.php";
+require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
 require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
+
+if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
+    $_SESSION['last_access'] = time();
+}
+
 include("../rocksolid/newsportal.php");
 
 $ip_pass = false;
@@ -61,11 +64,11 @@ $keyfile = $spooldir . '/keys.dat';
 $keys = secure_unserialize($keyfile, ['stdClass'], false);
 
 $title .= ' - User Configuration';
-include "../rocksolid/lib/head.inc";
+require_once(__DIR__ . '/../rocksolid/head.inc');
 
 if (disable_page_by_user_agent($client_device, "bot", "User")) {
     echo "<center>Page Disabled</center>";
-    include "../rocksolid/lib/tail.inc";
+    require_once(__DIR__ . '/../rocksolid/lib/tail.inc');
     exit();
 }
 
@@ -586,7 +589,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
 } else {
     echo '<br >';
 }
-include "../rocksolid/lib/tail.inc";
+require_once(__DIR__ . '/../rocksolid/tail.inc');
 
 function retry_configuration($message)
 {

@@ -20,8 +20,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "config.inc.php";
-include("$file_newsportal");
+include "../lib/config.inc.php";
+include "../common/menu_functions.inc.php";
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$web_root = dirname(dirname(dirname($rslight_target)));
+include $web_root . '/rocksolid/newsportal.php';
 include "spool-lib.php";
 include $config_dir . '/gpg.conf';
 

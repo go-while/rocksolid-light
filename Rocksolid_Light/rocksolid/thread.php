@@ -7,7 +7,7 @@ $_SESSION['group'] = $_SERVER['REQUEST_URI'];
 
 include "lib/config.inc.php";
 include ("$file_newsportal");
-require_once(__DIR__ . '/security.inc.php');
+require_once(__DIR__ . '/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();

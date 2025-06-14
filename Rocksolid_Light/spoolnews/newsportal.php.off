@@ -22,52 +22,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 // Include security functions first for all operations
-require_once("lib/security.inc.php");
+require_once("security.inc.php");
 
 // Include logging control functions
 if (!function_exists('debug_log')) {
     require_once("logging_control.php");
 }
 
-
-// Include common menu functions - handle both direct access and cron contexts
-if (file_exists("../common/menu_functions.inc.php")) {
-    include_once("../common/menu_functions.inc.php");
-} elseif (file_exists("common/menu_functions.inc.php")) {
-    include_once("common/menu_functions.inc.php");
-} else {
-    // Fallback: try to find it relative to this file's location
-    include_once(dirname(__FILE__) . "/../common/menu_functions.inc.php");
-}
+// Include common menu functions
+include_once("../common/menu_functions.inc.php");
 
 // Add security headers
 add_security_headers();
 
-// Handle lib includes with flexible path resolution
-$lib_files = [
-    "types.inc.php",
-    "thread.inc.php",
-    "message.inc.php",
-    "post.inc.php",
-    "database_optimizer.php"
-];
+if (file_exists("lib/types.inc.php")) {
+    include "lib/types.inc.php";
+}
+if (file_exists("lib/thread.inc.php")) {
+    include "lib/thread.inc.php";
+}
+if (file_exists("lib/message.inc.php")) {
+    include "lib/message.inc.php";
+}
+if (file_exists("lib/post.inc.php")) {
+    include "lib/post.inc.php";
+}
 
-// Calculate lib directory path relative to this file
-$newsportal_dir = __DIR__;
-$lib_dir = $newsportal_dir . '/lib';
-
-foreach ($lib_files as $lib_file) {
-    $lib_path = $lib_dir . '/' . $lib_file;
-    if (file_exists($lib_path)) {
-        include $lib_path;
-    } elseif (file_exists("../rocksolid/lib/$lib_file")) {
-        include "../rocksolid/lib/$lib_file";
-    } elseif (file_exists("rocksolid/lib/$lib_file")) {
-        include "rocksolid/lib/$lib_file";
-    } elseif (file_exists("lib/$lib_file")) {
-        include "lib/$lib_file";
-    }
+// Include database optimization functions
+if (file_exists("lib/database_optimizer.php")) {
+    include "lib/database_optimizer.php";
 }
 
 $CONFIG = include($config_file);
@@ -261,7 +246,7 @@ function validate_email($address)
         $return = (preg_match('^[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+'.'@'.
                '[-!#$%&\'*+\\/0-9=?A-Z^_A-z{|}~]+\.'.
                '[-!#$%&\'*+\\./0-9=?A-Z^_A-z{|}~]+$',$address));
-        */
+*/
         $return = 1;
     }
     if (($validate_email >= 2) && ($return == true)) {
@@ -1571,8 +1556,7 @@ function set_user_logged_in_cookies($name, $keys)
     $pkey = hash('crc32', get_user_config($name, 'encryptionkey'));
     set_user_config(strtolower($name), "pkey", $pkey);
     $_SESSION['pass'] = true;
-    // FIXME/TODO inline javascript...
-    ?>
+?>
     <script type="text/javascript">
         if (navigator.cookieEnabled)
             var authcookie = "<?php echo $authkey; ?>";
@@ -1863,6 +1847,27 @@ function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheade
     );
 }
 
+function logging_prefix($sockip = null)
+{
+    global $client_ip_address;
+    if ($sockip) {
+        if (preg_match("/\./", $sockip)) {
+            $ipv4_addr = preg_split("/\:/", $sockip);
+            $client_ip = $ipv4_addr[0];
+        } else {
+            $ipv6_addr = explode("]", $sockip);
+            $client_ip = substr($ipv6_addr[0], 1);
+        }
+    } else {
+        $client_ip = $client_ip_address;
+    }
+    if (trim($client_ip == '')) {
+        return format_log_date();
+    } else {
+        return format_log_date() . " [" . $client_ip . "]";
+    }
+}
+
 function repair_broken_group($group)
 {
     global $debug_log, $spooldir;
@@ -1892,6 +1897,11 @@ function wipe_newsportal_spool_info($group)
     @unlink($gpath . '-lastarticleinfo.dat');
     @unlink($gpath . '-info.txt');
     @unlink($gpath . '-overboard.dat');
+}
+
+function format_log_date()
+{
+    return date('M d H:i:s');
 }
 
 function create_name_link($name, $data = null, $truncate = true)
@@ -2505,6 +2515,128 @@ function disable_page_by_user_agent($client_device, $useragent, $script = "Page"
     }
 }
 
+function throttle_hits($client_device = null)
+{
+    global $CONFIG, $OVERRIDES, $logdir, $abuse_log, $config_name, $spooldir;
+    $rdns_file = $spooldir . '/rdns.dat';
+    $rdns = array();
+    if (file_exists($rdns_file)) {
+        try {
+            $rdns = secure_unserialize(file_get_contents($rdns_file));
+            if (!is_array($rdns)) {
+                $rdns = array();
+            }
+        } catch (Exception $e) {
+            $rdns = array();
+        }
+    }
+
+    if (! $client_device) {
+        $client_device = get_client_user_agent_info();
+    }
+    $client_device = strtolower($client_device);
+
+    $_SESSION['rsactive'] = true;
+
+    // Block by user-agent
+    if (isset($OVERRIDES['block_by_user_agent'])) {
+        $this_ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+        foreach ($OVERRIDES['block_by_user_agent'] as $block_user_agent) {
+            if (stripos($this_ua, $block_user_agent) !== false) {
+                file_put_contents($abuse_log, "\n" . logging_prefix() . " (blocking) '" . $block_user_agent . "' found in User-Agent block list", FILE_APPEND);
+                $_SESSION['throttled'] = true;
+                header("HTTP/1.0 403 Forbidden");
+                exit();
+            }
+        }
+    }
+    // Block by rdns
+    if (isset($OVERRIDES['block_by_rdns'])) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if (isset($rdns[$ip])) {
+            $this_rdns = $rdns[$ip];
+        } else {
+            $this_rdns = gethostbyaddr($ip);
+            $rdns[$ip] = $this_rdns;
+            file_put_contents($rdns_file, serialize($rdns));
+        }
+        foreach ($OVERRIDES['block_by_rdns'] as $block_rdns) {
+            if (stripos($this_rdns, $block_rdns) !== false) {
+                file_put_contents($abuse_log, "\n" . logging_prefix() . " (blocking) '" . $block_rdns . "' found in RDNS block list", FILE_APPEND);
+                $_SESSION['throttled'] = true;
+                header("HTTP/1.0 403 Forbidden");
+                exit();
+            }
+        }
+    }
+
+    // $loadrate = allowed article request per second
+    $loadrate = .15;
+    if ($client_device == "bot") {
+        $_SESSION['bot'] = 'true';
+        if (isset($OVERRIDES['throttle_hits_bot_loadrate']) && trim($OVERRIDES['throttle_hits_bot_loadrate']) != '') {
+            $loadrate = $OVERRIDES['throttle_hits_bot_loadrate'];
+        }
+    }
+
+    if (! isset($_SESSION['starttime'])) {
+        $_SESSION['starttime'] = time();
+        $_SESSION['views'] = 0;
+    }
+    $_SESSION['views']++;
+    // $rate = current hits / seconds since start of session
+    $rate = fdiv($_SESSION['views'], (time() - $_SESSION['starttime']));
+    // if $rate > greater than $loadrate, throttle hits
+    // but allow 50 hits at start of session to allow loading everything
+    if (($rate > $loadrate) && ($_SESSION['views'] > 50)) {
+        header("HTTP/1.0 429 Too Many Requests");
+        if (! isset($_SESSION['throttled'])) {
+            file_put_contents($abuse_log, "\n" . logging_prefix() . " (throttling) too many requests" . " (" . $rate . " > " . $loadrate . ")", FILE_APPEND);
+            $_SESSION['throttled'] = true;
+        }
+        exit(0);
+    }
+    if (isset($_SESSION['throttled'])) {
+        unset($_SESSION['throttled']);
+    }
+}
+
+function get_client_user_agent_info()
+{
+    global $config_dir, $logdir;
+
+    // Try to get browser info to use for extra formatting of page
+    $ua = strtolower($_SERVER["HTTP_USER_AGENT"]);
+    $devices = array(
+        "bot",
+        "spider",
+        "mobile",
+        "lynx",
+        "w3m",
+        "links",
+        "ipad",
+        "tablet"
+    );
+    $client_device = "desktop";
+    foreach ($devices as $device) {
+        if (strpos($ua, $device) !== false) {
+            $client_device = $device;
+            break;
+        }
+    }
+    if ($client_device == "spider" || $client_device == "crawler") {
+        $client_device = "bot";
+    }
+    // Log client device if enabled by semaphore
+    if (file_exists($config_dir . '/devicelog.enable')) {
+        $client_ip = getenv("REMOTE_ADDR");
+        $logfile = $logdir . '/device.log';
+        file_put_contents($logfile, "\n" . logging_prefix() . " browser: " . $client_device, FILE_APPEND);
+        file_put_contents($logfile, "\n    Full UA: " . $ua, FILE_APPEND);
+    }
+    return $client_device;
+}
+
 /* This function sends internet email
  * $subject and $body are strings
  * $mail_to is an email address to send to
@@ -2620,6 +2752,14 @@ function get_user_mail_auth_data($user)
         return $userdata;
     }
     return false;
+}
+
+function write_access_log()
+{
+    global $logdir;
+    $accessfile = $logdir . '/access.log';
+    $currentPageUrl = $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+    file_put_contents($accessfile, "\n" . logging_prefix() . " " . $currentPageUrl, FILE_APPEND);
 }
 
 function verify_gpg_signature($res, $signed_text)

@@ -3,32 +3,23 @@
 /*
  * CHANGE THE LINE BELOW TO 'installed = true once you have edited this filter
  */
- $installed = false;
 
 // Set this to your administrative email address
- $admin = "admin@example.com";
+$admin = "admin@example.com"; // TODO add to config.inc.php
 
-include "config.inc.php";
-include "../spoolnews/newsportal.php";
-require_once(__DIR__ . '/../rocksolid/security.inc.php');
+require __DIR__ . "/../rocksolid/lib/config.inc.php";
+require __DIR__ . "/../rocksolid/newsportal.php";
+require __DIR__ . "/../rocksolid/logging_control.php";
+require __DIR__ . "/../rocksolid/lib/security.inc.php";
 
 // Add security headers
 add_security_headers();
 
 $title .= " - Privacy and FAQ";
-include "head.inc";
 
-  if(!$installed) {
-      echo '<center>';
-      echo '<h4 style="faq_titles">Admin Notice:</h4>';
-      echo '<p class="faq_text">';
-      echo 'ADMIN: Please edit the file "faq.php" in your SITE/common directory to match your needs.<br ><br>';
-      echo 'Change "$installed = false" to "$installed = true"<br>';
-      echo 'to remove this notice and display your page.';
-      echo '</p>';
-      echo '</body></html';
-      exit();
-  }
+//die("add_security_headers() must be called before any output is sent to the browser.");
+
+include "head.inc";
 
   echo '<meta http-equiv="content-type" content="text/html; charset=UTF-8">';
   echo '<title>Privacy and FAQ</title>';
@@ -55,7 +46,7 @@ include "head.inc";
 
   echo 'Articles or users will not be removed for political/social/etc. opinions you (or I) don’t agree with.<br >';
   echo 'Please use the block filter for articles or users you do not wish to see.<br >';
-  echo 'Articles considered illegal in the jurisdiction of the admin (U.S.) may be removed for legal reasons.<br >';
+  echo 'Articles considered illegal in the jurisdiction of the admin may be removed for legal reasons.<br >';
   echo '<br >';
   echo '</p>';
 

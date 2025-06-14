@@ -1,4 +1,4 @@
-<?php 
+<?php
 echo '<!DOCTYPE html>';
 echo '<html>';
 echo '<head>';
@@ -9,9 +9,9 @@ if(file_exists($config_dir.'/googleanalytics.conf')) {
   include $config_dir.'/googleanalytics.conf';
 }
 
-if (file_exists('mods/header.php')) {
-  include "mods/header.php";
+if (file_exists(__DIR__ . '/mods/header.php')) {
+  include __DIR__ . "/mods/header.php";
 } else {
-  include "header.php";
+  include __DIR__ . "/header.php";
 }
 echo '<hr>';

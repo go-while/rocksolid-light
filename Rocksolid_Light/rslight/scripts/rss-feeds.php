@@ -1,7 +1,11 @@
 #!/usr/local/bin/php
 <?php
-chdir('../rocksolid/');
-include "config.inc.php";
+include "../lib/config.inc.php";
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$web_root = dirname(dirname($rslight_target));
+chdir($web_root . '/rocksolid/');
 include "newsportal.php";
 
 $maxlen = 500;

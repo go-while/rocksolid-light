@@ -35,8 +35,6 @@ return [
 'timezone' => 'Timezone offset from GMT (+5, -3, etc. or 0 for UTC)',
 'default_content' => 'Default page to display (/rocksolid/index.php recommended)',
 'readonly' => 'Make site read-only (1=yes, blank=allow posting)',
-'post_server' => 'Posting server hostname (for outgoing posts, blank for local only)',
-'post_port' => 'Posting server port (usually 119, blank for local only)',
 'anonuser' => 'Allow anonymous posting (1=yes, blank=require authentication)',
 'organization' => 'Organization name for outgoing message headers',
 'postfooter' => 'Text to append to posted messages (blank for none)',

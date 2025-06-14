@@ -22,8 +22,12 @@
  */
 set_time_limit(900);
 
-include "config.inc.php";
-include("$file_newsportal");
+include "../lib/config.inc.php";
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$web_root = dirname(dirname(dirname($rslight_target)));
+include $web_root . '/rocksolid/newsportal.php';
 
 if ($CONFIG['remote_server'] == '') {
     exit();

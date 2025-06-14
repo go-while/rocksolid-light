@@ -13,7 +13,7 @@ if (!file_exists('config.inc.php')) {
     exit(1);
 }
 
-include "config.inc.php";
+include "../lib/config.inc.php";
 include "rslight-lib.php";
 include "maintenance.php";
 

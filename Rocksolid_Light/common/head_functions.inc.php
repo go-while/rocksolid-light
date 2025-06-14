@@ -5,6 +5,8 @@
  * independently by scripts that include head.inc without newsportal.php
  */
 
+/*
+
 if (!function_exists('get_client_user_agent_info')) {
     function get_client_user_agent_info()
     {
@@ -167,7 +169,13 @@ if (!function_exists('format_log_date')) {
 }
 
 if (!function_exists('secure_unserialize')) {
-    function secure_unserialize($filename, $allowed_classes = ['stdClass'], $array_fallback = true)
+    die("debug: include error !function_exists 'secure_unserialize' in head_functions.inc.php");
+}
+*/
+
+/*
+if (!function_exists('secure_unserialize')) {
+//    function secure_unserialize($filename, $allowed_classes = ['stdClass'], $array_fallback = true)
     {
         if (!file_exists($filename)) {
             return $array_fallback ? [] : false;
@@ -190,4 +198,5 @@ if (!function_exists('secure_unserialize')) {
         }
     }
 }
+*/
 ?>

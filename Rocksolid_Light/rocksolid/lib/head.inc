@@ -10,9 +10,10 @@ if (file_exists('../common/head_functions.inc.php')) {
 } elseif (file_exists(__DIR__ . '/../common/head_functions.inc.php')) {
     include_once __DIR__ . '/../common/head_functions.inc.php';
 } else {
-    // Fallback - try direct path
-    include_once '/home/fed/GO/src/github.com/go-while/rocksolid-light/Rocksolid_Light/common/head_functions.inc.php';
+    die("debug include error head_functions in rocksolid/lib/head.inc");
 }
+
+require_once(__DIR__.'/security.inc.php');
 
 $_SESSION['rsactive'] = true;
 $client_device = get_client_user_agent_info();

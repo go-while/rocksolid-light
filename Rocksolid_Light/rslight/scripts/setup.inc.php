@@ -14,7 +14,7 @@ if (file_exists('../common/mods/style.css')) {
 <body>
 <?php
 
-include "config.inc.php";
+include "../lib/config.inc.php";
 include $config_dir . '/admin.inc.php';
 
 $configdata = include ($config_dir . '/scripts/setuphelper.php');

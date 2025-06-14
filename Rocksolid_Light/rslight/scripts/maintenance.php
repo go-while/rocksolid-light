@@ -23,7 +23,7 @@ include_once "security_loader.inc.php";
  */
 include("paths.inc.php");
 chdir($spoolnews_path);
-include "config.inc.php";
+include "../lib/config.inc.php";
 include("$file_newsportal");
 include "spool-lib.php";
 

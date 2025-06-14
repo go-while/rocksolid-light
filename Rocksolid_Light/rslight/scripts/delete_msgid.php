@@ -11,7 +11,7 @@
 */
 include("paths.inc.php");
 chdir($spoolnews_path);
-include "config.inc.php";
+include "../lib/config.inc.php";
 include("$file_newsportal");
 
 $logfile = $logdir . '/debug.log';
