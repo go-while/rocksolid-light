@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 // Include security functions first for all operations
+
 require_once("lib/security.inc.php");
 
 // Include logging control functions
@@ -30,7 +31,7 @@ if (!function_exists('debug_log')) {
     require_once("logging_control.php");
 }
 
-
+/*
 // Include common menu functions - handle both direct access and cron contexts
 if (file_exists("../common/menu_functions.inc.php")) {
     include_once("../common/menu_functions.inc.php");
@@ -40,9 +41,9 @@ if (file_exists("../common/menu_functions.inc.php")) {
     // Fallback: try to find it relative to this file's location
     include_once(dirname(__FILE__) . "/../common/menu_functions.inc.php");
 }
-
+*/
 // Add security headers
-add_security_headers();
+//add_security_headers();
 
 // Handle lib includes with flexible path resolution
 $lib_files = [
