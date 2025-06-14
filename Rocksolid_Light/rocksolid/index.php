@@ -13,21 +13,7 @@ add_security_headers();
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
 }
-$_SESSION['isframed'] = 1;
 
-if (isset($frames_on) && $frames_on === true) {
-    ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash;
-    if ( window.self !== window.top ) {
-        /* Great! now we move along */
-    } else {
-        window.location.href = '../index.php?menu='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
-<?php
-}
 $title .= ' - ' . basename(getcwd());
 include "lib/head.inc";
 
