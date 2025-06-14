@@ -2,7 +2,7 @@
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "rocksolid/common/head_functions.inc.php included by: " . basename($parent) . "\n";
+echo "common/head_functions.inc.php included by: " . basename($parent) . "<br>\n";
 
 /**
  * Essential functions needed by head.inc
