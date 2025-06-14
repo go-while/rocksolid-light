@@ -7,7 +7,7 @@
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "rocksolid/lib/security.inc.php included by: " . basename($parent) . "\n";
+echo "rocksolid/lib/security.inc.php included by: " . basename($parent) . "<br>\n";
 
 
 
