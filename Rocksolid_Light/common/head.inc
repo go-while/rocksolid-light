@@ -1,4 +1,10 @@
 <?php
+
+$backtrace = debug_backtrace();
+$parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
+echo "common/head.inc included by: " . basename($parent) . "<br>\n";
+
+
 echo '<!DOCTYPE html>';
 echo '<html>';
 echo '<head>';
