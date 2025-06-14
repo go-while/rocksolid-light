@@ -143,7 +143,7 @@ echo "to complete configuration"
 echo
 echo Add this to crontab for root to link with your remote server, start local
 echo server and manage other tasks:
-echo "*/5 * * * * cd $webroot/rocksolid ; bash -lc \"php $configpath/scripts/cron.php\""
+echo "*/5 * * * * sudo -u $username bash -lc \"php $configpath/scripts/cron.php\""
 echo
 echo "Once your web server is configured to point to $webroot and serve .php files"
 echo "give it a try. If you have trouble, feel free to ask for help in rocksolid.nodes.help"
