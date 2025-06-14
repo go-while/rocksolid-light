@@ -1,32 +1,48 @@
 <?php
 // This file runs maintenance scripts and should be executed by cron regularly
-// Determine web root dynamically using the symlink created by debian-install.sh
-$script_dir = dirname(__FILE__);
-$config_dir = dirname($script_dir); // /etc/rslight
-
-// Use the symlink created by debian-install.sh to find web root
-$rslight_symlink = $config_dir . '/rslight.inc.php';
-if (is_link($rslight_symlink)) {
-    $rslight_real_path = readlink($rslight_symlink);
-    // rslight_real_path should be something like /var/www/html/rocksolid/lib/rslight.inc.php
-    // Extract web root by removing /rocksolid/lib/rslight.inc.php
-    $web_root = dirname(dirname(dirname($rslight_real_path)));
-} else {
-    // Fallback to standard path if symlink doesn't exist
-    $web_root = '/var/www/html';
-}
-
-// Change to web root so newsportal.php can find lib/ files with relative paths
-chdir($web_root);
-
-// Include config from common directory
-include "common/config.inc.php";
+include "../lib/config.inc.php";
 
 // Include security functions with production-ready path resolution
-include_once $config_dir . "/scripts/security_loader.inc.php";
-include "rocksolid/newsportal.php";
+include_once "security_loader.inc.php";
+
+// Include menu functions directly to ensure get_section_menu_array() is available
+include_once "../common/menu_functions.inc.php";
+
+// Include newsportal with dynamic path calculation
+$web_root = null;
+if (file_exists("../rslight.inc.php")) {
+    $rslight_path = readlink("../rslight.inc.php");
+
+    if ($rslight_path) {
+        $web_root = dirname(dirname(dirname($rslight_path))); // Go up 3 levels
+    }
+}
+
+echo "rslight_path: " . $rslight_path . " web_root=$web_root\n";
+
+if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
+    echo "include newsportal.php from web_root=$web_root\n";
+    include $web_root . "/rocksolid/newsportal.php";
+    echo "included newsportal.php from web_root\n";
+} else {
+    die("Error: Could not locate newsportal.php web_root=$web_root");
+}
+
+echo "Debug 0 cron config_name: " . $config_name . "\n";
+
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
+
+// Ensure critical variables are set with fallbacks
+if (!isset($logdir) || empty($logdir)) {
+    $logdir = $spooldir . '/log';
+    @mkdir($logdir, 0755, true);
+}
+if (!isset($config_name) || empty($config_name)) {
+    $config_name = 'rslight';
+}
+
+echo "Debug 1 cron config_name: " . $config_name . "\n";
 
 $pid = getmypid();
 $logfile = $logdir . '/cron.log';
@@ -38,6 +54,8 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
     file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " started...", FILE_APPEND);
     chown($logfile, $CONFIG['webserver_user']);
 }
+
+echo "DEBUG 2 cron\n";
 
 $menulist = get_section_menu_array();
 # Start or verify NNTP server
