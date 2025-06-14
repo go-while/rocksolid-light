@@ -58,7 +58,7 @@ You can also synchronize these forums with other RockSolid Light installations o
     - Core functionality (reading posts, browsing forums, posting messages, searching) works completely without JavaScript.
 
 
-# See [INSTALL.md](https://github.com/go-while/rocksolid-light/INSTALL.md) for installation instructions.
+# See [INSTALL.md](INSTALL.md) for installation instructions.
 
 ## Database Performance Optimization
 
@@ -107,17 +107,17 @@ Rocksolid Light now supports **110 languages**, covering approximately 96% of th
 - **60 → 100**: Achieved broad global coverage
 - **100 → 110**: Added high-impact languages (e.g., Bhojpuri, Kannada, Odia, Azerbaijani, Kurdish)
 
-See [full language documentation](https://github.com/go-while/rocksolid-light/Rocksolid_Light/rocksolid/lang/README.md).
+See [full language documentation](Rocksolid_Light/rocksolid/lang/README.md).
 
 ## AI Language Workflow
 Rocksolid Light supports automated language expansion with the help of AI agents:
 
-1. Open the [language documentation](https://github.com/go-while/rocksolid-light/Rocksolid_Light/rocksolid/lang/README.md).
+1. Open the [language documentation](Rocksolid_Light/rocksolid/lang/README.md).
 2. Add a request (for example: "Add 10 missing languages with the highest speaker counts").
 3. The AI will generate translations, check language files, and update the documentation automatically.
 
 ## For Future AI Agents
-All development workflows and decision logs are documented in the [AI-Logs directory](https://github.com/go-while/rocksolid-light/AI-Logs/). These records make it easy for any AI agent to quickly understand the codebase, review optimization strategies, and continue development efficiently.
+All development workflows and decision logs are documented in the [AI-Logs directory](rocksolid-light/AI-Logs/). These records make it easy for any AI agent to quickly understand the codebase, review optimization strategies, and continue development efficiently.
 
 ---
 
