@@ -1117,12 +1117,12 @@ function groups_show($gruppen)
                 $lastarticleinfo['subject'] = htmlentities(preg_replace('/_/', ' ', mb_decode_mimeheader($lastarticleinfo['subject'])));
                 $groupdisplay .= '<span class="grouplist_thread_start_author_info">';
                 if ($block) {
-                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $url = '?page=article-flat&id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
                     $groupdisplay .= get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date']));
                     $groupdisplay .= '<br>by: ';
                     $groupdisplay .= "(blocked user)";
                 } else {
-                    $url = 'article-flat.php?id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
+                    $url = '?page=article-flat&id=' . $lastarticleinfo['number'] . '&group=' . urlencode($g->name) . '#' . $lastarticleinfo['number'];
                     $groupdisplay .= '<a href="' . $url . '" title="' . $lastarticleinfo['subject'] . '">' . get_date_interval(date("D, j M Y H:i T", $lastarticleinfo['date'])) . '</a>';
                     $groupdisplay .= '<br>by: ';
                     $groupdisplay .= create_name_link($lastarticleinfo['name'], $name_from);

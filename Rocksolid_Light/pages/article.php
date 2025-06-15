@@ -30,7 +30,7 @@ if (strpos($id, '@') !== false) {
     }
     $overview_dbh = null;
     if ($found) {
-        $newurl = 'article-flat.php?id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
+        $newurl = '?page=article-flat&id=' . $id . '&group=' . $row['newsgroup'] . '#' . $id;
         header("Location: $newurl");
         die();
     }

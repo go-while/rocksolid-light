@@ -368,7 +368,7 @@ function display_threads($threads, $oldest)
                 }
                 if ($target_head) {
                     $display .= '<div class="overboard_threadhead_result">';
-                    $url = $thissite . "/article-flat.php?id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
+                    $url = $thissite . "/?page=article-flat&id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target_head['subject'])) . '</span></a></b></p>';
                     $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
@@ -423,7 +423,7 @@ function display_threads($threads, $oldest)
                     $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b></p>';
                 } else {
                     $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
-                    $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
+                    $url = $thissite . "/?page=article-flat&id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
                     $display .= '<br><br>';
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target['subject'])) . '</span></a></b>';
@@ -564,7 +564,7 @@ function display_flat($threads, $oldest)
             $display .= '<p class="overboard_blocked_user_notice">';
             $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b></p>';
         } else {
-            $url = $thissite . "/article-flat.php?id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
+            $url = $thissite . "/?page=article-flat&id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
             $display .= '<p class=np_ob_subject>';
             $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target['subject'])) . '</span></a></b>';
             $display .= '<p class=np_ob_body>';

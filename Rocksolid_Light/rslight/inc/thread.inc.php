@@ -1037,7 +1037,7 @@ function thread_format_lastmessage($c, $group = '')
         }
     }
     if ($ovfound == 1) {
-        $url = 'article-flat.php?id=' . $found['number'] . '&group=' . urlencode($group) . '#' . $found['number'];
+        $url = '?page=article-flat&id=' . $found['number'] . '&group=' . urlencode($group) . '#' . $found['number'];
         $return = '<span class=np_posted_date_left><a href="' . $url . '">' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</a></span>';
     } else {
         $return = '<span class=np_posted_date_left>' . get_date_interval(date("D, j M Y H:i T", $c->date_thread)) . '</span>';

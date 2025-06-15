@@ -166,7 +166,8 @@ $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
     if ($config_name != "common" && $config_name != 'spoolnews') {
-        echo '<form name="form1" method="get" action="article-flat.php">';
+        echo '<form name="form1" method="get" action="?">';
+        echo '<input type="hidden" name="page" value="article-flat">';
         echo '<table class="header_message_id_search">';
         echo '<tr>';
         echo '<td class="header_message_id_search_prompt">Message-ID: ';
