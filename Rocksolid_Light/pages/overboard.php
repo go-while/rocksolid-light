@@ -36,20 +36,6 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
     $_SESSION['last_access'] = time();
 }
 
-if (isset($frames_on) && $frames_on === true) {
-?>
-    <script>
-        var contentURL = window.location.pathname + window.location.search + window.location.hash;
-        if (window.self !== window.top) {
-            /* Great! now we move along */
-        } else {
-            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
-        }
-        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
-    </script>
-
-<?php
-}
 if (isset($_GET['thisgroup'])) {
     $title .= " - " . _rawurldecode(_rawurldecode($_GET['thisgroup'])) . " - latest messages";
     $activegroup = urldecode($_GET['thisgroup']);
