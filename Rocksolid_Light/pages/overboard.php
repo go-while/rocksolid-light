@@ -255,9 +255,9 @@ if (isset($user_time)) {
 }
 
 if ($_SESSION['obstyle'] == 'threads') {
-    $results = display_threads($this_overboard['threads'], $oldest);
+    $results = display_threads($this_overboard['threads'], $oldest, $snippetlength);
 } else {
-    $results = display_flat($this_overboard['threads'], $oldest);
+    $results = display_flat($this_overboard['threads'], $oldest, $snippetlength);
 }
 
 show_overboard_footer(null, $results, null);
@@ -282,10 +282,10 @@ function expire_overboard($cachefile)
     }
 }
 
-function display_threads($threads, $oldest)
+function display_threads($threads, $oldest, $snippetlength = 240)
 {
     global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $spooldir, $logdir;
-    global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    global $cookie_mail_name, $maxdisplay, $this_overboard, $article_age, $newonly;
     $logfile = $logdir . '/overboard.log';  // Ensure logfile is set correctly
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
@@ -460,15 +460,8 @@ function display_threads($threads, $oldest)
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                         $text = $article['search_snippet'];
                         $text = rewrite_body($text);
-                        // Debug: Check lengths
-                        $original_length = strlen($text);
-                        $formatted_text = substr($text, 0, $snippetlength);
-                        $snippet_length = strlen($formatted_text);
-                        $display .= "<!-- Debug: Original length: $original_length, Snippet length: $snippet_length, snippetlength var: $snippetlength -->";
-                        $formatted_text = htmlentities($formatted_text);
-                        $formatted_text = nl2br($formatted_text);
-                        $display .= $formatted_text;
-                        if ($original_length > $snippetlength) {
+                        $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+                        if (strlen($text) > $snippetlength) {
                             $display .= '...';
                         }
                     }
@@ -491,10 +484,10 @@ function display_threads($threads, $oldest)
     return ($results);
 }
 
-function display_flat($threads, $oldest)
+function display_flat($threads, $oldest, $snippetlength = 240)
 {
     global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_dir, $logdir;
-    global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    global $cookie_mail_name, $maxdisplay, $this_overboard, $article_age, $newonly;
     $logfile = $logdir . '/overboard.log';  // Ensure logfile is set correctly
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
@@ -620,18 +613,10 @@ function display_flat($threads, $oldest)
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $text = $article['search_snippet'];
                 $text = rewrite_body($text);
-                // Debug: Check lengths
-                $original_length = strlen($text);
-                $formatted_text = substr($text, 0, $snippetlength);
-                $snippet_length = strlen($formatted_text);
-                $display .= "<!-- Debug: Original length: $original_length, Snippet length: $snippet_length, snippetlength var: $snippetlength -->";
-                $formatted_text = htmlentities($formatted_text);
-                $formatted_text = nl2br($formatted_text);
-                $display .= $formatted_text;
-                if ($original_length > $snippetlength) {
+                $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+                if (strlen($text) > $snippetlength) {
                     $display .= '...';
                 }
-                //$display .= htmlentities(substr($text, 0, $snippetlength));
             }
         }
         $results++;
