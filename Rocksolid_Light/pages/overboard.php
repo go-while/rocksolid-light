@@ -134,7 +134,7 @@ if (isset($_GET['thisgroup'])) {
     // Debug: Check if groups file exists
     echo "<!-- Debug: Loading groups from $groupconfig -->\n";
     $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES);
-    echo "<!-- Debug: Loaded " . count($grouplist) . " groups -->\n";
+    echo "<!-- Debug: Loaded " . count($grouplist) . " groups: " . implode(', ', $grouplist) . " -->\n";
 }
 
 // Determine default view style
@@ -284,8 +284,9 @@ function expire_overboard($cachefile)
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $spooldir;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $spooldir, $logdir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    $logfile = $logdir . '/overboard.log';  // Ensure logfile is set correctly
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
     if (! isset($threads)) {
@@ -483,8 +484,9 @@ function display_threads($threads, $oldest)
 
 function display_flat($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_dir;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_dir, $logdir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
+    $logfile = $logdir . '/overboard.log';  // Ensure logfile is set correctly
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
     if (! isset($threads)) {
