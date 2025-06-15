@@ -57,10 +57,17 @@ if (function_exists('rslight_render_complete_header')) {
     <h3>🧭 Navigation Test</h3>
     <p>Test the router with different pages:</p>
     <ul>
+        <li><a href="?page=index">Index Page (NEW - consolidated from rocksolid/index.php)</a></li>
         <li><a href="?page=faq">FAQ Page (updated)</a></li>
         <li><a href="?page=language_demo">Language Demo (updated)</a></li>
         <li><a href="?page=article">Article Page</a></li>
         <li><a href="?page=search">Search Page</a></li>
+    </ul>
+
+    <h4>Default Page Test:</h4>
+    <ul>
+        <li><a href="./">Default Index (should redirect to ?page=index)</a></li>
+        <li><a href="../rocksolid/">Legacy rocksolid/index.php (should redirect)</a></li>
     </ul>
 </div>
 
