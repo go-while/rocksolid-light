@@ -14,17 +14,17 @@ if (file_exists("../rslight.inc.php")) {
     }
 }
 
-echo "rslight_path: " . $rslight_path . " web_root=$web_root\n";
+echo "[cron.php rslight_path: " . $rslight_path . " web_root=$web_root]<br>\n";
 
 if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
-    echo "include newsportal.php from web_root=$web_root\n";
+    echo "[cron.php included newsportal.php from web_root=$web_root]<br>\n";
     include $web_root . "/rocksolid/newsportal.php";
-    echo "included newsportal.php from web_root\n";
+    echo "[cron.php included newsportal.php from web_root<br>]\n";
 } else {
     die("Error: Could not locate newsportal.php web_root=$web_root");
 }
 
-echo "Debug 0 cron config_name: " . $config_name . "\n";
+echo "[CRON] Debug 0 cron config_name: " . $config_name . "\n";
 
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
@@ -38,7 +38,7 @@ if (!isset($config_name) || empty($config_name)) {
     $config_name = 'rslight';
 }
 
-echo "Debug 1 cron config_name: " . $config_name . "\n";
+echo "[CRON] Debug 1 cron config_name: " . $config_name . "\n";
 
 $pid = getmypid();
 $logfile = $logdir . '/cron.log';
@@ -51,7 +51,7 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
     chown($logfile, $CONFIG['webserver_user']);
 }
 
-echo "DEBUG 2 cron\n";
+echo "[CRON] DEBUG 2 cron\n";
 
 $menulist = get_section_menu_array();
 # Start or verify NNTP server
@@ -100,7 +100,7 @@ if (!file_exists($config_path_file)) {
 
 # Generate user count file (must be root)
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/count_users.php");
-echo "Updated user count\n";
+echo "[CRON] Updated user count\n";
 
 $uinfo = posix_getpwnam($CONFIG['webserver_user']);
 $cwd = getcwd();
@@ -190,21 +190,21 @@ foreach ($menulist as $menu) {
 
     if ($this_CONFIG['remote_server'] !== '') {
         # Send articles
-        echo "Sending articles\n";
+        echo "[CRON] Sending articles\n";
         echo exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/send.php");
         # Refresh spool
         if (isset($spoolnews) && ($spoolnews == true)) {
             file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Starting spoolnews for " . $menuitem[0], FILE_APPEND);
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
             file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Completed spoolnews for " . $menuitem[0], FILE_APPEND);
-            echo "\nRefreshed spoolnews\n";
+            echo "\n[CRON] Refreshed spoolnews\n";
         }
     } else {
         file_put_contents($debug_log, "\n" . format_log_date() . " Remote disabled for " . $menuitem[0] . " (no remote server)", FILE_APPEND);
     }
     # Expire articles
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/expire.php");
-    echo "Expired articles\n";
+    echo "[CRON] Expired articles\n";
 }
 
 # Expire diskcache
@@ -217,21 +217,21 @@ if (file_exists($config_dir . '/cache.inc.php')) {
 
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
-echo "RSS Feeds updated\n";
+echo "[CRON] RSS Feeds updated\n";
 # Reload grouplist
 if ((filemtime($grouplist_cache_filename) < (time() - 14400) || ! file_exists($grouplist_cache_filename))) {
     exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
-    echo "Refreshed grouplist\n";
+    echo "[CRON] Refreshed grouplist\n";
 }
 # Rotate log files
 log_rotate();
-echo "Log files rotated\n";
+echo "[CRON] Log files rotated\n";
 # Rotate keys
 rotate_keys();
-echo "Keys rotated\n";
+echo "[CRON] Keys rotated\n";
 # Expire files
 expire_files();
-echo "Removed old files\n";
+echo "[CRON] Removed old files\n";
 file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " completed...", FILE_APPEND);
 
 function check_disk_space()
@@ -365,7 +365,7 @@ function log_rotate()
             @rename($logfile . '.1', $logfile . '.2');
             file_put_contents($logfile, "\nLog file rotated", FILE_APPEND);
             @rename($logfile, $logfile . '.1');
-            echo 'Rotated: ' . $logfile . "\n";
+            echo '[CRON] Rotated: ' . $logfile . "\n";
         }
         unlink($logdir . '/rotate');
         touch($logdir . '/rotate');
