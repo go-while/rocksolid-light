@@ -1,15 +1,31 @@
 <?php
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (30)) . " GMT");
-header("Cache-Control: max-age=30");
-header("Pragma: cache");
+/**
+ * LEGACY INDEX FILE - CONSOLIDATED INTO ROUTER SYSTEM
+ *
+ * This file now redirects to the consolidated router-based index page
+ * All functionality has been moved to pages/index.php via the secure router
+ *
+ * Date: June 15, 2025 - Part of header migration consolidation
+ */
 
-include "lib/config.inc.php";
-echo "[rocksolid/index.php: include file_newsportal=$file_newsportal]<br>\n";
-include ("$file_newsportal");
-require_once(__DIR__ . '/lib/security.inc.php');
+// Quick redirect to router-based index page
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'];
+$current_path = dirname($_SERVER['REQUEST_URI']);
 
-// Add security headers
-add_security_headers();
+// Build redirect URL - go up one directory level and use page parameter
+$redirect_url = $protocol . '://' . $host . $current_path . '/?page=index';
+
+// Add any query parameters (like subscribe, unsub, mark_read)
+if (!empty($_SERVER['QUERY_STRING'])) {
+    $redirect_url .= '&' . $_SERVER['QUERY_STRING'];
+}
+
+header("Location: $redirect_url", true, 302);
+exit("Redirecting to consolidated index page...");
+
+// NOTE: The rest of this file is kept for reference but should not execute
+// All functionality has been moved to pages/index.php
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();

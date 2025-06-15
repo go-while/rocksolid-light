@@ -49,7 +49,10 @@ $RSLIGHT_PAGE_MAP = [
     'faq'              => 'faq.php',
 
     // Testing/Debug
-    'header_test'      => 'header_test.php'
+    'header_test'      => 'header_test.php',
+
+    // Main index page
+    'index'            => 'index.php'
 ];
 
 /**
@@ -70,7 +73,8 @@ $RSLIGHT_PAGE_CACHE = [
     'language_demo' => ['expires' => 3600, 'max_age' => 3600],            // 1 hour
     'language_selector' => ['expires' => 3600, 'max_age' => 3600],        // 1 hour
     'faq'          => ['expires' => 3600 * 12, 'max_age' => 3600 * 12],   // 12 hours
-    'header_test'  => ['expires' => 60, 'max_age' => 60]                  // 1 minute
+    'header_test'  => ['expires' => 60, 'max_age' => 60],                 // 1 minute
+    'index'        => ['expires' => 30, 'max_age' => 30]                  // 30 seconds
 ];
 
 /**
@@ -502,6 +506,38 @@ function rslight_route_page() {
 }
 
 /**
+ * Serve default index page when no page parameter is provided
+ * This replaces the functionality of rocksolid/index.php
+ *
+ * @return bool True if default page was served
+ */
+function rslight_serve_default_page() {
+    // Check if we should serve the default page
+    if (php_sapi_name() === 'cli' || defined('RSLIGHT_NO_DEFAULT_PAGE')) {
+        return false;
+    }
+
+    // Only serve default if no page parameter and we're in a web context
+    if (!isset($_GET['page']) || $_GET['page'] === '') {
+        // Initialize page requirements for index page
+        rslight_init_page('index');
+
+        // Load the index page
+        $index_path = __DIR__ . '/index.php';
+        if (file_exists($index_path) && is_readable($index_path)) {
+            error_log("RSLIGHT ROUTER: Loading default index page");
+            include $index_path;
+            return true;
+        } else {
+            error_log("RSLIGHT ERROR: Default index page not found at $index_path");
+            return false;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Debug function - show available pages
  * Only for development/debugging
  */
@@ -515,19 +551,28 @@ function rslight_debug_pages() {
     echo "</ul>";
 }
 
-// Auto-route if page parameter is present and we're not in CLI mode
-if (php_sapi_name() !== 'cli' && isset($_GET['page'])) {
-    if (rslight_route_page()) {
-        // Page was successfully routed and executed
-        exit();
-    } else {
-        // Invalid page requested - could log this as potential attack
-        error_log("RSLIGHT SECURITY: Invalid page request: " . ($_GET['page'] ?? 'null'));
+// Auto-route based on request
+if (php_sapi_name() !== 'cli') {
+    if (isset($_GET['page'])) {
+        // Specific page requested
+        if (rslight_route_page()) {
+            // Page was successfully routed and executed
+            exit();
+        } else {
+            // Invalid page requested - could log this as potential attack
+            error_log("RSLIGHT SECURITY: Invalid page request: " . ($_GET['page'] ?? 'null'));
 
-        // Don't give detailed error info to potential attackers
-        header("HTTP/1.0 404 Not Found");
-        echo "<h1>Page Not Found</h1>";
-        exit();
+            // Don't give detailed error info to potential attackers
+            header("HTTP/1.0 404 Not Found");
+            echo "<h1>Page Not Found</h1>";
+            exit();
+        }
+    } else {
+        // No page specified - serve default index page
+        if (rslight_serve_default_page()) {
+            exit();
+        }
+        // If default page fails, continue with normal flow (don't exit)
     }
 }
 
