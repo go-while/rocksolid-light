@@ -170,34 +170,117 @@ function nntp2_open($nserver = 0, $nport = 0)
         $nport = $CONFIG['remote_port'];
     }
 
-    // Use the new debug logging function that handles empty paths
-    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, $debug_log);
-    echo "nntp2_open: nserver: " . $nserver . " nport: " . $nport . " SSL=" . ($CONFIG['remote_ssl'] ? "enabled" : "disabled") . "\n";
-
-    if ($CONFIG['remote_ssl']) {
-        if ($nport == $CONFIG['remote_port']) {
-            $nport = $CONFIG['remote_ssl'];
-        }
-        $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
-        if (! $ns) {
-            error_log_always("\n" . format_log_date() . " " . $config_name . " ERROR: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, $debug_log);
-            return false;
-        }
-        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $nport, $debug_log);
-    } else {
-        if (isset($CONFIG['socks_host']) && $CONFIG['socks_host'] !== '') {
-            $ns = fsocks4asockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $nserver, $nport);
-        } else {
-            $ns = @fsockopen('tcp://' . $nserver . ":" . $nport);
-        }
-        if (!$ns) {
-            error_log_always("\n" . format_log_date() . " " . $config_name . " ERROR: TCP connection failed to " . $nserver . ":" . $nport, $debug_log);
-            return false;
+    // Check memcache circuit breaker if enabled
+    $cache_key = "nntp_dead_" . $nserver . "_" . $nport;
+    if (function_exists('memcache_get') && isset($CONFIG['memcache_server'])) {
+        $memcache = new Memcache;
+        if (@$memcache->connect($CONFIG['memcache_server'], isset($CONFIG['memcache_port']) ? $CONFIG['memcache_port'] : 11211)) {
+            $dead_until = $memcache->get($cache_key);
+            if ($dead_until && time() < $dead_until) {
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: NNTP server marked as dead until " . date('Y-m-d H:i:s', $dead_until), $debug_log);
+                return false;
+            }
+            $memcache->close();
         }
     }
-    echo "nntp2_open: connected? ns: " . $ns . "\n";
-    // $ns=@fsockopen($nserver,$nport);
-    // echo "PORT: ".$nport." ns: ".$ns;
+
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, $debug_log);
+
+    $ns = false;
+    $ssl_port = isset($CONFIG['remote_ssl']) && $CONFIG['remote_ssl'] ? $CONFIG['remote_ssl'] : 563;
+    $tcp_port = $nport;
+
+    // Try SSL first if configured
+    if (isset($CONFIG['remote_ssl']) && $CONFIG['remote_ssl']) {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Trying SSL connection to " . $nserver . ":" . $ssl_port, $debug_log);
+        $ns = @fsockopen("ssl://" . $nserver, $ssl_port, $error, $errorString, 30);
+        if ($ns) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $ssl_port, $debug_log);
+        } else {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection failed to " . $nserver . ":" . $ssl_port . " - " . $errorString, $debug_log);
+        }
+    }
+
+    // Fallback to TCP if SSL failed or not configured
+    if (!$ns) {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Trying TCP connection to " . $nserver . ":" . $tcp_port, $debug_log);
+
+        $use_socks = false;
+        $socks_cache_key = "socks_dead_" . $CONFIG['socks_host'] . "_" . $CONFIG['socks_port'];
+
+        // Check if SOCKS is configured
+        if (isset($CONFIG['socks_host']) && $CONFIG['socks_host'] !== '') {
+            // Check memcache circuit breaker for SOCKS
+            $socks_dead = false;
+            if (function_exists('memcache_get') && isset($CONFIG['memcache_server'])) {
+                $memcache = new Memcache;
+                if (@$memcache->connect($CONFIG['memcache_server'], isset($CONFIG['memcache_port']) ? $CONFIG['memcache_port'] : 11211)) {
+                    $socks_dead_until = $memcache->get($socks_cache_key);
+                    if ($socks_dead_until && time() < $socks_dead_until) {
+                        $socks_dead = true;
+                        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SOCKS proxy marked as dead until " . date('Y-m-d H:i:s', $socks_dead_until), $debug_log);
+                    }
+                    $memcache->close();
+                }
+            }
+
+            // Test SOCKS proxy if not marked as dead
+            if (!$socks_dead) {
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Testing SOCKS proxy " . $CONFIG['socks_host'] . ":" . $CONFIG['socks_port'], $debug_log);
+                $socks_test = @fsockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $socks_error, $socks_errstr, 3);
+                if ($socks_test) {
+                    fclose($socks_test);
+                    $use_socks = true;
+                    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SOCKS proxy is available", $debug_log);
+                } else {
+                    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SOCKS proxy failed: " . $socks_errstr, $debug_log);
+
+                    // Mark SOCKS as dead in memcache for 5 minutes
+                    if (function_exists('memcache_get') && isset($CONFIG['memcache_server'])) {
+                        $memcache = new Memcache;
+                        if (@$memcache->connect($CONFIG['memcache_server'], isset($CONFIG['memcache_port']) ? $CONFIG['memcache_port'] : 11211)) {
+                            $socks_dead_time = time() + 300; // 5 minutes
+                            $memcache->set($socks_cache_key, $socks_dead_time, 0, 300);
+                            $memcache->close();
+                            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Marked SOCKS proxy as dead until " . date('Y-m-d H:i:s', $socks_dead_time), $debug_log);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Try connection through SOCKS or direct
+        if ($use_socks) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Using SOCKS proxy for connection", $debug_log);
+            $ns = fsocks4asockopen($CONFIG['socks_host'], $CONFIG['socks_port'], $nserver, $tcp_port);
+        } else {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Using direct TCP connection", $debug_log);
+            $ns = @fsockopen('tcp://' . $nserver . ":" . $tcp_port, null, $error, $errorString, 30);
+        }
+
+        if ($ns) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: TCP connection successful to " . $nserver . ":" . $tcp_port . ($use_socks ? " via SOCKS" : " direct"), $debug_log);
+        } else {
+            debug_log("\n" . format_log_date() . " " . $config_name . " ERROR: TCP connection failed to " . $nserver . ":" . $tcp_port . " - " . $errorString, $debug_log);
+        }
+    }
+
+    // If both connections failed, mark server as dead in memcache
+    if (!$ns) {
+        if (function_exists('memcache_get') && isset($CONFIG['memcache_server'])) {
+            $memcache = new Memcache;
+            if (@$memcache->connect($CONFIG['memcache_server'], isset($CONFIG['memcache_port']) ? $CONFIG['memcache_port'] : 11211)) {
+                $dead_time = time() + 300; // Mark as dead for 5 minutes
+                $memcache->set($cache_key, $dead_time, 0, 300);
+                $memcache->close();
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Marked NNTP server as dead until " . date('Y-m-d H:i:s', $dead_time), $debug_log);
+            }
+        }
+        error_log_always("\n" . format_log_date() . " " . $config_name . " ERROR: All connection attempts failed to " . $nserver, $debug_log);
+        return false;
+    }
+
+    // Connection successful, proceed with NNTP handshake
     $weg = line_read($ns); // kill the first line
     if (substr($weg, 0, 2) != "20") {
         echo "<p>" . $text_error["error:"] . $weg . "</p>";
