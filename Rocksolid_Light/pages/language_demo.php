@@ -3,11 +3,10 @@
 include "lib/config.inc.php";
 include "allowed_languages.inc.php";
 
-?><!DOCTYPE html>
-<html>
-<head>
-    <title>Language Switch Test</title>
-    <style>
+// Use new router-based header system
+if (function_exists('rslight_render_complete_header')) {
+    rslight_render_complete_header('Language Switch Test', 'language_demo');
+    echo '<style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .demo-box { background: #f0f8ff; padding: 20px; margin: 20px 0; border-radius: 8px; border: 1px solid #ddd; }
         .language-info { background: #e8f5e8; padding: 15px; border-radius: 4px; margin: 10px 0; }
@@ -15,9 +14,28 @@ include "allowed_languages.inc.php";
         .translation-box { background: white; padding: 15px; border-radius: 4px; border: 1px solid #ccc; }
         .button { padding: 10px 20px; background: #0066cc; color: white; text-decoration: none; border-radius: 4px; display: inline-block; margin: 5px; }
         .current-lang { font-weight: bold; color: #0066cc; }
-    </style>
-</head>
-<body>
+    </style>';
+} else {
+    // Fallback to old system
+    ?><!DOCTYPE html>
+    <html>
+    <head>
+        <title>Language Switch Test</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .demo-box { background: #f0f8ff; padding: 20px; margin: 20px 0; border-radius: 8px; border: 1px solid #ddd; }
+            .language-info { background: #e8f5e8; padding: 15px; border-radius: 4px; margin: 10px 0; }
+            .translation-examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+            .translation-box { background: white; padding: 15px; border-radius: 4px; border: 1px solid #ccc; }
+            .button { padding: 10px 20px; background: #0066cc; color: white; text-decoration: none; border-radius: 4px; display: inline-block; margin: 5px; }
+            .current-lang { font-weight: bold; color: #0066cc; }
+        </style>
+    </head>
+    <body>
+    <?php
+}
+?>
+
     <h1>🌐 Rocksolid Light Language Switching Demo</h1>
 
     <div class="demo-box">

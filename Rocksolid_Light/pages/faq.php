@@ -15,16 +15,20 @@ require __DIR__ . "/../rocksolid/lib/security.inc.php";
 // Add security headers
 add_security_headers();
 
-$title .= " - Privacy and FAQ";
+$title = "Privacy and FAQ";
 
-//die("add_security_headers() must be called before any output is sent to the browser.");
+// Use new router-based header system instead of head.inc
+if (function_exists('rslight_render_complete_header')) {
+    rslight_render_complete_header($title, 'faq');
+} else {
+    // Fallback to old system if router not loaded
+    include "head.inc";
+    echo '<meta http-equiv="content-type" content="text/html; charset=UTF-8">';
+    echo '<title>Privacy and FAQ</title>';
+    echo '</head><body>';
+}
 
-include "head.inc";
-
-  echo '<meta http-equiv="content-type" content="text/html; charset=UTF-8">';
-  echo '<title>Privacy and FAQ</title>';
-  echo '</head><body>';
-  echo '<center>';
+echo '<center>';
 
 // Privacy
   echo '<h4 style="faq_titles">Privacy:</h4>';
