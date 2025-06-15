@@ -8,7 +8,7 @@ Each page needs to be converted from standalone execution to router-compatible e
 
 ### High Priority (Core Functionality):
 - ✅ `pages/article-flat.php` - COMPLETED
-- 🔄 `pages/overboard.php` - IN PROGRESS (Variable dependencies issue)
+- ✅ `pages/overboard.php` - COMPLETED (Major NNTP connection overhaul)
 - ⏳ `pages/thread.php`
 - ⏳ `pages/article.php`
 - ⏳ `pages/search.php`
@@ -39,6 +39,25 @@ php -l pages/TARGET_PAGE.php
 # Create backup (optional)
 cp pages/TARGET_PAGE.php pages/TARGET_PAGE.php.backup
 ```
+
+### Phase 1A: NNTP Connection Assessment (NEW)
+**Critical for pages that use NNTP connections:**
+```bash
+# Check NNTP configuration
+grep -E "remote_server|remote_ssl|socks_host" /etc/rslight/rslight/rslight.inc.php
+
+# Test basic connectivity
+telnet news.example.com 119
+
+# Check logs for connection issues
+tail -f /var/spool/rslight/log/debug.log
+```
+
+**Common NNTP issues:**
+- SOCKS proxy configured but not running (Tor on port 9050)
+- SSL port configured but server doesn't support SSL
+- Connection refused due to firewall/network issues
+- php-cli vs php-fpm different network access
 
 ### Phase 2: Remove Legacy Includes
 Remove these patterns:
@@ -108,6 +127,28 @@ Ensure required variables are available. Common missing variables:
 - `$config_dir` - config directory
 - `$file_*` variables - URL paths
 
+**CRITICAL LESSON: Variable Scope Issues**
+Global variables in functions often fail in router context. Use **parameter passing** instead:
+
+```php
+// PROBLEMATIC (Global variables):
+function display_threads($threads, $oldest) {
+    global $snippetlength; // Often fails in router context
+    $text = substr($content, 0, $snippetlength);
+}
+
+// FIXED (Parameter passing):
+function display_threads($threads, $oldest, $snippetlength) {
+    $text = substr($content, 0, $snippetlength);
+}
+```
+
+Update function calls accordingly:
+```php
+// Update the calls:
+$results = display_threads($this_overboard['threads'], $oldest, $snippetlength);
+```
+
 ### Phase 8: Fix Broken Redirects
 Replace problematic `$config_name` logic:
 ```php
@@ -149,6 +190,39 @@ curl -I "http://SITE.com/SECTION/?page=TARGET_PAGE&param=value"
 **Error**: `Call to undefined function _rawurldecode()`
 **Solution**: Fix function names (`_rawurldecode` → `rawurldecode`)
 
+### Issue 4: NNTP Connection Failures (NEW)
+**Error**: "The connection to the Message Server failed"
+**Root Causes**:
+1. SOCKS proxy configured but not running
+2. SSL connection to wrong port
+3. Direct TCP connection blocked
+
+**Solution**: Implement robust connection logic in `nntp2_open()`:
+```php
+// 1. Check memcache circuit breaker first
+// 2. Try SSL connection if configured
+// 3. Test SOCKS proxy health before using
+// 4. Fallback to direct TCP connection
+// 5. Mark failed servers in memcache (5 min timeout)
+```
+
+### Issue 5: Article Formatting Problems (NEW)
+**Error**: Articles display as single line without formatting
+**Solution**: Use proper text processing chain:
+```php
+// WRONG (preserves HTML/breaks):
+$formatted_text = htmlentities($text);
+$formatted_text = nl2br($formatted_text);
+
+// CORRECT (clean one-line snippets):
+$display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+```
+
+### Issue 6: Variable Scope Failures (NEW)
+**Error**: Variables like `$snippetlength` show as empty
+**Root Cause**: Global variables don't work reliably in router context
+**Solution**: Convert to parameter passing (see Phase 7)
+
 ### Issue 4: Router Rejection
 **Error**: `RSLIGHT SECURITY: Invalid page request`
 **Solution**: Ensure page is in `$RSLIGHT_PAGE_MAP` in `pages/pages.php`
@@ -180,6 +254,24 @@ curl -I "http://SITE.com/SECTION/?page=TARGET_PAGE&param=value"
 - ✅ `pages/faq.php` - COMPLETED
 - ✅ `pages/header_test.php` - COMPLETED
 
+## Major Breakthroughs (June 2025)
+
+### NNTP Connection Overhaul
+- **Problem**: SOCKS proxy configured but not running, SSL connections failing
+- **Solution**: 3-tier fallback system (SSL → SOCKS → Direct TCP)
+- **Features**: Circuit breaker, health checking, comprehensive logging
+- **Impact**: Rock-solid connectivity for all article pages
+
+### Variable Scope Resolution
+- **Problem**: Global variables failing in router context (`$snippetlength` empty)
+- **Solution**: Parameter passing instead of global declarations
+- **Impact**: Reliable variable access across all migrated pages
+
+### Article Formatting Fix
+- **Problem**: Mangled text output, missing line breaks
+- **Solution**: Proper text processing with `strip_tags(html_parse(text2html()))`
+- **Impact**: Clean one-line snippets matching legacy behavior
+
 ## Quality Assurance
 
 ### Before Migration:
@@ -206,16 +298,19 @@ For each page, use this checklist:
 
 ```
 [ ] Phase 1: Syntax check & backup
+[ ] Phase 1A: NNTP connection assessment (if applicable)
 [ ] Phase 2: Remove legacy includes
 [ ] Phase 3: Remove cache headers
 [ ] Phase 4: Replace header system
 [ ] Phase 5: Replace footer system
 [ ] Phase 6: Remove function existence checks
-[ ] Phase 7: Fix variable dependencies
+[ ] Phase 7: Fix variable dependencies (use parameter passing!)
 [ ] Phase 8: Fix broken redirects (if any)
 [ ] Phase 9: Syntax check & test
 [ ] QA: Page loads correctly
 [ ] QA: All functionality works
+[ ] QA: Article formatting matches legacy (if applicable)
+[ ] QA: NNTP connections work reliably (if applicable)
 [ ] QA: No broken links
 ```
 
