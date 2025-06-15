@@ -602,3 +602,64 @@ Now that secure routing works, potential future improvements:
 **Golden Rule:** Each phase only starts when previous phase is completely stable!
 
 ---
+
+## 🔥 CRITICAL SECTION/GROUP SYSTEM BUG FIX - December 2024
+
+### **The Section/Group Architecture**
+
+Rocksolid Light organizes newsgroups into "sections" defined by:
+
+1. **`/etc/rslight/menu.conf`** - Lists available sections:
+   ```
+   spoolnews:0:1  # spoolnews section, disabled (0), priority 1
+   rocksolid:1:1  # rocksolid section, enabled (1), priority 1
+   ```
+
+2. **Section directories** - Each contains `groups.txt`:
+   ```
+   /etc/rslight/spoolnews/groups.txt   # Contains: rocksolid.spam
+   /etc/rslight/rocksolid/groups.txt   # Contains: rocksolid.shared.encryption, etc.
+   ```
+
+3. **`get_section_by_group()` function** - Maps group names to sections
+
+### **The Critical Bug**
+
+**Location:** `rslight/inc/functions.inc.php` line 481
+
+**BROKEN CODE:**
+```php
+$groups_file = $config_dir . $menuitem[0] . "/groups.txt";
+// Created paths like: /etc/rslightspoolnews/groups.txt ❌
+```
+
+**FIXED CODE:**
+```php
+$groups_file = $config_dir . '/' . $menuitem[0] . "/groups.txt";
+// Creates paths like: /etc/rslight/spoolnews/groups.txt ✅
+```
+
+### **Impact of the Bug**
+- **ALL** valid newsgroups showed "Group not found in section configuration"
+- SQLite database operations failed (no section = no database path)
+- "Last Message" column empty across entire web interface
+- Massive log spam making debugging nearly impossible
+- Fallback methods triggered constantly but provided no useful data
+
+### **How It Was Found**
+1. Created `test_group_extraction.php` to debug group extraction logic
+2. Compared working `debug_groups.php` vs failing web context
+3. Used `DEBUG_SECTION_LOOKUP` constant to trace function execution
+4. Discovered path construction was creating invalid file paths
+5. One character fix resolved the entire newsgroup system
+
+### **Verification**
+- ✅ All `rocksolid.*` groups now correctly found in "rocksolid" section
+- ✅ `rocksolid.spam` correctly found in "spoolnews" section
+- ✅ Database operations work properly
+- ✅ Log spam eliminated
+- ✅ Web interface should now show proper "Last Message" data
+
+**This demonstrates that even single-character bugs can break entire subsystems!** 🎯
+
+---

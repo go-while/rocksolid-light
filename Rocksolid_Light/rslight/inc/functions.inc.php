@@ -456,10 +456,20 @@ function get_section_by_group($groupname, $all_sections = false)
 {
     global $config_dir;
 
+    // Debug output
+    if (defined('DEBUG_SECTION_LOOKUP')) {
+        echo "DEBUG: Looking for group '$groupname'\n";
+    }
+
     $menulist = get_section_menu_array();
     // Get first group in Newsgroups
     $groupname = preg_split("/( |\,)/", $groupname, 2);
     $groupname = $groupname[0];
+
+    if (defined('DEBUG_SECTION_LOOKUP')) {
+        echo "DEBUG: Cleaned groupname: '$groupname'\n";
+    }
+
     foreach ($menulist as $menu) {
         $menuitem = explode(':', $menu);
         if ($menuitem[1] == '0') {
@@ -468,22 +478,47 @@ function get_section_by_group($groupname, $all_sections = false)
             }
         }
         $section = "";
-        $groups_file = $config_dir . $menuitem[0] . "/groups.txt";
+        $groups_file = $config_dir . '/' . $menuitem[0] . "/groups.txt";
+
+        if (defined('DEBUG_SECTION_LOOKUP')) {
+            echo "DEBUG: Checking section '{$menuitem[0]}', file: $groups_file\n";
+        }
+
         if (!file_exists($groups_file)) {
+            if (defined('DEBUG_SECTION_LOOKUP')) {
+                echo "DEBUG: File does not exist: $groups_file\n";
+            }
             continue; // Skip sections without groups.txt files
         }
         $gldata = file($groups_file);
         if ($gldata === false) {
+            if (defined('DEBUG_SECTION_LOOKUP')) {
+                echo "DEBUG: Cannot read file: $groups_file\n";
+            }
             continue; // Skip if file can't be read
         }
         foreach ($gldata as $gl) {
             $group_name = preg_split("/( |\t)/", $gl, 2);
-            if (strtolower(trim($groupname)) == strtolower(trim($group_name[0]))) {
+            $group_name_clean = trim($group_name[0]);
+
+            if (defined('DEBUG_SECTION_LOOKUP')) {
+                echo "DEBUG: Comparing '$groupname' with '$group_name_clean'\n";
+            }
+
+            if (strtolower(trim($groupname)) == strtolower(trim($group_name_clean))) {
+                if (defined('DEBUG_SECTION_LOOKUP')) {
+                    echo "DEBUG: MATCH FOUND in section '{$menuitem[0]}'\n";
+                }
                 $section = $menuitem[0];
                 return $section;
             }
         }
     }
+
+    if (defined('DEBUG_SECTION_LOOKUP')) {
+        echo "DEBUG: No section found for group '$groupname'\n";
+    }
+
     return false;
 }
 
@@ -843,7 +878,7 @@ function groups_show($gruppen)
                         }
                         $article_dbh = null;                    } else {
                         // Database connection failed, try fallback to cached data
-                        // Note: Groups without section config will fail here regularly
+                        debug_log("Failed to open article database for group: " . $g->name . ", trying fallback methods", $debug_log);
 
                         // Try to load from cache or file as fallback
                         if ($enable_cache) {
@@ -854,7 +889,8 @@ function groups_show($gruppen)
                                     $lastarticleinfo = secure_unserialize($lar);
                                     if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
                                         $found = 1;
-                                        // Only log success to avoid spam
+                                        $row = $lastarticleinfo; // Set row for later use in display
+                                        debug_log("Successfully loaded cached article info for group: " . $g->name, $debug_log);
                                     }
                                 } catch (Exception $e) {
                                     $lastarticleinfo = false;
@@ -872,7 +908,8 @@ function groups_show($gruppen)
                                         $lastarticleinfo = secure_unserialize($file_data);
                                     if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
                                             $found = 1;
-                                            // Only log success to avoid spam
+                                            $row = $lastarticleinfo; // Set row for later use in display
+                                            debug_log("Successfully loaded file-based article info for group: " . $g->name, $debug_log);
                                         }
                                     } catch (Exception $e) {
                                         $lastarticleinfo = false;
@@ -881,7 +918,10 @@ function groups_show($gruppen)
                             }
                         }
 
-                        // If all fallbacks failed, no logging needed - this is expected for unconfigured groups
+                        // If all fallbacks failed, log for debugging
+                        if ($found == 0) {
+                            debug_log("No fallback article info available for group: " . $g->name, $debug_log);
+                        }
                     }
                 } else {
                     $database = $spooldir . '/articles-overview.db3';
@@ -900,7 +940,7 @@ function groups_show($gruppen)
                         }
                         $overview_dbh = null;                    } else {
                         // Overview database connection failed, try fallback methods
-                        // Note: This is expected for groups without proper configuration
+                        debug_log("Failed to open overview database for group: " . $g->name . ", trying fallback methods", $debug_log);
 
                         // Try to load from cache or file as fallback (same logic as article database)
                         if ($enable_cache) {
@@ -912,7 +952,7 @@ function groups_show($gruppen)
                                     if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
                                         $found = 1;
                                         $row = $lastarticleinfo; // Set row for later use
-                                        // Success - no need to log this repeatedly
+                                        debug_log("Successfully loaded cached overview info for group: " . $g->name, $debug_log);
                                     }
                                 } catch (Exception $e) {
                                     $lastarticleinfo = false;
@@ -931,7 +971,7 @@ function groups_show($gruppen)
                                         if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
                                             $found = 1;
                                             $row = $lastarticleinfo; // Set row for later use
-                                            // Success - no need to log this repeatedly
+                                            debug_log("Successfully loaded file-based overview info for group: " . $g->name, $debug_log);
                                         }
                                     } catch (Exception $e) {
                                         $lastarticleinfo = false;
@@ -940,7 +980,10 @@ function groups_show($gruppen)
                             }
                         }
 
-                        // Silence expected failures for unconfigured groups
+                        // Log when all fallbacks fail for debugging
+                        if ($found == 0) {
+                            debug_log("No fallback overview info available for group: " . $g->name, $debug_log);
+                        }
                     }
                 }
                 if ($found == 1) {
@@ -1140,8 +1183,15 @@ function show_groups_hide_toggle()
 }
 
 /*
+ * This function is deprecated and not used anymore.
+ * It was used to display groups in a block format.
+ * It is kept here for reference, but should not be used in new code.
+ *
+ * @deprecated
+/*
  * print the group names from an array to the webpage
  */
+/*
 function groups_show_frames($gruppen)
 {
     global $gl_age, $frame, $spooldir;
@@ -1172,7 +1222,7 @@ function groups_show_frames($gruppen)
                 echo '<div class="np_index_groupblock">';
             }
             echo '<div class="np_index_group">';
-            echo '<b><a ';
+            echo '<b>DEBUG<a ';
             echo 'target="' . $frame['content'] . '" ';
             echo 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '">' . group_display_name($g->name) . "</a></b>\n";
             if ($gl_age) {
@@ -1195,6 +1245,8 @@ function groups_show_frames($gruppen)
     }
     echo "</div></div>\n";
 }
+*/
+
 
 /*
  * gets a list of available articles in the group $groupname
@@ -2379,8 +2431,8 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\//", "", $group);
     if (! preg_match('/\-articles\.db3\-new/', $database)) {
         if (! get_section_by_group($group, true)) {
-            // Don't log for every request - these groups consistently lack section config
-            // Only log at very low debug level to avoid spam
+            // Log section configuration issues for debugging
+            debug_log("Group '$group' not found in section configuration, cannot create database", $logfile);
             return false;
         }
     }

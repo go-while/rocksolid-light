@@ -587,7 +587,7 @@ function show_header($head, $group, $local_poster = false)
     echo '<textarea id="' . $head->id . 'copy"';
     echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
     echo '<textarea id="' . $head->number . 'copy"';
-    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
@@ -597,14 +597,14 @@ function show_header($head, $group, $local_poster = false)
     }
 ?>
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . urlencode($head->id); ?>"
+    <a href="<?php echo '?page=article-flat&id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
 
 
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+    <a href="<?php echo '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
         onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
@@ -708,7 +708,7 @@ function show_header_short($head, $group, $local_poster = false)
     echo '<textarea id="' . $head->id . 'copy"';
     echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
     echo '<textarea id="' . $head->number . 'copy"';
-    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<form><span class="short_header_javascript_links">';
     if ($article_show["trigger_headers"]) {
@@ -718,14 +718,14 @@ function show_header_short($head, $group, $local_poster = false)
     }
 ?>
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . urlencode($head->id); ?>"
+    <a href="<?php echo '?page=article-flat&id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
 
 
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+    <a href="<?php echo '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
         onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
@@ -779,7 +779,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
     echo '<textarea id="' . $head->id . 'copy"';
     echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . htmlspecialchars($head->id) . '</textarea>';
     echo '<textarea id="' . $head->number . 'copy"';
-    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
+    echo ' style="position: fixed; height: 0; overflow: hidden; border:none;">' . '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number . '</textarea>';
 
     echo '<table class="show_header_short_with_subject_table">';
 
@@ -910,13 +910,13 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
     }
     ?>
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . urlencode($head->id); ?>"
+    <a href="<?php echo '?page=article-flat&id=' . urlencode($head->id); ?>"
         onclick="CopyToClipboard('<?php echo $head->id . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy message-id to clipboard"><i>copy
             mid</i></a>
 
     &nbsp;
-    <a href="<?php echo '?page=article-flat.php&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
+    <a href="<?php echo '?page=article-flat&id=' . $head->number . '&group=' . urlencode($group) . '#' . $head->number; ?>"
         onclick="CopyToClipboard('<?php echo $head->number . 'copy'; ?>');return false;"
         style="text-decoration: none" title="Copy article link to clipboard"><i>copy
             link</i></a>
@@ -1107,6 +1107,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG, $current_message;
+
+    echo "[DEBUG inc/message.inc.php message_show] group: " . $group . ", id: " . $id . ", attachment: " . $attachment . "<br>";
+
     $current_message = np_get_db_article($id, $group, 1);
 
     if ($article_data == false) {

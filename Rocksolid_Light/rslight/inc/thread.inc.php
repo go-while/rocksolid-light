@@ -993,6 +993,7 @@ function thread_format_lastmessage($c, $group = '')
     if ($CONFIG['article_database'] == '1') {
         $database = $spooldir . '/' . $group . '-articles.db3';
         $table = 'articles';
+        echo "<!-- DEBUG Using database $database, table $table -->\n";
         if (is_file($database)) {
             $dbh = article_db_open($database, $table);
             $stmt = $dbh->prepare("SELECT name,date,msgid,number FROM $table WHERE date=:date ORDER BY date DESC");
