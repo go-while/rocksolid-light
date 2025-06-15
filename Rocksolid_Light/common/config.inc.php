@@ -6,7 +6,8 @@ $config_file = $config_dir.'rslight.inc.php';
 $CONFIG = include $config_file;
 $title = $CONFIG['title_full']; // TODO WHY HERE?
 */
-//if(isset($config_name)) {die("common/config.inc.php loading alternate config file: $config_file<br>\n");}
+
+if(isset($config_name)) {die("DEBUG common/config.inc.php loading alternate config file: $config_file<br>\n");}
 
 /* OLD config.inc.php KEEP FOR REFERENCE */
 /* Location of configuration and spool */
@@ -16,11 +17,11 @@ $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDC
 
 if(isset($config_name) && file_exists($config_dir.$config_name.'.inc.php')) {
   $config_file = $config_dir.$config_name.'.inc.php';
-  die("alternate config file: $config_file\n");
+  die("!DEBUG common/config.inc.php: alternate config file: $config_file<br>\n");
 
 } else {
   $config_file = $config_dir.'rslight.inc.php';
-  echo "Using default config file: $config_file\n";
+  echo "DEBUG common/config.inc.php: Using default config file: $config_file\n";
 }
 // Include main config file for rslight
 $CONFIG = include $config_file;
