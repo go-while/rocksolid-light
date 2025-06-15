@@ -1,8 +1,10 @@
 <?php
 
+
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
+die("exit here... this is a stub file for testing purposes only!<br>\n");
 
 ini_set('memory_limit', '1536M');
 if (!isset($_SESSION)) {
