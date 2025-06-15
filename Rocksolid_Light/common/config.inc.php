@@ -7,14 +7,6 @@ echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
 
 $config_dir = "/etc/rslight"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir>
 $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir>
-
-// For development/testing, check if local rslight directory exists
-if (!is_dir($config_dir) && is_dir(__DIR__ . '/../rslight')) {
-    $config_dir = __DIR__ . '/../rslight';
-    $spooldir = __DIR__ . '/../spool';
-    echo "[common/config.inc.php: Using development paths - config_dir: $config_dir, spooldir: $spooldir]<br>\n";
-}
-
 $config_file = $config_dir.'/rslight.inc.php';
 
 // Initialize logging paths early - needed for cron and debug logging

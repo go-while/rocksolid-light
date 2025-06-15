@@ -60,7 +60,7 @@ $RSLIGHT_PAGE_MAP = [
  */
 $RSLIGHT_PAGE_CACHE = [
     'article'      => ['expires' => 3600 * 24, 'max_age' => 3600 * 24],  // 24 hours
-    'article-flat' => ['expires' => 3600 * 24, 'max_age' => 3600 * 24],  // 24 hours
+    'article-flat' => ['expires' => 100, 'max_age' => 100],               // 100 seconds
     'thread'       => ['expires' => 100, 'max_age' => 100],               // 100 seconds
     'overboard'    => ['expires' => 120, 'max_age' => 120],               // 2 minutes
     'search'       => ['expires' => 120, 'max_age' => 120],               // 2 minutes
@@ -397,7 +397,8 @@ function rslight_render_msgid_search() {
 
     if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
         if ($config_name != "common" && $config_name != 'spoolnews') {
-            echo '<form name="form1" method="get" action="article-flat.php">';
+            echo '<form name="form1" method="get" action="?">';
+            echo '<input type="hidden" name="page" value="article-flat">';
             echo '<table class="header_message_id_search">';
             echo '<tr><td class="header_message_id_search_prompt">Message-ID: ';
             echo '<input name="id" type="text" id="id" size="40" maxlength="120">&nbsp;';
@@ -567,7 +568,7 @@ if (php_sapi_name() !== 'cli') {
             exit();
         } else {
             // Invalid page requested - could log this as potential attack
-            error_log("RSLIGHT SECURITY: Invalid page request: " . ($_GET['page'] ?? 'null'));
+            error_log("RSLIGHT SECURITY: Invalid page request: " . ($_GET['page'] ?? 'null') . " | Query: " . http_build_query($_GET));
 
             // Don't give detailed error info to potential attackers
             header("HTTP/1.0 404 Not Found");

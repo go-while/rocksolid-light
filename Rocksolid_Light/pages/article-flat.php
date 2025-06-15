@@ -1,9 +1,7 @@
 <?php
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (100)) . " GMT");
-header("Cache-Control: max-age=100");
-header("Pragma: cache");
+echo "<!-- article-flat.php start -->\n";
 
-include "lib/config.inc.php";
+//include "lib/config.inc.php";
 //include "$file_newsportal";
 //require_once(__DIR__ . '/lib/security.inc.php');
 
@@ -26,7 +24,7 @@ if (isset($_COOKIE['mail_name'])) {
 }
 // register parameters
 $id = $_REQUEST["id"];
-$group = _rawurldecode($_REQUEST["group"]);
+$group = rawurldecode($_REQUEST["group"]);
 
 if (strpos($id, '@') !== false) {
     $id = '<' . trim($id, '<> ') . '>';
@@ -45,7 +43,7 @@ if (strpos($id, '@') !== false) {
     }
     $overview_dbh = null;
     if ($found) {
-        $newurl = 'article-flat.php?id=' . $id . '&group=' . urlencode($row['newsgroup']) . '#' . $id;
+        $newurl = '?page=article-flat&id=' . $id . '&group=' . urlencode($row['newsgroup']) . '#' . $id;
         header("Location: $newurl");
         die();
     }
@@ -53,7 +51,14 @@ if (strpos($id, '@') !== false) {
 
 // Switch to correct section in case group has been moved and link is to old section
 $findsection = get_section_by_group($group);
-if (($findsection) && trim($findsection) !== $config_name) {
+
+// EMERGENCY FIX: Skip redirect when using router system
+// The $config_name variable is incompatible with router system
+// When using ?page= URLs, we're not in the section directory, so $config_name is wrong
+$using_router = isset($_GET['page']) || strpos($_SERVER['REQUEST_URI'], '?page=') !== false;
+
+if (($findsection) && trim($findsection) !== $config_name && !$using_router) {
+    // Only redirect for legacy direct file access, not router URLs
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
         $link = "https";
     else
@@ -111,7 +116,8 @@ if (! $message) {
     header("Last-Modified: " . date("r", $message->header->date));
     $title .= ' - ' . $group . ' - ' . $subject;
 }
-include "lib/head.inc";
+// Use new router header system exclusively
+rslight_render_complete_header($title);
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
@@ -119,7 +125,7 @@ echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target='
 
 if (! $message) {
     echo "Article not found";
-    include "lib/tail.inc";
+    rslight_render_complete_footer();
     exit(0);
 }
 
@@ -228,5 +234,6 @@ if ($message) {
     echo '</td></tr></table>';
     echo '</form>';
 }
-include "lib/tail.inc";
+// Use new router footer system when available, fallback to legacy includes
+rslight_render_complete_footer();
 ?>

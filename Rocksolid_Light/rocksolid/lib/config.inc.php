@@ -162,7 +162,7 @@ $imgdir = "img";
 $file_newsportal = "newsportal.php";
 $file_index = "index.php";
 $file_thread = "thread.php";
-$file_article = "article-flat.php";
+$file_article = "?page=article-flat&";
 $file_article_full = "article.php";
 $file_attachment = "attachment.php";
 $file_post = "post.php";
