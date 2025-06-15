@@ -178,7 +178,9 @@ The `basename(getcwd())` pattern is the **primary cause** of path resolution iss
 
 ## 🚨 **CRITICAL PATH SEPARATOR DISCOVERY**
 
-### The `/` Trailing Slash Mystery
+### FILE: common/config.inc.php
+
+# The `/` Trailing Slash Mystery
 
 **WORKING Configuration:**
 ```php
