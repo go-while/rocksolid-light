@@ -69,7 +69,8 @@ $RSLIGHT_PAGE_CACHE = [
     'upload'       => ['expires' => 60, 'max_age' => 60],                 // 1 minute
     'language_demo' => ['expires' => 3600, 'max_age' => 3600],            // 1 hour
     'language_selector' => ['expires' => 3600, 'max_age' => 3600],        // 1 hour
-    'faq'          => ['expires' => 3600 * 12, 'max_age' => 3600 * 12]    // 12 hours
+    'faq'          => ['expires' => 3600 * 12, 'max_age' => 3600 * 12],   // 12 hours
+    'header_test'  => ['expires' => 60, 'max_age' => 60]                  // 1 minute
 ];
 
 /**
