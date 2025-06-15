@@ -1,37 +1,19 @@
 <?php
 
-
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
-//die("exit here... this is a stub file for testing purposes only!<br>\n");
-// This file needs to load common/config.inc.php for the router to work
-
-/*
-ini_set('memory_limit', '1536M');
-if (!isset($_SESSION)) {
-    ini_set('session.gc_maxlifetime', 14400);
-    session_set_cookie_params(14400);
-    session_start();
-    echo "[rocksolid/lib/config.inc.php: session started]<br>\n";
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
-        // last request was more than 30 minutes ago
-        session_unset();
-        session_destroy();
-    }
-    if(!isset($_SESSION['last_activity'])) {
-        $_SESSION['last_activity'] = time();
-    }
-    $_SESSION['previous_activity'] = $_SESSION['last_activity'];
-    $_SESSION['last_activity'] = time();
-    if(!isset($_SESSION['start_stamp'])) {
-        $_SESSION['start_stamp'] = time();
-    }
-}
-*/
+echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
 
 require("../common/config.inc.php");
 
+// For router system, use the main config directory
+$config_path = $config_dir . "/";
+$script_path = $config_dir . "/scripts/";
+echo "<!-- Debug: config_path set to '$config_path' -->\n";
+// $CONFIG = include($config_file); // Already loaded by common/config.inc.php]['file']) ? $backtrace[0]['file'] : 'Direct execution';
+
+echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
 /*
  * Config file name should be the basename
  * of your path where you installed rslight
@@ -59,11 +41,11 @@ $installed_path = getcwd();
  * are located
  */
 
- /*
-$config_path = $config_dir . $config_name . "/";
+// Set config_path without using deprecated $config_name
+// For router system, use the main config directory
+$config_path = $config_dir . "/";
 $script_path = $config_dir . "/scripts/";
-$CONFIG = include($config_file);
-*/
+// $CONFIG = include($config_file); // Already loaded by common/config.inc.php
 
 /*
 // Load overrides from local directory (runtime application config)
