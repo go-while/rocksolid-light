@@ -176,8 +176,72 @@ The `basename(getcwd())` pattern is the **primary cause** of path resolution iss
 
 ---
 
-## CONCLUSION
+## 🚨 **CRITICAL PATH SEPARATOR DISCOVERY**
 
-**The include wars aren't random chaos** - they're the result of a filesystem-based multi-tenant architecture that assumes specific working directory contexts. The system works when those assumptions are met, breaks when they're not.
+### The `/` Trailing Slash Mystery
 
-**Current approach is correct: Use symlinks and workarounds to maintain working directory assumptions rather than fighting the architecture.**
+**WORKING Configuration:**
+```php
+$config_dir = "/etc/rslight/";     // ← NOTE THE TRAILING SLASH
+$spooldir = "/var/spool/rslight";
+$config_file = $config_dir.'rslight.inc.php';  // Results in: /etc/rslight/rslight.inc.php
+```
+
+**BROKEN Configuration:**
+```php
+$config_dir = "/etc/rslight";      // ← NO TRAILING SLASH
+$spooldir = "/var/spool/rslight";
+$config_file = $config_dir.'/rslight.inc.php'; // Results in: /etc/rslight/rslight.inc.php
+```
+
+### Why This Breaks Everything
+
+The system is **inconsistent** about path separator handling:
+
+1. **Some code assumes trailing slash:**
+   ```php
+   $config_file = $config_dir.'rslight.inc.php';  // Needs trailing slash in $config_dir
+   ```
+
+2. **Other code adds separator:**
+   ```php
+   $config_file = $config_dir.'/rslight.inc.php'; // Adds separator manually
+   ```
+
+3. **Mixed usage throughout codebase:**
+   - Some files expect `$config_dir` to end with `/`
+   - Others add `/` when concatenating
+   - **No consistent pattern!**
+
+### Impact on System
+
+When `$config_dir` lacks trailing slash:
+- ❌ Config files not found: `/etc/rslightrslight.inc.php` (missing separator)
+- ❌ Path resolution fails across the system
+- ❌ Include chains break
+- ❌ Both web interface and cron jobs fail
+
+When `$config_dir` has trailing slash:
+- ✅ Config loading works correctly
+- ✅ Path concatenation produces valid paths
+- ✅ System functions normally
+
+### Root Cause Analysis
+
+This is another manifestation of the **inconsistent path handling** that plagues this codebase:
+- No standardized path building functions
+- Mixed assumptions about trailing slashes
+- Copy-paste code with different separator patterns
+- No validation of path construction
+
+### Current Solution
+
+**ALWAYS use trailing slash for directory variables:**
+```php
+$config_dir = "/etc/rslight/";     // ← MANDATORY TRAILING SLASH
+$spooldir = "/var/spool/rslight";  // ← File paths don't need trailing slash
+```
+
+This matches the original template expectations and prevents path concatenation failures.
+
+---
