@@ -23,7 +23,7 @@ require_once(__DIR__ . '/lib/security.inc.php');
 add_security_headers();
 ```
 
-### Pattern 2: Spoolnews Pages (Absolute Includes)  
+### Pattern 2: Spoolnews Pages (Absolute Includes)
 **Files:** files.php, mail.php, upload.php, user.php
 
 **Common Header Block:**
@@ -85,7 +85,7 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 
 ### 5. **Configuration Loading Duplication**
 - All files load config.inc.php
-- Many load $file_newsportal 
+- Many load $file_newsportal
 - Some have additional config includes
 
 ## Security Concerns
