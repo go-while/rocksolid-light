@@ -22,6 +22,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+// Load rocksolid config for additional variables
+require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
+
+// Fix config_path since $config_name is deprecated
+$config_path = $config_dir . "/";
+$file_groups = $config_path . "groups.txt";
+
 // Add security headers
 add_security_headers();
 
@@ -29,16 +36,25 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
     $_SESSION['last_access'] = time();
 }
 
+// Initialize title (should already be set by rocksolid/lib/config.inc.php but ensure it exists)
+if (!isset($title)) {
+    $title = isset($CONFIG['title_full']) ? $CONFIG['title_full'] : 'Rocksolid Light';
+}
+
+// Debug title components
+echo "<!-- Debug: title before = '$title' -->\n";
+echo "<!-- Debug: CONFIG[title_full] = '" . (isset($CONFIG['title_full']) ? $CONFIG['title_full'] : 'NOT_SET') . "' -->\n";
+
 if (isset($_GET['thisgroup'])) {
     $title .= " - " . rawurldecode(rawurldecode($_GET['thisgroup'])) . " - latest messages";
     $activegroup = urldecode($_GET['thisgroup']);
 } else {
-    $title .= " - " . $config_name . " - overboard";
+    $title .= " - overboard";
 }
 
 rslight_render_complete_header($title);
 
-if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
+if (disable_page_by_user_agent(null, "bot", "Overboard")) {
     echo "<center>Page Disabled</center>";
     rslight_render_complete_footer();
     exit();
@@ -73,7 +89,10 @@ $spoolpath_regexp = '/' . preg_replace('/\//', '\\/', $spoolpath) . '/';
 $thissite = '.';
 
 $groupconfig = $file_groups;
-$cachefile = $spooldir . "/" . $config_name . "-overboard.dat";
+echo "<!-- Debug: file_groups = '$file_groups' -->\n";
+echo "<!-- Debug: config_path = '" . (isset($config_path) ? $config_path : 'NOT_SET') . "' -->\n";
+echo "<!-- Debug: config_dir = '" . (isset($config_dir) ? $config_dir : 'NOT_SET') . "' -->\n";
+$cachefile = $spooldir . "/overboard.dat";
 $oldest = (time() - (86400 * $article_age));
 
 if (isset($_GET['time'])) {
@@ -112,7 +131,10 @@ if (isset($_GET['thisgroup'])) {
         }
     }
 } else {
+    // Debug: Check if groups file exists
+    echo "<!-- Debug: Loading groups from $groupconfig -->\n";
     $grouplist = file($groupconfig, FILE_IGNORE_NEW_LINES);
+    echo "<!-- Debug: Loaded " . count($grouplist) . " groups -->\n";
 }
 
 // Determine default view style
@@ -210,7 +232,7 @@ foreach ($grouplist as $findgroup) {
                 $ref = preg_split("/[\s]+/", $overviewline['refs']);
                 $this_overboard['threadlink'][$thismsgid] = $ref[0];
             }
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Adding: " . $thismsgid, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " overboard Adding: " . $thismsgid, FILE_APPEND);
             if ($results++ > ($maxdisplay - 2)) {
                 break;
             }
@@ -238,25 +260,25 @@ expire_overboard($cachefile);
 
 function expire_overboard($cachefile)
 {
-    global $article_age, $logfile, $config_name, $this_overboard;
+    global $article_age, $logfile, $this_overboard;
     if ((! isset($this_overboard['expire'])) || ($this_overboard['expire'] < (time() - 1800))) {
         foreach ($this_overboard['threads'] as $key => $value) {
             if ($key < (time() - (86400 * $article_age))) {
-                file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Expiring: " . $value, FILE_APPEND);
+                file_put_contents($logfile, "\n" . format_log_date() . " overboard Expiring: " . $value, FILE_APPEND);
                 unset($this_overboard['threads'][$key]);
                 unset($this_overboard['msgids'][$value]);
                 unset($this_overboard['threadlink'][$value]);
             }
         }
         $this_overboard['expire'] = time();
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Setting expire time to now", FILE_APPEND);
+        file_put_contents($logfile, "\n" . format_log_date() . " overboard Setting expire time to now", FILE_APPEND);
         file_put_contents($cachefile, serialize($this_overboard));
     }
 }
 
 function display_threads($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $config_name, $spooldir, $config_dir;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $config_dir, $spooldir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
@@ -437,7 +459,7 @@ function display_threads($threads, $oldest)
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
                         unset($this_overboard['threadlink'][$new]);
-                        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
+                        file_put_contents($logfile, "\n" . format_log_date() . " overboard Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
                     }
                 }
             }
@@ -455,7 +477,7 @@ function display_threads($threads, $oldest)
 
 function display_flat($threads, $oldest)
 {
-    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_name, $config_dir;
+    global $CONFIG, $OVERRIDES, $thissite, $logfile, $spooldir, $config_dir;
     global $cookie_mail_name, $snippetlength, $maxdisplay, $this_overboard, $article_age, $newonly;
     $expireme = time() - ($article_age * 86400);
     $display = '<table class="overboard_results_table">';
@@ -537,7 +559,7 @@ function display_flat($threads, $oldest)
         if ($target['date'] < $expireme) {
             unset($this_overboard['threads'][$target['date']]);
             unset($this_overboard['threadlink'][$value]);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " overboard Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
         }
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
         $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
@@ -671,7 +693,7 @@ function show_overboard_header($grouplist)
 // It is assumed $newsgroups to check are verified to be in SECTION
 function check_group_for_user($msgid, $userdata, $user_config, $check_section = false)
 {
-    global $logdir, $config_name;
+    global $logdir;
     $logfile = $logdir . '/overboard.log';
     if (! is_array($userdata)) {
         // No logged in user
@@ -686,10 +708,10 @@ function check_group_for_user($msgid, $userdata, $user_config, $check_section = 
     }
     foreach ($newsgroups as $newsgroup) {
         if ($check_section) {
-            if ($config_name == get_section_by_group($newsgroup)) {
-                if (isset($userdata[$newsgroup])) {
-                    return $newsgroup;
-                }
+            // For overboard, we show all sections, so skip section filtering
+            // Just check if user is subscribed to this group
+            if (isset($userdata[$newsgroup])) {
+                return $newsgroup;
             }
         } else {
             if (isset($userdata[$newsgroup])) {
