@@ -17,7 +17,8 @@ else
     WEB_DIR="$(dirname "$0")/../../rocksolid"
 fi
 
-OVERRIDE_FILE="$WEB_DIR/overrides.inc.php"
+# Override file is now in rslight/inc/
+OVERRIDE_FILE="$CONFIG_DIR/inc/overrides.inc.php"
 TEMPLATE_FILE="$CONFIG_DIR/overrides.inc.php.production"
 
 show_usage() {

@@ -4,11 +4,11 @@ header("Cache-Control: max-age=100");
 header("Pragma: cache");
 
 include "lib/config.inc.php";
-include "$file_newsportal";
-require_once(__DIR__ . '/lib/security.inc.php');
+//include "$file_newsportal";
+//require_once(__DIR__ . '/lib/security.inc.php');
 
 // Add security headers
-add_security_headers();
+//add_security_headers();
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();

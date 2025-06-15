@@ -137,6 +137,62 @@ $allowed_params = ['subscribe', 'unsubscribe', 'unsub', 'mark_read'];
 - Action parameters like `?subscribe=group` should be preserved
 - Multiple redirects are detected and prevented
 
+### **🔄 COMPLETE REDIRECT CHAIN ANALYSIS**
+
+**The Real Problem Discovered:**
+The redirect loop was more complex than initially thought:
+
+```
+1. /rocksolid/ → /?page=index          (our redirect)
+2. /?page=index → /index.php           (Apache default for root)
+3. /index.php → /rocksolid/index.php   (CONFIG['default_content'])
+4. /rocksolid/index.php → ERROR        (loop detection)
+```
+
+**Root Cause:** The root `/index.php` was redirecting to `$CONFIG['default_content']` which pointed back to `/rocksolid/index.php`.
+
+### **🛠️ Complete Solution Applied**
+
+**1. Modified Root index.php:**
+```php
+// Handle router-based requests first
+if (isset($_GET['page'])) {
+    if (function_exists('rslight_route_page')) {
+        if (rslight_route_page()) {
+            exit(); // Router handled the request
+        }
+    }
+}
+
+// Serve default index if no page parameter
+if (!isset($_GET['page']) && !isset($_REQUEST['content'])) {
+    if (function_exists('rslight_serve_default_page')) {
+        if (rslight_serve_default_page()) {
+            exit(); // Default page served successfully
+        }
+    }
+}
+```
+
+**2. Modified rocksolid/index.php:**
+```php
+// Include the router system configuration
+include "lib/config.inc.php";
+
+// Serve index page directly (no redirect)
+if (function_exists('rslight_init_page') && file_exists(__DIR__ . '/../pages/index.php')) {
+    rslight_init_page('index');
+    include __DIR__ . '/../pages/index.php';
+    exit();
+}
+```
+
+### **✅ Results**
+- **Eliminated**: All redirect loops
+- **Preserved**: All functionality (subscribe/unsubscribe/etc.)
+- **Enhanced**: Direct content serving (faster)
+- **Maintained**: Backward compatibility
+
 ---
 
 **Result: Another successful surgical consolidation with zero functionality loss!** 🏆

@@ -4,8 +4,10 @@
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
-die("exit here... this is a stub file for testing purposes only!<br>\n");
+//die("exit here... this is a stub file for testing purposes only!<br>\n");
+// This file needs to load common/config.inc.php for the router to work
 
+/*
 ini_set('memory_limit', '1536M');
 if (!isset($_SESSION)) {
     ini_set('session.gc_maxlifetime', 14400);
@@ -26,8 +28,9 @@ if (!isset($_SESSION)) {
         $_SESSION['start_stamp'] = time();
     }
 }
+*/
 
-include "../common/config.inc.php";
+require("../common/config.inc.php");
 
 /*
  * Config file name should be the basename
@@ -37,7 +40,7 @@ include "../common/config.inc.php";
  * it's rocksolid.inc.php in $config_dir
  */
 
-
+/*
 $config_name = basename(getcwd());
 if (file_exists($config_dir . $config_name . '.inc.php')) {
     $config_file = $config_dir . $config_name . '.inc.php';
@@ -46,6 +49,7 @@ if (file_exists($config_dir . $config_name . '.inc.php')) {
     $config_file = $config_dir . 'rslight.inc.php';
     echo "[rocksolid/lib/config.inc.php: default config file: $config_file]<br>\n";
 }
+*/
 $installed_path = getcwd();
 
 
@@ -55,10 +59,13 @@ $installed_path = getcwd();
  * are located
  */
 
+ /*
 $config_path = $config_dir . $config_name . "/";
 $script_path = $config_dir . "/scripts/";
 $CONFIG = include($config_file);
+*/
 
+/*
 // Load overrides from local directory (runtime application config)
 if (file_exists(__DIR__ . '/overrides.inc.php')) {
     $OVERRIDES = include (__DIR__ . '/overrides.inc.php');
@@ -69,6 +76,7 @@ if (file_exists(__DIR__ . '/overrides.inc.php')) {
     // No overrides file found - use empty array
     $OVERRIDES = array();
 }
+*/
 
 /* Version */
 $rslight_version = file_get_contents('../common/version.txt');

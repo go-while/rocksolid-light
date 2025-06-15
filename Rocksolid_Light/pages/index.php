@@ -17,7 +17,8 @@ if (function_exists('rslight_render_complete_header')) {
     rslight_render_complete_header($title, 'index');
 } else {
     // Fallback to old system
-    include "lib/head.inc";
+    die("Router functions not available. Please check your setup.");
+    //include "lib/head.inc";
 }
 
 // Update session access time
@@ -109,31 +110,10 @@ if (isset($_GET['mark_read']) && $user_authenticated) {
 
 // Display newsgroups
 $newsgroups = groups_read($server, $port);
-echo '<div class="np_index_groups"><h2>Available Newsgroups</h2>';
-
-if (isset($frames_on) && $frames_on === true) {
-    if (function_exists('groups_show_frames')) {
-        groups_show_frames($newsgroups);
-    } else {
-        echo '<p>Frames display function not available</p>';
-    }
-} else {
-    if (function_exists('groups_show')) {
-        groups_show($newsgroups); // Show the newsgroups table
-    } else {
-        echo '<p>Groups display function not available</p>';
-        // Fallback simple display
-        if (is_array($newsgroups)) {
-            echo '<ul>';
-            foreach ($newsgroups as $group) {
-                echo '<li>' . htmlspecialchars($group) . '</li>';
-            }
-            echo '</ul>';
-        }
-    }
-}
+echo '<div class="np_index_groups"><h3>'.count($newsgroups, true).' Available Newsgroups</h3>';
+groups_show($newsgroups); // Show the newsgroups table
 echo '</div>';
-
+echo "<h3>DEBUG End pages/index.php Newsgroups</h3>";
 // Show session debug info (if available)
 if (file_exists($spooldir . '/sessions.dat')) {
     $sessions_data = file_get_contents($spooldir . '/sessions.dat');

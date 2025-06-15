@@ -1,21 +1,19 @@
 <?php
 define('CRON_CONTEXT', true); // Global constant to indicate down the line: this is a cron job context
 
-// This file runs maintenance scripts and should be executed by cron regularly
-include "../lib/config.inc.php";
-
-// Include newsportal with dynamic path calculation
-$web_root = null;
-if (file_exists("../rslight.inc.php")) {
-    $rslight_path = readlink("../rslight.inc.php");
-
-    if ($rslight_path) {
-        $web_root = dirname(dirname(dirname($rslight_path))); // Go up 3 levels
-    }
+$rslight_path = readlink("../rslight.inc.php");
+$thisdir = getcwd();
+if (empty($rslight_path)) {
+  die("Error: Could not locate rslight.inc.php. Please ensure the symlink is correct. thisdir=$thisdir");
 }
+$web_root = dirname(dirname(dirname($rslight_path))); // Go up 3 levels
+if (!is_dir($web_root)) {
+  die("Error: Invalid web root path derived from rslight.inc.php symlink. thisdir=$thisdir web_root=$web_root");
+}
+require($web_root . "/common/config.inc.php");
 
 echo "[cron.php rslight_path: " . $rslight_path . " web_root=$web_root]<br>\n";
-
+/*
 if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
     echo "[cron.php included newsportal.php from web_root=$web_root]<br>\n";
     include $web_root . "/rocksolid/newsportal.php";
@@ -23,6 +21,7 @@ if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
 } else {
     die("Error: Could not locate newsportal.php web_root=$web_root");
 }
+*/
 
 echo "[CRON] Debug 0 cron config_name: " . $config_name . "\n";
 
@@ -52,6 +51,11 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
 }
 
 echo "[CRON] DEBUG 2 cron\n";
+
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Critical Error: Configuration not loaded. Please ensure config.inc.php is included correctly.");
+}
+// Check if spooldir exists, if not create it
 
 $menulist = get_section_menu_array();
 # Start or verify NNTP server

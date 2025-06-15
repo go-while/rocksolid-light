@@ -20,14 +20,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "../lib/config.inc.php";
-include "../common/menu_functions.inc.php";
+
+// Define cron context and set working directory
+define('CRON_CONTEXT', true);
+chdir(__DIR__ . '/../../'); // Set working directory to project root
+include "common/config.inc.php";
+include "common/menu_functions.inc.php";
 
 // Calculate web root from rslight.inc.php symlink and include newsportal.php
-$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$rslight_target = readlink($config_dir . '/rslight.inc.php');
 $web_root = dirname(dirname(dirname($rslight_target)));
-include $web_root . '/rocksolid/newsportal.php';
-include "spool-lib.php";
+//include $web_root . '/rocksolid/newsportal.php';
+include __DIR__ . "/spool-lib.php";
 include $config_dir . '/gpg.conf';
 
 if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {

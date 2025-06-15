@@ -170,7 +170,9 @@ function nntp2_open($nserver = 0, $nport = 0)
         $nport = $CONFIG['remote_port'];
     }
 
+    // Use the new debug logging function that handles empty paths
     debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting NNTP2 connection to " . $nserver . ":" . $nport, $debug_log);
+    echo "nntp2_open: nserver: " . $nserver . " nport: " . $nport . " SSL=" . ($CONFIG['remote_ssl'] ? "enabled" : "disabled") . "\n";
 
     if ($CONFIG['remote_ssl']) {
         if ($nport == $CONFIG['remote_port']) {
@@ -178,7 +180,7 @@ function nntp2_open($nserver = 0, $nport = 0)
         }
         $ns = fsockopen("ssl://" . $nserver, $nport, $error, $errorString, 30);
         if (! $ns) {
-            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, $debug_log);
+            error_log_always("\n" . format_log_date() . " " . $config_name . " ERROR: SSL connection failed to " . $nserver . ":" . $nport . " - " . $errorString, $debug_log);
             return false;
         }
         debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: SSL connection successful to " . $nserver . ":" . $nport, $debug_log);
@@ -188,7 +190,12 @@ function nntp2_open($nserver = 0, $nport = 0)
         } else {
             $ns = @fsockopen('tcp://' . $nserver . ":" . $nport);
         }
+        if (!$ns) {
+            error_log_always("\n" . format_log_date() . " " . $config_name . " ERROR: TCP connection failed to " . $nserver . ":" . $nport, $debug_log);
+            return false;
+        }
     }
+    echo "nntp2_open: connected? ns: " . $ns . "\n";
     // $ns=@fsockopen($nserver,$nport);
     // echo "PORT: ".$nport." ns: ".$ns;
     $weg = line_read($ns); // kill the first line

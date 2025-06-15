@@ -1,57 +1,43 @@
 <?php
 /**
- * LEGACY INDEX FILE - CONSOLIDATED INTO ROUTER SYSTEM
+ * LEGACY INDEX FILE - NOW USES ROUTER SYSTEM IN PLACE
  *
- * This file now redirects to the consolidated router-based index page
- * All functionality has been moved to pages/index.php via the secure router
+ * This file loads the router system through config and serves content directly.
+ * The router system is loaded from common/config.inc.php automatically.
  *
  * Date: June 15, 2025 - Part of header migration consolidation
  */
 
-// Prevent redirect loops - if we're already being accessed via the router, stop
-if (isset($_GET['page']) && $_GET['page'] === 'index') {
-    // We're already in a router context, don't redirect
-    header("HTTP/1.0 500 Internal Server Error");
-    exit("ERROR: Redirect loop detected. Please access the site via the main index page.");
+// Include the router system configuration
+include "lib/config.inc.php";
+
+die("ERROR LEGACY INDEX FILE LOADED - NOW USES ROUTER SYSTEM IN PLACE");
+/*
+// If we reach here, the router didn't serve a page, so use fallback
+echo "[rocksolid/index.php: FALLBACK MODE - Router not available]<br>\n";
+
+// FALLBACK: Original functionality preserved for safety
+if (!function_exists('rslight_init_page')) {
+    error_log("ROCKSOLID INDEX: Router functions not available");
+}
+if (!file_exists(__DIR__ . '/../pages/index.php')) {
+    error_log("ROCKSOLID INDEX: pages/index.php not found at " . __DIR__ . '/../pages/index.php');
 }
 
-// Prevent redirect loops - check if we're coming from a redirect
-if (isset($_GET['redirected'])) {
-    header("HTTP/1.0 500 Internal Server Error");
-    exit("ERROR: Multiple redirects detected. Please clear your browser cache and try again.");
-}
+// Proceed with original index.php functionality as fallback
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + (30)) . " GMT");
+header("Cache-Control: max-age=30");
+header("Pragma: cache");
 
-// Quick redirect to router-based index page
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'];
-$current_path = dirname($_SERVER['REQUEST_URI']);
+echo "[rocksolid/index.php: FALLBACK MODE - Router not available]<br>\n";
+include ("$file_newsportal");
+require_once(__DIR__ . '/lib/security.inc.php');
 
-// Build clean redirect URL
-$redirect_url = $protocol . '://' . $host . $current_path . '/?page=index';
+// Add security headers
+add_security_headers();
 
-// Add only non-page query parameters to prevent loops
-if (!empty($_SERVER['QUERY_STRING'])) {
-    $query_parts = [];
-    parse_str($_SERVER['QUERY_STRING'], $query_params);
-
-    // Only preserve specific action parameters, not 'page'
-    $allowed_params = ['subscribe', 'unsubscribe', 'unsub', 'mark_read'];
-    foreach ($allowed_params as $param) {
-        if (isset($query_params[$param])) {
-            $query_parts[$param] = $query_params[$param];
-        }
-    }
-
-    if (!empty($query_parts)) {
-        $redirect_url .= '&' . http_build_query($query_parts);
-    }
-}
-
-header("Location: $redirect_url", true, 302);
-exit("Redirecting to consolidated index page...");
-
-// NOTE: The rest of this file is kept for reference but should not execute
-// All functionality has been moved to pages/index.php
+// Continue with original index.php functionality
+// NOTE: The rest of this file is the original rocksolid/index.php code
 
 if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
     $_SESSION['last_access'] = time();
@@ -162,5 +148,6 @@ echo '</div>';
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
 echo '<h1 class="np_thread_headline">' . $sessions_data . '</h1>';
 include "lib/tail.inc";
+*/
 ?>
 

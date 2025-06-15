@@ -496,8 +496,11 @@ function rslight_route_page() {
         return false;
     }
 
-    // Log page access for debugging
-    error_log("RSLIGHT ROUTER: Loading page $page_name -> $page_file");
+    // Log page access only in debug mode
+    global $config_dir;
+    if (file_exists($config_dir . '/DEBUG')) {
+        error_log("RSLIGHT ROUTER: Loading page $page_name -> $page_file");
+    }
 
     // Include the page (this executes the page)
     include $page_path;
@@ -525,7 +528,11 @@ function rslight_serve_default_page() {
         // Load the index page
         $index_path = __DIR__ . '/index.php';
         if (file_exists($index_path) && is_readable($index_path)) {
-            error_log("RSLIGHT ROUTER: Loading default index page");
+            // Only log in debug mode to avoid cluttering Apache error logs
+            global $config_dir;
+            if (file_exists($config_dir . '/DEBUG')) {
+                error_log("RSLIGHT ROUTER: Loading default index page");
+            }
             include $index_path;
             return true;
         } else {
