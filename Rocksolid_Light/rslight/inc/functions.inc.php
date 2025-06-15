@@ -841,11 +841,47 @@ function groups_show($gruppen)
                             $found = 1;
                             break;
                         }
-                        $article_dbh = null;
-                    } else {
-                        // Database connection failed, log but continue showing group without last post info
-                        debug_log("Failed to open article database for group: " . $g->name . " (group will be shown without last post info)", $debug_log);
-                        $found = 0; // Mark as no articles found, but don't skip the group
+                        $article_dbh = null;                    } else {
+                        // Database connection failed, try fallback to cached data
+                        // Note: Groups without section config will fail here regularly
+
+                        // Try to load from cache or file as fallback
+                        if ($enable_cache) {
+                            $memcache_key = $cache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
+                            $lar = cache_get($memcache_key, $memcacheD);
+                            if ($lar) {
+                                try {
+                                    $lastarticleinfo = secure_unserialize($lar);
+                                    if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
+                                        $found = 1;
+                                        // Only log success to avoid spam
+                                    }
+                                } catch (Exception $e) {
+                                    $lastarticleinfo = false;
+                                }
+                            }
+                        }
+
+                        // If cache failed, try direct file fallback
+                        if ($found == 0) {
+                            $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
+                            if (file_exists($groupfile)) {
+                                $file_data = file_get_contents($groupfile);
+                                if ($file_data) {
+                                    try {
+                                        $lastarticleinfo = secure_unserialize($file_data);
+                                    if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
+                                            $found = 1;
+                                            // Only log success to avoid spam
+                                        }
+                                    } catch (Exception $e) {
+                                        $lastarticleinfo = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        // If all fallbacks failed, no logging needed - this is expected for unconfigured groups
                     }
                 } else {
                     $database = $spooldir . '/articles-overview.db3';
@@ -862,11 +898,49 @@ function groups_show($gruppen)
                             $found = 1;
                             break;
                         }
-                        $overview_dbh = null;
-                    } else {
-                        // Overview database connection failed, log but continue showing group without last post info
-                        debug_log("Failed to open overview database for group: " . $g->name . " (group will be shown without last post info)", $debug_log);
-                        $found = 0; // Mark as no articles found, but don't skip the group
+                        $overview_dbh = null;                    } else {
+                        // Overview database connection failed, try fallback methods
+                        // Note: This is expected for groups without proper configuration
+
+                        // Try to load from cache or file as fallback (same logic as article database)
+                        if ($enable_cache) {
+                            $memcache_key = $cache_key_prefix . '_' . 'lastarticleinfo-' . $g->name;
+                            $lar = cache_get($memcache_key, $memcacheD);
+                            if ($lar) {
+                                try {
+                                    $lastarticleinfo = secure_unserialize($lar);
+                                    if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
+                                        $found = 1;
+                                        $row = $lastarticleinfo; // Set row for later use
+                                        // Success - no need to log this repeatedly
+                                    }
+                                } catch (Exception $e) {
+                                    $lastarticleinfo = false;
+                                }
+                            }
+                        }
+
+                        // If cache failed, try direct file fallback
+                        if ($found == 0) {
+                            $groupfile = $spooldir . '/' . $g->name . '-lastarticleinfo.dat';
+                            if (file_exists($groupfile)) {
+                                $file_data = file_get_contents($groupfile);
+                                if ($file_data) {
+                                    try {
+                                        $lastarticleinfo = secure_unserialize($file_data);
+                                        if (is_array($lastarticleinfo) && isset($lastarticleinfo['date'])) {
+                                            $found = 1;
+                                            $row = $lastarticleinfo; // Set row for later use
+                                            // Success - no need to log this repeatedly
+                                        }
+                                    } catch (Exception $e) {
+                                        $lastarticleinfo = false;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Silence expected failures for unconfigured groups
                     }
                 }
                 if ($found == 1) {
@@ -2305,8 +2379,8 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\//", "", $group);
     if (! preg_match('/\-articles\.db3\-new/', $database)) {
         if (! get_section_by_group($group, true)) {
-            // Only log once per group to avoid spam - use debug_log instead of direct file_put_contents
-            debug_log("Group '$group' not found in section configuration, skipping database creation", $logfile);
+            // Don't log for every request - these groups consistently lack section config
+            // Only log at very low debug level to avoid spam
             return false;
         }
     }
