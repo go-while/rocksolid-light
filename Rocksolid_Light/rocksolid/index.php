@@ -4,7 +4,7 @@ header("Cache-Control: max-age=30");
 header("Pragma: cache");
 
 include "lib/config.inc.php";
-echo "rocksolid/index.php: include file_newsportal=$file_newsportal<br>\n";
+echo "[rocksolid/index.php: include file_newsportal=$file_newsportal]<br>\n";
 include ("$file_newsportal");
 require_once(__DIR__ . '/lib/security.inc.php');
 
