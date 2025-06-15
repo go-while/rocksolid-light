@@ -325,9 +325,3 @@ $sitelink .= "://";
 if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
-
-// load the english language definitions first because some of the other
-// definitions are incomplete
-//require ("lang/english.lang");
-require($config_dir."inc/lang/".$file_language);
-echo "[rocklight/lib/config.inc.php: language file loaded: $file_language]<br>\n";
