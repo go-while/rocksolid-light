@@ -93,6 +93,7 @@ echo "<!-- Debug: config_path = '" . (isset($config_path) ? $config_path : 'NOT_
 echo "<!-- Debug: config_dir = '" . (isset($config_dir) ? $config_dir : 'NOT_SET') . "' -->\n";
 $cachefile = $spooldir . "/overboard.dat";
 $oldest = (time() - (86400 * $article_age));
+echo "<!-- Debug: article_age=$article_age, oldest=$oldest (" . date('Y-m-d H:i:s', $oldest) . ") -->\n";
 
 if (isset($_GET['time'])) {
     $user_time = $_GET['time'];
@@ -190,6 +191,7 @@ if ($this_overboard['version'] !== $version) {
 
 $database = $spooldir . '/articles-overview.db3';
 $table = 'overview';
+echo "<!-- Debug: Database=$database, searching for articles newer than " . date('Y-m-d H:i:s', $cachedate) . " -->\n";
 $dbh = overview_db_open($database, $table);
 $query = $dbh->prepare('SELECT * FROM ' . $table . ' WHERE newsgroup=:findgroup AND date >= ' . $cachedate . ' ORDER BY date DESC LIMIT ' . $maxdisplay);
 foreach ($grouplist as $findgroup) {
@@ -205,6 +207,7 @@ foreach ($grouplist as $findgroup) {
     }
     $thisgroup = preg_replace('/\./', '/', $findgroup);
     if ($dbh) {
+        echo "<!-- Debug: Searching group '$findgroup' -->\n";
         $query->execute([
             'findgroup' => $findgroup
         ]);
