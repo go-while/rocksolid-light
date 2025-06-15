@@ -12,7 +12,9 @@ if (isset($_REQUEST['menu'])) {
     $default_menu=$_REQUEST['menu'];
 }
 
-//die("die index.php header redirect");
+if (!isset($CONFIG['default_content'])) {
+	die("no default content set in config file: $config_file");
+}
 header('Location: '.$CONFIG['default_content']);
 
 ?>
