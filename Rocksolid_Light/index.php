@@ -2,7 +2,7 @@
 session_start();
 
 include "common/config.inc.php";
-$CONFIG = include($config_dir.'/rslight.inc.php');
+//$CONFIG = include($config_dir.'/rslight.inc.php');
 
 if (isset($_REQUEST['content'])) {
     $CONFIG['default_content']=$_REQUEST['content'];
