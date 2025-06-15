@@ -3,7 +3,7 @@
  * Add 'rsactive' to differentiate rslight sessions from
  * sessions from other applications
  */
-/*
+
 // Include essential functions needed by head.inc
 if (file_exists('../common/head_functions.inc.php')) {
     include_once '../common/head_functions.inc.php';
@@ -12,9 +12,9 @@ if (file_exists('../common/head_functions.inc.php')) {
 } else {
     die("debug include error head_functions in rocksolid/lib/head.inc");
 }
-*/
 
-require_once(__DIR__.'/security.inc.php');
+
+//require_once(__DIR__.'/security.inc.php');
 
 $_SESSION['rsactive'] = true;
 $client_device = get_client_user_agent_info();
@@ -34,5 +34,7 @@ if (file_exists($config_dir . '/googleanalytics.conf')) {
     include $config_dir . '/googleanalytics.conf';
 }
 
+include "../common/header.php";
+
 echo '<hr>';
-?>
+// TODO FIXME: crazy things happen if you add a php close tag here!!
