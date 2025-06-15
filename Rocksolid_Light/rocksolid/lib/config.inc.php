@@ -1,10 +1,13 @@
 <?php
+$backtrace = debug_backtrace();
+$parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
+echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
 ini_set('memory_limit', '1536M');
 if (!isset($_SESSION)) {
     ini_set('session.gc_maxlifetime', 14400);
     session_set_cookie_params(14400);
     session_start();
-    echo "rocksolid/lib/config.inc.php: session started<br>\n";
+    echo "[rocksolid/lib/config.inc.php: session started]<br>\n";
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
         // last request was more than 30 minutes ago
         session_unset();
