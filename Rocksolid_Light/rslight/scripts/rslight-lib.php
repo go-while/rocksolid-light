@@ -1,8 +1,4 @@
 <?php
-
-// Include security functions with production-ready path resolution
-include_once "security_loader.inc.php";
-
 function interact($msgsock, $use_crypto = false)
 {
     global $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile, $installed_path, $config_path, $config_dir, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $nntp_article, $auth_ok, $user, $pass;

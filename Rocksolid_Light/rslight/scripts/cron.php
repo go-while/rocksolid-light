@@ -2,12 +2,6 @@
 // This file runs maintenance scripts and should be executed by cron regularly
 include "../lib/config.inc.php";
 
-// Include security functions with production-ready path resolution
-include_once "security_loader.inc.php";
-
-// Include menu functions directly to ensure get_section_menu_array() is available
-include_once "../common/menu_functions.inc.php";
-
 // Include newsportal with dynamic path calculation
 $web_root = null;
 if (file_exists("../rslight.inc.php")) {

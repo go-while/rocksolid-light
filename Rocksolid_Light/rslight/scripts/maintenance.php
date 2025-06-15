@@ -1,7 +1,6 @@
 <?php
 
 // Include security functions with production-ready path resolution
-include_once "security_loader.inc.php";
 
 /*
  * This script allows importing a group .db3 file from a backup

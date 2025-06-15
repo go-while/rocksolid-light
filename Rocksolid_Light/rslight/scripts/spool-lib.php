@@ -1,7 +1,6 @@
 <?php
 
 // Include security functions with production-ready path resolution
-include_once "security_loader.inc.php";
 
 // Include logging control functions
 include_once "../../logging_control.php";

@@ -4,7 +4,6 @@ chdir($spoolnews_path);
 include "../lib/config.inc.php";
 
 // Include security functions with production-ready path resolution
-include_once "security_loader.inc.php";
 include "newsportal.php";
 
 $processUser = posix_getpwuid(posix_geteuid());
