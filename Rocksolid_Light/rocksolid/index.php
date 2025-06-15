@@ -110,11 +110,11 @@ if (isset($_GET['mark_read'])) {
 }
 
 $newsgroups = groups_read($server, $port);
-echo '<div class="np_index_groups">';
+echo '<div class="np_index_groups"><h2>debug newsgroups</h2>';
 if (isset($frames_on) && $frames_on === true) {
     groups_show_frames($newsgroups);
 } else {
-    //groups_show($newsgroups);
+    groups_show($newsgroups); // Show the newsgroups table
 }
 echo '</div>';
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
