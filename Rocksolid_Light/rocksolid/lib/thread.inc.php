@@ -1,10 +1,4 @@
 <?php
-
-require_once(__DIR__ . '/security.inc.php');
-
-// Include logging control functions
-require_once(__DIR__ . '/../logging_control.php');
-
 /*
  * rslight NNTP<->HTTP Gateway
  * Download: https://news.novabbs.com/getrslight
@@ -28,11 +22,6 @@ require_once(__DIR__ . '/../logging_control.php');
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-// Add security headers if accessed directly
-if (!headers_sent()) {
-    add_security_headers();
-}
 
 /*
  * Shows the little menu on the thread.php where you can select the

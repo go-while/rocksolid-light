@@ -1,7 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/security.inc.php');
-
 /*  rslight NNTP<->HTTP Gateway
  *  Download: https://news.novabbs.com/getrslight
  *
@@ -24,11 +22,6 @@ require_once(__DIR__ . '/security.inc.php');
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-
-// Add security headers if accessed directly
-if (!headers_sent()) {
-    add_security_headers();
-}
 
 /*
  * the name and the description of a newsgroup
