@@ -460,8 +460,17 @@ function display_threads($threads, $oldest)
                         $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                         $text = $article['search_snippet'];
                         $text = rewrite_body($text);
-                        $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
-                        //     $display .= strip_tags(htmlentities(substr($text, 0, $snippetlength)));
+                        // Debug: Check lengths
+                        $original_length = strlen($text);
+                        $formatted_text = substr($text, 0, $snippetlength);
+                        $snippet_length = strlen($formatted_text);
+                        $display .= "<!-- Debug: Original length: $original_length, Snippet length: $snippet_length, snippetlength var: $snippetlength -->";
+                        $formatted_text = htmlentities($formatted_text);
+                        $formatted_text = nl2br($formatted_text);
+                        $display .= $formatted_text;
+                        if ($original_length > $snippetlength) {
+                            $display .= '...';
+                        }
                     }
                     if ($target['date'] < $expireme) {
                         unset($this_overboard['threads'][$target['date']]);
@@ -611,7 +620,17 @@ function display_flat($threads, $oldest)
                 $article = get_db_data_from_msgid($target['msgid'], $target['newsgroup'], 1);
                 $text = $article['search_snippet'];
                 $text = rewrite_body($text);
-                $display .= strip_tags(html_parse(text2html(substr($text, 0, $snippetlength))));
+                // Debug: Check lengths
+                $original_length = strlen($text);
+                $formatted_text = substr($text, 0, $snippetlength);
+                $snippet_length = strlen($formatted_text);
+                $display .= "<!-- Debug: Original length: $original_length, Snippet length: $snippet_length, snippetlength var: $snippetlength -->";
+                $formatted_text = htmlentities($formatted_text);
+                $formatted_text = nl2br($formatted_text);
+                $display .= $formatted_text;
+                if ($original_length > $snippetlength) {
+                    $display .= '...';
+                }
                 //$display .= htmlentities(substr($text, 0, $snippetlength));
             }
         }
