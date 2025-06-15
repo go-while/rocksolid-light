@@ -468,7 +468,14 @@ function get_section_by_group($groupname, $all_sections = false)
             }
         }
         $section = "";
-        $gldata = file($config_dir . $menuitem[0] . "/groups.txt");
+        $groups_file = $config_dir . $menuitem[0] . "/groups.txt";
+        if (!file_exists($groups_file)) {
+            continue; // Skip sections without groups.txt files
+        }
+        $gldata = file($groups_file);
+        if ($gldata === false) {
+            continue; // Skip if file can't be read
+        }
         foreach ($gldata as $gl) {
             $group_name = preg_split("/( |\t)/", $gl, 2);
             if (strtolower(trim($groupname)) == strtolower(trim($group_name[0]))) {
@@ -824,31 +831,43 @@ function groups_show($gruppen)
                 if ($CONFIG['article_database'] == '1') {
                     $database = $spooldir . '/' . $g->name . '-articles.db3';
                     $article_dbh = article_db_open($database);
-                    $article_query = $article_dbh->prepare('SELECT * FROM articles ORDER BY CAST(date AS int) DESC LIMIT 5');
-                    $article_query->execute();
-                    while ($row = $article_query->fetch()) {
-                        if ($row['date'] > time()) {
-                            continue;
+                    if ($article_dbh !== false) {
+                        $article_query = $article_dbh->prepare('SELECT * FROM articles ORDER BY CAST(date AS int) DESC LIMIT 5');
+                        $article_query->execute();
+                        while ($row = $article_query->fetch()) {
+                            if ($row['date'] > time()) {
+                                continue;
+                            }
+                            $found = 1;
+                            break;
                         }
-                        $found = 1;
-                        break;
+                        $article_dbh = null;
+                    } else {
+                        // Database connection failed, log but continue showing group without last post info
+                        debug_log("Failed to open article database for group: " . $g->name . " (group will be shown without last post info)", $debug_log);
+                        $found = 0; // Mark as no articles found, but don't skip the group
                     }
-                    $article_dbh = null;
                 } else {
                     $database = $spooldir . '/articles-overview.db3';
                     $overview_dbh = overview_db_open($database);
-                    $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 5');
-                    $overview_query->execute([
-                        'newsgroup' => $g->name
-                    ]);
-                    while ($row = $overview_query->fetch()) {
-                        if ($row['date'] > time()) {
-                            continue;
+                    if ($overview_dbh !== false) {
+                        $overview_query = $overview_dbh->prepare('SELECT * FROM overview WHERE newsgroup=:newsgroup ORDER BY CAST(date AS int) DESC LIMIT 5');
+                        $overview_query->execute([
+                            'newsgroup' => $g->name
+                        ]);
+                        while ($row = $overview_query->fetch()) {
+                            if ($row['date'] > time()) {
+                                continue;
+                            }
+                            $found = 1;
+                            break;
                         }
-                        $found = 1;
-                        break;
+                        $overview_dbh = null;
+                    } else {
+                        // Overview database connection failed, log but continue showing group without last post info
+                        debug_log("Failed to open overview database for group: " . $g->name . " (group will be shown without last post info)", $debug_log);
+                        $found = 0; // Mark as no articles found, but don't skip the group
                     }
-                    $overview_dbh = null;
                 }
                 if ($found == 1) {
                     $lastarticleinfo = $row;
@@ -2245,8 +2264,8 @@ function overview_db_open($database, $table = 'overview')
             $optimizer->optimizeDatabase($dbh, 'overview');
         }
     } catch (PDOException $e) {
-        echo 'Connection failed: ' . $e->getMessage();
-        exit();
+        error_log_always('Overview database connection failed: ' . $e->getMessage(), $GLOBALS['debug_log']);
+        return false;
     }
     $dbh->exec("CREATE TABLE IF NOT EXISTS overview(
      id INTEGER PRIMARY KEY,
@@ -2286,7 +2305,8 @@ function article_db_open($database, $table = 'articles')
     $group = preg_replace("/\//", "", $group);
     if (! preg_match('/\-articles\.db3\-new/', $database)) {
         if (! get_section_by_group($group, true)) {
-            file_put_contents($logfile, "\n" . logging_prefix() . " " . $config_name . " Attempt to create: " . $database . " for: " . $group, FILE_APPEND);
+            // Only log once per group to avoid spam - use debug_log instead of direct file_put_contents
+            debug_log("Group '$group' not found in section configuration, skipping database creation", $logfile);
             return false;
         }
     }
@@ -2299,8 +2319,8 @@ function article_db_open($database, $table = 'articles')
             $optimizer->optimizeDatabase($dbh, 'article');
         }
     } catch (PDOException $e) {
-        echo 'Connection failed: ' . $e->getMessage();
-        exit();
+        error_log_always('Article database connection failed: ' . $e->getMessage(), $GLOBALS['debug_log']);
+        return false;
     }
     $dbh->exec("CREATE TABLE IF NOT EXISTS articles(
      id INTEGER PRIMARY KEY,
