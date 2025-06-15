@@ -8,6 +8,7 @@ echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
 $config_dir = "/etc/rslight/"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir>
 $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir>
 $config_file = $config_dir.'rslight.inc.php';
+require_once($config_dir."security.inc.php");
 require_once($config_dir."functions.inc.php");
 
 $CONFIG = require_once($config_file);
@@ -28,7 +29,7 @@ $lib_files = [
 // Calculate lib directory path relative to this file
 //$newsportal_dir = __DIR__;
 //$lib_dir = $newsportal_dir . '/lib';
-
+/*
 foreach ($lib_files as $lib_file) {
     $lib_path = $lib_dir . '/' . $lib_file;
     if (file_exists($lib_path)) {
@@ -41,7 +42,7 @@ foreach ($lib_files as $lib_file) {
         include "lib/$lib_file";
     }
 }
-
+*/
 
 $keys = secure_unserialize($keyfile, [], false);
 if ($keys === false) {
