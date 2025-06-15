@@ -154,9 +154,11 @@ $file_attachment = "attachment.php";
 $file_post = "post.php";
 $file_cancel = "cancel.php";
 
+if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=157!");
+
 // Language selection: Check for user preference in cookie, fallback to default
-include "allowed_languages.inc.php";
-$default_language = "lang/english.lang";
+//include $config_dir."inc/allowed_languages.inc.php";
+//$default_language = $config_dir."inc/lang/english.lang";
 
 if (isset($_COOKIE['user_language']) && !empty($_COOKIE['user_language'])) {
     $requested_lang = $_COOKIE['user_language'];
@@ -320,11 +322,8 @@ if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
 
-/*
- * Do not edit anything below this line
- */
-
 // load the english language definitions first because some of the other
 // definitions are incomplete
-include ("lang/english.lang");
-include ($file_language);
+//require ("lang/english.lang");
+require($config_dir."inc/lang/".$file_language);
+echo "[rocklight/lib/config.inc.php: language file loaded: $file_language]<br>\n";

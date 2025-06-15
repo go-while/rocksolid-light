@@ -18,13 +18,22 @@ $lib_files = [
     "thread.inc.php",
     "message.inc.php",
     "post.inc.php",
-    "database_optimizer.php"
+    "database_optimizer.php",
+    "allowed_languages.inc.php"
 ];
 foreach ($lib_files as $lib_file) {
   $lib_path = $config_dir . 'inc/' . $lib_file;
+  if (!file_exists($lib_path)) {
+      die("Critical Error: Required library file '$lib_file' not found in '$lib_path'");
+  }
+  // Include each library file
+  if (!is_readable($lib_path)) {
+      die("Critical Error: Required library file '$lib_file' is not readable in '$lib_path'");
+  }
   require_once($lib_path);
 }
 
+$default_language = $config_dir."inc/lang/english.lang";
 
 // Include logging control functions
 require_once(__DIR__ . '/../rocksolid/logging_control.php');
