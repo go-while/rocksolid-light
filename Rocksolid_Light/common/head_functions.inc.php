@@ -180,7 +180,7 @@ if (!function_exists('secure_unserialize')) {
 
 /*
 if (!function_exists('secure_unserialize')) {
-//    function secure_unserialize($filename, $allowed_classes = ['stdClass'], $array_fallback = true)
+//    //function secure_unserialize($filename, $allowed_classes = ['stdClass'], $array_fallback = true)
     {
         if (!file_exists($filename)) {
             return $array_fallback ? [] : false;
