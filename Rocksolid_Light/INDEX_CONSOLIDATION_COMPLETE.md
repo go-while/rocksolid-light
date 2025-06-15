@@ -104,4 +104,39 @@ if (!empty($_SERVER['QUERY_STRING'])) {
 }
 ```
 
+## 🐛 **REDIRECT LOOP FIX** (June 15, 2025)
+
+### **Problem Identified**
+URL showing multiple `page=index` parameters: `?page=index&page=index&page=index...`
+This was caused by redirect loop in `rocksolid/index.php` appending existing query parameters.
+
+### **Root Cause**
+The redirect logic was blindly appending `$_SERVER['QUERY_STRING']` which already contained `page=index`, causing parameter duplication on each redirect.
+
+### **Solution Implemented**
+Enhanced redirect logic in `rocksolid/index.php`:
+
+```php
+// Prevent redirect loops - detect if already in router context
+if (isset($_GET['page']) && $_GET['page'] === 'index') {
+    exit("ERROR: Redirect loop detected");
+}
+
+// Only preserve specific action parameters, not 'page'
+$allowed_params = ['subscribe', 'unsubscribe', 'unsub', 'mark_read'];
+```
+
+### **Benefits**
+- ✅ Eliminates redirect loops
+- ✅ Preserves legitimate action parameters (subscribe/unsubscribe)
+- ✅ Provides clear error messages for debugging
+- ✅ Clean URLs without parameter duplication
+
+### **Testing**
+- Access `/rocksolid/` should redirect cleanly to `/?page=index`
+- Action parameters like `?subscribe=group` should be preserved
+- Multiple redirects are detected and prevented
+
+---
+
 **Result: Another successful surgical consolidation with zero functionality loss!** 🏆

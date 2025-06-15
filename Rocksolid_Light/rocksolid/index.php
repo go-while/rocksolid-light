@@ -8,17 +8,43 @@
  * Date: June 15, 2025 - Part of header migration consolidation
  */
 
+// Prevent redirect loops - if we're already being accessed via the router, stop
+if (isset($_GET['page']) && $_GET['page'] === 'index') {
+    // We're already in a router context, don't redirect
+    header("HTTP/1.0 500 Internal Server Error");
+    exit("ERROR: Redirect loop detected. Please access the site via the main index page.");
+}
+
+// Prevent redirect loops - check if we're coming from a redirect
+if (isset($_GET['redirected'])) {
+    header("HTTP/1.0 500 Internal Server Error");
+    exit("ERROR: Multiple redirects detected. Please clear your browser cache and try again.");
+}
+
 // Quick redirect to router-based index page
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
 $current_path = dirname($_SERVER['REQUEST_URI']);
 
-// Build redirect URL - go up one directory level and use page parameter
+// Build clean redirect URL
 $redirect_url = $protocol . '://' . $host . $current_path . '/?page=index';
 
-// Add any query parameters (like subscribe, unsub, mark_read)
+// Add only non-page query parameters to prevent loops
 if (!empty($_SERVER['QUERY_STRING'])) {
-    $redirect_url .= '&' . $_SERVER['QUERY_STRING'];
+    $query_parts = [];
+    parse_str($_SERVER['QUERY_STRING'], $query_params);
+
+    // Only preserve specific action parameters, not 'page'
+    $allowed_params = ['subscribe', 'unsubscribe', 'unsub', 'mark_read'];
+    foreach ($allowed_params as $param) {
+        if (isset($query_params[$param])) {
+            $query_parts[$param] = $query_params[$param];
+        }
+    }
+
+    if (!empty($query_parts)) {
+        $redirect_url .= '&' . http_build_query($query_parts);
+    }
 }
 
 header("Location: $redirect_url", true, 302);
