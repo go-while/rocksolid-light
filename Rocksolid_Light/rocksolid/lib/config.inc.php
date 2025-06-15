@@ -1,7 +1,9 @@
 <?php
+
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
+
 ini_set('memory_limit', '1536M');
 if (!isset($_SESSION)) {
     ini_set('session.gc_maxlifetime', 14400);
@@ -37,8 +39,10 @@ include "../common/config.inc.php";
 $config_name = basename(getcwd());
 if (file_exists($config_dir . $config_name . '.inc.php')) {
     $config_file = $config_dir . $config_name . '.inc.php';
+    die("[rocksolid/lib/config.inc.php: alternate config file: $config_file]<br>\n");
 } else {
     $config_file = $config_dir . 'rslight.inc.php';
+    echo "[rocksolid/lib/config.inc.php: default config file: $config_file]<br>\n";
 }
 $installed_path = getcwd();
 
