@@ -160,7 +160,7 @@ function rslight_init_page($page) {
  * @param string $page_name Page name for specific styling
  */
 function rslight_render_html_head($page_title, $page_name = '') {
-    global $CONFIG, $config_dir, $config_name;
+    global $CONFIG, $config_dir, $config_name, $config_path, $script_path;
 
     // Ensure we have required globals
     if (!isset($CONFIG)) {
@@ -214,7 +214,7 @@ function rslight_render_html_head($page_title, $page_name = '') {
  * Extracted from header.php theme handling
  */
 function rslight_render_theme_css() {
-    global $CONFIG, $config_dir;
+    global $CONFIG, $config_dir, $config_path, $script_path;
 
     // Determine root directory for CSS paths
     $rootdir = "../";
@@ -262,7 +262,7 @@ function rslight_debug_browser_language() {
  * Consolidates header.php HTML generation
  */
 function rslight_render_site_header() {
-    global $CONFIG, $config_dir, $config_name;
+    global $CONFIG, $config_dir, $config_name, $config_path, $script_path;
 
     // Determine root directory and header image
     $rootdir = "../";
@@ -307,7 +307,7 @@ function rslight_render_site_header() {
  * Render navigation links in header
  */
 function rslight_render_navigation_links() {
-    global $config_dir;
+    global $config_dir, $config_path, $script_path;
 
     echo '<div class="header_links_text">';
 
@@ -349,7 +349,7 @@ function rslight_render_navigation_links() {
  * Render menu buttons
  */
 function rslight_render_menu_buttons() {
-    global $config_dir, $frame;
+    global $config_dir, $frame, $config_path, $script_path;;
 
     $menulist = get_section_menu_array();
     $rootdir = "../";
@@ -373,7 +373,7 @@ function rslight_render_menu_buttons() {
  * Render group breadcrumb navigation
  */
 function rslight_render_group_breadcrumb() {
-    global $config_name, $file_thread, $frame;
+    global $config_name, $file_thread, $frame, $config_path, $script_path;;
 
     if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'])) {
         $display_group = $_REQUEST['group'] ?? $_REQUEST['thisgroup'] ?? null;
@@ -393,7 +393,7 @@ function rslight_render_group_breadcrumb() {
  * Render Message ID search form
  */
 function rslight_render_msgid_search() {
-    global $OVERRIDES, $config_name;
+    global $OVERRIDES, $config_name, $config_path, $script_path;;
 
     if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
         if ($config_name != "common" && $config_name != 'spoolnews') {
@@ -413,7 +413,7 @@ function rslight_render_msgid_search() {
  * Render MOTD (Message of the Day)
  */
 function rslight_render_motd() {
-    global $config_dir, $config_name;
+    global $config_dir, $config_name, $config_path, $script_path;;
 
     // Check for unread mail
     $user = (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) ? strtolower($_COOKIE['mail_name']) : null;
@@ -449,7 +449,7 @@ function rslight_render_motd() {
  */
 function rslight_render_complete_header($page_title, $page_name = '') {
     // Include fortunes config (from header.php)
-    global $config_dir;
+    global $config_dir, $config_path, $script_path;;
     if (file_exists($config_dir . '/fortunes.conf')) {
         include($config_dir . '/fortunes.conf');
     }
@@ -468,13 +468,40 @@ function rslight_render_complete_header($page_title, $page_name = '') {
 }
 
 /**
+ * Complete page footer rendering
+ * This is the main function to call instead of including foot.inc
+ */
+function rslight_render_complete_footer() {
+    global $config_dir, $config_path, $script_path;
+
+    // Close content div
+    echo '</div>'; // Close scroll div from header
+
+    // Add footer content (from foot.inc)
+    echo '<div class="footer">';
+
+    // Load footer config if it exists
+    if (file_exists($config_dir . '/footer.txt')) {
+        echo file_get_contents($config_dir . '/footer.txt');
+    } else {
+        // Default footer
+        echo '<hr><center><small>Powered by Rocksolid Light</small></center>';
+    }
+
+    echo '</div>';
+    echo '</body></html>';
+}
+
+/**
  * Route to requested page securely
  * This is the main entry point for page routing
  *
  * @return bool True if page was routed, false if no valid page found
  */
 function rslight_route_page() {
-    global $RSLIGHT_PAGE_MAP;
+    global $RSLIGHT_PAGE_MAP, $config_dir, $spooldir, $config_path, $script_path;
+    global $CONFIG, $OVERRIDES, $file_groups, $logdir, $debug_log, $abort_log, $auth_log, $mail_log;
+    global $title, $file_language, $rslight_version, $frame, $file_thread, $file_index;
 
     $page_file = rslight_get_page_file();
 
@@ -516,6 +543,7 @@ function rslight_route_page() {
  * @return bool True if default page was served
  */
 function rslight_serve_default_page() {
+    global $config_dir, $config_path, $script_path;
     // Check if we should serve the default page
     if (php_sapi_name() === 'cli' || defined('RSLIGHT_NO_DEFAULT_PAGE')) {
         return false;
