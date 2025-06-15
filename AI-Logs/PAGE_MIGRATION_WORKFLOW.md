@@ -2,7 +2,13 @@
 
 ## Overview
 
-This document describes the systematic process for migrating legacy PHP pages to work with the new router system. Each page needs to be converted from standalone execution to router-compatible execution.
+This document describes the systematic process for migrating legacy PHP pages to work ### High Priority (Core Functionality):
+- ✅ `pages/article-flat.php` - COMPLETED
+- 🔄 `pages/overboard.php` - IN PROGRESS (Variable dependencies issue)
+- ⏳ `pages/thread.php`
+- ⏳ `pages/article.php`
+- ⏳ `pages/search.php`
+- ⏳ `pages/post.php`e new router system. Each page needs to be converted from standalone execution to router-compatible execution.
 
 ## The Problem
 
