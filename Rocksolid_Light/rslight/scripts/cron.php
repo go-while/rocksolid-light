@@ -1,4 +1,6 @@
 <?php
+define('CRON_CONTEXT', true); // Global constant to indicate down the line: this is a cron job context
+
 // This file runs maintenance scripts and should be executed by cron regularly
 include "../lib/config.inc.php";
 
