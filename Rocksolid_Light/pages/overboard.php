@@ -1,8 +1,4 @@
 <?php
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
-header("Cache-Control: max-age=120");
-header("Pragma: cache");
-
 /*
  * rocksolid overboard - overboard for rslight
  * Download: https://github.com/go-while/rocksolid-light
@@ -25,9 +21,6 @@ header("Pragma: cache");
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "lib/config.inc.php";
-include "$file_newsportal";
-require_once(__DIR__ . '/lib/security.inc.php');
 
 // Add security headers
 add_security_headers();
@@ -37,19 +30,20 @@ if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 6
 }
 
 if (isset($_GET['thisgroup'])) {
-    $title .= " - " . _rawurldecode(_rawurldecode($_GET['thisgroup'])) . " - latest messages";
+    $title .= " - " . rawurldecode(rawurldecode($_GET['thisgroup'])) . " - latest messages";
     $activegroup = urldecode($_GET['thisgroup']);
 } else {
     $title .= " - " . $config_name . " - overboard";
 }
-include "lib/head.inc";
+
+rslight_render_complete_header($title);
+
 if (disable_page_by_user_agent($client_device, "bot", "Overboard")) {
     echo "<center>Page Disabled</center>";
-    include "lib/tail.inc";
+    rslight_render_complete_footer();
     exit();
 }
 
-$CONFIG = include($config_file);
 $logfile = $logdir . '/overboard.log';
 
 $cookie_mail_name = $_COOKIE['mail_name'];
@@ -94,13 +88,13 @@ if (isset($_GET['time'])) {
 }
 
 if (isset($_GET['thisgroup'])) {
-    $_GET['thisgroup'] = _rawurldecode($_GET['thisgroup']);
+    $_GET['thisgroup'] = rawurldecode($_GET['thisgroup']);
     if (get_section_by_group($_GET['thisgroup']) == false) {
         echo "Group not found";
         exit(1);
     }
     $grouplist = array();
-    $grouplist[0] = _rawurldecode(_rawurldecode($_GET['thisgroup']));
+    $grouplist[0] = rawurldecode(rawurldecode($_GET['thisgroup']));
     $cachefile = $spooldir . "/" . $grouplist[0] . "-overboard.dat";
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
@@ -739,7 +733,9 @@ function show_overboard_footer($stats, $results, $iscached)
         $arts = 'articles';
     }
     echo "<p class=np_ob_tail><b>" . $results . "</b> " . $recent . " " . $arts . " found.</p>\r\n";
-    include "lib/tail.inc";
+
+    rslight_render_complete_footer();
+
     if ($iscached) {
         echo "<p class=np_ob_tail><font size='1em'>cached copy: " . date("D M j G:i:s T Y", $stats[9]) . "</font></p>\r\n";
     }
