@@ -23,10 +23,9 @@
  */
 
 // Load rocksolid config for additional variables
-require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
+//require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
 
 // Fix config_path since $config_name is deprecated
-$config_path = $config_dir . "/";
 $file_groups = $config_path . "groups.txt";
 
 // Add security headers
