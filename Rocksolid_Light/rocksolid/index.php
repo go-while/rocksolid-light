@@ -114,7 +114,7 @@ echo '<div class="np_index_groups">';
 if (isset($frames_on) && $frames_on === true) {
     groups_show_frames($newsgroups);
 } else {
-    groups_show($newsgroups);
+    //groups_show($newsgroups);
 }
 echo '</div>';
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
