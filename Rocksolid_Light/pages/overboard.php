@@ -579,7 +579,7 @@ function display_flat($threads, $oldest)
             if (isset($this_overboard['threadlink'][$value])) {
                 $target_head = get_data_from_msgid($this_overboard['threadlink'][$value]);
                 if ($target_head !== false) {
-                    $display .= '<font class="np_ob_group"><a href="article-flat.php?id=' . $target_head['number'] . '&group=' . rawurlencode($target_head['newsgroup']) . '#' . $target_head['number'] . '"> (full thread)</a></font>';
+                    $display .= '<font class="np_ob_group"><a href="?page=article-flat&id=' . $target_head['number'] . '&group=' . rawurlencode($target_head['newsgroup']) . '#' . $target_head['number'] . '"> (full thread)</a></font>';
                 }
             }
             $display .= '<p class=np_ob_posted_date>Posted: ' . get_date_interval(date("D, j M Y H:i T", $target['date'])) . ' in: <a href="' . $groupurl . '"><span class="visited">' . $target['newsgroup'] . '</span></a></p>';
