@@ -173,7 +173,11 @@ if (is_file($cachefile)) {
     } catch (Exception $e) {
         $this_overboard = array('version' => '0');
     }
-    $cachedate = ($this_overboard['lastmessage'] - 86400);
+    if (isset($this_overboard['lastmessage']) && $this_overboard['lastmessage'] > 0) {
+        $cachedate = ($this_overboard['lastmessage'] - 86400);
+    } else {
+        $cachedate = ($oldest - 86400);
+    }
     $oldest = $cachedate;
 } else {
     $cachedate = ($oldest - 86400);
