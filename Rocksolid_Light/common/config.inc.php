@@ -54,4 +54,13 @@ require_once($default_language);
 require_once($file_language);
 echo "[rocklight/lib/config.inc.php: language file loaded: $file_language]<br>\n";
 $title = $CONFIG['title_full']; // TODO WHY HERE?
+
+define('RSLIGHT_CONFIG_LOADED');
+
+if (!defined('CRON_CONTEXT')) {
+    if (isset($_GET['page'])) {
+        // load pages/pages.php
+        require_once(__DIR__ . '/../pages/pages.php');
+    }
+}
 ?>

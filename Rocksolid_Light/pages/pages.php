@@ -47,7 +47,7 @@ $RSLIGHT_PAGE_MAP = [
     'language_demo'     => 'language_demo.php',
     'language_selector' => 'language_selector.php',
     'faq'              => 'faq.php',
-    
+
     // Testing/Debug
     'header_test'      => 'header_test.php'
 ];

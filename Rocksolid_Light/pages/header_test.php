@@ -1,7 +1,7 @@
 <?php
 /**
  * TEST PAGE: Header Migration Verification
- * 
+ *
  * This page tests the new consolidated header system
  * Access via: ?page=header_test
  */
@@ -30,7 +30,7 @@ if (function_exists('rslight_render_complete_header')) {
 
 <div style="background: #fff3e0; padding: 20px; margin: 20px; border-radius: 8px; border: 1px solid #ff9800;">
     <h3>🔍 Header Migration Status</h3>
-    
+
     <h4>Available Functions:</h4>
     <ul>
         <li>rslight_render_complete_header: <?php echo function_exists('rslight_render_complete_header') ? '✅ Available' : '❌ Missing'; ?></li>
@@ -38,14 +38,14 @@ if (function_exists('rslight_render_complete_header')) {
         <li>rslight_render_site_header: <?php echo function_exists('rslight_render_site_header') ? '✅ Available' : '❌ Missing'; ?></li>
         <li>rslight_render_theme_css: <?php echo function_exists('rslight_render_theme_css') ? '✅ Available' : '❌ Missing'; ?></li>
     </ul>
-    
+
     <h4>Global Variables:</h4>
     <ul>
         <li>$CONFIG: <?php echo isset($CONFIG) && is_array($CONFIG) ? '✅ Loaded (' . count($CONFIG) . ' keys)' : '❌ Missing'; ?></li>
         <li>$config_dir: <?php echo isset($config_dir) ? '✅ Set to: ' . htmlspecialchars($config_dir) : '❌ Missing'; ?></li>
         <li>$config_name: <?php echo isset($config_name) ? '✅ Set to: ' . htmlspecialchars($config_name) : '❌ Missing'; ?></li>
     </ul>
-    
+
     <h4>Session Status:</h4>
     <ul>
         <li>Session Status: <?php echo session_status() === PHP_SESSION_ACTIVE ? '✅ Active' : '❌ Inactive'; ?></li>
