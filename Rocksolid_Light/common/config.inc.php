@@ -8,6 +8,10 @@ echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
 $config_dir = "/etc/rslight"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir>
 $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir>
 $config_file = $config_dir.'/rslight.inc.php';
+// For router system, determine the correct section
+// Since files were originally in web/spoolnews/, the config is in /etc/rslight/spoolnews/
+$config_path = $config_dir . "/spoolnews/";
+$script_path = $config_dir . "/scripts/";
 
 // Initialize logging paths early - needed for cron and debug logging
 $logdir = $spooldir . '/log';
