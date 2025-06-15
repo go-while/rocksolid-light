@@ -1,64 +1,32 @@
 <?php
 
+require("../common/config.inc.php");
+
+if(empty($config_path)) {
+    die("config_path is not set in rocksolid/lib/config.inc.php:L=5!");
+}
+// Ensure the config_path is set correctly
+
+echo "<!-- Debug: config_path set to '$config_path' -->\n";
+echo "<!-- Debug: script_path set to '$script_path' -->\n";
+
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
-echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
 
-require("../common/config.inc.php");
-
-// For router system, use the main config directory
-$config_path = $config_dir . "/";
-$script_path = $config_dir . "/scripts/";
-echo "<!-- Debug: config_path set to '$config_path' -->\n";
-// $CONFIG = include($config_file); // Already loaded by common/config.inc.php]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-
-echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
-/*
- * Config file name should be the basename
- * of your path where you installed rslight
- * plus .inc.php.
- * So if installed in /var/www/html/rocksolid
- * it's rocksolid.inc.php in $config_dir
- */
-
-/*
-$config_name = basename(getcwd());
-if (file_exists($config_dir . $config_name . '.inc.php')) {
-    $config_file = $config_dir . $config_name . '.inc.php';
-    die("[rocksolid/lib/config.inc.php: alternate config file: $config_file]<br>\n");
-} else {
-    $config_file = $config_dir . 'rslight.inc.php';
-    echo "[rocksolid/lib/config.inc.php: default config file: $config_file]<br>\n";
-}
-*/
 $installed_path = getcwd();
 
+// For router system, determine the correct section
+// Since files were originally in web/spoolnews/, the config is in /etc/rslight/spoolnews/
+echo "<!-- rocksolid/lib/config.inc.php: Debug: config_path is '$config_path' -->\n";
+// $CONFIG = include($config_file); // Already loaded by common/config.inc.php]['file']) ? $backtrace[0]['file'] : 'Direct execution';ace = debug_backtrace();
+$parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
+echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
+echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
+echo "<!-- Debug: config_path set to '$config_path' -->\n";
 
-/*
- * $config_path is a directory off the $config_dir
- * where specific files such as groups.txt
- * are located
- */
+$installed_path = getcwd();
 
-// Set config_path without using deprecated $config_name
-// For router system, use the main config directory
-$config_path = $config_dir . "/";
-$script_path = $config_dir . "/scripts/";
-// $CONFIG = include($config_file); // Already loaded by common/config.inc.php
-
-/*
-// Load overrides from local directory (runtime application config)
-if (file_exists(__DIR__ . '/overrides.inc.php')) {
-    $OVERRIDES = include (__DIR__ . '/overrides.inc.php');
-} elseif (file_exists($config_dir . '/overrides.inc.php')) {
-    // Fallback: check config directory for backward compatibility
-    $OVERRIDES = require_once($config_dir . '/overrides.inc.php');
-} else {
-    // No overrides file found - use empty array
-    $OVERRIDES = array();
-}
-*/
 
 /* Version */
 $rslight_version = file_get_contents('../common/version.txt');
@@ -143,14 +111,14 @@ $imgdir = "img";
 
 $file_newsportal = "newsportal.php";
 $file_index = "index.php";
-$file_thread = "thread.php";
-$file_article = "?page=article-flat&";
+$file_thread = "?page=thread&!"; // TODO LINKS FIXME LATER
+$file_article = "?page=article-flat&!"; // TODO LINKS FIXME LATER
 $file_article_full = "article.php";
 $file_attachment = "attachment.php";
 $file_post = "post.php";
 $file_cancel = "cancel.php";
 
-if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=157!");
+if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 
 // Language selection: Check for user preference in cookie, fallback to default
 //include $config_dir."inc/allowed_languages.inc.php";
@@ -317,3 +285,11 @@ $sitelink .= "://";
 if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
+
+if(empty($config_path)) {
+    die("config_path is not set in rocksolid/lib/config.inc.php:L=290!");
+} else {
+    // Ensure the config_path is set correctly
+    echo "Debug: config_path set to '$config_path'<br>\n";
+}
+?>
