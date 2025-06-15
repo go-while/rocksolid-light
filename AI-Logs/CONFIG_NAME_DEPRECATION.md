@@ -8,6 +8,57 @@ The `$config_name` variable based on `basename(getcwd())` is fundamentally incom
 - **Legacy URLs**: `http://site.com/rocksolid/article.php` → `$config_name = "rocksolid"` ✅
 - **Router URLs**: `http://site.com/rocksolid/?page=article-flat` → `$config_name = "html"` ❌
 
+## Critical Discovery: $config_path Dependency Chain
+
+### 🔍 Root Cause Found During Overboard Migration:
+
+**File**: `rocksolid/lib/config.inc.php`
+**Problem**: Critical configuration variables depend on deprecated `$config_name`
+
+```php
+// ORIGINAL (BROKEN IN ROUTER):
+$config_path = $config_dir . $config_name . "/";   // e.g., /etc/rslight/html/
+$file_groups = $config_path . "groups.txt";        // e.g., /etc/rslight/html/groups.txt
+
+// PROBLEM: When using router system:
+// $config_name = "html" (wrong!)
+// $config_path = "/etc/rslight/html/" (wrong path!)
+// $file_groups = "/etc/rslight/html/groups.txt" (file doesn't exist!)
+```
+
+### 🚨 Cascading Failure Pattern:
+1. **Router loads from wrong directory** (`html` instead of section)
+2. **Groups file not found** → `$file_groups` empty
+3. **Overboard page fails silently** → no content displayed
+4. **All section-specific configs fail** → site functionality broken
+
+### ✅ Emergency Fix Applied:
+**File**: `rocksolid/lib/config.inc.php`
+**Solution**: Moved config path initialization after common config loads
+
+```php
+// FIXED: Set config_path without using deprecated $config_name
+// For router system, use the main config directory 
+$config_path = $config_dir . "/";               // e.g., /etc/rslight/
+$script_path = $config_dir . "/scripts/";       // e.g., /etc/rslight/scripts/
+$file_groups = $config_path . "groups.txt";     // e.g., /etc/rslight/groups.txt
+```
+
+**Result**: 
+- ✅ Groups file found: `/etc/rslight/groups.txt`
+- ✅ Overboard page loading: Title fixed
+- ✅ Configuration variables properly set
+- ✅ Router compatibility restored
+
+### 📝 Key Insight:
+The `$config_name` deprecation affects **core system infrastructure**, not just UI/logging. Variables like `$config_path`, `$script_path`, and derived paths must be refactored **before** full `$config_name` removal.
+
+### 🎯 Updated Priority:
+1. **CRITICAL**: Fix `$config_path` and derived variables (DONE ✅)
+2. **HIGH**: Test all pages using these variables  
+3. **MEDIUM**: Replace remaining `$config_name` usage
+4. **LOW**: Remove `$config_name` declarations entirely
+
 ## Impact Analysis
 
 ### 251+ Occurrences Found:
