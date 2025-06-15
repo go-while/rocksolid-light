@@ -38,13 +38,13 @@ $file_groups = $config_path . "groups.txt";        // e.g., /etc/rslight/html/gr
 
 ```php
 // FIXED: Set config_path without using deprecated $config_name
-// For router system, use the main config directory 
+// For router system, use the main config directory
 $config_path = $config_dir . "/";               // e.g., /etc/rslight/
 $script_path = $config_dir . "/scripts/";       // e.g., /etc/rslight/scripts/
 $file_groups = $config_path . "groups.txt";     // e.g., /etc/rslight/groups.txt
 ```
 
-**Result**: 
+**Result**:
 - ✅ Groups file found: `/etc/rslight/groups.txt`
 - ✅ Overboard page loading: Title fixed
 - ✅ Configuration variables properly set
@@ -55,7 +55,7 @@ The `$config_name` deprecation affects **core system infrastructure**, not just 
 
 ### 🎯 Updated Priority:
 1. **CRITICAL**: Fix `$config_path` and derived variables (DONE ✅)
-2. **HIGH**: Test all pages using these variables  
+2. **HIGH**: Test all pages using these variables
 3. **MEDIUM**: Replace remaining `$config_name` usage
 4. **LOW**: Remove `$config_name` declarations entirely
 
