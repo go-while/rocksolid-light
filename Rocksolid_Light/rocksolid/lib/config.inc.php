@@ -1,10 +1,17 @@
 <?php
+/* * RockSolid BBS - Configuration file
+ * This file is included by other scripts to set up the environment
+ * and load necessary configurations.
+ */
 
+define("PRE_LOAD_CONF", true); // Define a constant to indicate pre-load context
 require("../common/config.inc.php");
+echo "[rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br>\n";
 
 if(empty($config_path)) {
-    die("config_path is not set in rocksolid/lib/config.inc.php:L=5!");
+    die("[ERROR rocksolid/lib/config.inc.php config_path is not set :L=5!]<br>\n");
 }
+echo "[rocksolid/lib/config.inc.php: config_path: $config_path]<br>\n";
 // Ensure the config_path is set correctly
 
 echo "<!-- Debug: config_path set to '$config_path' -->\n";
@@ -27,9 +34,13 @@ echo "<!-- Debug: config_path set to '$config_path' -->\n";
 
 $installed_path = getcwd();
 
-
 /* Version */
-$rslight_version = file_get_contents('../common/version.txt');
+$version_file = '../common/version.txt';
+if(!file_exists($version_file)) {
+    die("Critical Error: Version file '$version_file' not found");
+}
+$rslight_version = file_get_contents($version_file);
+echo "[rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br>\n";
 
 // Spool directory size and minimum in Gigabytes
 if ($OVERRIDES['min_spool_disk_space'] > 0) {
@@ -114,12 +125,13 @@ $imgdir = "img";
 
 $file_newsportal = "newsportal.php";
 $file_index = "index.php";
-$file_thread = "?page=thread&!"; // TODO LINKS FIXME LATER
-$file_article = "?page=article-flat&!"; // TODO LINKS FIXME LATER
-$file_article_full = "article.php";
-$file_attachment = "attachment.php";
-$file_post = "post.php";
-$file_cancel = "cancel.php";
+$file_thread = "?page=thread";
+$file_article = "?page=article-flat";
+$file_article_full = "?page=article";
+$file_attachment = "?page=attachment";
+$file_post = "?page=post";
+$file_cancel = "?page=cancel";
+$file_search = "?page=search";
 
 if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 
@@ -289,10 +301,10 @@ if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
 
-if(empty($config_path)) {
-    die("config_path is not set in rocksolid/lib/config.inc.php:L=290!");
-} else {
-    // Ensure the config_path is set correctly
-    echo "Debug: config_path set to '$config_path'<br>\n";
-}
+define("PRE_LOAD_DONE", true); // Define a constant to indicate pre-load context
+require("../common/config.inc.php");
+
+// we should not reach below here. if we do, something is wrong with the page switch
+die("ERROR [rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br>\n");
+
 ?>

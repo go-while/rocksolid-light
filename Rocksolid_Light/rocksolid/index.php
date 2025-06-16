@@ -9,7 +9,7 @@
  */
 
 // Include the router system configuration
-require("lib/config.inc.php");
+include("lib/config.inc.php");
 
 die("ERROR LEGACY INDEX FILE LOADED - NOW USES ROUTER SYSTEM IN PLACE");
 /*

@@ -1,4 +1,6 @@
 <?php
+echo "[inc/_header.inc.php: start]<br>\n";
+
 /**
  * RockSolid Light - HTML Header Include
  * Extracted from pages/pages.php for simple include usage
@@ -159,7 +161,7 @@ foreach ($menulist as $menu) {
     echo '</form>';
     echo '</td>';
 }
-echo '</td></tr></table>';
+echo '</tr></table>';
 
 // breadcrumbs for thread/article pages
 $show_breadcrumbs = array("thread", "article", "article-flat", "overboard", "search");
@@ -185,7 +187,7 @@ if ($show_breadcrumbs) {
     }
 }
 
-echo '</div><div class="scroll">';
+echo '</div><div Xclass="scroll">';
 
 /* TODO FIXME
  * Message-ID search form

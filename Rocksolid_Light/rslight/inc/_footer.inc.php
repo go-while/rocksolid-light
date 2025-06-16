@@ -34,19 +34,10 @@ echo '  &nbsp;';
 echo '  <a href="http://git.fwfwqtpi2ofmehzdxe3e2htqfmhwfciwivpnsztv7dvpuamhr72ktlqd.onion/novabbs/rocksolid-light" target=_blank>tor</a>';
 echo ' </div>';
 // Close tail links text div
-echo '</div>';
-
-// Add footer content
-echo '<div class="footer">';
-// Load footer config if it exists
-if (file_exists($config_dir . '/footer.txt')) {
-    echo file_get_contents($config_dir . '/footer.txt');
-} else {
-    echo '<p>&copy; ' . date('Y') . ' RockSolid Light</p>';
-}
-// Close footer div
+echo '<p><small>&copy; ' . date('Y') . ' RockSolid Light</small></p>';
 echo '</div>';
 
 echo '</div></body></html>';
 
+echo "[rslight/inc/_footer.inc.php: Footer included successfully]<br>\n";
 ?>

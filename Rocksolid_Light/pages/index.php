@@ -43,31 +43,33 @@ if ($user_authenticated) {
     }
 
     if ($show_new_link && isset($overboard) && ($overboard == true)) {
-        echo '<td>';
-        echo '<form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
-        echo '<button class="np_button_link" type="submit">new articles</button>';
-        echo '<input name="new" type="hidden" id="new" value="true">';
-        echo '</form>';
+        echo ' <td>';
+        echo '  <form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
+        echo '  <button class="np_button_link" type="submit">new articles</button>';
+        echo '  <input name="new" type="hidden" id="new" value="true">';
+        echo '  </form>';
         echo '</td>';
     }
 }
 
 // View Latest button (overboard)
 if (isset($overboard) && ($overboard == true)) {
-    echo '<td>';
-    echo '<form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
-    echo '<button class="np_button_link" type="submit">' . ($text_thread["button_overboard"] ?? 'Latest') . '</button>';
-    echo '</form>';
-    echo '</td>';
+    echo ' <td>';
+    echo '  <form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
+    echo '  <button class="np_button_link" type="submit">' . ($text_thread["button_overboard"] ?? 'Latest') . '</button>';
+    echo '  </form>';
+    echo ' </td>';
 }
 
 // Search button
-echo '<td>';
-echo '<form target="' . ($frame['content'] ?? '') . '" action="search.php">';
-echo '<button class="np_button_link" type="submit">' . ($text_thread["button_search"] ?? 'Search') . '</button>';
-echo '</form>';
-echo '</td>';
-echo '<td width=100%></td></tr></table>';
+echo ' <td>';
+echo '  <form target="' . ($frame['content'] ?? '') . '" action="search.php">';
+echo '  <button class="np_button_link" type="submit">' . ($text_thread["button_search"] ?? 'Search') . '</button>';
+echo '  </form>';
+echo ' </td>';
+echo ' <td></td>';
+
+echo '</tr></table>';
 
 flush();
 
@@ -100,6 +102,7 @@ echo '<div class="np_index_groups"><h3>'.count($newsgroups, true).' Available Ne
 groups_show($newsgroups); // Show the newsgroups table
 echo '</div>';
 echo "<h3>DEBUG End pages/index.php Newsgroups</h3>";
+
 // Show session debug info (if available)
 if (file_exists($spooldir . '/sessions.dat')) {
     $sessions_data = file_get_contents($spooldir . '/sessions.dat');
@@ -109,12 +112,5 @@ if (file_exists($spooldir . '/sessions.dat')) {
         echo '<pre>' . htmlspecialchars($sessions_data) . '</pre>';
         echo '</div>';
     }
-}
-
-// Include footer if exists
-if (file_exists("lib/tail.inc")) {
-    include "lib/tail.inc";
-} else {
-    echo '</div></body></html>';
 }
 ?>

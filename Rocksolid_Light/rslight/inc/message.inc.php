@@ -1218,7 +1218,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
             $encrypted = false;
             if ((isset($article_data->header->rslight_to)) && (password_verify($CONFIG['thissitekey'] . $head->id, $head->rslight_site))) {
                 echo 'This is an encrypted message for <b>' . $article_data->header->rslight_to . ' </b>';
-                echo '<form action="decrypt.php?id=' . $id . '&group=' . $group . '" method="post">';
+                echo '<form action="decrypt.php?id=' . $id . '&group=' . $group . '" method="post">'; // TODO
                 echo '<p>Enter Password: <input type="password" name="decryptpass" >&nbsp;';
                 echo '<input type="hidden" name="decryptuser" value="' . $article_data->header->rslight_to . '">';
                 echo '<input type="submit" value="Decrypt"></p>';
@@ -1274,7 +1274,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                 }
             }
             if ($maxlen != false && $currentlen >= $maxlen) {
-                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
+                echo '<br><a href="' . $file_article_full . '&id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
             }
             // If attachment is image embed into article
             if ((isset($attachment_show)) && ($attachment_show == true) && (isset($head->content_type[1]))) {
@@ -1371,7 +1371,7 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
             }
             echo '</div>';
             if ($maxlen != false && $currentlen >= $maxlen) {
-                echo '<br><a href="' . $file_article_full . '?id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
+                echo '<br><a href="' . $file_article_full . '&id=' . $id . '&group=' . urlencode($group) . '">' . $text_article["full_article"] . '</a>';
             }
         } else {
             echo $body;

@@ -38,7 +38,7 @@ function thread_pageselect($group, $article_count, $first)
     for ($i = 0; $i < $pages; $i++) {
         // echo '[';
         if ($first != $i * $articles_per_page + 1) {
-            echo '<a class="np_pages_unselected" href="' . $file_thread . '?group=' . urlencode($group) . '&amp;first=' . ($i * $articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articles_per_page . '">';
+            echo '<a class="np_pages_unselected" href="' . $file_thread . '&group=' . urlencode($group) . '&amp;first=' . ($i * $articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articles_per_page . '">';
         } else {
             // echo 'PAGE: '.$i.' OF: '.$pages;
         }
@@ -898,7 +898,7 @@ function thread_format_subject($c, $group, $highlightids = false)
     else {
         $return = '<a ';
         $return .= 'target="' . $frame['content'] . '" ';
-        $return .= 'href="' . $file_article . '?id=' . urlencode($c->number) . '&group=' . urlencode($group) . '#' . urlencode($c->number) . '">';
+        $return .= 'href="' . $file_article . '&id=' . urlencode($c->number) . '&group=' . urlencode($group) . '#' . urlencode($c->number) . '">';
     }
     $return .= $re . htmlspecialchars(mb_substr(trim($c->subject), 0, $thread_maxSubject));
     if ($highlight)
