@@ -7,7 +7,7 @@
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "[rslight/security.inc.php included by: " . basename($parent) . "]<br>\n";
+echo "<!-- [rslight/security.inc.php included by: " . basename($parent) . "]<br> -->\n";
 
 /**
  * Secure session configuration

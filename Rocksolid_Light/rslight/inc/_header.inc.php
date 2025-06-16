@@ -1,5 +1,5 @@
 <?php
-echo "[inc/_header.inc.php: start]<br>\n";
+echo "<!-- [inc/_header.inc.php: start] -->\n";
 
 /**
  * RockSolid Light - HTML Header Include

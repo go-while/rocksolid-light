@@ -6,20 +6,20 @@
 
 define("PRE_LOAD_CONF", true); // Define a constant to indicate pre-load context
 require("../common/config.inc.php");
-echo "[rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br>\n";
+echo "<!--[ rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br> -->\n";
 
 if(empty($config_path)) {
     die("[ERROR rocksolid/lib/config.inc.php config_path is not set :L=5!]<br>\n");
 }
-echo "[rocksolid/lib/config.inc.php: config_path: $config_path]<br>\n";
+//echo "[<!-- rocksolid/lib/config.inc.php: config_path: $config_path]<br> -->\n";
 // Ensure the config_path is set correctly
 
-echo "<!-- Debug: config_path set to '$config_path' -->\n";
-echo "<!-- Debug: script_path set to '$script_path' -->\n";
+//echo "<!-- Debug: config_path set to '$config_path' -->\n";
+//echo "<!-- Debug: script_path set to '$script_path' -->\n";
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
+echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
 
 $installed_path = getcwd();
 
@@ -28,7 +28,7 @@ $installed_path = getcwd();
 echo "<!-- rocksolid/lib/config.inc.php: Debug: config_path is '$config_path' -->\n";
 // $CONFIG = include($config_file); // Already loaded by common/config.inc.php]['file']) ? $backtrace[0]['file'] : 'Direct execution';ace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "[rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br>\n";
+echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
 echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
 echo "<!-- Debug: config_path set to '$config_path' -->\n";
 
@@ -40,7 +40,7 @@ if(!file_exists($version_file)) {
     die("Critical Error: Version file '$version_file' not found");
 }
 $rslight_version = file_get_contents($version_file);
-echo "[rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br>\n";
+echo "<!-- [rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br> -->\n";
 
 // Spool directory size and minimum in Gigabytes
 if ($OVERRIDES['min_spool_disk_space'] > 0) {
@@ -105,17 +105,13 @@ $frames_on = false;
 // The default content for the left side 'menu' frame
 $default_menu = "/rocksolid/index.php";
 
-if (isset($frames_on) && $frames_on === true) {
-    $style_css = "style-frames.css";
-    $frame['content'] = "content";
-    $frame['menu'] = "menu";
-    $frame['header'] = "header";
-} else {
-    $style_css = "style.css";
-    $frame['content'] = "_self";
-    $frame['menu'] = "_self";
-    $frame['header'] = "_self";
-}
+//
+
+$style_css = "style.css";
+$frame['content'] = "_self";
+$frame['menu'] = "_self";
+$frame['header'] = "_self";
+
 $frame_externallink = "_blank";
 
 /*
@@ -125,14 +121,15 @@ $imgdir = "img";
 
 $file_newsportal = "newsportal.php";
 $file_index = "index.php";
-$file_thread = "?page=thread";
-$file_article = "?page=article-flat";
-$file_article_full = "?page=article";
-$file_attachment = "?page=attachment";
-$file_post = "?page=post";
-$file_cancel = "?page=cancel";
-$file_search = "?page=search";
-$file_groups = "?page=grouplist";
+$file_thread = "index.php?page=thread";
+$file_article = "index.php?page=article-flat";
+$file_article_full = "index.php?page=article";
+$file_attachment = "index.php?page=attachment";
+$file_post = "index.php?page=post";
+$file_cancel = "index.php?page=cancel";
+$file_search = "index.php?page=search";
+$file_groups = "index.php?page=grouplist";
+$file_overboard = "index.php?page=overboard";
 
 if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 

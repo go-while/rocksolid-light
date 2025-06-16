@@ -4,7 +4,7 @@ if (!defined('PRE_LOAD_DONE')) {
 
     $backtrace = debug_backtrace();
     $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-    echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
+    //echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
 
     $config_dir = "/etc/rslight"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir>
     $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir>
@@ -101,15 +101,15 @@ if (!defined('PRE_LOAD_DONE')) {
     }
 
     if(!file_exists($file_language)) {
-        echo "Critical Error: Language file '$file_language' cfg='".$CONFIG['language']."'='".strlen($CONFIG['language'])."' not found<br>\n";
+       die("Critical Error: Language file '$file_language' cfg='".$CONFIG['language']."'='".strlen($CONFIG['language'])."' not found<br>\n");
     }
     require_once($file_language);
-    echo "[common/config.inc.php: language file loaded: $file_language]<br>\n";
+    //echo "[common/config.inc.php: language file loaded: $file_language]<br>\n";
     $title = $CONFIG['title_full']; // TODO WHY HERE?
 
     define('RSLIGHT_CONFIG_LOADED', true); // Define a constant to indicate that the configuration has been loaded
 
-    echo "[common/config.inc.php: Configuration loaded successfully] CRON_CONTEXT=".defined('CRON_CONTEXT')."<br>\n";
+    //echo "[common/config.inc.php: Configuration loaded successfully] CRON_CONTEXT=".defined('CRON_CONTEXT')."<br>\n";
 } // if !defined('PRE_LOAD_DONE')
 
 /**
@@ -122,8 +122,8 @@ if (defined('CRON_CONTEXT')) { $cron_context = true; }
 if (defined('PRE_LOAD_CONF')) { $is_pre_load = true; }
 if (defined('PRE_LOAD_CONF') && defined('PRE_LOAD_DONE') && $is_pre_load){ $is_pre_load = false; }
 
-if (!$cron_context && !$is_pre_load) {
-    echo "[common/config.inc.php: Page routing system enabled]<br>\n";
+if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
+    //echo "[common/config.inc.php: Page routing system enabled]<br>\n";
     $RSLIGHT_PAGE_MAP = [
         // Core article pages
         'article'      => 'article.php',
@@ -155,18 +155,18 @@ if (!$cron_context && !$is_pre_load) {
         // Main index page
         'index'            => 'index.php'
     ];
-    echo "[common/config.inc.php: Page routing system loaded]<br>\n";
+    //echo "[common/config.inc.php: Page routing system loaded]<br>\n";
 
     // Always load the router system when not in cron context
     // Include session/cache setup
-    echo "[common/config.inc.php: Including " . $config_dir . "/inc/_session.inc.php]<br>\n";
+    //echo "[common/config.inc.php: Including " . $config_dir . "/inc/_session.inc.php]<br>\n";
     include_once($config_dir . '/inc/_session.inc.php');
-    echo "[common/config.inc.php: Session and cache setup included]<br>\n";
+    //echo "[common/config.inc.php: Session and cache setup included]<br>\n";
 
     // Include header
-    echo "[common/config.inc.php: Including " . $config_dir . "/inc/_header.inc.php]<br>\n";
+    //echo "[common/config.inc.php: Including " . $config_dir . "/inc/_header.inc.php]<br>\n";
     include_once($config_dir . '/inc/_header.inc.php');
-    echo "[common/config.inc.php: Header included]<br>\n";
+    //echo "[common/config.inc.php: Header included]<br>\n";
 
     // Your page routing switch
     $page = $_GET['page'] ?? 'index';
@@ -174,7 +174,7 @@ if (!$cron_context && !$is_pre_load) {
         die("Error: Invalid page requested.");
     }
     $page_file = "../pages/" . $RSLIGHT_PAGE_MAP[$page];
-    echo "[common/lib/config.inc.php: loading page: $page_file]<br>\n";
+    //echo "[common/lib/config.inc.php: loading page: $page_file]<br>\n";
     if (!file_exists($page_file)) {
         die("Error: Page file '$page_file' not found.");
     }
@@ -187,7 +187,7 @@ if (!$cron_context && !$is_pre_load) {
 
 // If this is a cron context, we do not load the pages
 // but only the configuration and libraries
-echo "[common/lib/config.inc.php: Context cron_context=$cron_context pre_load=$pre_load detected, skipping page loading]<br>\n";
+echo "<!-- [common/lib/config.inc.php: Context cron_context=$cron_context pre_load=$pre_load detected, skipping page loading]<br> -->\n";
 // You can add more cron-specific logic here if needed
 // For example, you might want to initialize some cron-specific settings or variables
 

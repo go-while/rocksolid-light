@@ -1,5 +1,5 @@
 <?php
-echo "[inc/_session.inc.php: Including session management]<br>\n";
+echo "<!-- [inc/_session.inc.php: Including session management]<br> -->\n";
 /**
  * RockSolid Light - Session Management Include
  * Extracted from pages/pages.php for simple include usage
@@ -13,9 +13,9 @@ if (!defined('RSLIGHT_CONFIG_LOADED')) {
 // Session handling for web pages (not CLI/cron)
 if (php_sapi_name() !== 'cli' && (!defined('RSLIGHT_NO_SESSION') && !defined('CRON_CONTEXT'))) { // REVIEW
     // Start session if not already started
-    echo "[inc/_session.inc.php: Starting secure session]<br>\n";
+    echo "<!-- [inc/_session.inc.php: Starting secure session] -->\n";
     secure_session_start();
-    echo "[inc/_session.inc.php: Secure session started]<br>\n";
+    echo "<!-- [inc/_session.inc.php: Secure session started] -->\n";
     // Set session as active
 }
 

@@ -162,8 +162,8 @@ if ($message) {
     // the message-number
     if (! isset($first)) {
         $first = intval(array_search($id, $subthread) / $CONFIG['articleflat_articles_per_page']) * $CONFIG['articleflat_articles_per_page'] + 1;
-        echo "DEBUG: article-flat.php - No 'first' parameter set, calculated first=$first on page based on message ID<br>\n";
-        echo "VARS: id=$id subthread=$subthread articleflat_articles_per_page = " . $CONFIG['articleflat_articles_per_page'] . "<br>\n";
+        echo "<!-- DEBUG: article-flat.php - No 'first' parameter set, calculated first=$first on page based on message ID<br>\n -->";
+        echo "<!-- VARS: id=$id subthread=$subthread articleflat_articles_per_page = " . $CONFIG['articleflat_articles_per_page'] . "<br>\n-->";
 
     }
 
@@ -172,8 +172,7 @@ if ($message) {
     for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $CONFIG['articleflat_articles_per_page'] - 1)); $i++) {
         $pageids[] = $subthread[$i];
     }
-    print_r($pageids);
-
+    echo "<!-- DEBUG: article-flat.php - Page IDs for first=$first: " . implode(', ', $pageids) . "<br>\n -->";
     // display the thread on top
     // change some of the default threadstyle-values
     $thread_show["replies"] = true;
@@ -186,7 +185,7 @@ if ($message) {
     }
     echo '<br>';
     // navigation line
-    echo '<form action="' . $file_thread . '">';
+    echo '<form action="' . $file_thread . '" method="post">';
     echo '<table id="start" class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
@@ -205,16 +204,19 @@ if ($message) {
         echo '<section id="' . $subid . '">';
         $is_blocked = message_show($group, $subid, 0, $message, $articleflat_chars_per_articles);
         if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
-            echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
+            echo '<form action="' . $file_post . '" method="post">' . '<input type="hidden" name="id" value="'
+            . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">'
+            . '<input type="hidden" name="group" value="' . urlencode($group) . '">'
+            . '<input type="submit" value="TODO2' . $text_article["button_answer"] . '">' . '</form>';
         }
         echo ' </section>';
     }
     // Display section/group/subject
     echo '<hr><h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">Home</a> / ';
     echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
     // navigation line
-    echo '<form action="' . $file_thread . '">';
+    echo '<form action="' . $file_thread . '" method="post">';
     echo '<table class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
@@ -226,5 +228,6 @@ if ($message) {
     echo articleflat_pageselect($group, $id, count($subthread), $first);
     echo '</td></tr></table>';
     echo '</form>';
+
 }
 ?>

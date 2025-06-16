@@ -79,16 +79,16 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     // View Latest button
     if (isset($overboard) && ($overboard == true)) {
         echo '<td>';
-        echo '<form action="?page=overboard">';
+        echo '<form action="' . $file_overboard . '" method="post">';
         echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '">';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
         echo '</form>';
         echo '</td>';
     }
-    if (! $CONFIG['readonly'] && (! function_exists("npreg_group_has_write_access") || npreg_group_has_write_access($group))) {
+    if (!$CONFIG['readonly']) {
         // New Thread button
         echo '<td>';
-        echo '<form action="' . $file_post . '">';
+        echo '<form action="' . $file_post . '" method="post">';
         echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_write"] . '</button>';
         echo '</form>';
@@ -96,11 +96,12 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     }
     // Search button
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" action="search.php">';
+    echo '<form action="' . $file_search . '" method="post">';
     echo '<button class="np_button_link" type="submit">' . $text_thread["button_search"] . '</button>';
     echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
     echo '</form>';
     echo '</td>';
+    /*
     // Newsgroups button (hidden)
     if (isset($frames_on) && $frames_on === true) {
         echo '<td>';
@@ -108,7 +109,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
         echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
         echo '</form>';
         echo '</td>';
-    }
+    }*/
     // $ns=nntp_open($server,$port);
     flush();
     $headers = thread_load($group);

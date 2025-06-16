@@ -84,7 +84,7 @@ echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target='
 echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
 // Article List button
 echo '<td>';
-echo '<form action="' . $file_thread . '">';
+echo '<form action="' . $file_thread . '" method="post">';
 echo '<input type="hidden" name="group" value="' . rawurlencode($group) . '"/>';
 echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($group)) . '</button>';
 echo '</form>';
@@ -100,7 +100,7 @@ else {
     }
     $is_blocked = message_show($group, $id, 0, $message);
     if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
-        echo '<form action="' . $file_post . '">' . '<input type="hidden" name="id" value="' . urlencode($id) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="' . $text_article["button_answer"] . '">' . '</form>';
+        echo '<form action="' . $file_post . '" method="post">' . '<input type="hidden" name="id" value="' . urlencode($id) . '">' . '<input type="hidden" name="type" value="reply">' . '<input type="hidden" name="group" value="' . urlencode($group) . '">' . '<input type="submit" value="TODO' . $text_article["button_answer"] . '">' . '</form>';
     }
     if ($article_showthread) {
         message_thread($message->header->id, $group, $thread);
