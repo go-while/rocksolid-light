@@ -176,24 +176,7 @@ if (!defined('CRON_CONTEXT')) {
 
     // Include footer
     include($config_dir . '/inc/_footer.inc.php');
-  /*
-  require_once(__DIR__ . '/../pages/pages.php');
-
-  if (isset($_GET['page'])) {
-      // Router will handle the page automatically
-      exit(0); // Exit after loading the page
-  }
-
-
-  // If no page parameter, serve default index page
-  if (function_exists('rslight_serve_default_page')) {
-    if (rslight_serve_default_page()) {
-      exit(); // Default page served successfully
-    }
-  }
-*/
-  // If serving fails, we fail hard. no more legacy code support!
-  die("Error: common/config.inc.php: No page parameter provided and default page serving failed. Please check your configuration.");
+    exit(0); // Exit after including the footer
 }
 
 // If this is a cron context, we do not load the pages
