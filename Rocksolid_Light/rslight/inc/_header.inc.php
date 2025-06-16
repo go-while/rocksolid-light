@@ -134,7 +134,7 @@ echo '</table>';
 
 include($config_dir . '/fortunes.conf');
 
-$motd = 'RIP Retro Guy! *The internet never forgets, and neither will we.*'; // Default to NON empty if motd.txt does not exist
+$motd = 'RIP Retro Guy! *The internet never forgets, and neither will we!*'; // Default to NON empty if motd.txt does not exist
 if (file_exists($config_dir . '/motd.txt')) {
     // If $config_dir/motd.txt is not blank, show it
     $amotd = file_get_contents($config_dir . '/motd.txt');

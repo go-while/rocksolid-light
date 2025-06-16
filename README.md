@@ -132,7 +132,7 @@ Thom was the visionary behind RockSolid Light, transforming NewsPortal into a mo
 
 This project continues in his honor, maintaining and modernizing his exceptional work for future generations of newsgroup enthusiasts.
 
-*"The internet never forgets, and neither will we."*
+*"The internet never forgets, and neither will we!"*
 
 ## Current Maintainers
 
