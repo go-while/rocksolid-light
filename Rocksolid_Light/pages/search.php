@@ -188,12 +188,12 @@ echo "<hr>";
 ob_start();
 if (isset($search_group)) {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-    echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '">' . $search_group . '</a> / ';
     echo 'search results for: ' . secure_input($_POST['terms'], 'html') . '</h1>';
 } else {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
     echo 'search results for: ' . secure_input($_POST['terms'], 'html') . '</h1>';
 }
 echo '<table class="np_buttonbar"><tr>';
@@ -485,9 +485,9 @@ function display_search_tools($home = true)
 {
     global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread, $suggestion;
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
-        echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+        echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '">' . $search_group . '</a> / ';
     }
     echo 'search</h1>';
     echo '<form name="form1" method="post" action="search.php">';

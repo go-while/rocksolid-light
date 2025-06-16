@@ -102,11 +102,11 @@ if (!$logged_in) {
 
 if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="user.php" target=' . $frame['menu'] . '>Configuration</a> / ';
+    echo '<a href="user.php">Configuration</a> / ';
     echo htmlspecialchars($_POST['username']) . '</h1>';
 } else {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="user.php" target=' . $frame['menu'] . '>user login</a> / ';
+    echo '<a href="user.php">user login</a> / ';
     echo htmlspecialchars($_POST['username']) . '</h1>';
 }
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';

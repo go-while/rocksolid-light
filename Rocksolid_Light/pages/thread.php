@@ -72,7 +72,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
  //   echo '<a name="top"></a>';
     echo '<h1 id="top" class="np_thread_headline">';
 
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
     echo htmlspecialchars(group_display_name($group)) . '</h1>';
 
     echo '<table class="np_buttonbar"><tr>';

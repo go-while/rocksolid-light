@@ -1108,7 +1108,7 @@ function groups_show($gruppen)
                 $latest_link = '';
             }
             $groupdisplay = '<tr class="' . $lineclass . '"><td style="text-align: center;" class="' . $lineclass . '">';
-            $groupdisplay .= '<a href="overboard.php?thisgroup=' . _rawurlencode($g->name) . $latest_link . '">';
+            $groupdisplay .= '<a href="?page=overboard&thisgroup=' . _rawurlencode($g->name) . $latest_link . '">';
             if ((isset($_SESSION['theme'])) && file_exists('../common/themes/' . $_SESSION['theme'] . '/images/latest.png')) {
                 $latest_image = '../common/themes/' . $_SESSION['theme'] . '/images/latest.png';
             } else {
@@ -1130,7 +1130,6 @@ function groups_show($gruppen)
             $groupdisplay .= '<td class="' . $lineclass . '">';
             $groupdisplay .= '<span class="np_group_line_text">';
             $groupdisplay .= '<a ';
-            $groupdisplay .= 'target="' . $frame['content'] . '" ';
             $groupdisplay .= 'href="' . $file_thread . '&group=' . urlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
             if ($new) {
                 echo '</i></b>';

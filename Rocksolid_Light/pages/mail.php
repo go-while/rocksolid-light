@@ -38,7 +38,7 @@ if (disable_page_by_user_agent($client_device, "bot", "Mail")) {
 
 echo '<h1 class="np_thread_headline">';
 
-echo '<a href="mail.php" target=' . $frame['menu'] . '>mail</a> / ';
+echo '<a href="mail.php">mail</a> / ';
 echo htmlspecialchars($_POST['username']) . '</h1>';
 
 $name = '';
@@ -66,7 +66,7 @@ echo '<table class="np_buttonbar"><tr>';
 // New Message button
 if ($_POST['command'] !== 'Send') {
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
+    echo '<form method="post" action="?page=mail">';
     echo '<input name="command" type="hidden" value="Send">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">New Message</button>';
@@ -76,7 +76,7 @@ if ($_POST['command'] !== 'Send') {
 // Delete Message button
 if (isset($_POST['command']) && $_POST['command'] == 'Message') {
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
+    echo '<form method="post" action="?page=mail">';
     echo '<input name="command" type="hidden" value="Delete">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo "<input type='hidden' name='id' value='" . htmlspecialchars($_POST['id'], ENT_QUOTES, 'UTF-8') . "' >";

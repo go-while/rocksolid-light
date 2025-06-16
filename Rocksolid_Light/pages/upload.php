@@ -39,7 +39,7 @@ if (!$logged_in) {
 $title .= ' - Upload file';
 include "../rocksolid/head.inc";
 echo '<h1 class="np_thread_headline">';
-echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
+echo '<a href="../spoolnews/files.php">files</a> / ';
 echo htmlspecialchars($_COOKIE['mail_name']) . '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';

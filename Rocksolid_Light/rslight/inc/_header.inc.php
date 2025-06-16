@@ -21,12 +21,18 @@ $client_device = get_client_user_agent_info();
 throttle_hits($client_device);
 write_access_log();
 
+
+$menulist = get_section_menu_array();
+$linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
+
 // Start HTML output
 echo '<!DOCTYPE html>';
 echo '<html><head>';
 echo '<title>' . htmlspecialchars($title ?? 'RockSolid Light') . '</title>';
 echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 echo '<meta charset="utf-8">';
+
+
 
 if(file_exists($config_dir.'/googleanalytics.conf')) {
   include $config_dir.'/googleanalytics.conf';
@@ -100,7 +106,7 @@ foreach ($linklist as $link) {
     if ($linkitem[1] == '0') {
         continue;
     }
-    if ($unread && (strpos($linkitem[1], 'spoolnews/mail.php') !== false)) {
+    if ($unread && isset($_GET['page']) && $_GET['page'] == 'mail') {
         echo '<strong>';
         echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
         echo '</strong>';
@@ -108,7 +114,7 @@ foreach ($linklist as $link) {
         echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim($linkitem[0]) . '</a>&nbsp;&nbsp;';
     }
 }
-echo '<a class="header_links_text" href="../spoolnews/user.php">';
+echo '<a class="header_links_text" href="?page=user">';
 if (isset($user)) {
     echo '(' . $_COOKIE['mail_name'] . ')';
 } else {
@@ -118,7 +124,7 @@ echo '</a>&nbsp;&nbsp;';
 
 // Add language selector link
 $current_page = $_SERVER['REQUEST_URI'];
-echo '<a class="header_links_text" href="../rocksolid/language_selector.php?return=' . urlencode($current_page) . '" title="Change Language">';
+echo '<a class="header_links_text" href="?page=language_selector&return=' . urlencode($current_page) . '" title="Change Language">';
 $current_lang = isset($_COOKIE['user_language']) ? $_COOKIE['user_language'] : 'english.lang';
 $lang_display = ucfirst(str_replace(['_', '.lang'], [' ', ''], $current_lang));
 echo '🌐 ' . htmlspecialchars($lang_display) . '</a>';

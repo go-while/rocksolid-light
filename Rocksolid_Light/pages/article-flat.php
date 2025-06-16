@@ -109,7 +109,7 @@ if (! $message) {
 
 
 echo '<h1 class="np_thread_headline">';
-echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
 echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
 
 if (! $message) {
@@ -211,7 +211,7 @@ if ($message) {
     }
     // Display section/group/subject
     echo '<hr><h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
     echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
     // navigation line
     echo '<form action="' . $file_thread . '">';

@@ -13,7 +13,7 @@ if (!defined('PRE_LOAD_DONE')) {
     // Since files were originally in web/spoolnews/, the config is in /etc/rslight/spoolnews/
     $config_path = $config_dir . "/spoolnews/";
     $script_path = $config_dir . "/scripts/";
-
+    $rootdir = "../";
     // Initialize logging paths early - needed for cron and debug logging
     $logdir = $spooldir . '/log';
     $debug_log = $logdir . '/debug.log';

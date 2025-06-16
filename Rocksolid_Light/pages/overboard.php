@@ -626,8 +626,8 @@ function show_overboard_header($grouplist)
 
     if (isset($_GET['thisgroup'])) {
         echo '<h1 class="np_thread_headline">';
-        echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-        echo '<a href="' . $file_thread . '&group=' . rawurlencode($grouplist[0]) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_displaY_name($grouplist[0])) . '</a> / ';
+        echo '<a href="' . $file_index . '">Home</a> / ';
+        echo '<a href="' . $file_thread . '&group=' . rawurlencode($grouplist[0]) . '">' . htmlspecialchars(group_display_name($grouplist[0])) . '</a> / ';
         if (isset($user_time)) {
             echo ' new messages</h1>';
         } else {
@@ -649,7 +649,7 @@ function show_overboard_header($grouplist)
         echo '</div>';
         // Article List button
         echo '<form action="' . $file_thread . '">';
-        echo '<input type="hidden" name="group" value="' . $grouplist[0] . '">';
+        echo '<input type="hidden" name="group" value="' . htmlspecialchars(group_display_name($grouplist[0])) . '">';
         echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($grouplist[0])) . '</button>';
         echo '</form>';
         echo '</td>';
@@ -663,7 +663,7 @@ function show_overboard_header($grouplist)
         }
     } else {
         echo '<h1 class="np_thread_headline">';
-        echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
+        echo '<a href="' . $file_index . '">Home</a> / ';
         echo 'latest messages</h1>';
         echo '<table class="np_buttonbar"><tr>';
         // Refresh button
@@ -673,6 +673,7 @@ function show_overboard_header($grouplist)
         echo '</form>';
         echo '</td>';
         // Newsgroups button (hidden)
+        /*
         if (isset($frames_on) && $frames_on === true) {
             echo '<td>';
             echo '<form action="' . $file_index . '">';
@@ -680,6 +681,7 @@ function show_overboard_header($grouplist)
             echo '</form>';
             echo '</td>';
         }
+        */
     }
     echo '<td></td>';
     echo '<td class="np_ob_style_toggle">';

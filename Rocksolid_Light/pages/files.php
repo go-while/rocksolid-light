@@ -35,7 +35,7 @@ if (disable_page_by_user_agent($client_device, "bot", "Files")) {
 }
 
 echo '<h1 class="np_thread_headline">';
-echo '<a href="../spoolnews/files.php" target=' . $frame['menu'] . '>files</a> / ';
+echo '<a href="../spoolnews/files.php">files</a> / ';
 if(isset($_COOKIE['mail_name'])) {
     echo htmlspecialchars($_COOKIE['mail_name']);
 }
