@@ -71,7 +71,7 @@ chown($spooldir . '/upload', $CONFIG['webserver_user']);
 date_default_timezone_set('UTC');
 $overboard = true;
 $spoolnews = true;
-if (isset($CONFIG['enable_nntp']) && $CONFIG['enable_nntp'] == true) {
+if (isset($CONFIG['enable_nntp']) && ($CONFIG['enable_nntp'] == true || $CONFIG['enable_nntp'] == '1')) {
     $server = $CONFIG['local_server'];
     $port = $CONFIG['local_port'];
 } else {
