@@ -1103,17 +1103,27 @@ function nl2p($string, $line_breaks = true, $xml = false)
  */
 function message_show($group, $id, $attachment = 0, $article_data = false, $maxlen = false)
 {
-    global $file_article, $file_article_full, $OVERRIDES, $spooldir;
+    global $file_article, $file_article_full, $OVERRIDES, $spooldir; $logfile;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG, $current_message;
 
-    echo "[DEBUG inc/message.inc.php message_show] group: " . $group . ", id: " . $id . ", attachment: " . $attachment . "<br>";
+    $func_name = "messages.inc.php message_show()";
+
+    echo "[DEBUG inc/message.inc.php $func_name globals: file_article=$file_article, file_article_full=$file_article_full, override=".count($OVERRIDES).", spooldir=$spooldir; logfile=$logfile];\n^^--> group: " . $group . ", id: " . $id . ", attachment: " . $attachment . "<br>";
+
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $func_name . " DEBUG: thread_load called for group: " . $groupname . " readmode: " . $readmode . " poll: " . ($poll ? 'true' : 'false'), FILE_APPEND);
+
+
 
     $current_message = np_get_db_article($id, $group, 1);
 
     if ($article_data == false) {
         $article_data = message_read($id, $attachment, $group);
+    }
+    if($article_data == null) {
+        echo '<hr><p class="message_show_header_notice">Article #' . $id . ' not found in group ' . htmlspecialchars($group) . '</p><hr>';
+        return "not-found";
     }
     $head = $article_data->header;
     $local_poster = false;
@@ -1374,16 +1384,16 @@ function message_decrypt($key, $group, $id, $attachment = 0, $article_data = fal
  */
 function articleflat_pageselect($group, $id, $article_count, $first)
 {
-    global $articleflat_articles_per_page, $file_article, $file_framethread, $name;
+    global $CONFIG, $file_article, $file_framethread, $name;
     global $text_thread, $thread_show;
-    $pages = ceil($article_count / $articleflat_articles_per_page);
+    $pages = ceil($article_count / $CONFIG['articleflat_articles_per_page']);
     $return = "";
-    if ($article_count > $articleflat_articles_per_page) {
+    if ($article_count > $CONFIG['articleflat_articles_per_page']) {
         $return .= $text_thread["pages"];
     }
     for ($i = 0; $i < $pages; $i++) {
-        if ($first != $i * $articleflat_articles_per_page + 1) {
-            $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $articleflat_articles_per_page + 1) . '&amp;last=' . ($i + 1) * $articleflat_articles_per_page . '#start">';
+        if ($first != $i * $CONFIG['articleflat_articles_per_page'] + 1) {
+            $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $CONFIG['articleflat_articles_per_page'] + 1) . '&amp;last=' . ($i + 1) * $CONFIG['articleflat_articles_per_page'] . '#start">';
         } else {
             $return .= '<span class="np_pages_selected">';
         }
@@ -1391,7 +1401,7 @@ function articleflat_pageselect($group, $id, $article_count, $first)
         if ($i == $pages - 1) {
             // $return.= $article_count;
         }
-        if ($first != $i * $articleflat_articles_per_page + 1) {
+        if ($first != $i * $CONFIG['articleflat_articles_per_page'] + 1) {
             $return .= '</a>';
         } else {
             $return .= '</span>';

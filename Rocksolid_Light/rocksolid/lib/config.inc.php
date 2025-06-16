@@ -71,6 +71,8 @@ chown($spooldir . '/upload', $CONFIG['webserver_user']);
 date_default_timezone_set('UTC');
 $overboard = true;
 $spoolnews = true;
+
+/*
 if (isset($CONFIG['enable_nntp']) && ($CONFIG['enable_nntp'] == true || $CONFIG['enable_nntp'] == '1')) {
     $server = $CONFIG['local_server'];
     $port = $CONFIG['local_port'];
@@ -80,6 +82,7 @@ if (isset($CONFIG['enable_nntp']) && ($CONFIG['enable_nntp'] == true || $CONFIG[
     $CONFIG['server_auth_user'] = $CONFIG['remote_auth_user'];
     $CONFIG['server_auth_pass'] = $CONFIG['remote_auth_pass'];
 }
+*/
 
 /*
  * Frames (frames is not up to date and probably not so great)
@@ -210,8 +213,8 @@ $article_graphicquotes = true;
 /*
  * settings for the article flat view, if used
  */
-$articleflat_articles_per_page = 25;
-$articleflat_chars_per_articles = 10000;
+// $articleflat_articles_per_page = 25; //  is in CONFIG["articleflat_articles_per_page"]
+// $articleflat_chars_per_articles = 10000; //  is in CONFIG['articleflat_chars_per_articles']
 
 /*
  * Message posting

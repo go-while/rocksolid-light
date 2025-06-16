@@ -134,9 +134,9 @@ if ($message) {
     $thread = thread_load($group);
 
     // DEBUG: Add logging to understand the mismatch
-    error_log("DEBUG: article-flat.php - Group: $group");
-    error_log("DEBUG: article-flat.php - Message ID being looked up: " . ($message->header->id ?? 'NULL'));
-    error_log("DEBUG: article-flat.php - Thread loaded: " . (is_array($thread) ? count($thread) . " articles" : "false"));
+    error_log("DEBUG: article-flat.php - Group: $group\n");
+    error_log("DEBUG: article-flat.php - Message ID being looked up: " . ($message->header->id ?? 'NULL') ."\n");
+    error_log("DEBUG: article-flat.php - Thread loaded: " . (is_array($thread) ? count($thread) . " articles" : "false") ."\n");
 
     if (is_array($thread) && count($thread) > 0) {
         $thread_ids = array_keys($thread);
@@ -172,14 +172,18 @@ if ($message) {
     // If no page is set, lets look, if we can calculate the page by
     // the message-number
     if (! isset($first)) {
-        $first = intval(array_search($id, $subthread) / $articleflat_articles_per_page) * $articleflat_articles_per_page + 1;
+        $first = intval(array_search($id, $subthread) / $CONFIG['articleflat_articles_per_page']) * $CONFIG['articleflat_articles_per_page'] + 1;
+        echo "DEBUG: article-flat.php - No 'first' parameter set, calculated first=$first on page based on message ID<br>\n";
+        echo "VARS: id=$id subthread=$subthread articleflat_articles_per_page = " . $CONFIG['articleflat_articles_per_page'] . "<br>\n";
+
     }
 
     // which articles are exactly on this page?
     $pageids = array();
-    for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $articleflat_articles_per_page - 1)); $i++) {
+    for ($i = $first - 1; (($i < count($subthread)) && ($i < $first + $CONFIG['articleflat_articles_per_page'] - 1)); $i++) {
         $pageids[] = $subthread[$i];
     }
+    print_r($pageids);
 
     // display the thread on top
     // change some of the default threadstyle-values

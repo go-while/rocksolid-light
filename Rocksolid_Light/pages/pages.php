@@ -499,10 +499,10 @@ function rslight_render_complete_footer() {
  * @return bool True if page was routed, false if no valid page found
  */
 function rslight_route_page() {
-    global $RSLIGHT_PAGE_MAP, $config_dir, $spooldir, $config_path, $script_path;
+    global $RSLIGHT_PAGE_MAP, $config_dir, $spooldir, $config_path, $script_path, $server, $port;
     global $CONFIG, $OVERRIDES, $file_groups, $logdir, $debug_log, $abort_log, $auth_log, $mail_log;
     global $title, $file_language, $rslight_version, $frame, $file_thread, $file_index;
-
+    echo "[ rslight_route_page() called:config_dir=$config_dir} server=$server port=$port\n";
     $page_file = rslight_get_page_file();
 
     if (!$page_file) {
@@ -525,7 +525,6 @@ function rslight_route_page() {
     }
 
     // Log page access only in debug mode
-    global $config_dir;
     if (file_exists($config_dir . '/DEBUG')) {
         error_log("RSLIGHT ROUTER: Loading page $page_name -> $page_file");
     }

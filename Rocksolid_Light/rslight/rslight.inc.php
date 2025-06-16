@@ -49,6 +49,8 @@ return [
   'pathhost' => 'rslight',
   'article_database' => '1',
   'open_clients' => '127.0.0.1',
-  'thissitekey' => 'wgyNC47damyuG4v'
+  'thissitekey' => 'wgyNC47damyuG4v',
+  'articleflat_articles_per_page' => 25,
+  'articleflat_chars_per_articles' => 10000
 ];
 ?>
