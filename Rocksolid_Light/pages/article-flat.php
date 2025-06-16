@@ -185,7 +185,8 @@ if ($message) {
     }
     echo '<br>';
     // navigation line
-    echo '<form action="' . $file_thread . '" method="post">';
+    echo '<form action="" method="get">';
+    echo '<input type="hidden" name="page" value="thread">';
     echo '<table id="start" class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';
@@ -204,7 +205,9 @@ if ($message) {
         echo '<section id="' . $subid . '">';
         $is_blocked = message_show($group, $subid, 0, $message, $articleflat_chars_per_articles);
         if (((! $CONFIG['readonly']) && ($message)) && $is_blocked != "blocked") {
-            echo '<form action="' . $file_post . '" method="post">' . '<input type="hidden" name="id" value="'
+            echo '<form action="" method="get">'
+            . '<input type="hidden" name="page" value="post">'
+            . '<input type="hidden" name="id" value="'
             . urlencode($subid) . '">' . '<input type="hidden" name="type" value="reply">'
             . '<input type="hidden" name="group" value="' . urlencode($group) . '">'
             . '<input type="submit" value="TODO2' . $text_article["button_answer"] . '">' . '</form>';
@@ -216,7 +219,8 @@ if ($message) {
     echo '<a href="' . $file_index . '">Home</a> / ';
     echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
     // navigation line
-    echo '<form action="' . $file_thread . '" method="post">';
+    echo '<form action="" method="get">';
+    echo '<input type="hidden" name="page" value="thread">';
     echo '<table class="np_buttonbar"><tr>';
     // Article List button
     echo '<td>';

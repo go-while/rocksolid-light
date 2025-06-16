@@ -43,120 +43,114 @@ $title .= ' - ' . $group;
 
 
 $logfile = $logdir . '/newsportal.log';
-$CONFIG = include ($config_file);
+//$CONFIG = include ($config_file);
 
-if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_access($group)) && (! function_exists("npreg_group_is_visible") || npreg_group_is_visible($group))) {
+$noaccess = false; // TODO or deprecated. legacy npgroup function
+if($noaccess){
+    echo $text_register["no_access_group"];
+    include($config_dir . '/footer.inc.php');
+    die();
+}
 
-    if (isset($frames_on) && $frames_on === true) {
-        ?>
-<script>
-    var contentURL=window.location.pathname+window.location.search+window.location.hash;
-    if ( window.self !== window.top ) {
-        /* Great! now we move along */
-    } else {
-        window.location.href = '../index.php?content='+encodeURIComponent(contentURL);
-    }
-    top.history.replaceState({}, 'Title', 'index.php?content='+encodeURIComponent(contentURL));
-</script>
-<?php
-    }
-    if ($userdata) {
-        $userdata[$group] = time();
-        file_put_contents($userfile, serialize($userdata));
-    }
-    if (! isset($_SERVER['REQUEST_STRING'])) {
-        $_SERVER['REQUEST_STRING'] = '';
-    }
-    $_SESSION['return_page'] = $_SERVER['REQUEST_URI'] . $_SERVER['REQUEST_STRING'];
+if ($userdata) {
+    $userdata[$group] = time();
+    file_put_contents($userfile, serialize($userdata));
+}
+if (! isset($_SERVER['REQUEST_STRING'])) {
+    $_SERVER['REQUEST_STRING'] = '';
+}
+$_SESSION['return_page'] = $_SERVER['REQUEST_URI'] . $_SERVER['REQUEST_STRING'];
 
- //   echo '<a name="top"></a>';
-    echo '<h1 id="top" class="np_thread_headline">';
+//   echo '<a name="top"></a>';
+echo '<h1 id="top" class="np_thread_headline">';
 
-    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
-    echo htmlspecialchars(group_display_name($group)) . '</h1>';
+echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
+echo htmlspecialchars(group_display_name($group)) . '</h1>';
 
-    echo '<table class="np_buttonbar"><tr>';
-    // View Latest button
-    if (isset($overboard) && ($overboard == true)) {
-        echo '<td>';
-        echo '<form action="' . $file_overboard . '" method="post">';
-        echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '">';
-        echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
-        echo '</form>';
-        echo '</td>';
-    }
-    if (!$CONFIG['readonly']) {
-        // New Thread button
-        echo '<td>';
-        echo '<form action="' . $file_post . '" method="post">';
-        echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
-        echo '<button class="np_button_link" type="submit">' . $text_thread["button_write"] . '</button>';
-        echo '</form>';
-        echo '</td>';
-    }
-    // Search button
+echo '<table class="np_buttonbar"><tr>';
+// View Latest button
+if (isset($overboard) && ($overboard == true)) {
     echo '<td>';
-    echo '<form action="' . $file_search . '" method="post">';
-    echo '<button class="np_button_link" type="submit">' . $text_thread["button_search"] . '</button>';
-    echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
+    echo '<form action="" method="get">';
+    echo '<input type="hidden" name="page" value="overboard">';
+    echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '">';
+    echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
     echo '</form>';
     echo '</td>';
-    /*
-    // Newsgroups button (hidden)
-    if (isset($frames_on) && $frames_on === true) {
-        echo '<td>';
-        echo '<form action="' . $file_index . '">';
-        echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-        echo '</form>';
-        echo '</td>';
-    }*/
-    // $ns=nntp_open($server,$port);
-    flush();
-    $headers = thread_load($group);
-    if ($headers) {
-        $article_count = count($headers);
-    }
-    if ($articles_per_page != 0) {
-        if ((! isset($first)) || (! isset($last))) {
-            if ($startpage == "first") {
-                $first = 1;
-                $last = $articles_per_page;
-            } else {
-                $first = $article_count - (($article_count - 1) % $articles_per_page);
-                $last = $article_count;
-            }
-        }
-        echo '<td class="np_pages">';
-        // Show the replies to an article in the thread view?
-        if ($thread_show["replies"]) {
-            // yes, so the counting of the shown articles is very easy
-            $pagecount = count($headers);
-        } else {
-            // oh no, the replies will not be shown, this makes life hard...
-            $pagecount = 0;
-            if (($headers) && (count($headers) > 0 && is_array($headers))) {
-                foreach ($headers as $h) {
-                    if ($h->isAnswer == false)
-                        $pagecount ++;
-                }
-            }
-        }
-
-        thread_pageselect($group, $pagecount, $first);
-        echo '</td>';
-    } else {
-        $first = 0;
-        $last = $article_count;
-    }
-    echo '</tr></table>';
-    thread_show($headers, $group, $first, $last);
-    echo '<table class="np_buttonbar"><tr>';
-    echo '<td class="np_pages">';
-    thread_pageselect($group, $pagecount, $first);
-    echo '</td></tr></table>';
-} else {
-    echo $text_register["no_access_group"];
 }
+if (!$CONFIG['readonly']) {
+    // New Thread button
+    echo '<td>';
+    echo '<form action="" method="get">';
+    echo '<input type="hidden" name="page" value="post">';
+    echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
+    echo '<button class="np_button_link" type="submit">' . $text_thread["button_write"] . '</button>';
+    echo '</form>';
+    echo '</td>';
+}
+// Search button
+echo '<td>';
+echo '<form action="" method="get">';
+echo '<input type="hidden" name="page" value="search">';
+echo '<button class="np_button_link" type="submit">' . $text_thread["button_search"] . '</button>';
+echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
+echo '</form>';
+echo '</td>';
+/*
+// Newsgroups button (hidden)
+if (isset($frames_on) && $frames_on === true) {
+    echo '<td>';
+    echo '<form action="" method="get">';
+    echo '<input type="hidden" name="page" value="index">';
+    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
+    echo '</form>';
+    echo '</td>';
+}*/
+// $ns=nntp_open($server,$port);
+flush();
+$headers = thread_load($group);
+if ($headers) {
+    $article_count = count($headers);
+}
+if ($articles_per_page != 0) {
+    if ((! isset($first)) || (! isset($last))) {
+        if ($startpage == "first") {
+            $first = 1;
+            $last = $articles_per_page;
+        } else {
+            $first = $article_count - (($article_count - 1) % $articles_per_page);
+            $last = $article_count;
+        }
+    }
+    echo '<td class="np_pages">';
+    // Show the replies to an article in the thread view?
+    if ($thread_show["replies"]) {
+        // yes, so the counting of the shown articles is very easy
+        $pagecount = count($headers);
+    } else {
+        // oh no, the replies will not be shown, this makes life hard...
+        $pagecount = 0;
+        if (($headers) && (count($headers) > 0 && is_array($headers))) {
+            foreach ($headers as $h) {
+                if ($h->isAnswer == false)
+                    $pagecount ++;
+            }
+        }
+    }
+
+    thread_pageselect($group, $pagecount, $first);
+    echo '</td>';
+} else {
+    $first = 0;
+    $last = $article_count;
+}
+echo '</tr></table>';
+thread_show($headers, $group, $first, $last);
+echo '<table class="np_buttonbar"><tr>';
+echo '<td class="np_pages">';
+thread_pageselect($group, $pagecount, $first);
+echo '</td></tr></table>';
+
 $sessions_data = file_get_contents($spooldir . '/sessions.dat');
 echo '<h1 class="np_thread_headline">' . $sessions_data . '</h1>';
 ?>

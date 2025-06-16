@@ -648,7 +648,8 @@ function show_overboard_header($grouplist)
         echo '</form>';
         echo '</div>';
         // Article List button
-        echo '<form action="' . $file_thread . '">';
+        echo '<form action="" method="get">';
+        echo '<input type="hidden" name="page" value="thread">';
         echo '<input type="hidden" name="group" value="' . htmlspecialchars(group_display_name($grouplist[0])) . '">';
         echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($grouplist[0])) . '</button>';
         echo '</form>';
@@ -656,7 +657,8 @@ function show_overboard_header($grouplist)
         // Newsgroups button (hidden)
         if (isset($frames_on) && $frames_on === true) {
             echo '<td>';
-            echo '<form action="' . $file_index . '">';
+            echo '<form action="" method="get">';
+            echo '<input type="hidden" name="page" value="index">';
             echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
             echo '</form>';
             echo '</td>';
@@ -676,7 +678,8 @@ function show_overboard_header($grouplist)
         /*
         if (isset($frames_on) && $frames_on === true) {
             echo '<td>';
-            echo '<form action="' . $file_index . '">';
+            echo '<form action="" method="get">';
+            echo '<input type="hidden" name="page" value="index">';
             echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
             echo '</form>';
             echo '</td>';
