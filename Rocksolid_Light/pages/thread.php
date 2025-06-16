@@ -79,7 +79,7 @@ if ((! function_exists("npreg_group_has_read_access") || npreg_group_has_read_ac
     // View Latest button
     if (isset($overboard) && ($overboard == true)) {
         echo '<td>';
-        echo '<form action="overboard.php">';
+        echo '<form action="?page=overboard">';
         echo '<input type="hidden" name="thisgroup" value="' . urlencode($group) . '">';
         echo '<button class="np_button_link" type="submit">' . $text_thread["button_latest"] . '</button>';
         echo '</form>';

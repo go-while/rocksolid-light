@@ -35,6 +35,9 @@ if (isset($_COOKIE['mail_name'])) {
     }
 }
 
+echo "[DEBUG \$frame=var_dump]";
+var_dump($frame); // Debugging output
+
 // New articles button (if logged in and overboard enabled)
 if ($user_authenticated) {
     $show_new_link = true;
@@ -44,7 +47,7 @@ if ($user_authenticated) {
 
     if ($show_new_link && isset($overboard) && ($overboard == true)) {
         echo ' <td>';
-        echo '  <form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
+        echo '  <form target="' . ($frame['content'] ?? '') . '" action="?page=overboard" method="get">';
         echo '  <button class="np_button_link" type="submit">new articles</button>';
         echo '  <input name="new" type="hidden" id="new" value="true">';
         echo '  </form>';
@@ -55,7 +58,7 @@ if ($user_authenticated) {
 // View Latest button (overboard)
 if (isset($overboard) && ($overboard == true)) {
     echo ' <td>';
-    echo '  <form target="' . ($frame['content'] ?? '') . '" action="overboard.php">';
+    echo '  <form target="' . ($frame['content'] ?? '') . '" action="?page=overboard" method="get">';
     echo '  <button class="np_button_link" type="submit">' . ($text_thread["button_overboard"] ?? 'Latest') . '</button>';
     echo '  </form>';
     echo ' </td>';
@@ -63,7 +66,7 @@ if (isset($overboard) && ($overboard == true)) {
 
 // Search button
 echo ' <td>';
-echo '  <form target="' . ($frame['content'] ?? '') . '" action="search.php">';
+echo '  <form target="' . ($frame['content'] ?? '') . '" action="?page=search" method="get">';
 echo '  <button class="np_button_link" type="submit">' . ($text_thread["button_search"] ?? 'Search') . '</button>';
 echo '  </form>';
 echo ' </td>';

@@ -637,7 +637,7 @@ function show_overboard_header($grouplist)
         // Refresh button
         echo '<td>';
         echo '<div style="float:left;">';
-        echo '<form action="overboard.php">';
+        echo '<form action="?page=overboard" method="get">';
         echo '<input type="hidden" name="thisgroup" value="' . htmlspecialchars($_GET['thisgroup'], ENT_QUOTES, 'UTF-8') . '">';
         if (isset($user_time)) {
             echo '<button class="np_button_link" type="submit">overboard</button>';
@@ -668,7 +668,7 @@ function show_overboard_header($grouplist)
         echo '<table class="np_buttonbar"><tr>';
         // Refresh button
         echo '<td>';
-        echo '<form action="overboard.php">';
+        echo '<form action="?page=overboard" method="get">';
         echo '<button class="np_button_link" type="submit">overboard</button>';
         echo '</form>';
         echo '</td>';
