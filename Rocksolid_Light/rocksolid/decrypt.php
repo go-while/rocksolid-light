@@ -68,7 +68,7 @@ if(isset($frames_on) && $frames_on === true) {
          $file_index.'">'.$text_thread["button_grouplist"].'</a></td>';
   }
   echo '<td class="np_button"><a class="np_button" href="'.
-       $file_thread.'?group='.urlencode($group).'">'.$text_article["back_to_group"].'</a></td>';
+       $file_thread.'&group='.urlencode($group).'">'.$text_article["back_to_group"].'</a></td>';
   if ((!$CONFIG['readonly']) && ($message) &&
       (!function_exists("npreg_group_has_write_access") ||
              npreg_group_has_write_access($group)))

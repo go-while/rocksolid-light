@@ -552,7 +552,7 @@ function show_header($head, $group, $local_poster = false)
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
-            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
+            echo ' ' . '<a href="' . $file_article . '&group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
         echo "<br>";
         echo '</div>';
@@ -575,7 +575,7 @@ function show_header($head, $group, $local_poster = false)
             } else {
                 $contype = $head->content_type_name[$i];
             }
-            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+            echo '<a href="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
             if ($i < count($head->content_type) - 1) {
                 // If this is not the last attachment, add a comma
                 echo ', ';
@@ -670,7 +670,7 @@ function show_header_short($head, $group, $local_poster = false)
     // echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
         if (get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+            echo '<a href="' . $file_thread . '&group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
         } else {
             echo " " . $onegroup . " ";
         }
@@ -697,7 +697,7 @@ function show_header_short($head, $group, $local_poster = false)
         $ngroups = explode("\t", $ngroups);
         foreach ($ngroups as $onegroup) {
             if (get_section_by_group($onegroup)) {
-                echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+                echo '<a href="' . $file_thread . '&group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
             } else {
                 echo " " . $onegroup . " ";
             }
@@ -738,7 +738,7 @@ function show_header_short($head, $group, $local_poster = false)
         echo $text_header["references"];
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
-            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
+            echo ' ' . '<a href="' . $file_article . '&group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
         echo '</div>';
     }
@@ -752,7 +752,7 @@ function show_header_short($head, $group, $local_poster = false)
             } else {
                 $contype = $head->content_type_name[$i];
             }
-            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+            echo '<a href="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
             if ($i < count($head->content_type) - 1) {
                 // If this is not the last attachment, add a comma
                 echo ', ';
@@ -818,7 +818,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
     // echo "&nbsp;";
     foreach ($ngroups as $onegroup) {
         if (get_section_by_group($onegroup)) {
-            echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+            echo '<a href="' . $file_thread . '&group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
         } else {
             echo " " . $onegroup . " ";
         }
@@ -858,7 +858,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
         $ngroups = explode("\t", $ngroups);
         foreach ($ngroups as $onegroup) {
             if (get_section_by_group($onegroup)) {
-                echo '<a href="' . $file_thread . '?group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
+                echo '<a href="' . $file_thread . '&group=' . urlencode($onegroup) . '" title="Visit ' . $onegroup . '"> ' . $onegroup . " </a>";
             } else {
                 echo " " . $onegroup . " ";
             }
@@ -874,7 +874,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
         echo 'References: ';
         for ($i = 0; $i <= count($head->references) - 1; $i++) {
             $ref = $head->references[$i];
-            echo ' ' . '<a href="' . $file_article . '?group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
+            echo ' ' . '<a href="' . $file_article . '&group=' . urlencode($group) . '&id=' . urlencode($ref) . '">' . ($i + 1) . '</a>';
         }
         echo '</div>';
         echo '</td><td></td></tr>';
@@ -890,7 +890,7 @@ function show_header_short_with_subject($head, $group, $local_poster = false)
             } else {
                 $contype = $head->content_type_name[$i];
             }
-            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+            echo '<a href="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
             if ($i < count($head->content_type) - 1) {
                 // If this is not the last attachment, add a comma
                 echo ', ';
@@ -1290,13 +1290,13 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
                         if ($i > 2) {
                             echo ', ';
                         }
-                        echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . '<img src="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '" title="' . $contype . '" alt="' . $contype . '" style="max-width: 20vw; max-height: 100px;"></a>&nbsp;';
+                        echo '<a href="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . '<img src="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '" title="' . $contype . '" alt="' . $contype . '" style="max-width: 20vw; max-height: 100px;"></a>&nbsp;';
                     } else {
                         if ($plaintext !== false && $plaintext != $i) {
                             if ($i > 2) {
                                 echo ', ';
                             }
-                            echo '<a href="' . $file_attachment . '?group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
+                            echo '<a href="' . $file_attachment . '&group=' . urlencode($group) . '&' . 'id=' . urlencode($head->number) . '&' . 'attachment=' . $i . '">' . $contype . '</a> (' . $head->content_type[$i] . ')';
                         }
                     }
                 }
@@ -1394,7 +1394,7 @@ function articleflat_pageselect($group, $id, $article_count, $first)
     }
     for ($i = 0; $i < $pages; $i++) {
         if ($first != $i * $CONFIG['articleflat_articles_per_page'] + 1) {
-            $return .= '<a class="np_pages_unselected" href="' . $file_article . '?group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $CONFIG['articleflat_articles_per_page'] + 1) . '&amp;last=' . ($i + 1) * $CONFIG['articleflat_articles_per_page'] . '#start">';
+            $return .= '<a class="np_pages_unselected" href="' . $file_article . '&group=' . urlencode($group) . '&amp;id=' . urlencode($id) . '&amp;first=' . ($i * $CONFIG['articleflat_articles_per_page'] + 1) . '&amp;last=' . ($i + 1) * $CONFIG['articleflat_articles_per_page'] . '#start">';
         } else {
             $return .= '<span class="np_pages_selected">';
         }

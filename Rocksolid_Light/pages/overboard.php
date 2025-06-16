@@ -385,7 +385,7 @@ function display_threads($threads, $oldest, $snippetlength = 240)
                     $url = $thissite . "/?page=article-flat&id=" . $target_head['number'] . "&group=" . _rawurlencode($target_head['newsgroup']) . "#" . $target_head['number'];
                     $display .= '<p class=np_ob_subject>';
                     $display .= '<b><a href="' . $url . '"><span>' . htmlentities(headerDecode($target_head['subject'])) . '</span></a></b></p>';
-                    $display .= '<a href="thread.php?group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
+                    $display .= '<a href="thread.php&group=' . _rawurlencode($target_head['newsgroup']) . '">' . $target_head['newsgroup'] . '</a>';
                     $timetest = $oldest;
                     if ($newonly) {
                         $timetest = $userdata[$target_head['newsgroup']];
@@ -436,7 +436,7 @@ function display_threads($threads, $oldest, $snippetlength = 240)
                     $display .= '<p class="overboard_blocked_user_notice">';
                     $display .= '<b><span>(message #' . $target['number'] . ' hidden by your blocklist)</span></a></b></p>';
                 } else {
-                    $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
+                    $groupurl = $thissite . "/thread.php&group=" . _rawurlencode($target['newsgroup']);
                     $url = $thissite . "/?page=article-flat&id=" . $target['number'] . "&group=" . _rawurlencode($target['newsgroup']) . "#" . $target['number'];
                     $display .= '<br><br>';
                     $display .= '<p class=np_ob_subject>';
@@ -563,7 +563,7 @@ function display_flat($threads, $oldest, $snippetlength = 240)
             file_put_contents($logfile, "\n" . format_log_date() . " overboard Pruning: " . $target['newsgroup'] . ":" . $target['number'], FILE_APPEND);
         }
         $poster = get_poster_name(mb_decode_mimeheader($target['name']));
-        $groupurl = $thissite . "/thread.php?group=" . _rawurlencode($target['newsgroup']);
+        $groupurl = $thissite . "/thread.php&group=" . _rawurlencode($target['newsgroup']);
         if (($results % 2) == 0) {
             $display .= '<tr class="overboard_result_line2"><td class="overboard_result_line2" style="word-wrap:break-word">';
         } else {
@@ -627,7 +627,7 @@ function show_overboard_header($grouplist)
     if (isset($_GET['thisgroup'])) {
         echo '<h1 class="np_thread_headline">';
         echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-        echo '<a href="' . $file_thread . '?group=' . rawurlencode($grouplist[0]) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_displaY_name($grouplist[0])) . '</a> / ';
+        echo '<a href="' . $file_thread . '&group=' . rawurlencode($grouplist[0]) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_displaY_name($grouplist[0])) . '</a> / ';
         if (isset($user_time)) {
             echo ' new messages</h1>';
         } else {

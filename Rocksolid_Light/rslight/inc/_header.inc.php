@@ -182,7 +182,7 @@ if ($show_breadcrumbs) {
         }
         echo '<table class="header_display_group">';
         echo '<tr><td>';
-        echo '<span><a href="/' . $config_name . '">' . $config_name . '</a> /  <a href="' . $file_thread . '?group=' . rawurlencode($display_group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($display_group)) . '</a>';
+        echo '<span><a href="/' . $config_name . '">' . $config_name . '</a> /  <a href="' . $file_thread . '&group=' . rawurlencode($display_group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($display_group)) . '</a>';
         echo '</td></tr></table>';
     }
 }

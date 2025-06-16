@@ -80,7 +80,7 @@ if ((function_exists("npreg_group_has_read_access") && ! npreg_group_has_read_ac
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-echo '<a href="' . $file_thread . '?group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
+echo '<a href="' . $file_thread . '&group=' . rawurlencode($group) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($group)) . '</a> / ' . $subject . '</h1>';
 echo '<table cellpadding="0" cellspacing="0" width="100%" class="np_buttonbar"><tr>';
 // Article List button
 echo '<td>';

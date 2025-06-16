@@ -181,7 +181,7 @@ foreach ($linkgroups as $linkgroup) {
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-echo '<a href="' . $file_thread . '?group=' . rawurlencode($returngroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
+echo '<a href="' . $file_thread . '&group=' . rawurlencode($returngroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
 if (isset($type) && $type == 'post') {
     echo ' / ' . $subject . '</h1>';
 } else {
@@ -351,7 +351,7 @@ if ($type == "post") {
                     echo '<div class = "post_rate_limit_notice_limit_reached">';
                     echo 'You have reached the limit of ' . $CONFIG['rate_limit'] . ' posts per hour.<br />Please wait ' . round($wait, 1) . ' minutes before posting again.';
                     echo $new_user_notice;
-                    echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
+                    echo '<br><p><a href="' . $file_thread . '&group=' . urlencode($returngroup) . '">' . $text_post["button_back"] . '</a> ' . $text_post["button_back2"] . ' ' . group_display_name($returngroup) . '</p>';
                     echo '</div>';
                     file_put_contents($logfile, "\n" . logging_prefix() . " POST Limit REACHED for" . $new_user_logging . $name . ': ' . $postsremaining . ' posts remaining of ' . $CONFIG['rate_limit'], FILE_APPEND);
                     return;
@@ -391,7 +391,7 @@ if ($type == "post") {
                     echo '<p>' . $text_post["message_posted2"] . '</p>';
                 }
                 if (isset($CONFIG['auto_return']) && ($CONFIG['auto_return'] == true)) {
-                    echo '<meta http-equiv="refresh" content="0;url=' . $file_thread . '?group=' . urlencode($returngroup) . '"';
+                    echo '<meta http-equiv="refresh" content="0;url=' . $file_thread . '&group=' . urlencode($returngroup) . '"';
                 }
                 if ($CONFIG['rate_limit'] == true) {
                     $postsremaining = check_rate_limit($name, 1);
@@ -405,7 +405,7 @@ if ($type == "post") {
                     }
                     echo '</div>';
                 }
-                echo '<br><p><a href="' . $file_thread . '?group=' . urlencode($returngroup) . '">Back</a></p>';
+                echo '<br><p><a href="' . $file_thread . '&group=' . urlencode($returngroup) . '">Back</a></p>';
             } else {
                 // article not accepted by the newsserver
                 $type = "retry";

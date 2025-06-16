@@ -189,7 +189,7 @@ ob_start();
 if (isset($search_group)) {
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
-    echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+    echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
     echo 'search results for: ' . secure_input($_POST['terms'], 'html') . '</h1>';
 } else {
     echo '<h1 class="np_thread_headline">';
@@ -246,7 +246,7 @@ foreach ($overview as $overviewline) {
     fclose($glfp);
     # Generate link
     $url = "../" . $section . "/?page=article-flat&id=" . $overviewline['number'] . "&group=" . urlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
-    $groupurl = "../" . $section . "/thread.php?group=" . urlencode($overviewline['newsgroup']);
+    $groupurl = "../" . $section . "/thread.php&group=" . urlencode($overviewline['newsgroup']);
     $fromoutput = explode("<", html_entity_decode($overviewline['name']));
 
     // Use local timezone if possible
@@ -487,7 +487,7 @@ function display_search_tools($home = true)
     echo '<h1 class="np_thread_headline">';
     echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
     if ($search_group) {
-        echo '<a href="' . $file_thread . '?group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
+        echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '" target=' . $frame['menu'] . '>' . $search_group . '</a> / ';
     }
     echo 'search</h1>';
     echo '<form name="form1" method="post" action="search.php">';

@@ -169,7 +169,7 @@ function build_group_list()
                     continue;
                 }
                 $ok_group = preg_split("/[ \t]/", trim($ok_group), 2);
-                $groups_array[$ok_group[0]]['url'] = $menuitem[0] . '/thread.php?group=' . urlencode($ok_group[0]);
+                $groups_array[$ok_group[0]]['url'] = $menuitem[0] . '/thread.php&group=' . urlencode($ok_group[0]);
 
                 // Get group title
                 if (is_file($spooldir . '/' . $ok_group[0] . '-title')) {

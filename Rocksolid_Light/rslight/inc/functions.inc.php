@@ -1131,7 +1131,7 @@ function groups_show($gruppen)
             $groupdisplay .= '<span class="np_group_line_text">';
             $groupdisplay .= '<a ';
             $groupdisplay .= 'target="' . $frame['content'] . '" ';
-            $groupdisplay .= 'href="' . $file_thread . '?group=' . urlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
+            $groupdisplay .= 'href="' . $file_thread . '&group=' . urlencode($g->name) . '"><span class="np_group_line_text">' . $new_style_on . group_display_name($g->name) . $new_style_off . "</span></a>\n";
             if ($new) {
                 echo '</i></b>';
             }
@@ -1309,7 +1309,7 @@ function groups_show_frames($gruppen)
             echo '<div class="np_index_group">';
             echo '<b>DEBUG<a ';
             echo 'target="' . $frame['content'] . '" ';
-            echo 'href="' . $file_thread . '?group=' . _rawurlencode($g->name) . '">' . group_display_name($g->name) . "</a></b>\n";
+            echo 'href="' . $file_thread . '&group=' . _rawurlencode($g->name) . '">' . group_display_name($g->name) . "</a></b>\n";
             if ($gl_age) {
                 $datecolor = thread_format_date_color($g->age);
             }
