@@ -134,22 +134,14 @@ echo '</table>';
 
 include($config_dir . '/fortunes.conf');
 
-// If $config_dir/motd.txt is not blank, show it
+$motd = 'RIP Retro Guy! *The internet never forgets, and neither will we.*'; // Default to NON empty if motd.txt does not exist
 if (file_exists($config_dir . '/motd.txt')) {
-    $motd = file_get_contents($config_dir . '/motd.txt');
-} else {
-    $motd = ''; // Default to empty if motd.txt does not exist
+    // If $config_dir/motd.txt is not blank, show it
+    $amotd = file_get_contents($config_dir . '/motd.txt');
+    if(!empty($amotd)) {
+        $motd = $amotd;
+    }
 }
-/* TODO FIXME
- * If motd.txt is not found, we can use a default message or leave it empty.
- * This is currently set to an empty string if no motd.txt is found.
- */
-/*
-// If specific <section>-motd.txt exists, use it
-if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
-    $motd = file_get_contents($config_dir . '/' . $config_name . '-motd.txt');
-}
-*/
 
 echo '<table class="np_header_button_bar"><tr>';
 
@@ -228,15 +220,14 @@ if (isset($OVERRIDES['log_lang']) && $OVERRIDES['log_lang'] == true) {
 
 // Soup...Uh, Message of the Day
 if ($unread) {
-    $motd = '*** You have unread mail. <a href="?page=mail">Click Here</a> ***';
-    echo '<div class="np_display_motd_new_mail">';;
+    echo '<div class="np_display_motd_new_mail">';
+    echo '*** You have unread mail. <a href="?page=mail">Click Here</a> ***';
+    echo '</div>';
 } else {
     echo '<div class="np_display_motd">';
+    echo $motd;
+    echo '</div>';
 }
-echo $motd;
-echo '</div>';
-
-
 
 // Include fortunes config
 if (file_exists($config_dir . '/fortunes.conf')) {
