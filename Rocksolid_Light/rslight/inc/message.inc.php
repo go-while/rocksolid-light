@@ -1103,11 +1103,12 @@ function nl2p($string, $line_breaks = true, $xml = false)
  */
 function message_show($group, $id, $attachment = 0, $article_data = false, $maxlen = false)
 {
-    global $file_article, $file_article_full, $OVERRIDES, $spooldir; $logfile;
+
+    global $file_article, $file_article_full, $OVERRIDES, $spooldir;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
     global $block_xnoarchive, $article_graphicquotes;
     global $CONFIG, $current_message;
-
+    $logfile = $spooldir . '/logs/message_show.log';
     $func_name = "messages.inc.php message_show()";
 
     echo "[DEBUG inc/message.inc.php $func_name globals: file_article=$file_article, file_article_full=$file_article_full, override=".count($OVERRIDES).", spooldir=$spooldir; logfile=$logfile];\n^^--> group: " . $group . ", id: " . $id . ", attachment: " . $attachment . "<br>";

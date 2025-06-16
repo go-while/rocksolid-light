@@ -1,30 +1,35 @@
 <?php
-$backtrace = debug_backtrace();
-$parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "[common/header.php included by: " . basename($parent) . "]<br>\n";
-die("legacy code!");
+/**
+ * RockSolid Light - HTML Header Include
+ * Extracted from pages/pages.php for simple include usage
+ */
 
-if (basename(getcwd()) == 'mods') {
-    $rootdir = "../../";
-} else {
-    $rootdir = "../";
+// Prevent direct access
+if (!defined('RSLIGHT_CONFIG_LOADED')) {
+    die('Direct access not allowed. Include via config.inc.php');
 }
 
-require_once($rootdir . 'common/config.inc.php');
-//require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
+// Ensure we have required globals
+if (!isset($CONFIG)) {
+    $CONFIG = array();
+}
 
-// Add security headers
-//add_security_headers();
+// throttle_hits MUST be called before any data is sent
+$client_device = get_client_user_agent_info();
+throttle_hits($client_device);
+write_access_log();
 
-global $OVERRIDES;
-$CONFIG = include $config_file;
-
-$menulist = get_section_menu_array();
-$linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
-
+// Start HTML output
+echo '<!DOCTYPE html>';
+echo '<html><head>';
+echo '<title>' . htmlspecialchars($title ?? 'RockSolid Light') . '</title>';
+echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
 echo '<meta charset="utf-8">';
 
-// Set tzo if possible
+if(file_exists($config_dir.'/googleanalytics.conf')) {
+  include $config_dir.'/googleanalytics.conf';
+}
+// Timezone JavaScript Set tzo if possible
 ?>
 <script>
     if (navigator.cookieEnabled)
@@ -33,7 +38,6 @@ echo '<meta charset="utf-8">';
     document.cookie = "tzid=" + tzid + "; path=/";
 </script>
 <?php
-
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     $user = strtolower($_COOKIE['mail_name']);
     if (! isset($_SESSION['theme']) && file_exists($config_dir . '/userconfig/' . $user . '.config')) {
@@ -49,7 +53,8 @@ if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {
     unset($user);
 }
 
-// Get theme
+// Theme and CSS
+$rootdir = "../";
 $default_theme = "Default Theme";
 if (isset($_SESSION['theme'])) {
     $do_theme = preg_replace("/ /", "%20", $_SESSION['theme']);
@@ -124,11 +129,19 @@ include($config_dir . '/fortunes.conf');
 // If $config_dir/motd.txt is not blank, show it
 if (file_exists($config_dir . '/motd.txt')) {
     $motd = file_get_contents($config_dir . '/motd.txt');
+} else {
+    $motd = ''; // Default to empty if motd.txt does not exist
 }
+/* TODO FIXME
+ * If motd.txt is not found, we can use a default message or leave it empty.
+ * This is currently set to an empty string if no motd.txt is found.
+ */
+/*
 // If specific <section>-motd.txt exists, use it
 if (file_exists($config_dir . '/' . $config_name . '-motd.txt')) {
     $motd = file_get_contents($config_dir . '/' . $config_name . '-motd.txt');
 }
+*/
 
 echo '<table class="np_header_button_bar"><tr>';
 
@@ -148,7 +161,17 @@ foreach ($menulist as $menu) {
 }
 echo '</td></tr></table>';
 
-if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.php/", $_SERVER['REQUEST_URI'])) {
+// breadcrumbs for thread/article pages
+$show_breadcrumbs = array("thread", "article", "article-flat", "overboard", "search");
+if (isset($_GET['page']) && in_array($_GET['page'], $show_breadcrumbs)) {
+    $show_breadcrumbs = true;
+} else {
+    $show_breadcrumbs = false;
+}
+// Determine the file for thread/article links
+
+if ($show_breadcrumbs) {
+
     if (isset($_REQUEST["group"]) || isset($_REQUEST['thisgroup'])) {
         if (isset($_REQUEST["group"])) {
             $display_group = $_REQUEST['group'];
@@ -163,6 +186,14 @@ if (preg_match("/thread.php|article.php|article-flat.php|overboard.php|search.ph
 }
 
 echo '</div><div class="scroll">';
+
+/* TODO FIXME
+ * Message-ID search form
+ * This is currently commented out, but can be enabled if needed.
+ * It allows users to search for articles by their Message-ID.
+ * The form will only be displayed if the 'disable_msgid_search' override is not set or is false.
+ */
+/*
 $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
@@ -178,6 +209,8 @@ if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_sear
         echo '</form>';
     }
 }
+*/
+
 
 // For debugging purposes
 if (isset($OVERRIDES['log_lang']) && $OVERRIDES['log_lang'] == true) {
@@ -187,7 +220,7 @@ if (isset($OVERRIDES['log_lang']) && $OVERRIDES['log_lang'] == true) {
 
 // Soup...Uh, Message of the Day
 if ($unread) {
-    $motd = '*** You have unread mail. <a href="../spoolnews/mail.php">Click Here</a> ***';
+    $motd = '*** You have unread mail. <a href="?page=mail">Click Here</a> ***';
     echo '<div class="np_display_motd_new_mail">';;
 } else {
     echo '<div class="np_display_motd">';
@@ -195,3 +228,14 @@ if ($unread) {
 echo $motd;
 echo '</div>';
 
+
+
+// Include fortunes config
+if (file_exists($config_dir . '/fortunes.conf')) {
+    // Fortune handling would go here
+}
+
+// Add separator
+echo '<hr>';
+
+?>

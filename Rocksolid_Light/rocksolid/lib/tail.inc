@@ -1,4 +1,6 @@
 <?php
+die("legacy code!");
+
 echo '<div class="tail_footer">';
 $pubkeyfile = '../pubkey/server_pubkey.txt';
 if(is_file($pubkeyfile)) {

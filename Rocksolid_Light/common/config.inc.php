@@ -103,15 +103,80 @@ if(!file_exists($file_language)) {
     echo "Critical Error: Language file '$file_language' cfg='".$CONFIG['language']."'='".strlen($CONFIG['language'])."' not found<br>\n";
 }
 require_once($file_language);
-echo "[rocklight/lib/config.inc.php: language file loaded: $file_language]<br>\n";
+echo "[common/config.inc.php: language file loaded: $file_language]<br>\n";
 $title = $CONFIG['title_full']; // TODO WHY HERE?
 
 define('RSLIGHT_CONFIG_LOADED', true); // Define a constant to indicate that the configuration has been loaded
 
+echo "[common/config.inc.php: Configuration loaded successfully] CRON_CONTEXT=".defined('CRON_CONTEXT')."<br>\n";
+/**
+ * Hardcoded page mapping - NO USER INPUT PARSING
+ * This is the ONLY safe way to map page names to files
+ */
+if (!defined('CRON_CONTEXT')) {
+    echo "[common/config.inc.php: Page routing system enabled]<br>\n";
+    $RSLIGHT_PAGE_MAP = [
+        // Core article pages
+        'article'      => 'article.php',
+        'article-flat' => 'article-flat.php',
+        'thread'       => 'thread.php',
 
+        // Board and search
+        'overboard'    => 'overboard.php',
+        'search'       => 'search.php',
+        'post'         => 'post.php',
 
-if (!defined('CRON_CONTEXT')||CRON_CONTEXT === false) {
-  // Always load the router system when not in cron context
+        // User management
+        'register'     => 'register.php',
+        'user'         => 'user.php',
+        'mail'         => 'mail.php',
+
+        // File handling
+        'files'        => 'files.php',
+        'upload'       => 'upload.php',
+
+        // Language/Demo
+        'language_demo'     => 'language_demo.php',
+        'language_selector' => 'language_selector.php',
+        'faq'              => 'faq.php',
+
+        // Testing/Debug
+        'header_test'      => 'header_test.php',
+
+        // Main index page
+        'index'            => 'index.php'
+    ];
+    echo "[common/config.inc.php: Page routing system loaded]<br>\n";
+
+    // Always load the router system when not in cron context
+    // Include session/cache setup
+    echo "[common/config.inc.php: Including " . $config_dir . "/inc/_session.inc.php]<br>\n";
+    require($config_dir . '/inc/_session.inc.php');
+    echo "[common/config.inc.php: Session and cache setup included]<br>\n";
+
+    // Include header
+    echo "[common/config.inc.php: Including " . $config_dir . "/inc/_header.inc.php]<br>\n";
+    include($config_dir . '/inc/_header.inc.php');
+    echo "[common/config.inc.php: Header included]<br>\n";
+
+    // Your page routing switch
+    $page = $_GET['page'] ?? 'index';
+    if (!isset($RSLIGHT_PAGE_MAP[$page])){
+        die("Error: Invalid page requested.");
+    }
+    $page_file = "../pages/" . $RSLIGHT_PAGE_MAP[$page];
+    echo "loading page: $page_file<br>\n";
+    if (file_exists($page_file)) {
+        // Include the requested page file
+        include($page_file);
+        exit(0);
+    } else {
+        die("Error: Page file '$page_file' not found.");
+    }
+
+    // Include footer
+    include($config_dir . '/inc/_footer.inc.php');
+  /*
   require_once(__DIR__ . '/../pages/pages.php');
 
   if (isset($_GET['page'])) {
@@ -119,13 +184,14 @@ if (!defined('CRON_CONTEXT')||CRON_CONTEXT === false) {
       exit(0); // Exit after loading the page
   }
 
+
   // If no page parameter, serve default index page
   if (function_exists('rslight_serve_default_page')) {
     if (rslight_serve_default_page()) {
       exit(); // Default page served successfully
     }
   }
-
+*/
   // If serving fails, we fail hard. no more legacy code support!
   die("Error: common/config.inc.php: No page parameter provided and default page serving failed. Please check your configuration.");
 }

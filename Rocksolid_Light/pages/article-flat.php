@@ -1,17 +1,6 @@
 <?php
 echo "<!-- article-flat.php start -->\n";
 
-//include "lib/config.inc.php";
-//include "$file_newsportal";
-//require_once(__DIR__ . '/lib/security.inc.php');
-
-// Add security headers
-//add_security_headers();
-
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
 $logfile = $logdir . '/newsportal.log';
 if (isset($_COOKIE['mail_name'])) {
     $cookie_mail_name = trim(strtolower($_COOKIE['mail_name']));
@@ -22,6 +11,7 @@ if (isset($_COOKIE['mail_name'])) {
         $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
     }
 }
+
 // register parameters
 $id = $_REQUEST["id"];
 $group = rawurldecode($_REQUEST["group"]);
@@ -116,8 +106,7 @@ if (! $message) {
     header("Last-Modified: " . date("r", $message->header->date));
     $title .= ' - ' . $group . ' - ' . $subject;
 }
-// Use new router header system exclusively
-rslight_render_complete_header($title);
+
 
 echo '<h1 class="np_thread_headline">';
 echo '<a href="' . $file_index . '" target=' . $frame['menu'] . '>' . basename(getcwd()) . '</a> / ';
@@ -238,6 +227,4 @@ if ($message) {
     echo '</td></tr></table>';
     echo '</form>';
 }
-// Use new router footer system when available, fallback to legacy includes
-rslight_render_complete_footer();
 ?>

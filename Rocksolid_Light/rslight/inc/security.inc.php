@@ -9,7 +9,34 @@ $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[rslight/security.inc.php included by: " . basename($parent) . "]<br>\n";
 
+/**
+ * Secure session configuration
+ */
+function secure_session_start() {
+    // Configure secure session settings
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
+    ini_set('session.cookie_samesite', 'Strict');
 
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Regenerate session ID periodically
+    if (!isset($_SESSION['last_regeneration'])) {
+        $_SESSION['last_regeneration'] = time();
+    } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
+        session_regenerate_id(true);
+        $_SESSION['last_regeneration'] = time();
+    }
+
+    // Update session access time
+    if (!isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
+        $_SESSION['last_access'] = time();
+    }
+    $_SESSION['rsactive'] = true; // somehow counts users by counting session files....
+}
 
 /**
  * Secure replacement for unserialize() operations
@@ -413,33 +440,10 @@ function generate_csrf_token() {
  */
 function verify_csrf_token($token) {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        die("verify_csrf_token session error: session not started");
     }
 
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
-}
-
-/**
- * Secure session configuration
- */
-function secure_session_start() {
-    // Configure secure session settings
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_only_cookies', 1);
-    ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
-    ini_set('session.cookie_samesite', 'Strict');
-
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-
-    // Regenerate session ID periodically
-    if (!isset($_SESSION['last_regeneration'])) {
-        $_SESSION['last_regeneration'] = time();
-    } elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutes
-        session_regenerate_id(true);
-        $_SESSION['last_regeneration'] = time();
-    }
 }
 
 function get_client_user_agent_info()
@@ -498,8 +502,6 @@ function throttle_hits($client_device = null)
         $client_device = get_client_user_agent_info();
     }
     $client_device = strtolower($client_device);
-
-    $_SESSION['rsactive'] = true;
 
     // Block by user-agent
     if (isset($OVERRIDES['block_by_user_agent'])) {

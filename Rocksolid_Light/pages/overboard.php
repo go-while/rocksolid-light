@@ -28,13 +28,6 @@
 // Fix config_path since $config_name is deprecated
 $file_groups = $config_path . "groups.txt";
 
-// Add security headers
-add_security_headers();
-
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
 // Initialize title (should already be set by rocksolid/lib/config.inc.php but ensure it exists)
 if (!isset($title)) {
     $title = isset($CONFIG['title_full']) ? $CONFIG['title_full'] : 'Rocksolid Light';
@@ -50,8 +43,6 @@ if (isset($_GET['thisgroup'])) {
 } else {
     $title .= " - overboard";
 }
-
-rslight_render_complete_header($title);
 
 if (disable_page_by_user_agent(null, "bot", "Overboard")) {
     echo "<center>Page Disabled</center>";

@@ -12,20 +12,6 @@
 $site_name = basename(getcwd());
 $title = 'Rocksolid Light - ' . $site_name;
 
-// Use new router-based header system
-if (function_exists('rslight_render_complete_header')) {
-    rslight_render_complete_header($title, 'index');
-} else {
-    // Fallback to old system
-    die("Router functions not available. Please check your setup.");
-    //include "lib/head.inc";
-}
-
-// Update session access time
-if (!isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
 echo '<h1 class="np_thread_headline">' . htmlspecialchars($site_name) . '</h1>';
 echo '<table class="np_buttonbar"><tr>';
 

@@ -2,7 +2,7 @@
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
 echo "[ERROR rocksolid/lib/head.inc (STUB) included by: " . basename($parent) . "]<br>\n";
-die();
+die("legacy code!");
 
 /*
  * Add 'rsactive' to differentiate rslight sessions from
