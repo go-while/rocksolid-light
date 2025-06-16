@@ -132,6 +132,7 @@ $file_attachment = "?page=attachment";
 $file_post = "?page=post";
 $file_cancel = "?page=cancel";
 $file_search = "?page=search";
+$file_groups = "?page=grouplist";
 
 if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 
