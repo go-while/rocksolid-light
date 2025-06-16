@@ -1740,6 +1740,12 @@ function _rawurlencode($string)
 
 function _rawurldecode($string)
 {
+    // Decode the string, replacing %2B with + to handle spaces correctly
+    // This is necessary because rawurlencode encodes + as %2B, but we want to keep + as a space
+    // when decoding.
+    // Note: rawurldecode is used to decode the string, but we need to ensure + is treated correctly.
+    // rawurldecode will decode %2B back to +, so we replace it with the correct character.
+    // This is a workaround for the fact that rawurldecode does not decode + to space.
     $string = rawurldecode(str_replace('%2B', '+', $string));
     return $string;
 }

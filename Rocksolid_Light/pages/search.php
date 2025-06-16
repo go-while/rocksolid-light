@@ -1,17 +1,6 @@
 <?php
 session_cache_limiter('public');
 
-header("Expires: " . gmdate("D, d M Y H:i:s", time() + (120)) . " GMT");
-header("Cache-Control: max-age=120");
-header("Pragma: cache");
-
-include "lib/config.inc.php";
-include "$file_newsportal";
-require_once(__DIR__ . '/lib/security.inc.php');
-
-// Add security headers
-add_security_headers();
-
 $logfile = $logdir . '/search.log';
 
 $snippet_size = 100;
@@ -27,10 +16,9 @@ if (isset($_REQUEST['data']) && $_REQUEST['data'] == '') {
 }
 
 if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST['key'])) || ((strlen(trim($_REQUEST['terms'])) < 2) && ! $_REQUEST['data'])) {
-    include "lib/head.inc";
     if (disable_page_by_user_agent($client_device, "bot", "Search")) {
         echo "<center>Page Disabled</center>";
-        include "lib/tail.inc";
+        include $config_dir . '/inc/footer.inc.php';
         exit();
     }
 
@@ -41,7 +29,7 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     if (isset($_COOKIE['mail_name'])) {
         if (isset($_REQUEST['data'])) {
             echo '<br>';
-            echo '<form name="blockform" method="post" action="search.php">';
+            echo '<form name="blockform" method="post" action="'.$file_search.'">';
             echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
             echo '<table width=100% border="0" class="search_hide_posts">';
             echo '<tr>';
@@ -87,21 +75,6 @@ if ((! isset($_POST['key']) || ! password_verify($CONFIG['thissitekey'], $_POST[
     }
 }
 
-if (isset($frames_on) && $frames_on === true) {
-?>
-    <script>
-        var contentURL = window.location.pathname + window.location.search + window.location.hash;
-        if (window.self !== window.top) {
-            /* Great! now we move along */
-        } else {
-            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
-        }
-        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
-    </script>
-
-<?php
-}
-
 # Maximum number of articles to show
 $maxdisplay = 1000;
 
@@ -109,8 +82,8 @@ $thissite = '.';
 
 $groupconfig = $config_path . "/groups.txt";
 
-$title .= ' - search results for: ' . $_POST['terms'];
-include "lib/head.inc";
+//$title .= ' - search results for: ' . $_POST['terms'];
+
 
 // Handle Block poster
 $post_username = trim(strtolower($_POST['username']));
@@ -151,7 +124,7 @@ if (isset($_POST['block_poster'])) {
             file_put_contents($blockfile, serialize($blocked_user_config));
         }
         echo "<center><b>'" . secure_input($_POST['block_poster'], 'html') . "'</b> successfully added to your blocklist";
-        echo '<br>You may edit your blocklist on your <a href="/spoolnews/user.php?command=Configuration">Configuration Page</a></center>';
+        echo '<br>You may edit your blocklist on your <a href="?page=user&command=Configuration">Configuration Page</a></center>';
         echo '<center><br><i>(Articles may still appear on Cached Pages)</i></center>';
     } else {
         echo '<center>Password Incorrect.<br>Click Back to try again</center>';
@@ -165,7 +138,7 @@ display_search_tools();
 if (isset($_REQUEST['searchpoint']) && $_REQUEST['searchpoint'] == 'body' && isset($_REQUEST['terms']) && trim($_REQUEST['terms']) != '') {
     $suggestion = get_suggestion($_REQUEST['terms']);
     if ($suggestion != false) {
-        echo '<form method="post" action="search.php" class="search_suggestion_inline">';
+        echo '<form method="post" action="'.$file_search.'" class="search_suggestion_inline">';
 
         echo '<input type="hidden" name="group" value="' . secure_input($_REQUEST['group'], 'html') . '">';
         echo '<input type="hidden" name="terms" value="' . $suggestion . '">';
@@ -229,10 +202,21 @@ if ($_POST['searchpoint'] == 'body') {
 
 foreach ($overview as $overviewline) {
     /* Find section for links */
+    //$glfp = null;
     $menulist = get_section_menu_array();
+    $glfp = null;
     foreach ($menulist as $menu) {
         $menuitem = explode(':', $menu);
-        $glfp = fopen($config_dir . $menuitem[0] . "/groups.txt", 'r');
+        if (count($menuitem) < 2) {
+            echo "<!-- Invalid menu item: " . htmlspecialchars($menu) . " -->\n";
+            continue;
+        }
+        $groupsfile = $config_dir . $menuitem[0] . "/groups.txt";
+        if( !file_exists($groupsfile)) {
+            echo "<!-- No groups file for section " . urlencode($menuitem[0]) . " -->\n";
+            continue;
+        }
+        $glfp = fopen($groupsfile, 'r');
         $section = "";
         while ($gl = fgets($glfp)) {
             $group_name = preg_split("/( |\t)/", $gl, 2);
@@ -242,11 +226,14 @@ foreach ($overview as $overviewline) {
             }
         }
     }
-
-    fclose($glfp);
-    # Generate link
-    $url = "../" . $section . "/?page=article-flat&id=" . $overviewline['number'] . "&group=" . urlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
-    $groupurl = "../" . $section . "/thread.php&group=" . urlencode($overviewline['newsgroup']);
+    if ($glfp !== null) {
+        fclose($glfp);
+    }
+    # Generate link TODO sections: /section/...
+    //$url = "../" . $section . "/?page=article-flat&id=" . $overviewline['number'] . "&group=" . urlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
+    //$groupurl = "../" . $section . "/?page=thread&group=" . urlencode($overviewline['newsgroup']);
+    $url = "index.php?section=".urlencode($section)."&page=article-flat&id=" . $overviewline['number'] . "&group=" . urlencode($overviewline['newsgroup']) . "#" . $overviewline['number'];
+    $groupurl = "index.php?section=".urlencode($section)."&page=thread&group=" . urlencode($overviewline['newsgroup']);
     $fromoutput = explode("<", html_entity_decode($overviewline['name']));
 
     // Use local timezone if possible
@@ -318,7 +305,7 @@ foreach ($overview as $overviewline) {
 echo '</table>';
 echo "<p class=np_ob_tail><b>" . $results . "</b> matching articles found.</p>\r\n";
 # echo "<center><i>Rocksolid Overboard</i> version ".$version;
-include "lib/tail.inc";
+
 
 $thispage = ob_get_contents();
 
@@ -485,12 +472,12 @@ function display_search_tools($home = true)
 {
     global $CONFIG, $config_name, $search_group, $file_index, $frame, $file_thread, $suggestion;
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
+    echo '<a href="' . $file_index . '">Home</a> / ';
     if ($search_group) {
         echo '<a href="' . $file_thread . '&group=' . urlencode($search_group) . '">' . $search_group . '</a> / ';
     }
     echo 'search</h1>';
-    echo '<form name="form1" method="post" action="search.php">';
+    echo '<form name="form1" method="post" action="' . $file_search . '">';
     echo '<table class="search_form_table"><tr>';
     if (isset($search_group)) {
         $searching = $search_group;

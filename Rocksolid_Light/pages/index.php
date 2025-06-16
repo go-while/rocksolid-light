@@ -9,10 +9,9 @@
  */
 
 // Get the current site name (from directory structure)
-$site_name = basename(getcwd());
-$title = 'Rocksolid Light - ' . $site_name;
+//$site_name = basename(getcwd());
 
-echo '<h1 class="np_thread_headline">' . htmlspecialchars($site_name) . '</h1>';
+echo '<h1 class="np_thread_headline">' . $CONFIG['title_full'] . '</h1>';
 echo '<table class="np_buttonbar"><tr>';
 
 // User management functions
@@ -34,9 +33,6 @@ if (isset($_COOKIE['mail_name'])) {
         }
     }
 }
-
-echo "[DEBUG \$frame=var_dump]";
-var_dump($frame); // Debugging output
 
 // New articles button (if logged in and overboard enabled)
 if ($user_authenticated) {
