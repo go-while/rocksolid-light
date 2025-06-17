@@ -32,18 +32,19 @@ if (disable_page_by_user_agent($client_device, "bot", "Post")) {
 
 $logfile = $logdir . '/post.log';
 
-// Secure input handling with proper defaults (preserving isset() logic)
-$fieldnamedecrypt = $_REQUEST['fielddecrypt'] ?? '';
-$newsgroups = $_REQUEST["newsgroups"] ?? null;  // Keep null for isset() check at line 128
-$group = $_REQUEST["group"] ?? null;            // Keep null for isset() check at line 128
-$type = $_REQUEST["type"] ?? null;              // Keep null for isset() check at line 210
-$subject = isset($_POST[md5($fieldnamedecrypt . "subject")]) ? stripslashes($_POST[md5($fieldnamedecrypt . "subject")]) : '';
-$name = $_POST["username"] ?? null;             // Keep null for isset() check at line 64 & 599
-$password = isset($_POST[md5($fieldnamedecrypt . "password")]) ? $_POST[md5($fieldnamedecrypt . "password")] : '';
-$body = isset($_POST[md5($fieldnamedecrypt . "body")]) ? $_POST[md5($fieldnamedecrypt . "body")] : '';
-$abspeichern = $_REQUEST["abspeichern"] ?? '';
-$references = $_REQUEST["references"] ?? null;  // Keep null for isset() check at line 206
-$id = $_REQUEST["id"] ?? 0;
+// KEEP THIS LEGACY CODE FOR COMPATIBILITY !! OR CHECK EVERY VAR BELOW WHAT IT DEFAULTS TO....
+// Challange accepted?
+@$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
+@$newsgroups = $_REQUEST["newsgroups"];
+@$group = $_REQUEST["group"];
+@$type = $_REQUEST["type"];
+@$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
+@$name = $_POST["username"];
+@$password = $_POST[md5($fieldnamedecrypt . "password")];
+@$body = $_POST[md5($fieldnamedecrypt . "body")];
+@$abspeichern = $_REQUEST["abspeichern"];
+@$references = $_REQUEST["references"];
+@$id = $_REQUEST["id"];
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
