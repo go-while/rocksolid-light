@@ -32,17 +32,19 @@ if (disable_page_by_user_agent($client_device, "bot", "Post")) {
 
 $logfile = $logdir . '/post.log';
 
-$fieldnamedecrypt = isset($_REQUEST['fielddecrypt']) ? $_REQUEST['fielddecrypt'] : '';
-$newsgroups = isset($_REQUEST["newsgroups"]) ? $_REQUEST["newsgroups"] : '';
-$group = isset($_REQUEST["group"]) ? $_REQUEST["group"] : '';
-$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : 'new';
-$subject = isset($_POST[md5($fieldnamedecrypt . "subject")]) ? stripslashes($_POST[md5($fieldnamedecrypt . "subject")]) : '';
-$name = isset($_POST["username"]) ? $_POST["username"] : '';
-$password = isset($_POST[md5($fieldnamedecrypt . "password")]) ? $_POST[md5($fieldnamedecrypt . "password")] : '';
-$body = isset($_POST[md5($fieldnamedecrypt . "body")]) ? $_POST[md5($fieldnamedecrypt . "body")] : '';
-$abspeichern = isset($_REQUEST["abspeichern"]) ? $_REQUEST["abspeichern"] : '';
-$references = isset($_REQUEST["references"]) ? $_REQUEST["references"] : '';
-$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : '';
+// KEEP THIS LEGACY CODE FOR COMPATIBILITY !! OR CHECK EVERY VAR BELOW WHAT IT DEFAULTS TO....
+// Challange accepted?
+@$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
+@$newsgroups = $_REQUEST["newsgroups"];
+@$group = $_REQUEST["group"];
+@$type = $_REQUEST["type"];
+@$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
+@$name = $_POST["username"];
+@$password = $_POST[md5($fieldnamedecrypt . "password")];
+@$body = $_POST[md5($fieldnamedecrypt . "body")];
+@$abspeichern = $_REQUEST["abspeichern"];
+@$references = $_REQUEST["references"];
+@$id = $_REQUEST["id"];
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
@@ -204,6 +206,10 @@ if ($name == "")
 
 if ((! isset($references)) || ($references == "")) {
     $references = false;
+}
+
+if (! isset($type)) {
+    $type = "new";
 }
 
 if ($type == "new") {
