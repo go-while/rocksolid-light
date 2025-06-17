@@ -2156,7 +2156,7 @@ function repair_broken_group($group)
 
 function wipe_newsportal_spool_info($group)
 {
-    global $spooldir;
+    global $spooldir; $file_search;
     $gpath = $spooldir . '/' . $group;
     @unlink($gpath . '-cache.txt');
     @unlink($gpath . '-data.dat');
@@ -2184,9 +2184,9 @@ function create_name_link($name, $data = null, $truncate = true)
         $return = '<span class="create_name_link">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span>';
     } else {
         if (isset($_COOKIE['mail_name'])) {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
+            $return = '<a href="'.$file_search.'&command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search or Block by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         } else {
-            $return = '<a href="search.php?command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
+            $return = '<a href="'.$file_search.'&command=search&searchpoint=Poster&terms=' . urlencode($name) . '&data=' . $data . '" title="Search by user"><span class="visited">' . substr(htmlspecialchars($name), 0, $trimlength) . '</span></a>';
         }
     }
     return ($return);

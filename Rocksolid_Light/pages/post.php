@@ -23,41 +23,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "lib/config.inc.php";
-$CONFIG = include($config_file);
-include $file_newsportal;
-require_once(__DIR__ . '/lib/security.inc.php');
-
-// Add security headers
-add_security_headers();
-
-include "lib/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Post")) {
     echo "<center>Page Disabled</center>";
-    include "lib/tail.inc";
+    include $config_dir . '/inc/_footer.inc.php';
     exit();
 }
 
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
-$keyfile = $spooldir . '/keys.dat';
-$keys = secure_unserialize($keyfile, ['stdClass'], false);
 $logfile = $logdir . '/post.log';
 
-@$fieldnamedecrypt = $_REQUEST['fielddecrypt'];
-@$newsgroups = $_REQUEST["newsgroups"];
-@$group = $_REQUEST["group"];
-@$type = $_REQUEST["type"];
-@$subject = stripslashes($_POST[md5($fieldnamedecrypt . "subject")]);
-@$name = $_POST["username"];
-@$password = $_POST[md5($fieldnamedecrypt . "password")];
-@$body = $_POST[md5($fieldnamedecrypt . "body")];
-@$abspeichern = $_REQUEST["abspeichern"];
-@$references = $_REQUEST["references"];
-@$id = $_REQUEST["id"];
+$fieldnamedecrypt = isset($_REQUEST['fielddecrypt']) ? $_REQUEST['fielddecrypt'] : '';
+$newsgroups = isset($_REQUEST["newsgroups"]) ? $_REQUEST["newsgroups"] : '';
+$group = isset($_REQUEST["group"]) ? $_REQUEST["group"] : '';
+$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : 'new';
+$subject = isset($_POST[md5($fieldnamedecrypt . "subject")]) ? stripslashes($_POST[md5($fieldnamedecrypt . "subject")]) : '';
+$name = isset($_POST["username"]) ? $_POST["username"] : '';
+$password = isset($_POST[md5($fieldnamedecrypt . "password")]) ? $_POST[md5($fieldnamedecrypt . "password")] : '';
+$body = isset($_POST[md5($fieldnamedecrypt . "body")]) ? $_POST[md5($fieldnamedecrypt . "body")] : '';
+$abspeichern = isset($_REQUEST["abspeichern"]) ? $_REQUEST["abspeichern"] : '';
+$references = isset($_REQUEST["references"]) ? $_REQUEST["references"] : '';
+$id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : '';
 
 if (isset($_REQUEST['followupto']) && trim($_REQUEST['followupto']) != '') {
     $followupto = trim($_REQUEST['followupto']);
@@ -164,6 +149,7 @@ if (isset($_REQUEST['fgroups'])) {
 }
 
 $newsgroups = $thisgroup;
+echo "DEBUG post.php L.152 newsgroups: $newsgroups<br>\n";
 if (isset($_REQUEST['returngroup'])) {
     $returngroup = $_REQUEST['returngroup'];
 } else {
@@ -180,7 +166,7 @@ foreach ($linkgroups as $linkgroup) {
 }
 
 echo '<h1 class="np_thread_headline">';
-echo '<a href="' . $file_index . '">' . basename(getcwd()) . '</a> / ';
+echo '<a href="' . $file_index . '">Home</a> / ';
 echo '<a href="' . $file_thread . '&group=' . rawurlencode($returngroup) . '" target=' . $frame["content"] . '>' . htmlspecialchars(group_display_name($returngroup)) . '</a>';
 if (isset($type) && $type == 'post') {
     echo ' / ' . $subject . '</h1>';
@@ -220,15 +206,12 @@ if ((! isset($references)) || ($references == "")) {
     $references = false;
 }
 
-if (! isset($type)) {
-    $type = "new";
-}
-
 if ($type == "new") {
     $subject = "";
     $bodyzeile = "";
     $show = 1;
 }
+echo "DEBUG post.php L.217<br>\n";
 
 // Is there a new article to post to the newsserver?
 if ($type == "post") {
@@ -417,7 +400,7 @@ if ($type == "post") {
     }
     } // End CSRF verification block
 }
-
+echo "DEBUG post.php L.406 reply<br>\n";
 // A reply of an other article.
 if ($type == "reply") {
     $message = message_read($id, 0, $newsgroups);
@@ -507,12 +490,16 @@ if ($type == "reply") {
     $references .= $head->id;
 }
 
+echo "DEBUG post.php L.496 retry newsgroups=$newsgroups<br>\n";
 if ($type == "retry") {
     $show = 1;
     $bodyzeile = $body;
 }
 
+echo "DEBUG post.php L.502 show=$show<br>\n";
 if ($show == 1) {
+
+
 
     if ($newsgroups == "") {
         echo $text_post["followup_not_allowed"];
@@ -521,6 +508,7 @@ if ($show == 1) {
         // check that we can post to the newsgroup
         $ngroups = preg_split("/[\s,]+/", $newsgroups);
         $found = false;
+        echo "DEBUG post.php L.515 show<br>\n";
         foreach ($ngroups as $group) {
             $group = trim($group);
             if (get_section_by_group($group)) {
@@ -528,6 +516,7 @@ if ($show == 1) {
                 break;
             }
         }
+        echo "DEBUG post.php L.522 show<br>\n";
         // show post form
         $fieldencrypt = md5(rand(1, 10000000));
         if ($type == 'reply') {
@@ -690,7 +679,7 @@ if ($show == 1) {
             }
             echo '">';
 
-?>
+            ?>
             <script>
                 <!--
                 function quoten() {
@@ -753,6 +742,8 @@ if ($show == 1) {
         <input type="hidden" name="fielddecrypt"
             value="<?php echo htmlspecialchars($fieldencrypt); ?>">
         </form>
-
-<?php }
-} ?>
+<?php
+    }
+}
+echo "DEBUG post.php END<br>\n";
+?>
