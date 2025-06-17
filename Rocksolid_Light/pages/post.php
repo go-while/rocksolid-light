@@ -201,6 +201,7 @@ if (isset($CONFIG['synchronet']) && ($CONFIG['synchronet'] == true)) {
     $synchro_pass = $userpass;
 }
 
+// http basic authentication
 if ($name == "")
     $name = $_SERVER['REMOTE_USER'];
 
@@ -231,7 +232,7 @@ if ($type == "post") {
         if (! $logged_in) {
             if (check_bbs_auth(trim($name), $userpass) == FALSE) {
                 $type = "retry";
-                $error = $text_error["auth_error"];
+                $error = "check_bbs_auth:".$text_error["auth_error"];
                 $_SESSION['pass'] = false;
                 $logged_in = false;
             } else {
@@ -251,7 +252,7 @@ if ($type == "post") {
     // Check that user has not been recently banned
     if (! is_file($config_dir . '/users/' . strtolower(trim($name)))) {
         $type = "retry";
-        $error = $text_error["auth_error"];
+        $error = "403: ".$text_error["auth_error"];
         $_SESSION['pass'] = false;
         $logged_in = false;
     }

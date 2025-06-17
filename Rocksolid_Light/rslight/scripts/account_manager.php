@@ -222,8 +222,8 @@ function change_user_password($username, $password)
 function create_new($username, $password, $user_email)
 {
     global $config_dir;
-    $workpath = $config_dir . "users/";
-    $keypath = $config_dir . "userconfig/";
+    $workpath = $config_dir . "/users/";
+    $keypath = $config_dir . "/userconfig/";
     $username = strtolower($username);
     $userFilename = $workpath . $username;
     $keyFilename = $keypath . $username;

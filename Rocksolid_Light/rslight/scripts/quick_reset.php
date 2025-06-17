@@ -49,7 +49,7 @@ function show_groups() {
     echo "Available groups by section:\n";
     echo "============================\n";
 
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $menulist = file($config_dir . "/menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($menulist as $menu) {
         if ($menu[0] == '#' || trim($menu) == "") {
             continue;

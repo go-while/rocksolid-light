@@ -237,10 +237,10 @@ function create_section($section = false)
         $newmenu[] = $menuentry;
     }
     if (!$menuexists) {
-        echo "Adding menu entry to " . $config_dir . "menu.conf\n";
+        echo "Adding menu entry to " . $config_dir . "/menu.conf\n";
         $newmenu[] = $section . ":1:1\n";
         $newmenu = implode($newmenu);
-        file_put_contents($config_dir . 'menu.conf', $newmenu);
+        file_put_contents($config_dir . '/menu.conf', $newmenu);
     }
     echo 'Please now edit ' . $configsection . "/groups.txt to add groups to this section\n";
 }
@@ -303,7 +303,7 @@ function get_group_list()
 {
     global $config_dir;
     $grouplist = array();
-    $menulist = file($config_dir . "menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $menulist = file($config_dir . "/menu.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($menulist as $menu) {
         if ($menu[0] == '#') {
             continue;

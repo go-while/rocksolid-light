@@ -1760,7 +1760,7 @@ function rslight_decrypt($data, $key)
 function group_display_name($gname)
 {
     global $config_dir;
-    $namelist = file($config_dir . "rename.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $namelist = file($config_dir . "/rename.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($namelist as $name) {
         if ($name[0] == '#') {
             continue;
@@ -1896,7 +1896,7 @@ function check_bbs_auth($username, $password, $sockip = null)
         return false;
     }
 
-    $workpath = $config_dir . "users/";
+    $workpath = $config_dir . "/users/";
     $username = trim(strtolower($username));
     $userFilename = $workpath . $username;
     $banned_list = file($config_dir . '/banned_users.conf');
@@ -1914,7 +1914,7 @@ function check_bbs_auth($username, $password, $sockip = null)
 
     // Create accounts for $anonymous and $CONFIG['server_auth_user'] if not exist
     if ($username == strtolower($CONFIG['anonusername'])) {
-        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . "/rslight.inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['anonuserpass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
@@ -1922,7 +1922,7 @@ function check_bbs_auth($username, $password, $sockip = null)
         }
     }
     if ($username == strtolower($CONFIG['server_auth_user'])) {
-        if (filemtime($config_dir . "rslight.inc.php") > filemtime($userFilename)) {
+        if (filemtime($config_dir . "/rslight.inc.php") > filemtime($userFilename)) {
             if ($userFileHandle = fopen($userFilename, 'w+')) {
                 fwrite($userFileHandle, password_hash($CONFIG['server_auth_pass'], PASSWORD_DEFAULT));
                 fclose($userFileHandle);
@@ -1987,7 +1987,7 @@ function check_bbs_auth($username, $password, $sockip = null)
 function check_encryption_groups($request)
 {
     global $config_dir;
-    $groupsFilename = $config_dir . "encryption_ok.txt";
+    $groupsFilename = $config_dir . "/encryption_ok.txt";
     if ($groupsFileHandle = @fopen($groupsFilename, 'r')) {
         while (! feof($groupsFileHandle)) {
             $buffer = fgets($groupsFileHandle);
@@ -2010,7 +2010,7 @@ function check_encryption_groups($request)
 function set_user_config($username, $request, $newval)
 {
     global $config_dir;
-    $userconfigpath = $config_dir . "userconfig/";
+    $userconfigpath = $config_dir . "/userconfig/";
     $username = strtolower($username);
     $userFilename = $userconfigpath . $username;
     $userData = file($userFilename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -2037,7 +2037,7 @@ function set_user_config($username, $request, $newval)
 function get_user_config($username, $request)
 {
     global $config_dir;
-    $userconfigpath = $config_dir . "userconfig/";
+    $userconfigpath = $config_dir . "/userconfig/";
     $username = strtolower($username);
     $userFilename = $userconfigpath . $username;
 

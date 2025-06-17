@@ -440,7 +440,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         $myconfig = true;
     }
     if (isset($encryptthis)) {
-        $workpath = $config_dir . "users/";
+        $workpath = $config_dir . "/users/";
         $username = trim(strtolower($encryptto));
         $userFilename = $workpath . $username;
         if ((! is_file($userFilename)) || $encryptto == $CONFIG['anonusername']) {

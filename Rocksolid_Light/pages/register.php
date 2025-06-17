@@ -21,8 +21,8 @@ $logfile = $spooldir . '/log/register.log';
 $mail_log = $spooldir . '/log/mail.log';
 
 # $workpath: Where to cache users (must be writable by calling program)
-$workpath = $config_dir . "users/";
-$keypath = $config_dir . "userconfig/";
+$workpath = $config_dir . "/users/";
+$keypath = $config_dir . "/userconfig/";
 
 $email_registry = $spooldir . '/email_registry.dat';
 

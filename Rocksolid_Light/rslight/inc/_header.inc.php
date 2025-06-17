@@ -23,7 +23,7 @@ write_access_log();
 
 
 $menulist = get_section_menu_array();
-$linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
+$linklist = file($config_dir . "/links.conf", FILE_IGNORE_NEW_LINES);
 
 // Start HTML output
 echo '<!DOCTYPE html>';

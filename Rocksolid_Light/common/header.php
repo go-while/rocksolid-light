@@ -20,7 +20,7 @@ global $OVERRIDES;
 $CONFIG = include $config_file;
 
 $menulist = get_section_menu_array();
-$linklist = file($config_dir . "links.conf", FILE_IGNORE_NEW_LINES);
+$linklist = file($config_dir . "/links.conf", FILE_IGNORE_NEW_LINES);
 
 echo '<meta charset="utf-8">';
 
