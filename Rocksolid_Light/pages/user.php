@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $past = time() - 3600;
     foreach ($_COOKIE as $key => $value) {
@@ -16,17 +14,6 @@ if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $logmeout = false;
 }
 
-require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
-require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
-
-// Add security headers
-add_security_headers();
-
-if (! isset($_SESSION['last_access']) || (time() - $_SESSION['last_access']) > 60) {
-    $_SESSION['last_access'] = time();
-}
-
-include("../rocksolid/newsportal.php");
 
 $ip_pass = false;
 if (! isset($_SESSION['remote_address'])) {
@@ -47,7 +34,7 @@ if ($logmeout) {
     echo "<hr><p>You have been logged out</p>";
     echo '</center>';
     echo '<br >';
-    include "../rocksolid/lib/tail.inc";
+    include $config_dir . '/inc/footer.inc.php';
     exit(0);
 }
 
@@ -64,11 +51,10 @@ $keyfile = $spooldir . '/keys.dat';
 $keys = secure_unserialize($keyfile, ['stdClass'], false);
 
 $title .= ' - User Configuration';
-require_once(__DIR__ . '/../rocksolid/head.inc');
 
 if (disable_page_by_user_agent($client_device, "bot", "User")) {
     echo "<center>Page Disabled</center>";
-    require_once(__DIR__ . '/../rocksolid/lib/tail.inc');
+    include $config_dir . '/inc/footer.inc.php';
     exit();
 }
 
@@ -102,11 +88,11 @@ if (!$logged_in) {
 
 if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="user.php">Configuration</a> / ';
+    echo '<a href="'.$file_user.'">Configuration</a> / ';
     echo htmlspecialchars($_POST['username']) . '</h1>';
 } else {
     echo '<h1 class="np_thread_headline">';
-    echo '<a href="user.php">user login</a> / ';
+    echo '<a href="'.$file_user.'">user login</a> / ';
     echo htmlspecialchars($_POST['username']) . '</h1>';
 }
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
@@ -129,7 +115,7 @@ if ($logged_in == true) {
     echo '</td>';
     // Configuration button
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+    echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_user.'">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Configuration</button>';
@@ -139,7 +125,7 @@ if ($logged_in == true) {
 if ((isset($_COOKIE["mail_name"]))) {
     // Logout button
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+    echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_user.'">';
     echo '<input name="command" type="hidden" id="command" value="Logout" readonly="readonly">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Logout</button>';
@@ -165,7 +151,7 @@ if (isset($_POST['username'])) {
 }
 
 if ($logged_in !== true) {
-    echo '<form name="form1" method="post" action="user.php" enctype="multipart/form-data">';
+    echo '<form name="form1" method="post" action="'.$file_user.'" enctype="multipart/form-data">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . secure_input($_POST['username'], 'html') . '"></td></tr>';
@@ -400,7 +386,7 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<hr><h1 class="np_thread_headline"></h1>';
     echo '<table cellspacing="0" width="100%" class="config_results_table">';
     echo '<tr class="config_thread_head"><td class="config_thread_head"><h2>Settings for ' . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . ':</h2></td></tr>';
-    echo '<form method="post" action="user.php">';
+    echo '<form method="post" action="'.$file_user.'">';
     echo '<input type="hidden" name="csrf_token" value="' . generate_csrf_token() . '">';
     echo '<tr class="config_table_row">';
     if ($OVERRIDES['disable_change_name'] != true) {
@@ -589,14 +575,13 @@ if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
 } else {
     echo '<br >';
 }
-require_once(__DIR__ . '/../rocksolid/tail.inc');
 
 function retry_configuration($message)
 {
     global $frame;
     echo '<center>';
     echo $message;
-    echo '<form target="' . $frame['content'] . '" method="post" action="user.php">';
+    echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_user.'">';
     echo '<input name="command" type="hidden" id="command" value="Configuration" readonly="readonly">';
     echo "<input type='hidden' name='retry' value='retry' >";
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";

@@ -130,6 +130,7 @@ $file_cancel = "index.php?page=cancel";
 $file_search = "index.php?page=search";
 $file_groups = "index.php?page=grouplist";
 $file_overboard = "index.php?page=overboard";
+$file_user = "index.php?page=user";
 
 if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 
