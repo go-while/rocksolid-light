@@ -6,7 +6,7 @@
 
 define("PRE_LOAD_CONF", true); // Define a constant to indicate pre-load context
 require("../common/config.inc.php");
-echo "<!--[ rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br> -->\n";
+//echo "<!--[ rocksolid/lib/config.inc.php: include ../common/config.inc.php loaded]<br> -->\n";
 
 if(empty($config_path)) {
     die("[ERROR rocksolid/lib/config.inc.php config_path is not set :L=5!]<br>\n");
@@ -19,18 +19,18 @@ if(empty($config_path)) {
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
+//echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
 
 $installed_path = getcwd();
 
 // For router system, determine the correct section
 // Since files were originally in web/spoolnews/, the config is in /etc/rslight/spoolnews/
-echo "<!-- rocksolid/lib/config.inc.php: Debug: config_path is '$config_path' -->\n";
+//echo "<!-- rocksolid/lib/config.inc.php: Debug: config_path is '$config_path' -->\n";
 // $CONFIG = include($config_file); // Already loaded by common/config.inc.php]['file']) ? $backtrace[0]['file'] : 'Direct execution';ace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
-echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
-echo "<!-- Debug: config_path set to '$config_path' -->\n";
+//echo "<!-- [rocksolid/lib/config.inc.php included by: " . basename($parent) . "]<br> -->\n";
+//echo "<!-- Debug: rocksolid/lib/config.inc.php loading -->\n";
+//echo "<!-- Debug: config_path set to '$config_path' -->\n";
 
 $installed_path = getcwd();
 
@@ -40,16 +40,15 @@ if(!file_exists($version_file)) {
     die("Critical Error: Version file '$version_file' not found");
 }
 $rslight_version = file_get_contents($version_file);
-echo "<!-- [rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br> -->\n";
+//echo "<!-- [rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br> -->\n";
 
-// Spool directory size and minimum in Gigabytes
-if ($OVERRIDES['min_spool_disk_space'] > 0) {
-    $min_spool_disk_space = $OVERRIDES['min_spool_disk_space'];
-} else {
-    $min_spool_disk_space = 2;
+if(array_key_exists('min_spool_disk_space', $OVERRIDES)) {
+    if ($OVERRIDES['min_spool_disk_space'] > 0) {
+        $min_spool_disk_space = $OVERRIDES['min_spool_disk_space'];
+    }
 }
 
-$free_spool_disk_space = disk_free_space($spooldir) * 9.313E-10;
+$free_spool_disk_space = disk_free_space($spooldir) /1024/1024/1024; // Convert to GB
 if ($free_spool_disk_space < $min_spool_disk_space) {
     $low_spool_disk_space = true;
 } else {
@@ -138,22 +137,17 @@ if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.p
 //include $config_dir."inc/allowed_languages.inc.php";
 //$default_language = $config_dir."inc/lang/english.lang";
 
+$file_language = $config_dir . "/inc/lang/english.lang";
+
 if (isset($_COOKIE['user_language']) && !empty($_COOKIE['user_language'])) {
     $requested_lang = $_COOKIE['user_language'];
-
     // Security: Only allow languages from hardcoded approved list
     if (is_language_allowed($requested_lang)) {
-        $requested_lang_path = "lang/" . $requested_lang;
+        $requested_lang_path = $config_dir . "/inc/lang/" . $requested_lang . ".lang";
         if (file_exists($requested_lang_path)) {
             $file_language = $requested_lang_path;
-        } else {
-            $file_language = $default_language;
         }
-    } else {
-        $file_language = $default_language;
     }
-} else {
-    $file_language = $default_language;
 }
 
 $file_footer = "footer.inc";
@@ -222,10 +216,17 @@ $article_showthread = true;
 $article_graphicquotes = true;
 
 /*
- * settings for the article flat view, if used
+ * settings for the article flat view, if used. had always been hardcoded, now configurable
  */
-// $articleflat_articles_per_page = 25; //  is in CONFIG["articleflat_articles_per_page"]
-// $articleflat_chars_per_articles = 10000; //  is in CONFIG['articleflat_chars_per_articles']
+if(!isset($CONFIG["articleflat_articles_per_page"])){
+    $CONFIG["articleflat_articles_per_page"] = 25;
+}
+$articleflat_articles_per_page = $CONFIG["articleflat_articles_per_page"];
+
+if(!isset($CONFIG["articleflat_chars_per_articles"])){
+    $CONFIG["articleflat_chars_per_articles"] = 10000;
+}
+$articleflat_chars_per_articles = $CONFIG["articleflat_chars_per_articles"];
 
 /*
  * Message posting

@@ -194,7 +194,7 @@ echo '</div><div Xclass="scroll">';
  * The form will only be displayed if the 'disable_msgid_search' override is not set or is false.
  */
 /*
-$config_name = basename(getcwd());
+// $config_name = basename(getcwd());
 
 if (!isset($OVERRIDES['disable_msgid_search']) || $OVERRIDES['disable_msgid_search'] == false) {
     if ($config_name != "common" && $config_name != 'spoolnews') {

@@ -7,34 +7,39 @@
 
 $backtrace = debug_backtrace();
 $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
-echo "<!-- [rslight/security.inc.php included by: " . basename($parent) . "]<br> -->\n";
+//echo "<!-- [rslight/security.inc.php included by: " . basename($parent) . "]<br> -->\n";
 
 /**
  * Secure session configuration
  */
 function secure_session_start() {
-    // Configure secure session settings
-    ini_set('display_errors','Off');
-    ini_set('session.entropy_file', '/dev/urandom');
-    ini_set('session.entropy_length', "256");
-    ini_set('session.cache_expire', "1800");
-    ini_set('session.use_strict_mode', 'true');
-    ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
-    ini_set('session.use_only_cookies', 1);
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.hash_function', 'sha256');
-    ini_set('session.cookie_samesite', 'Strict');
-    ini_set('session.gc_maxlifetime', 3600); // 1 hour lifetime
-    $cookieParams = session_get_cookie_params();
-    session_set_cookie_params([
-        'lifetime' => $cookieParams['lifetime'],
-        'path' => '/',
-        'domain' => '',
-        'secure' => isset($_SERVER['HTTPS']) ? 1 : 0,
-        'httponly' => true,
-        'samesite' => 'strict'
-    ]);
+
+
     if (session_status() === PHP_SESSION_NONE) {
+    // Configure secure session settings
+        ini_set('log_errors', 1);
+        ini_set('display_errors','Off');
+        ini_set('error_reporting', E_ALL); // E_NOTICE, E_WARNING, E_ERROR
+        ini_set('session.entropy_file', '/dev/urandom');
+        ini_set('session.entropy_length', "256");
+        ini_set('session.cache_expire', "1800");
+        ini_set('session.use_strict_mode', 'true');
+        ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
+        ini_set('session.use_only_cookies', 1);
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.hash_function', 'sha256');
+        ini_set('session.cookie_samesite', 'Strict');
+        ini_set('session.gc_maxlifetime', 3600); // 1 hour lifetime
+        $cookieParams = session_get_cookie_params();
+        session_set_cookie_params([
+            'lifetime' => $cookieParams['lifetime'],
+            'path' => '/',
+            'domain' => '',
+            'secure' => isset($_SERVER['HTTPS']) ? 1 : 0,
+            'httponly' => true,
+            'samesite' => 'strict'
+        ]);
+        session_name($session_name ?? 'ROCKSOLID_BY_RETROGUY'); // can not be empty!
         session_start();
     }
 
@@ -437,7 +442,8 @@ function add_security_headers() {
  */
 function generate_csrf_token() {
     if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        die("OOPS: generate_csrf_token session error: session not started");
+        // secure_session_start(); // TODO FIXME REVIEW?
     }
 
     if (!isset($_SESSION['csrf_token'])) {

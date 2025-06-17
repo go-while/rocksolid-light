@@ -97,11 +97,12 @@ function head_mail_db_open($database, $table = 'messages')
  */
 function nntp_open($nserver = 0, $nport = 0)
 {
+    // this function connects to LOCAL news server where our news are stored
     global $text_error, $CONFIG;
     global $server, $port;
 
     // echo "<br>NNTP OPEN<br>";
-    if (! isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) {
+    if (! isset($CONFIG['enable_nntp']) || $CONFIG['enable_nntp'] != true) { // REVIEW
         $CONFIG['server_auth_user'] = $CONFIG['remote_auth_user'];
         $CONFIG['server_auth_pass'] = $CONFIG['remote_auth_pass'];
     }
@@ -124,7 +125,7 @@ function nntp_open($nserver = 0, $nport = 0)
         // exit(0);
     }
 
-    $weg = line_read($ns); // kill the first line
+    $weg = line_read($ns); // read the the welcome line
     if (substr($weg, 0, 2) != "20") {
         echo "<p>" . $text_error["error:"] . $weg . "</p>";
         fclose($ns);
@@ -139,16 +140,26 @@ function nntp_open($nserver = 0, $nport = 0)
                 $ns = false;
             }
         }
-        if ((isset($CONFIG['server_auth_user'])) && (isset($CONFIG['server_auth_pass'])) && ($CONFIG['server_auth_user'] != "")) {
+        if ( $ns !== false &&
+                (isset($CONFIG['server_auth_user'])) && (isset($CONFIG['server_auth_pass'])) &&
+                ($CONFIG['server_auth_user'] != "") && ($CONFIG['server_auth_pass'] != "")
+            )
+        {
             fputs($ns, "AUTHINFO USER " . $CONFIG['server_auth_user'] . "\r\n");
             $weg = line_read($ns);
             fputs($ns, "AUTHINFO PASS " . $CONFIG['server_auth_pass'] . "\r\n");
             $weg = line_read($ns);
-            /* Only check auth if reading and posting same server */
             // NNTP Response NOT 281 (Authorization failed)
-            if (substr($weg, 0, 3) != "281" && ! (isset($post_server)) && ($post_server != "")) {
+            //if (substr($weg, 0, 3) != "281") {
+            $not_have_post_server = isset($post_server) && $post_server != "";
+            $whatisthis1 = ! (isset($post_server)) && ($post_server != "");
+            echo "<h1>DEBUG whatisthis1=$whatisthis1 not_have_post_server=$not_have_post_server</h1><br>";
+            //if (substr($weg, 0, 3) != "281" && ! (isset($post_server)) && ($post_server != "")) { // REVIEW (|| or &&) ?? because && drops errors into log...
+            if (substr($weg, 0, 3) != "281" && $not_have_post_server) { // REVIEW
                 echo "<p>" . $text_error["error:"] . "</p>";
                 echo "<p>" . $text_error["auth_error"] . "</p>";
+                fclose($ns);
+                $ns = false;
             }
         }
     }
@@ -160,6 +171,7 @@ function nntp_open($nserver = 0, $nport = 0)
 
 function nntp2_open($nserver = 0, $nport = 0)
 {
+    // this function connects to remote server to fetch news via cron.php
     global $text_error, $CONFIG, $debug_log, $config_name;
 
     $authorize = ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != ""));
@@ -300,15 +312,39 @@ function nntp2_open($nserver = 0, $nport = 0)
                 $ns = false;
             }
         }
-        if ((isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) && ($CONFIG['remote_auth_user'] != "")) {
+        if ( $ns !== false &&
+                (isset($CONFIG['remote_auth_user'])) && (isset($CONFIG['remote_auth_pass'])) &&
+                ($CONFIG['remote_auth_user'] != "" && $CONFIG['remote_auth_pass'] != "")
+            )
+        {
             fputs($ns, "AUTHINFO USER " . $CONFIG['remote_auth_user'] . "\r\n");
             $weg = line_read($ns);
             fputs($ns, "AUTHINFO PASS " . $CONFIG['remote_auth_pass'] . "\r\n");
             $weg = line_read($ns);
+
+            /* TODO REVIEW WHY SHOULDNT WE CHECK FOR 281 on POST SERVER? DOES NOT MAKE SENSE FOR ME... atm...
+             * AI says:
+             * **Potential issue**: The error condition logic appears to have a flaw
+             * - `! (isset($post_server)) && ($post_server != ""))` will always be false
+             * because if `$post_server` is not set, the second condition `($post_server != "")` will generate a notice.
+             * The intended logic was probably `!(isset($post_server) || ($post_server != ""))`
+             * This checks: "if post_server is not set OR if it's empty"
+             *
+             * **Security consideration**: While this code handles NNTP authentication properly,
+             * the credentials are stored in plain text in the configuration and transmitted over the network connection.
+             * For production use, ensure the connection to the NNTP server uses SSL/TLS encryption to protect these credentials during transmission.
+            */
             /* Only check auth if reading and posting same server */
-            if (substr($weg, 0, 3) != "281" && ! (isset($post_server)) && ($post_server != "")) {
+            // NNTP Response NOT 281 (Authorization failed)
+            $not_have_post_server = isset($post_server) && $post_server != "";
+            $whatisthis2 = ! (isset($post_server)) && ($post_server != "");
+            echo "<h1>DEBUG whatisthis2=$whatisthis2 not_have_post_server=$not_have_post_server</h1><br>";
+            //if (substr($weg, 0, 3) != "281" && ! (isset($post_server)) && ($post_server != "")) { // REVIEW lgos errors
+            if (substr($weg, 0, 3) != "281" && $not_have_post_server) { // REVIEW
                 echo "<p>" . $text_error["error:"] . "</p>";
                 echo "<p>" . $text_error["auth_error"] . "</p>";
+                fclose($ns);
+                $ns = false;
             }
         }
     }
@@ -854,7 +890,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
 
 function groups_show($gruppen)
 {
-    global $gl_age, $frame, $spooldir, $config_dir, $config_name, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir;
+    global $gl_age, $frame, $spooldir, $config_dir, $config_name, $groups_cache_file, $blocked_user_config, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir;
     if ($gruppen == false) {
         return;
     }
@@ -874,27 +910,24 @@ function groups_show($gruppen)
     $user = null;
 
     // Get registered user settings
-    $cookie_mail_name = $_COOKIE['mail_name'];
+    if(array_key_exists('mail_name', $_COOKIE)) {
+        $cookie_mail_name = $_COOKIE['mail_name'];
+    } else {
+        $cookie_mail_name = null;
+    }
     if (isset($_COOKIE['mail_name']) && $_COOKIE['mail_name'] == $CONFIG['anonusername']) {
         unset($cookie_mail_name);
     }
     if (isset($cookie_mail_name)) {
         if ($userdata = get_user_mail_auth_data($cookie_mail_name)) {
-            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-articleviews.dat';
-            $user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config');
-            if ($user_config === false) {
-                $user_config = [];
-            }
-
-            // User blocklist
-            $blocked_userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
-            if (file_exists($blocked_userfile)) {
-                $blocked_user_config = secure_unserialize($blocked_userfile);
-                if ($blocked_user_config === false) {
-                    $blocked_user_config = [];
-                }
-            }
+            $user_config = load_user_config($cookie_mail_name);
+            $userfile = load_user_views($cookie_mail_name); // actuially views not the .config... TODO NEEDS NAME CHANGE
+            $blocked_user_config = load_blocked_user_config($_COOKIE['mail_name']);
         }
+    } else {
+        $blocked_user_config = [];
+        $user_config = [];
+        $userfile = []; // actuially views not the .config... TODO NEEDS NAME CHANGE
     }
 
     for ($i = 0; $i < $c; $i++) {
@@ -1189,7 +1222,6 @@ function groups_show($gruppen)
                     }
                 }
                 $lastarticleinfo['name'] = $poster_name;
-
                 $block = false;
                 foreach ($blocked_user_config as $key => $value) {
                     $blockme = '/' . addslashes($key) . '/';
@@ -2168,7 +2200,7 @@ function wipe_newsportal_spool_info($group)
 
 function create_name_link($name, $data = null, $truncate = true)
 {
-    global $CONFIG;
+    global $CONFIG, $file_search;
     $name = preg_replace('/\"/', '', $name);
 
     if ($truncate) {
@@ -3807,4 +3839,92 @@ function change_identity($uid, $gid)
     }
 }
 
+function load_user_config($username)
+{
+    global $configdir;
+    if (!isset($username) || empty($username) || $username === null) {
+        return [];
+    }
+    $user_config_file = $configdir . '/userconfig/' . strtolower($username) . '.config';
+    $user_config = [];
+    try {
+        if (file_exists($user_config_file)) {
+            $user_config = secure_unserialize(file_get_contents($user_config_file));
+            if($user_config === false || !is_array($user_config)) {
+                $user_config = [];
+            }
+        }
+    } catch (Exception $e) {
+        // TODO ADD DEBUG LOG HERE?
+    }
+    return $user_config;
+}
+
+function load_user_views($username)
+{
+    global $spooldir;
+    if (!isset($username) || empty($username) || $username === null) {
+        return [];
+    }
+    $userviewfile = $spooldir . '/' . strtolower($username) . '-articleviews.dat';
+    $userviews = [];
+    try {
+        if (file_exists($userviewfile)) {
+            $userviews = secure_unserialize(file_get_contents($userviewfile));
+            if($userviews === false || !is_array($userviews)) {
+                $userviews = [];
+            }
+        }
+    } catch (Exception $e) {
+        // TODO ADD DEBUG LOG HERE?
+    }
+    return $userviews;
+}
+
+
+function load_user_file($username)
+{
+    global $spooldir;
+    if (!isset($username) || empty($username) || $username === null) {
+        return [];
+    }
+    $userfile = $spooldir . '/' . strtolower($username);
+    $userdata = [];
+    try {
+        if (file_exists($userfile)) {
+            $userdata = secure_unserialize(file_get_contents($userfile));
+            if($userdata === false || !is_array($userdata)) {
+                $userdata = [];
+            }
+        }
+    } catch (Exception $e) {
+        // TODO ADD DEBUG LOG HERE?
+    }
+    return $userdata;
+}
+
+/* * Load the blocked user configuration for a specific user.
+ * Returns an array of blocked users or an empty array if no configuration exists.
+ * @param string $username The username for which to load the blocked user configuration.
+ * @return array An array of blocked users or an empty array if no configuration exists.
+ */
+function load_blocked_user_config($username)
+{
+    global $spooldir;
+    $blocked_user_config = [];
+    try {
+        $blockfile = $spooldir . '/' . strtolower($username) . '-blocked_posters.dat';
+        //secure_unserialize(file_get_contents($config_dir . '/userconfig/' . strtolower($cookie_mail_name) . '.config'));
+        if (!file_exists($blockfile)) {
+            return $blocked_user_config;
+        }
+        $blocked_user_config = secure_unserialize(file_get_contents($blockfile));
+        if($blocked_user_config === false || !is_array($blocked_user_config)) {
+            $blocked_user_config = [];
+        }
+    } catch (Exception $e) {
+        // TODO ADD DEBUG LOG HERE?
+    }
+    return $blocked_user_config;
+}
 ?>

@@ -297,19 +297,8 @@ function display_threads($threads, $oldest, $snippetlength = 240)
             } catch (Exception $e) {
                 $user_config = array();
             }
-            $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
-            if (file_exists($userfile)) {
-                try {
-                    $blocked_user_config = secure_unserialize(file_get_contents($userfile));
-                    if (!is_array($blocked_user_config)) {
-                        $blocked_user_config = array();
-                    }
-                } catch (Exception $e) {
-                    $blocked_user_config = array();
-                }
-            } else {
-                $blocked_user_config = null;
-            }
+            //$userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
+            $blocked_user_config = load_blocked_user_config($cookie_mail_name);
         }
 
         if (! isset($user_config['hide_unsub'])) {
@@ -501,20 +490,8 @@ function display_flat($threads, $oldest, $snippetlength = 240)
                 $user_config = array();
             }
         }
-        $userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
-        if (file_exists($userfile)) {
-            try {
-                $blocked_user_config = secure_unserialize(file_get_contents($userfile));
-                if (!is_array($blocked_user_config)) {
-                    $blocked_user_config = array();
-                }
-            } catch (Exception $e) {
-                $blocked_user_config = array();
-            }
-        } else {
-            $blocked_user_config = null;
-        }
-
+        //$userfile = $spooldir . '/' . strtolower($cookie_mail_name) . '-blocked_posters.dat';
+        $blocked_user_config = load_blocked_user_config($cookie_mail_name);
         if (! isset($user_config['hide_unsub'])) {
             if (isset($OVERRIDES['hide_unsub'])) {
                 $user_config['hide_unsub'] = $OVERRIDES['hide_unsub'];

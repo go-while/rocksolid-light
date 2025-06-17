@@ -23,8 +23,9 @@ if (isset($_COOKIE['mail_name'])) {
     $userdata = get_user_mail_auth_data($_COOKIE['mail_name']);
     if ($userdata) {
         $user_authenticated = true;
-        $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
-        $user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config');
+        //$userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-articleviews.dat';
+        //$user_config = secure_unserialize($config_dir . '/userconfig/' . strtolower($_COOKIE['mail_name']) . '.config');
+        $user_config = load_user_config($_COOKIE['mail_name']);
 
         // Handle user config updates
         if (isset($_POST['hide_unsub'])) {

@@ -450,7 +450,7 @@ function message_thread($id, $group, $thread, $highlightids = false)
  */
 function show_header($head, $group, $local_poster = false)
 {
-    global $article_show, $text_header, $file_article, $attachment_show;
+    global $article_show, $text_header, $file_article, $file_search, $attachment_show;
     global $file_attachment, $anonym_address, $CONFIG, $OVERRIDES;
     global $sitelink, $config_name;
 
@@ -1111,9 +1111,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
 
     global $file_article, $file_article_full, $OVERRIDES, $spooldir;
     global $text_header, $text_article, $article_showthread, $file_attachment, $attachment_show;
-    global $block_xnoarchive, $article_graphicquotes;
-    global $CONFIG, $current_message;
-    $logfile = $spooldir . '/logs/message_show.log';
+    global $block_xnoarchive, $article_graphicquotes, $groupname, $readmode, $poll;
+    global $CONFIG, $current_message, $articleflat_chars_per_articles;
+    $logfile = $spooldir . '/log/message_show.log';
     $func_name = "messages.inc.php message_show()";
 
     if( isset($_REQUEST['page']) && $_REQUEST['page']!=='attachment' ) {
@@ -1145,21 +1145,23 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     if ($head) {
         // User blocklist
         $blocked_user_config = array();
-        if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
-            $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
-            if (file_exists($userfile)) {
-                $blocked_user_config = secure_unserialize($userfile);
-            }
-            $block = false;
-            foreach ($blocked_user_config as $key => $value) {
-                $blockme = '/' . addslashes($key) . '/';
-                if (preg_match($blockme, $head->from)) {
-                    $block = true;
-                    break;
+        $block = false;
+        if (isset($_COOKIE['mail_name'])) {
+            if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+                $userfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
+                if (file_exists($userfile)) {
+                    $blocked_user_config = secure_unserialize($userfile);
+                }
+                foreach ($blocked_user_config as $key => $value) {
+                    $blockme = '/' . addslashes($key) . '/';
+                    if (preg_match($blockme, $head->from)) {
+                        $block = true;
+                        break;
+                    }
                 }
             }
         }
-        if ($block == true) {
+        if ($block === true) {
             echo '<hr><p class="message_show_header_notice">(message #' . $head->number . ' hidden by your blocklist)</p><hr>';
             return "blocked";
         }
@@ -1181,7 +1183,7 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
         // If attachment=0 newsportal expects it to be plain text
         if (($head->content_type[$attachment] == "text/plain") && ($attachment == 0)) {
             // If we can't find the actual text in 'zero', look for it just in case
-            if (trim($body) == '') {  // There is no text in the text/plain body, it seems
+            if (trim($body) === '') {  // There is no text in the text/plain body, it seems
                 $plaintext = false;
                 for ($o = 1; $o < count($head->content_type); $o++) {
                     if ($head->content_type[$o] == "text/plain") {
@@ -1431,7 +1433,7 @@ function display_header_notice($head, $body = null)
     }
 
     // Body checks
-    if ($body && is_array($OVERRIDES['display_notice_for_body_checks'])) {
+    if ($body && isset($OVERRIDES['display_notice_for_body_checks']) && is_array($OVERRIDES['display_notice_for_body_checks'])) {
         foreach ($OVERRIDES['display_notice_for_body_checks'] as $check) {
             if (preg_match($check['regex'], $body)) {
                 $notice .= '<hr><p class=article_header_notice>(' . $check['notice'] . ')</p><hr>';

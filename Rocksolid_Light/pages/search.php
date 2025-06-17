@@ -107,19 +107,19 @@ if (isset($_POST['block_poster'])) {
     }
     if ($logged_in == true) {
         if ($userdata = get_user_mail_auth_data($_COOKIE['mail_name'])) {
+            $blocked_user_config = load_blocked_user_config($_COOKIE['mail_name']);
+            /*
             $blockfile = $spooldir . '/' . strtolower($_COOKIE['mail_name']) . '-blocked_posters.dat';
             if (file_exists($blockfile)) {
                 try {
                     $blocked_user_config = secure_unserialize(file_get_contents($blockfile));
-                    if (!is_array($blocked_user_config)) {
-                        $blocked_user_config = array();
-                    }
                 } catch (Exception $e) {
                     $blocked_user_config = array();
                 }
             } else {
                 $blocked_user_config = array();
             }
+            */
             $blocked_user_config[base64_decode(urldecode($_REQUEST['data']))] = $_POST['block_poster'];
             file_put_contents($blockfile, serialize($blocked_user_config));
         }

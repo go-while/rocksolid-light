@@ -1,13 +1,16 @@
 <?php
 if (!defined('PRE_LOAD_DONE')) {
-    ini_set('error_reporting', E_ERROR); // show no errors at all, only log them
 
     $backtrace = debug_backtrace();
     $parent = isset($backtrace[0]['file']) ? $backtrace[0]['file'] : 'Direct execution';
     //echo "[common/config.inc.php included by: " . basename($parent) . "]<br>\n";
 
-    $config_dir = "/etc/rslight"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir>
-    $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir>
+    $config_dir = "/etc/rslight"; // TODO FIXME LATER: NEEDS /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <config_dir> --- TODO MOVE TO SRC CONFIG ---
+    $spooldir = "/var/spool/rslight"; // TODO FIXME LATER: NEEDS NO /!? REMOVE HARDCODED PATH AND REPLACE WITH PLACEHOLDER AFTER TESTING <spooldir> --- TODO MOVE TO SRC CONFIG ---
+    $session_name = "ROCKSOLID_BY_RETROGUY"; // Cookie Session name  --- TODO MOVE TO SRC CONFIG ---
+    // Spool directory size and minimum in Gigabytes
+    $min_spool_disk_space = 2; // Default minimum remaining FREE disk space in GB: calculates in rocksolid/lib/config.inc.php
+
     $config_file = $config_dir.'/rslight.inc.php';
     // For router system, determine the correct section
     // Since files were originally in web/spoolnews/, the config is in /etc/rslight/spoolnews/
@@ -25,7 +28,7 @@ if (!defined('PRE_LOAD_DONE')) {
     $session_inc = $config_dir . '/inc/_session.inc.php';
     $header_inc = $config_dir . '/inc/_header.inc.php';
     $footer_inc = $config_dir . '/inc/_footer.inc.php';
-
+    $default_language = 'english'; // Default language if not set in config
 
     // Initialize config name for logging - used by many scripts
     //$config_name = basename(getcwd()); //  TODO FIXME SECTIONS
@@ -75,7 +78,7 @@ if (!defined('PRE_LOAD_DONE')) {
     $lib_path = $config_dir . '/inc/' . $lib_file;
     if (!file_exists($lib_path)) {
         if ($lib_file === 'overrides.inc.php') {
-            echo "[rocksolid/lib/config.inc.php: not found '$lib_file']<br>\n";
+            //echo "[rocksolid/lib/config.inc.php: not found '$lib_file']<br>\n"; // TODO LOG WARNING
             // If overrides.inc.php is not found, we can skip it
             continue;
         }
@@ -94,11 +97,13 @@ if (!defined('PRE_LOAD_DONE')) {
     }
 
     $languages = get_allowed_languages();
+    if(empty($CONFIG['language'])){
+        $CONFIG['language'] = $default_language;
+    }
     // Check if the configured language is in the allowed languages
     if (!in_array($CONFIG['language'], $languages)) {
         // If not, use the default language
-        $CONFIG['language'] = 'english';
-        $file_language = $default_language;
+        $CONFIG['language'] = $default_language;
     }
     $file_language = $language_dir . $CONFIG['language'] . '.lang';
     if (!file_exists($file_language)) {
@@ -242,7 +247,7 @@ if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
 
 // If this is a cron context, we do not load the pages
 // but only the configuration and libraries
-echo "<!-- [common/lib/config.inc.php: Context cron_context=$cron_context pre_load=$pre_load detected, skipping page loading]<br> -->\n";
+//echo "<!-- [common/lib/config.inc.php: Context cron_context=$cron_context pre_load=$pre_load detected, skipping page loading]<br> -->\n";
 // You can add more cron-specific logic here if needed
 // For example, you might want to initialize some cron-specific settings or variables
 
