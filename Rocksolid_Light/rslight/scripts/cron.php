@@ -34,7 +34,7 @@ if (!isset($logdir) || empty($logdir)) {
     @mkdir($logdir, 0755, true);
 }
 if (!isset($config_name) || empty($config_name)) {
-    $config_name = 'rslight';
+    $config_name = 'rocksolid';
 }
 
 echo "[CRON] Debug 1 cron config_name: " . $config_name . "\n";

@@ -192,13 +192,18 @@ function message_parse($rawmessage)
  */
 function message_read($id, $bodynum = 0, $group = "")
 {
+    echo "DEBUG message_read($id, $bodynum, $group)<br>\n";
     global $CONFIG, $config_dir, $config_name, $cache_articles, $spooldir, $spoolpath, $logdir, $debug_log, $text_error, $ns;
+    if(empty($config_name)) {
+        $config_name = 'rocksolid'; // fallback for cases where getcwd() fails
+    }
     $logfile = $logdir . '/newsportal.log';
     if (! testGroup($group)) {
         echo $text_error["read_access_denied"];
         return;
     }
     if (! is_numeric($id)) {
+        echo "" . $text_error["invalid_id"] . " " . htmlspecialchars($id) . "<br>";
         return false;
     }
     // MEMCACHE if ($id, 0, $group)
@@ -1111,7 +1116,9 @@ function message_show($group, $id, $attachment = 0, $article_data = false, $maxl
     $logfile = $spooldir . '/logs/message_show.log';
     $func_name = "messages.inc.php message_show()";
 
-    echo "\n<!-- [DEBUG inc/message.inc.php $func_name globals: file_article=$file_article, file_article_full=$file_article_full, override=".count($OVERRIDES).", spooldir=$spooldir; logfile=$logfile group: " . $group . ", id: '" . $id . "', attachment: '" . $attachment . "'] -->\n";
+    if( isset($_REQUEST['page']) && $_REQUEST['page']!=='attachment' ) {
+        echo "\n<!-- [DEBUG inc/message.inc.php $func_name globals: file_article=$file_article, file_article_full=$file_article_full, override=".count($OVERRIDES).", spooldir=$spooldir; logfile=$logfile group: " . $group . ", id: '" . $id . "', attachment: '" . $attachment . "'] -->\n";
+    }
 
     file_put_contents($logfile, "\n" . format_log_date() . " " . $func_name . " DEBUG: thread_load called for group: " . $groupname . " readmode: " . $readmode . " poll: " . ($poll ? 'true' : 'false'), FILE_APPEND);
 

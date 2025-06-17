@@ -34,6 +34,16 @@ $web_root = dirname(dirname(dirname($rslight_target)));
 include __DIR__ . "/spool-lib.php";
 include $config_dir . '/gpg.conf';
 
+if(empty($config_name)) {
+    echo "Config name is empty, using default.\n";
+    $config_name = 'rocksolid'; // fallback for cases where getcwd() fails
+}
+
+if (!is_dir($spooldir . '/' . $config_name)) {
+    echo "Creating spool directory for config: $config_name\n";
+    @mkdir($spooldir . '/' . $config_name, 0755, true);
+}
+
 if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
     $save_nocem_messages = true;
     $nocem_dir = $spooldir . "/saved_nocem";
@@ -66,8 +76,12 @@ if (file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
 }
 
 // Defaults
-$maxarticles_per_run = 100;
-$maxfirstrequest = 100;
+
+// Maximum number of articles to fetch per run
+$maxarticles_per_run = 100; // TODO remove hardcoded value
+
+// Maximum number of articles to fetch on first request
+$maxfirstrequest = 100; // TODO remove hardcoded value
 
 // Overrides
 if ($OVERRIDES['maxarticles_per_run'] > 0) {

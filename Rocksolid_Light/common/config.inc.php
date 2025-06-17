@@ -21,10 +21,16 @@ if (!defined('PRE_LOAD_DONE')) {
     $auth_log = $logdir . '/auth.log';
     $mail_log = $logdir . '/mail.log';
 
+    $auth_inc = "/inc/auth.inc.php";
+    $session_inc = $config_dir . '/inc/_session.inc.php';
+    $header_inc = $config_dir . '/inc/_header.inc.php';
+    $footer_inc = $config_dir . '/inc/_footer.inc.php';
+
+
     // Initialize config name for logging - used by many scripts
-    $config_name = basename(getcwd());
+    //$config_name = basename(getcwd()); //  TODO FIXME SECTIONS
     if (empty($config_name)) {
-        $config_name = 'rslight'; // fallback for cases where getcwd() fails
+        $config_name = 'rocksolid'; // fallback for cases where getcwd() fails
     }
 
     // Ensure log directory exists
@@ -121,7 +127,7 @@ $is_pre_load = 0;
 if (defined('CRON_CONTEXT')) { $cron_context = true; }
 if (defined('PRE_LOAD_CONF')) { $is_pre_load = true; }
 if (defined('PRE_LOAD_CONF') && defined('PRE_LOAD_DONE') && $is_pre_load){ $is_pre_load = false; }
-
+$noheader = false;
 if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
     //echo "[common/config.inc.php: Page routing system enabled]<br>\n";
     $RSLIGHT_PAGE_MAP = [
@@ -143,6 +149,8 @@ if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
         // File handling
         'files'        => 'files.php',
         'upload'       => 'upload.php',
+        'attachment'       => 'attachment.php',
+        'decrypt'       => 'decrypt.php',
 
         // Language/Demo
         'language_demo'     => 'language_demo.php',
@@ -172,35 +180,63 @@ if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
         'language_selector' => ['expires' => 3600, 'max_age' => 3600],              // 1 hour
         'faq'               => ['expires' => 3600 * 12, 'max_age' => 3600 * 12],    // 12 hours
         'header_test'       => ['expires' => 60, 'max_age' => 60],                  // 1 minute
-        'index'             => ['expires' => 30, 'max_age' => 30]                   // 30 seconds
+        'index'             => ['expires' => 30, 'max_age' => 30],                   // 30 seconds
+        'attachement'       => ['expires' => 30*86400, 'max_age' => 30*86400]                   // 30 seconds
+    ];
+    $no_headfoot = [
+        'attachment' => true, // No header for attachment page. checks only for isset. so false works like true
     ];
     //echo "[common/config.inc.php: Page routing system loaded]<br>\n";
 
     // Always load the router system when not in cron context
     // Include session/cache setup
     //echo "[common/config.inc.php: Including " . $config_dir . "/inc/_session.inc.php]<br>\n";
-    include_once($config_dir . '/inc/_session.inc.php');
+
+
+    //include_once($config_dir . '/inc/_session.inc.php');
     //echo "[common/config.inc.php: Session and cache setup included]<br>\n";
 
     // Include header
     //echo "[common/config.inc.php: Including " . $config_dir . "/inc/_header.inc.php]<br>\n";
-    include_once($config_dir . '/inc/_header.inc.php');
+    //include_once($config_dir . '/inc/_header.inc.php');
     //echo "[common/config.inc.php: Header included]<br>\n";
 
     // Your page routing switch
-    $page = $_GET['page'] ?? 'index';
+    $page = $_REQUEST['page'] ?? 'index';
     if (!isset($RSLIGHT_PAGE_MAP[$page])){
         die("Error: Invalid page requested.");
     }
+    if (!file_exists($session_inc) || !is_readable($session_inc)) {
+        die("Error: Session include file '$session_inc' not found.");
+    }
+    include_once($session_inc); // Ensure session is started before header
+
+    if (!isset($no_headfoot[$page])) {
+        // Include header if not already done
+        if (!file_exists($header_inc) || !is_readable($header_inc)) {
+            die("Error: Header include file '$header_inc' not found.");
+        }
+        include_once($header_inc);
+    }
     $page_file = "../pages/" . $RSLIGHT_PAGE_MAP[$page];
     //echo "[common/lib/config.inc.php: loading page: $page_file]<br>\n";
-    if (!file_exists($page_file)) {
+    if (!file_exists($page_file) || !is_readable($page_file)) {
+        // If the page file does not exist, we can return an error
+        // or redirect to a 404 page, depending on your application design
+        // For now, we will just die with an error message
         die("Error: Page file '$page_file' not found.");
     }
     // Include the requested page file
     include_once($page_file);
+
     // Include footer
-    include_once($config_dir . '/inc/_footer.inc.php');
+    if (!isset($no_headfoot[$page])) {
+
+        if (!file_exists($footer_inc) || !is_readable($footer_inc)) {
+            die("Error: Footer include file '$footer_inc' not found.");
+        }
+        include_once($footer_inc);
+    }
     exit(0); // Exit after including the footer
 }
 

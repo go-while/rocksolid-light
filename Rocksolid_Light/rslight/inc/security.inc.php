@@ -14,11 +14,26 @@ echo "<!-- [rslight/security.inc.php included by: " . basename($parent) . "]<br>
  */
 function secure_session_start() {
     // Configure secure session settings
-    ini_set('session.cookie_httponly', 1);
-    ini_set('session.use_only_cookies', 1);
+    ini_set('display_errors','Off');
+    ini_set('session.entropy_file', '/dev/urandom');
+    ini_set('session.entropy_length', "256");
+    ini_set('session.cache_expire', "1800");
+    ini_set('session.use_strict_mode', 'true');
     ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? 1 : 0);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.hash_function', 'sha256');
     ini_set('session.cookie_samesite', 'Strict');
-
+    ini_set('session.gc_maxlifetime', 3600); // 1 hour lifetime
+    $cookieParams = session_get_cookie_params();
+    session_set_cookie_params([
+        'lifetime' => $cookieParams['lifetime'],
+        'path' => '/',
+        'domain' => '',
+        'secure' => isset($_SERVER['HTTPS']) ? 1 : 0,
+        'httponly' => true,
+        'samesite' => 'strict'
+    ]);
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }

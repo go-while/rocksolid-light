@@ -18,9 +18,9 @@ $config_file = $config_dir . '/rslight.inc.php';
 // Initialize logging paths
 $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
-$config_name = basename(getcwd());
+//$config_name = basename(getcwd());
 if (empty($config_name)) {
-    $config_name = 'rslight';
+    $config_name = 'rocksolid'; // fallback
 }
 
 // Load basic config

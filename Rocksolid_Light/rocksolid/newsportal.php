@@ -1,3 +1,3 @@
 <?php
-echo "DEBUG FIND ME IF YOU CAN! STILL A MISSING INCLUDE: newsportal.php<br>\n";
+echo "DEBUG FIND ME IF YOU CAN! STILL A LEGACY INCLUDE: newsportal.php<br>\n";
 ?>

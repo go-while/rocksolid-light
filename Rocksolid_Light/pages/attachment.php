@@ -1,19 +1,19 @@
 <?php
-header("Expires: ".gmdate("D, d M Y H:i:s",time()+(3600*24))." GMT");
+// TODO attachement.php should be moved to requests.inc.php (which atm does not exist)
+
 $group=$_REQUEST["group"];
 $id=$_REQUEST["id"];
 $attachment=$_REQUEST["attachment"];
-include "lib/config.inc.php";
-require("$file_newsportal");
-require_once(__DIR__ . '/lib/security.inc.php');
+//echo "<h1>Attachment Page</h1>";
 
-// Add security headers
-add_security_headers();
-if (!isset($attachment))
+if (!isset($attachment)){
   $attachment=0;
+}
+
 $message=message_read($id,$attachment,$group);
 //print_r($message->header);
 ob_clean();
+
 if (!$message) {
   header ("HTTP/1.0 404 Not Found");
   echo "The Attachment doesn't exists";
