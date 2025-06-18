@@ -1,14 +1,6 @@
 <?php
 
-session_start();
-
-require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
-require_once(__DIR__ . '/../rocksolid/newsportal.php');
-require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
 include $config_dir . "/gpg.conf";
-
-// Add security headers
-add_security_headers();
 
 if (isset($_COOKIE['tzo'])) {
     $offset = $_COOKIE['tzo'];
@@ -18,13 +10,6 @@ if (isset($_COOKIE['tzo'])) {
 
 if (! isset($_POST['command'])) {
     $_POST['command'] = null;
-}
-
-$logfile = $logdir . '/mail.log';
-$keyfile = $spooldir . '/keys.dat';
-$keys = secure_unserialize($keyfile, ['stdClass'], false);
-if ($keys === false) {
-    die("Critical Error: Cannot load keys file securely");
 }
 
 $title .= ' - Mail';

@@ -1,14 +1,5 @@
 <?php
 
-session_start();
-
-require_once(__DIR__ . '/../rocksolid/lib/config.inc.php');
-require_once(__DIR__ . '/../rocksolid/newsportal.php');
-require_once(__DIR__ . '/../rocksolid/lib/security.inc.php');
-
-// Add security headers
-add_security_headers();
-
 $logfile = $logdir . '/files.log';
 
 if (isset($_COOKIE['tzo'])) {
@@ -26,16 +17,15 @@ if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_
     exit(0);
 }
 $title .= ' - Browse files';
-include "../rocksolid/head.inc";
 
 if (disable_page_by_user_agent($client_device, "bot", "Files")) {
     echo "<center>Page Disabled</center>";
-    include "../rocksolid/tail.inc";
+    include $footer_inc;
     exit();
 }
 
 echo '<h1 class="np_thread_headline">';
-echo '<a href="../spoolnews/files.php">files</a> / ';
+echo '<a href="'.$file_files.'">files</a> / ';
 if(isset($_COOKIE['mail_name'])) {
     echo htmlspecialchars($_COOKIE['mail_name']);
 }
@@ -43,14 +33,14 @@ echo '</h1>';
 echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Browse button
 echo '<td>';
-echo '<form target="' . $frame['content'] . '" method="post" action="files.php">';
+echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_files.'">';
 echo '<input name="command" type="hidden" id="command" value="Browse" readonly="readonly">';
 echo '<button class="np_button_link" type="submit">Browse</button>';
 echo '</form>';
 echo '</td>';
 // Upload button
 echo '<td>';
-echo '<form target="' . $frame['content'] . '" method="post" action="upload.php">';
+echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_upload.'">';
 echo '<input name="command" type="hidden" id="command" value="Upload" readonly="readonly">';
 echo '<button class="np_button_link" type="submit">Upload</button>';
 echo '</form>';
@@ -75,7 +65,7 @@ sort($users);
 $found = 0;
 if (count($users) > 0) {
     echo "<strong><small>Select a user directory to browse:</small></strong>";
-    echo '<form name="browse" method="post" action="files.php" enctype="multipart/form-data">';
+    echo '<form name="browse" method="post" action="'.$file_files.'" enctype="multipart/form-data">';
     echo '<input name="command" type="hidden" id="command" value="Browse" readonly="readonly">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';
     echo '<select name="listbox">';
@@ -128,7 +118,7 @@ function display_user_files($user, $offset)
         $mime = mime_content_type($thisfile);
         // Link
         echo '<td class="' . $lineclass . '">';
-        echo '<form action="files.php" method="post" target="rslight_view">';
+        echo '<form action="'.$file_files.'" method="post" target="rslight_view">';
         echo '<button class="np_filename_button_link" type="submit">' . $file . '</button>';
         echo '<input type="hidden" name="showfile" value="' . $user . '/' . $file . '"/>';
         echo '<input type="hidden" name="showfilename" value="' . $file . '"/>';

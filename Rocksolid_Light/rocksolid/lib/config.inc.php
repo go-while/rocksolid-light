@@ -118,6 +118,9 @@ $frame_externallink = "_blank";
  */
 $imgdir = "img";
 
+// why we call it file_?
+// because sometimes it's easier to keep a
+// legacy pattern than reinventing the wheel!
 $file_newsportal = "newsportal.php";
 $file_index = "index.php";
 $file_thread = "index.php?page=thread";
@@ -130,6 +133,11 @@ $file_search = "index.php?page=search";
 $file_groups = "index.php?page=grouplist";
 $file_overboard = "index.php?page=overboard";
 $file_user = "index.php?page=user";
+$file_register = "index.php?page=register";
+$file_mail = "index.php?page=mail";
+$file_decrypt = "index.php?page=decrypt";
+$file_files = "index.php?page=files";
+$file_upload = "index.php?page=upload";
 
 if(!isset($config_dir)) die("config_dir is not set in rocksolid/lib/config.inc.php:L=109!");
 

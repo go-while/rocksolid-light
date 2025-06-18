@@ -22,7 +22,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-@session_start();
+// Session handling moved to secure_session_start() to ensure proper session name
 
 /*
  * Encode lines with 8bit-characters to quote-printable

@@ -29,12 +29,11 @@ if (! isset($_SESSION['remote_address'])) {
 }
 
 if ($logmeout) {
-    include "../rocksolid/lib/head.inc";
     echo "<center>";
     echo "<hr><p>You have been logged out</p>";
     echo '</center>';
     echo '<br >';
-    include $config_dir . '/inc/footer.inc.php';
+    include $footer_inc;
     exit(0);
 }
 
@@ -54,7 +53,7 @@ $title .= ' - User Configuration';
 
 if (disable_page_by_user_agent($client_device, "bot", "User")) {
     echo "<center>Page Disabled</center>";
-    include $config_dir . '/inc/footer.inc.php';
+    include $footer_inc;
     exit();
 }
 
@@ -99,7 +98,7 @@ echo '<table cellpadding="0" cellspacing="0" class="np_buttonbar"><tr>';
 // Mail button
 if ($logged_in == true) {
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="mail.php">';
+    echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_mail.'">';
     echo '<input name="command" type="hidden" id="command" value="Mail" readonly="readonly">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Mail</button>';
@@ -107,7 +106,7 @@ if ($logged_in == true) {
     echo '</td>';
     // Files button
     echo '<td>';
-    echo '<form target="' . $frame['content'] . '" method="post" action="files.php">';
+    echo '<form target="' . $frame['content'] . '" method="post" action="'.$file_files.'">';
     echo '<input name="command" type="hidden" id="command" value="Files" readonly="readonly">';
     echo "<input type='hidden' name='username' value='" . htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') . "' >";
     echo '<button class="np_button_link" type="submit">Files</button>';
@@ -151,7 +150,7 @@ if (isset($_POST['username'])) {
 }
 
 if ($logged_in !== true) {
-    echo '<form name="form1" method="post" action="'.$file_user.'" enctype="multipart/form-data">';
+    echo '<form name="form1" method="post" action="'.$file_user.'">';
     echo '<table class="mail_table_login">';
     echo '<tr><td><strong>Please Login</strong></td></tr>';
     echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . secure_input($_POST['username'], 'html') . '"></td></tr>';
