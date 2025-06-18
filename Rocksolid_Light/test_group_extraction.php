@@ -14,7 +14,7 @@ $logdir = $spooldir . '/log';
 $debug_log = $logdir . '/debug.log';
 $config_name = basename(getcwd());
 if (empty($config_name)) {
-    $config_name = 'rslight';
+    $config_name = 'rocksolid';
 }
 
 // Load the configuration array like debug_groups.php does

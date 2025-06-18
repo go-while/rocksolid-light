@@ -1,6 +1,10 @@
 <?php
 // TODO attachement.php should be moved to requests.inc.php (which atm does not exist)
 
+// Security headers for file downloads
+header("X-Content-Type-Options: nosniff");
+header("X-Frame-Options: DENY");
+
 $group=$_REQUEST["group"];
 $id=$_REQUEST["id"];
 $attachment=$_REQUEST["attachment"];

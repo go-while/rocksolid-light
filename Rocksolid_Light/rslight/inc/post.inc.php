@@ -474,6 +474,36 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         $spamlevel = $spam_result_array['spamlevel'];
     }
     if ($do_attach) {
+        // Optional security checks - controlled by config
+        if (isset($CONFIG['validate_file_uploads']) && $CONFIG['validate_file_uploads']) {
+
+            // File size check
+            if (isset($CONFIG['max_upload_size']) && $_FILES["photo"]["size"] > $CONFIG['max_upload_size']) {
+                return "File too large. Maximum size: " . number_format($CONFIG['max_upload_size']/1024/1024, 1) . "MB";
+            }
+
+            // File type validation (if configured)
+            if (isset($CONFIG['allowed_file_types']) && is_array($CONFIG['allowed_file_types'])) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $detected_type = finfo_file($finfo, $_FILES["photo"]["tmp_name"]);
+                finfo_close($finfo);
+
+                if (!in_array($detected_type, $CONFIG['allowed_file_types'])) {
+                    return "File type '$detected_type' not allowed on this server.";
+                }
+            }
+
+            // Filename length check
+            if (strlen($_FILES["photo"]["name"]) > 255) {
+                return "Filename too long. Maximum 255 characters.";
+            }
+        }
+
+        // Log upload attempts for monitoring
+        if (isset($CONFIG['log_file_uploads']) && $CONFIG['log_file_uploads']) {
+            error_log("File upload: " . $_FILES["photo"]["name"] . " (" . $_FILES["photo"]["size"] . " bytes) from " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+        }
+
         move_uploaded_file($_FILES["photo"]["tmp_name"], $attachment_temp_dir . $_FILES["photo"]["name"]);
         if ($authname != null) {
             $uploadname = $authname;
@@ -485,6 +515,20 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         }
         // Copy attachment to user's upload directory
         copy($attachment_temp_dir . $_FILES["photo"]["name"], $spooldir . '/upload/' . $uploadname . '/' . $_FILES["photo"]["name"]);
+
+        // Optional: Track upload statistics
+        if (isset($CONFIG['track_uploads']) && $CONFIG['track_uploads']) {
+            $upload_log = $spooldir . '/logs/uploads.log';
+            if (!is_dir($spooldir . '/logs')) {
+                mkdir($spooldir . '/logs', 0755, true);
+            }
+            $upload_entry = date('Y-m-d H:i:s') . " | " .
+                           ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . " | " .
+                           $_FILES["photo"]["name"] . " | " .
+                           $_FILES["photo"]["size"] . " | " .
+                           ($uploadname ?? 'anonymous') . "\n";
+            file_put_contents($upload_log, $upload_entry, FILE_APPEND | LOCK_EX);
+        }
     }
     $ns = nntp_open($server, $port);
     if ($ns != false) {

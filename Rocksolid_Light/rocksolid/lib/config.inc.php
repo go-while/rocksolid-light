@@ -338,11 +338,28 @@ if(!isset($CONFIG['pathhost'])||empty($CONFIG['pathhost'])) {
     $CONFIG['pathhost'] = $CONFIG['server_path'];
 }
 
-// msgid_generate
-if(!isset($CONFIG['msgid_generate'])||empty($CONFIG['msgid_generate'])) {
-    $CONFIG['msgid_generate'] = "md5"; // Default to md5
-}
+// ============================================================================
+// OPTIONAL SECURITY SETTINGS (disabled by default for compatibility)
+// ============================================================================
+// Uncomment and configure these to enhance upload security:
 
+// File upload validation (disabled by default)
+// $CONFIG['validate_file_uploads'] = true;
+
+// Maximum upload file size in bytes (5MB default when enabled)
+// $CONFIG['max_upload_size'] = 5 * 1024 * 1024;
+
+// Allowed MIME types for file uploads (when validation is enabled)
+// $CONFIG['allowed_file_types'] = [
+//     'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+//     'text/plain', 'application/pdf'
+// ];
+
+// Log all file upload attempts to error log
+// $CONFIG['log_file_uploads'] = true;
+
+// Track upload statistics to logs/uploads.log
+// $CONFIG['track_uploads'] = true;
 
 define("PRE_LOAD_DONE", true); // Define a constant to indicate pre-load context
 require("../common/config.inc.php");

@@ -52,7 +52,7 @@ echo "====================="
 # Define file lists for different components
 LOGGING_CONTROL_FILES=(
     "rocksolid/logging_control.php"
-    "rocksolid/lib/overrides.inc.php"
+    "rocksolid/overrides.inc.php"
     "rslight/scripts/logging_control.sh"
 )
 
@@ -96,7 +96,6 @@ INSTALLATION_FILES=(
 
 SECURITY_FILES=(
     "rslight/scripts/security_loader.inc.php"
-    "rslight/scripts/cron.php"
 )
 
 ALL_FILES=("${LOGGING_CONTROL_FILES[@]}" "${DATABASE_OPTIMIZATION_FILES[@]}" "${CORE_FILES[@]}" "${SPOOLNEWS_FILES[@]}" "${SETUP_CONFIGURATION_FILES[@]}" "${INSTALLATION_FILES[@]}" "${SECURITY_FILES[@]}")
@@ -330,7 +329,7 @@ ssh "$REMOTE_USER@$REMOTE_HOST" "
 # Set permissions for scripts and database optimization files
 ssh "$REMOTE_USER@$REMOTE_HOST" "
     chmod +x '$REMOTE_CONFIG_DIR/scripts/logging_control.sh' 2>/dev/null
-    chmod 644 '$REMOTE_WEB_DIR/rocksolid/lib/overrides.inc.php' 2>/dev/null
+    chmod 644 '$REMOTE_WEB_DIR/rocksolid/overrides.inc.php' 2>/dev/null
     chmod 644 '$REMOTE_WEB_DIR/rocksolid/logging_control.php' 2>/dev/null
     chmod 644 '$REMOTE_WEB_DIR/rocksolid/lib/database_optimizer.php' 2>/dev/null
     chmod 755 '$REMOTE_WEB_DIR/tests/database_monitor.php' 2>/dev/null
