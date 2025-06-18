@@ -1223,7 +1223,7 @@ function groups_show($gruppen)
                 }
                 $lastarticleinfo['name'] = $poster_name;
                 $block = false;
-                if(!is_array(blocked_user_config)) {
+                if(!is_array($blocked_user_config)) {
                     $blocked_user_config = array();
                 }
                 foreach ($blocked_user_config as $key => $value) {
