@@ -1882,9 +1882,9 @@ function set_user_logged_in_cookies($name, $keys)
         var auth_expire = "<?php echo $auth_expire; ?>";
         var name_expire = "7776000";
         var pkey = "<?php echo $pkey; ?>";
-        document.cookie = "mail_auth=" + authcookie + "; max-age=" + auth_expire + "; path=/";
-        document.cookie = "mail_name=" + savename + "; max-age=" + name_expire + "; path=/";
-        document.cookie = "pkey=" + pkey + "; max-age=" + name_expire + "; path=/";
+        document.cookie = "mail_auth=" + authcookie + "; max-age=" + auth_expire + "; path=/; SameSite=Strict";
+        document.cookie = "mail_name=" + savename + "; max-age=" + name_expire + "; path=/; SameSite=Strict";
+        document.cookie = "pkey=" + pkey + "; max-age=" + name_expire + "; path=/; SameSite=Strict";
     </script>
 <?php
     return true;

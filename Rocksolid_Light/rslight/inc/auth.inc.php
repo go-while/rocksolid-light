@@ -31,9 +31,9 @@ if(((get_user_mail_auth_data($_COOKIE['mail_name'])) && password_verify($_POST['
         var auth_expire = "<?php echo intval($auth_expire); ?>";
         var name_expire = "7776000";
         var pkey = "<?php echo htmlspecialchars($pkey, ENT_QUOTES, 'UTF-8'); ?>";
-        document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/";
-        document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/";
-        document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/";
+        document.cookie = "mail_auth="+authcookie+"; max-age="+auth_expire+"; path=/; SameSite=Strict";
+        document.cookie = "mail_name="+savename+"; max-age="+name_expire+"; path=/; SameSite=Strict";
+        document.cookie = "pkey="+pkey+"; max-age="+name_expire+"; path=/; SameSite=Strict";
     </script>
     <?php
     $logged_in = true;

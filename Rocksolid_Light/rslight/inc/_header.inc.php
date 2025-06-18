@@ -41,9 +41,9 @@ if(file_exists($config_dir.'/googleanalytics.conf')) {
 ?>
 <script>
     if (navigator.cookieEnabled)
-        document.cookie = "tzo=" + (-new Date().getTimezoneOffset()) + "; path=/";
+        document.cookie = "tzo=" + (-new Date().getTimezoneOffset()) + "; path=/; SameSite=Strict";
     var tzid = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-    document.cookie = "tzid=" + tzid + "; path=/";
+    document.cookie = "tzid=" + tzid + "; path=/; SameSite=Strict";
 </script>
 <?php
 if (isset($_COOKIE['mail_name']) && isset($_COOKIE['pkey'])) {

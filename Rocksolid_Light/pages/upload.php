@@ -2,25 +2,69 @@
 
 $logfile = $logdir . '/files.log';
 
+// DEBUG: Add comprehensive cookie debugging
+error_log("DEBUG upload.php: All cookies available: " . json_encode($_COOKIE));
+error_log("DEBUG upload.php: Cookie header: " . ($_SERVER['HTTP_COOKIE'] ?? 'not set'));
+error_log("DEBUG upload.php: REQUEST_URI = " . ($_SERVER['REQUEST_URI'] ?? 'not set'));
+error_log("DEBUG upload.php: HTTP_HOST = " . ($_SERVER['HTTP_HOST'] ?? 'not set'));
+error_log("DEBUG upload.php: SCRIPT_NAME = " . ($_SERVER['SCRIPT_NAME'] ?? 'not set'));
+error_log("DEBUG upload.php: HTTPS = " . ($_SERVER['HTTPS'] ?? 'not set'));
+
 $name = '';
 
 $logged_in = false;
 if (! isset($_POST['username'])) {
-    $_POST['username'] = $_COOKIE['mail_name'];
+    $_POST['username'] = $_COOKIE['mail_name'] ?? '';
 }
 $name = trim(strtolower($_POST['username']));
 
 if (! isset($_POST['password'])) {
     $_POST['password'] = null;
 }
-if (! isset($_COOKIE['mail_auth'])) {
-    $_COOKIE['mail_auth'] = null;
+// DON'T override $_COOKIE['mail_auth'] if it exists!
+// if (! isset($_COOKIE['mail_auth'])) {
+//     $_COOKIE['mail_auth'] = null;
+// }
+
+// DEBUG: Add comprehensive cookie debugging
+error_log("DEBUG upload.php: All cookies available: " . json_encode($_COOKIE));
+error_log("DEBUG upload.php: Starting auth check for username='$name'");
+error_log("DEBUG upload.php: REQUEST_URI = " . ($_SERVER['REQUEST_URI'] ?? 'not set'));
+error_log("DEBUG upload.php: HTTP_HOST = " . ($_SERVER['HTTP_HOST'] ?? 'not set'));
+
+// Check specifically for mail_auth cookie
+if (isset($_COOKIE['mail_auth'])) {
+    error_log("DEBUG upload.php: mail_auth cookie EXISTS: " . substr($_COOKIE['mail_auth'], 0, 30) . "...");
+} else {
+    error_log("DEBUG upload.php: mail_auth cookie MISSING");
+    // Check for similar cookie names
+    foreach ($_COOKIE as $cookie_name => $cookie_value) {
+        if (strpos($cookie_name, 'mail') !== false || strpos($cookie_name, 'auth') !== false) {
+            $display_value = $cookie_value ? substr($cookie_value, 0, 30) . "..." : "(empty)";
+            error_log("DEBUG upload.php: Found related cookie '$cookie_name' = $display_value");
+        }
+    }
 }
 
 $logged_in = verify_logged_in(trim(strtolower($name)));
+error_log("DEBUG upload.php: verify_logged_in result = " . ($logged_in ? 'TRUE' : 'FALSE'));
+
 if (!$logged_in) {
-    if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
-        $logged_in = true;
+    error_log("DEBUG upload.php: verify_logged_in failed, trying password_verify fallback");
+    if (isset($_COOKIE['mail_auth'])) {
+        $key0_check = password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']);
+        $key1_check = password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']);
+        error_log("DEBUG upload.php: key0_check = " . ($key0_check ? 'TRUE' : 'FALSE'));
+        error_log("DEBUG upload.php: key1_check = " . ($key1_check ? 'TRUE' : 'FALSE'));
+
+        if ($key0_check || $key1_check) {
+            $logged_in = true;
+            error_log("DEBUG upload.php: password_verify fallback SUCCESS");
+        } else {
+            error_log("DEBUG upload.php: password_verify fallback FAILED");
+        }
+    } else {
+        error_log("DEBUG upload.php: No mail_auth cookie for password_verify fallback");
     }
 }
 
@@ -123,7 +167,8 @@ if (isset($_FILES['photo'])) {
                 }
             }
         } else {
-            echo 'Authentication Failed';
+            echo 'Authentication Failed - Debug: user=' . htmlspecialchars($name) . ', cookie=' . (isset($_COOKIE['mail_auth']) ? 'exists' : 'missing');
+            error_log("DEBUG upload.php: FINAL FAILURE - Authentication failed for user '$name'");
         }
     }
     echo '<br ><br >';
