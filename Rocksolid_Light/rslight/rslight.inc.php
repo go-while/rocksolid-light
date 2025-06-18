@@ -25,7 +25,7 @@ return [
   'timezone' => '0',
   'default_content' => '/rocksolid/index.php',
   'readonly' => '',
-  'anonuser' => '1',
+  'anonuser' => '0',
   'organization' => 'Rocksolid Light News Server',
   'postfooter' => 'Posted via Rocksolid Light',
   'post_server' => '',

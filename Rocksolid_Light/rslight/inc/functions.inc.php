@@ -890,7 +890,7 @@ function groups_read($server, $port, $load = 0, $force_reload = false)
 
 function groups_show($gruppen)
 {
-    global $gl_age, $frame, $spooldir, $config_dir, $config_name, $groups_cache_file, $blocked_user_config, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir;
+    global $gl_age, $frame, $spooldir, $config_dir, $config_name, $groups_cache_file, $blocked_user_config, $logdir, $debug_log, $CONFIG, $OVERRIDES, $spoolnews, $spooldir, $enable_cache;
     if ($gruppen == false) {
         return;
     }
@@ -2066,11 +2066,18 @@ function set_user_config($username, $request, $newval)
 
 function get_user_config($username, $request)
 {
+    if(empty($username) || empty($request)) {
+        return false;
+    }
     global $config_dir;
     $userconfigpath = $config_dir . "/userconfig/";
     $username = strtolower($username);
     $userFilename = $userconfigpath . $username;
-
+    if(!file_exists($userFilename)) {
+        echo "User config file for does not exist.";
+        // If the user config file does not exist, return false
+        return false;
+    }
     if ($userFileHandle = @fopen($userFilename, 'r')) {
         while (! feof($userFileHandle)) {
             $buffer = fgets($userFileHandle);

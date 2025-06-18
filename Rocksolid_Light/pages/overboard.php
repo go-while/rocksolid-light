@@ -631,15 +631,6 @@ function show_overboard_header($grouplist)
         echo '<button class="np_button_link" type="submit">' . htmlspecialchars(group_display_name($grouplist[0])) . '</button>';
         echo '</form>';
         echo '</td>';
-        // Newsgroups button (hidden)
-        if (isset($frames_on) && $frames_on === true) {
-            echo '<td>';
-            echo '<form action="" method="get">';
-            echo '<input type="hidden" name="page" value="index">';
-            echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-            echo '</form>';
-            echo '</td>';
-        }
     } else {
         echo '<h1 class="np_thread_headline">';
         echo '<a href="' . $file_index . '">Home</a> / ';
@@ -651,17 +642,6 @@ function show_overboard_header($grouplist)
         echo '<button class="np_button_link" type="submit">overboard</button>';
         echo '</form>';
         echo '</td>';
-        // Newsgroups button (hidden)
-        /*
-        if (isset($frames_on) && $frames_on === true) {
-            echo '<td>';
-            echo '<form action="" method="get">';
-            echo '<input type="hidden" name="page" value="index">';
-            echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-            echo '</form>';
-            echo '</td>';
-        }
-        */
     }
     echo '<td></td>';
     echo '<td class="np_ob_style_toggle">';

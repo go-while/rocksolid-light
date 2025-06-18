@@ -64,7 +64,7 @@ if (is_dir($directory)) {
 sort($users);
 $found = 0;
 if (count($users) > 0) {
-    echo "<strong><small>Select a user directory to browse:</small></strong>";
+    echo "<strong><small>Select a public user directory to browse:</small></strong>";
     echo '<form name="browse" method="post" action="'.$file_files.'" enctype="multipart/form-data">';
     echo '<input name="command" type="hidden" id="command" value="Browse" readonly="readonly">';
     echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'], PASSWORD_DEFAULT) . '">';

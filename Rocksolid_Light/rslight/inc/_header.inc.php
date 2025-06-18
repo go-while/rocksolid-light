@@ -106,6 +106,9 @@ foreach ($linklist as $link) {
     if ($linkitem[1] == '0') {
         continue;
     }
+    if($linkitem[1] == "register" && isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        continue; // Skip register link if user is logged in
+    }
     if ($unread && isset($_GET['page']) && $_GET['page'] == 'mail') {
         echo '<strong>';
         echo '<a class="header_links_text" href="' . trim($linkitem[1]) . '">' . trim(strtoupper($linkitem[0])) . '</a>&nbsp;&nbsp;';
@@ -115,7 +118,7 @@ foreach ($linklist as $link) {
     }
 }
 echo '<a class="header_links_text" href="?page=user">';
-if (isset($user)) {
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true && isset($_COOKIE['mail_name'])) {
     echo '(' . $_COOKIE['mail_name'] . ')';
 } else {
     echo 'login';

@@ -11,6 +11,8 @@ if (!defined('RSLIGHT_CONFIG_LOADED')) {
 
 // Close content div
 echo '</div>'; // Close scroll div from header
+$sessions_data = file_get_contents($spooldir . '/sessions.dat');
+echo '<h1 class="np_thread_headline">' . $sessions_data . '</h1>';
 
 echo '<div class="tail_footer">';
 $pubkeyfile = '../pubkey/server_pubkey.txt';
@@ -39,5 +41,5 @@ echo '</div>';
 
 echo '</div></body></html>';
 
-echo "[rslight/inc/_footer.inc.php: Footer included successfully]<br>\n";
+//echo "[rslight/inc/_footer.inc.php: Footer included successfully]<br>\n";
 ?>

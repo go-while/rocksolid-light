@@ -40,20 +40,6 @@ $thread_show["replies"] = true;
 $thread_show["lastdate"] = false;
 $thread_show["threadsize"] = false;
 
-if (isset($frames_on) && $frames_on === true) {
-?>
-    <script>
-        var contentURL = window.location.pathname + window.location.search + window.location.hash;
-        if (window.self !== window.top) {
-            /* Great! now we move along */
-        } else {
-            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
-        }
-        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
-    </script>
-<?php
-}
-
 $location = $_SERVER['REQUEST_URI'] . $_SERVER['REQUEST_STRING'];
 preg_match('/id=(.*)&/', $location, $hash);
 $_SESSION['return_page'] = $location . '#' . $hash[1];

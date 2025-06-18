@@ -42,6 +42,56 @@ if(!file_exists($version_file)) {
 $rslight_version = file_get_contents($version_file);
 //echo "<!-- [rocksolid/lib/config.inc.php rslight_version=$rslight_version]<br> -->\n";
 
+// CONFIG VALUE CHECKS : @USER :: DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING
+
+/*
+ * settings for the article flat view, if used.
+ * had always been hardcoded, now configurable
+ */
+if(!isset($CONFIG["articleflat_articles_per_page"])){
+    $CONFIG["articleflat_articles_per_page"] = 25;
+}
+$articleflat_articles_per_page = $CONFIG["articleflat_articles_per_page"];
+
+if(!isset($CONFIG["articleflat_chars_per_articles"])){
+    $CONFIG["articleflat_chars_per_articles"] = 10000;
+}
+$articleflat_chars_per_articles = $CONFIG["articleflat_chars_per_articles"];
+
+// check PHP executable
+if(!isset($CONFIG['php_exec']) || empty($CONFIG['php_exec'])) {
+    $CONFIG['php_exec'] = "/usr/bin/php"; // Default PHP executable path
+}
+if(!file_exists($CONFIG['php_exec'])) {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec file does not exist!]");
+}
+if(!is_executable($CONFIG['php_exec'])) {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec is not executable!]");
+}
+
+// check webserver user
+if(!isset($CONFIG['webserver_user']) || empty($CONFIG['webserver_user']) || $CONFIG['webserver_user'] == "root") {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG webserver_user is not set or is set to root but should not be root!]");
+}
+
+// check server path
+if(!isset($CONFIG['server_path'])||empty($CONFIG['server_path'])) {
+    if(!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])) {
+        die("ERROR [rocksolid/lib/config.inc.php: CONFIG server_path is not set and HTTP_HOST is not available!]");
+    }
+    $CONFIG['server_path'] = "@" . $_SERVER['HTTP_HOST'];
+}
+
+// default address for anonymous user
+if(!isset($CONFIG['anonym_address'])) {
+    $CONFIG['anonym_address'] = "anonuser@anon.rocksolidbbs.usenet-server.com";
+}
+
+// check pathhost
+if(!isset($CONFIG['pathhost'])||empty($CONFIG['pathhost'])) {
+    $CONFIG['pathhost'] = $CONFIG['server_path'];
+}
+
 if(array_key_exists('min_spool_disk_space', $OVERRIDES)) {
     if ($OVERRIDES['min_spool_disk_space'] > 0) {
         $min_spool_disk_space = $OVERRIDES['min_spool_disk_space'];
@@ -98,8 +148,7 @@ if (isset($CONFIG['enable_nntp']) && ($CONFIG['enable_nntp'] == true || $CONFIG[
  * Frames (frames is not up to date and probably not so great)
  */
 
-// Set to true to use framed version of rslight
-$frames_on = false;
+
 
 // The default content for the left side 'menu' frame
 $default_menu = "/rocksolid/index.php";
@@ -285,7 +334,6 @@ $iconv_enable = true;
 
 
 
-// CONFIG VALUE CHECKS : @USER :: DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING
 
 // Get server protocol etc. into string
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
@@ -298,53 +346,6 @@ if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
 
-/*
- * settings for the article flat view, if used.
- * had always been hardcoded, now configurable
- */
-if(!isset($CONFIG["articleflat_articles_per_page"])){
-    $CONFIG["articleflat_articles_per_page"] = 25;
-}
-$articleflat_articles_per_page = $CONFIG["articleflat_articles_per_page"];
-
-if(!isset($CONFIG["articleflat_chars_per_articles"])){
-    $CONFIG["articleflat_chars_per_articles"] = 10000;
-}
-$articleflat_chars_per_articles = $CONFIG["articleflat_chars_per_articles"];
-
-// check PHPON executable
-if(!isset($CONFIG['php_exec']) || empty($CONFIG['php_exec'])) {
-    $CONFIG['php_exec'] = "/usr/bin/php"; // Default PHP executable path
-}
-if(!file_exists($CONFIG['php_exec'])) {
-    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec file does not exist!]");
-}
-if(!is_executable($CONFIG['php_exec'])) {
-    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec is not executable!]");
-}
-
-// check webserver user
-if(!isset($CONFIG['webserver_user']) || empty($CONFIG['webserver_user']) || $CONFIG['webserver_user'] == "root") {
-    die("ERROR [rocksolid/lib/config.inc.php: CONFIG webserver_user is not set or is set to root but should not be root!]");
-}
-
-// check server path
-if(!isset($CONFIG['server_path'])||empty($CONFIG['server_path'])) {
-    if(!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])) {
-        die("ERROR [rocksolid/lib/config.inc.php: CONFIG server_path is not set and HTTP_HOST is not available!]");
-    }
-    $CONFIG['server_path'] = "@" . $_SERVER['HTTP_HOST'];
-}
-
-// default address for anonymous user
-if(!isset($CONFIG['anonym_address'])) {
-    $CONFIG['anonym_address'] = "anonuser@anon.rocksolidbbs.usenet-server.com";
-}
-
-// check pathhost
-if(!isset($CONFIG['pathhost'])||empty($CONFIG['pathhost'])) {
-    $CONFIG['pathhost'] = $CONFIG['server_path'];
-}
 
 // ============================================================================
 // OPTIONAL SECURITY SETTINGS (disabled by default for compatibility)

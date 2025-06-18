@@ -96,16 +96,7 @@ echo '<button class="np_button_link" type="submit">' . $text_thread["button_sear
 echo '<input type="hidden" name="group" value="' . urlencode($group) . '">';
 echo '</form>';
 echo '</td>';
-/*
-// Newsgroups button (hidden)
-if (isset($frames_on) && $frames_on === true) {
-    echo '<td>';
-    echo '<form action="" method="get">';
-    echo '<input type="hidden" name="page" value="index">';
-    echo '<button class="np_button_hidden" type="submit">' . $text_thread["button_grouplist"] . '</button>';
-    echo '</form>';
-    echo '</td>';
-}*/
+
 // $ns=nntp_open($server,$port);
 flush();
 $headers = thread_load($group);

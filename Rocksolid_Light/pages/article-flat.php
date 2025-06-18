@@ -79,20 +79,6 @@ if ($userdata) {
     file_put_contents($userfile, serialize($userdata));
 }
 
-if (isset($frames_on) && $frames_on === true) {
-?>
-    <script>
-        var contentURL = window.location.pathname + window.location.search + window.location.hash;
-        if (window.self !== window.top) {
-            /* Great! now we move along */
-        } else {
-            window.location.href = '../index.php?content=' + encodeURIComponent(contentURL);
-        }
-        top.history.replaceState({}, 'Title', 'index.php?content=' + encodeURIComponent(contentURL));
-    </script>
-<?php
-}
-
 $message = message_read($id, 0, $group);
 
 if (! $message) {
