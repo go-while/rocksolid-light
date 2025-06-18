@@ -51,28 +51,20 @@ echo "====================="
 
 # Define file lists for different components
 LOGGING_CONTROL_FILES=(
-    "rocksolid/logging_control.php"
-    "rocksolid/overrides.inc.php"
+    "rslight/inc/logging_control.php"
+    "rslight/inc/overrides.inc.php"
     "rslight/scripts/logging_control.sh"
 )
 
 DATABASE_OPTIMIZATION_FILES=(
-    "rocksolid/lib/database_optimizer.php"
+    "rslight/inc/database_optimizer.php"
     "tests/database_monitor.php"
     "tests/test_production_optimization.php"
 )
 
 CORE_FILES=(
-    "rocksolid/newsportal.php"
-    "rocksolid/lib/thread.inc.php"
-    "rocksolid/lib/message.inc.php"
-    "rocksolid/lib/config.inc.php"
-    "rocksolid/lib/auth.inc.php"
-    "rocksolid/lib/security.inc.php"
-    "rocksolid/lib/overrides.inc.php"
-    "rocksolid/lib/head.inc"
-    "rocksolid/lib/tail.inc"
-    "rslight/scripts/spool-lib.php"
+    "rslight/inc/*",
+    "pages/*",
     "common/grouplist.php"
 )
 
