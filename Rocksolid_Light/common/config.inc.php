@@ -64,7 +64,9 @@ if (!defined('PRE_LOAD_DONE')) {
         "database_optimizer.php",
         "allowed_languages.inc.php",
         "logging_control.php",
-        "overrides.inc.php"
+        "overrides.inc.php",
+        "requests.inc.php",
+        "login.inc.php"
     ];
     $OVERRIDES = array();
 
@@ -76,21 +78,28 @@ if (!defined('PRE_LOAD_DONE')) {
         die("Critical Error: Library directory '$config_dir/inc/' is not readable");
     }
     foreach ($lib_files as $lib_file) {
-    $lib_path = $config_dir . '/inc/' . $lib_file;
-    if (!file_exists($lib_path)) {
-        if ($lib_file === 'overrides.inc.php') {
-            //echo "[rocksolid/lib/config.inc.php: not found '$lib_file']<br>\n"; // TODO LOG WARNING
-            // If overrides.inc.php is not found, we can skip it
+        if ($lib_file === 'requests.inc.php' && defined('CRON_CONTEXT')) {
             continue;
         }
-        die("Critical Error: Required library file '$lib_file' not found in '$lib_path'");
-    }
-    // Include each library file
-    if (!is_readable($lib_path)) {
-        die("Critical Error: Required library file '$lib_file' is not readable in '$lib_path'");
-    }
-    require_once($lib_path);
-    }
+        if ($lib_file === 'login.inc.php' && defined('CRON_CONTEXT')) {
+            continue;
+        }
+        $lib_path = $config_dir . '/inc/' . $lib_file;
+        if (!file_exists($lib_path)) {
+
+            if ($lib_file === 'overrides.inc.php') {
+                //echo "[rocksolid/lib/config.inc.php: not found '$lib_file']<br>\n"; // TODO LOG WARNING
+                // If overrides.inc.php is not found, we can skip it
+                continue;
+            }
+            die("Critical Error: Required library file '$lib_file' not found in '$lib_path'");
+        }
+        // Include each library file
+        if (!is_readable($lib_path)) {
+            die("Critical Error: Required library file '$lib_file' is not readable in '$lib_path'");
+        }
+        require_once($lib_path);
+    } // end foreach
 
     $keys = secure_unserialize($keyfile, [], false);
     if ($keys === false) {
@@ -148,6 +157,7 @@ if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
         'post'         => 'post.php',
 
         // User management
+        'login'        => 'login.php',
         'register'     => 'register.php',
         'user'         => 'user.php',
         'mail'         => 'mail.php',

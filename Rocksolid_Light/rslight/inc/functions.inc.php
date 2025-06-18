@@ -1117,7 +1117,9 @@ function groups_show($gruppen)
                         }
                     }
                 }
-                touch($groups_cache_file);
+                if($enable_cache!==false && !empty($groups_cache_file)) {
+                    touch($groups_cache_file);
+                }
             }
             $new = false;
             $new_style_on = '';
@@ -1221,6 +1223,9 @@ function groups_show($gruppen)
                 }
                 $lastarticleinfo['name'] = $poster_name;
                 $block = false;
+                if(!is_array(blocked_user_config)) {
+                    $blocked_user_config = array();
+                }
                 foreach ($blocked_user_config as $key => $value) {
                     $blockme = '/' . addslashes($key) . '/';
                     if (preg_match($blockme, $name_from)) {
@@ -2066,7 +2071,7 @@ function set_user_config($username, $request, $newval)
 
 function get_user_config($username, $request)
 {
-    if(empty($username) || empty($request)) {
+    if(empty($username)) {
         return false;
     }
     global $config_dir;

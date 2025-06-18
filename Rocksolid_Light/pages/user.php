@@ -57,33 +57,16 @@ if (disable_page_by_user_agent($client_device, "bot", "User")) {
     exit();
 }
 
-$logged_in = false;
+// Use centralized authentication - requests.inc.php handles auth requirements
+// If we reach this point, user is authenticated
+$logged_in = $GLOBALS['is_authenticated'];
+$current_user = $GLOBALS['current_user'];
+
+// Set username from authenticated user
 if (! isset($_POST['username'])) {
-    $_POST['username'] = $_COOKIE['mail_name'];
+    $_POST['username'] = $current_user;
 }
 $name = trim(strtolower($_POST['username']));
-if (! isset($_POST['password'])) {
-    $_POST['password'] = null;
-}
-if (! isset($_COOKIE['mail_auth'])) {
-    $_COOKIE['mail_auth'] = null;
-}
-$logged_in = verify_logged_in(trim(strtolower($_POST['username'])));
-if (!$logged_in) {
-    if ((password_verify($name . $keys[0] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth'])) || (password_verify($name . $keys[1] . get_user_config($name, 'encryptionkey'), $_COOKIE['mail_auth']))) {
-        $logged_in = true;
-    } else {
-        if (check_bbs_auth($_POST['username'], $_POST['password'])) {
-            if ($ip_pass) {
-                $_SESSION['pass'] = true;
-            }
-            set_user_logged_in_cookies(trim($_POST['username']), $keys);
-            $logged_in = true;
-        } else {
-            echo 'Authentication Required';
-        }
-    }
-}
 
 if (isset($_REQUEST['command']) && $_REQUEST['command'] == 'Configuration') {
     echo '<h1 class="np_thread_headline">';
@@ -149,23 +132,7 @@ if (isset($_POST['username'])) {
     }
 }
 
-if ($logged_in !== true) {
-    echo '<form name="form1" method="post" action="'.$file_user.'">';
-    echo '<table class="mail_table_login">';
-    echo '<tr><td><strong>Please Login</strong></td></tr>';
-    echo '<tr><td>Username:</td><td><input name="username" type="text" id="username" value="' . secure_input($_POST['username'], 'html') . '"></td></tr>';
-    echo '<tr><td>Password:</td><td><input name="password" type="password" id="password"></td></tr>';
-    echo '<input name="command" type="hidden" value="Login">';
-    echo '<input type="hidden" name="key" value="' . password_hash($CONFIG['thissitekey'] . $name, PASSWORD_DEFAULT) . '">';
-
-    echo '<tr>';
-    echo '<td><input type="submit" name="Submit" value="Login"></td>';
-    echo '</tr>';
-    echo '</table>';
-    echo '</form>';
-    exit(0);
-}
-
+// User is authenticated by centralized system, proceed with user config
 $user = strtolower($_POST['username']);
 $_SESSION['username'] = $user;
 unset($user_config);

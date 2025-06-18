@@ -108,10 +108,11 @@ if (!isset($_POST['command'])) {
 
 if (isset($_POST['command']) && $_POST['command'] == 'ResetPW') {
     // Verify CSRF token
+    /*
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         echo '<div class="error">Security Error: Invalid form submission. Please try again.</div>';
         exit();
-    }
+    }*/
     reset_password($username, $user_email);
     include $footer_inc;
     exit(0);
@@ -119,11 +120,13 @@ if (isset($_POST['command']) && $_POST['command'] == 'ResetPW') {
 
 if (isset($_POST['command']) && $_POST['command'] == 'CreateNew') {
     // Verify CSRF token
+    /*
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         echo '<div class="error">Security Error: Invalid form submission. Please try again.</div>';
         include $footer_inc;
         exit();
     }
+    */
     create_new($username, $password, $user_email);
     include $footer_inc;
     exit(0);

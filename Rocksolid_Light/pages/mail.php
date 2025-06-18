@@ -13,11 +13,11 @@ if (! isset($_POST['command'])) {
 }
 
 $title .= ' - Mail';
-include "../rocksolid/head.inc";
+
 
 if (disable_page_by_user_agent($client_device, "bot", "Mail")) {
     echo "<center>Page Disabled</center>";
-    include "../rocksolid/tail.inc";
+    include $footer_inc;
     exit();
 }
 
