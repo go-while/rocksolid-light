@@ -215,18 +215,6 @@ $article_show["trigger_headers"] = true;
 $article_showthread = true;
 $article_graphicquotes = true;
 
-/*
- * settings for the article flat view, if used. had always been hardcoded, now configurable
- */
-if(!isset($CONFIG["articleflat_articles_per_page"])){
-    $CONFIG["articleflat_articles_per_page"] = 25;
-}
-$articleflat_articles_per_page = $CONFIG["articleflat_articles_per_page"];
-
-if(!isset($CONFIG["articleflat_chars_per_articles"])){
-    $CONFIG["articleflat_chars_per_articles"] = 10000;
-}
-$articleflat_chars_per_articles = $CONFIG["articleflat_chars_per_articles"];
 
 /*
  * Message posting
@@ -235,13 +223,8 @@ $send_poster_host = false;
 $testgroup = true; // don't disable unless you really know what you are doing!
 $validate_email = 1;
 $setcookies = true;
-$anonym_address = "AnonUser@retrobbs.rocksolidbbs.com";
-$msgid_generate = "md5";
-if (isset($_SERVER["HTTP_HOST"])) {
-    $msgid_fqdn = $_SERVER["HTTP_HOST"];
-} else {
-    $msgid_fqdn = false;
-}
+$anonym_address = $CONFIG['anonym_address'];
+$msgid_generate = "md5"; // no other option available yet TODO generate_msgid()
 $post_autoquote = false;
 $post_captcha = false;
 $wrap_width = 72;
@@ -290,6 +273,12 @@ $www_charset = "utf-8";
 // Use the iconv extension for improved charset conversions
 $iconv_enable = true;
 
+
+
+
+
+// CONFIG VALUE CHECKS : @USER :: DO NOT CHANGE ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING
+
 // Get server protocol etc. into string
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $sitelink = "https";
@@ -300,6 +289,60 @@ $sitelink .= "://";
 if (isset($_SERVER["HTTP_HOST"])) {
     $sitelink .= $_SERVER["HTTP_HOST"];
 }
+
+/*
+ * settings for the article flat view, if used.
+ * had always been hardcoded, now configurable
+ */
+if(!isset($CONFIG["articleflat_articles_per_page"])){
+    $CONFIG["articleflat_articles_per_page"] = 25;
+}
+$articleflat_articles_per_page = $CONFIG["articleflat_articles_per_page"];
+
+if(!isset($CONFIG["articleflat_chars_per_articles"])){
+    $CONFIG["articleflat_chars_per_articles"] = 10000;
+}
+$articleflat_chars_per_articles = $CONFIG["articleflat_chars_per_articles"];
+
+// check PHPON executable
+if(!isset($CONFIG['php_exec']) || empty($CONFIG['php_exec'])) {
+    $CONFIG['php_exec'] = "/usr/bin/php"; // Default PHP executable path
+}
+if(!file_exists($CONFIG['php_exec'])) {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec file does not exist!]");
+}
+if(!is_executable($CONFIG['php_exec'])) {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG php_exec is not executable!]");
+}
+
+// check webserver user
+if(!isset($CONFIG['webserver_user']) || empty($CONFIG['webserver_user']) || $CONFIG['webserver_user'] == "root") {
+    die("ERROR [rocksolid/lib/config.inc.php: CONFIG webserver_user is not set or is set to root but should not be root!]");
+}
+
+// check server path
+if(!isset($CONFIG['server_path'])||empty($CONFIG['server_path'])) {
+    if(!isset($_SERVER['HTTP_HOST']) || empty($_SERVER['HTTP_HOST'])) {
+        die("ERROR [rocksolid/lib/config.inc.php: CONFIG server_path is not set and HTTP_HOST is not available!]");
+    }
+    $CONFIG['server_path'] = "@" . $_SERVER['HTTP_HOST'];
+}
+
+// default address for anonymous user
+if(!isset($CONFIG['anonym_address'])) {
+    $CONFIG['anonym_address'] = "anonuser@anon.rocksolidbbs.usenet-server.com";
+}
+
+// check pathhost
+if(!isset($CONFIG['pathhost'])||empty($CONFIG['pathhost'])) {
+    $CONFIG['pathhost'] = $CONFIG['server_path'];
+}
+
+// msgid_generate
+if(!isset($CONFIG['msgid_generate'])||empty($CONFIG['msgid_generate'])) {
+    $CONFIG['msgid_generate'] = "md5"; // Default to md5
+}
+
 
 define("PRE_LOAD_DONE", true); // Define a constant to indicate pre-load context
 require("../common/config.inc.php");

@@ -896,9 +896,7 @@ function groups_show($gruppen)
     }
     global $file_thread, $text_groups;
     $logfile = $logdir . '/debug.log';
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
+
     $c = count($gruppen);
     $acttype = "keins";
     echo '<table class="np_groups_table"><tr class="np_thread_head"><td class="grouplist_thread_head_latest">Latest</td>';
@@ -2097,8 +2095,7 @@ function is_multibyte($s)
 
 function check_spam($subject, $from, $newsgroups, $ref, $body, $msgid, $useheaders = false)
 {
-    global $msgid_generate, $msgid_fqdn, $spooldir, $logdir;
-    global $CONFIG;
+    global $CONFIG, $msgid_generate, $spooldir, $logdir;
     $spamdir = $spooldir . '/spam';
     if (! is_dir($spamdir)) {
         mkdir($spamdir);
@@ -2299,9 +2296,6 @@ function get_date_interval($value)
 function get_newsgroups_by_msgid($msgid, $noarray = false)
 {
     global $spooldir, $config_dir, $logdir, $CONFIG;
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
     if ($enable_cache) {
         $memcache_key = $cache_key_prefix . '_' . 'get_newsgroups_by_msgid-' . $msgid;
         if ($getgroups = cache_get($memcache_key, $memcacheD)) {
@@ -2611,10 +2605,6 @@ function np_get_db_article($article, $group, $makearray = 1, $dbh = null)
 {
     global $config_dir, $path, $groupconfig, $config_name, $logdir, $spooldir;
     $logfile = $logdir . '/newsportal.log';
-
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
 
     $msg2 = "";
     $closeme = 0;
@@ -3280,9 +3270,6 @@ function clear_history_by_group($group)
 function get_db_data_from_msgid($msgid, $group)
 {
     global $spooldir, $config_dir, $logdir;
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
 
     if ($enable_cache) {
         $row_cache = $cache_key_prefix . '_' . 'get_db_data_from_msgid-' . $msgid;
@@ -3358,9 +3345,6 @@ function get_group_array_from_msgid($msgid)
 function get_data_from_msgid($msgid, $thisgroup = null)
 {
     global $spooldir, $config_dir, $logdir, $CONFIG;
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
 
     if ($CONFIG['article_database'] == '1' && isset($thisgroup)) {
         return get_db_data_from_msgid($msgid, $thisgroup);
@@ -3517,9 +3501,7 @@ function check_remote_for_msgid($msgid)
 function delete_message($messageid, $group = null, $overview_dbh = null)
 {
     global $logfile, $logdir, $config_dir, $spooldir, $CONFIG, $webserver_group;
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
+
     if ($group == null) {
         $grouplist = get_newsgroups_by_msgid($messageid);
     } else {

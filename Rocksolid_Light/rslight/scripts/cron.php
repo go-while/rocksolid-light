@@ -212,12 +212,11 @@ foreach ($menulist as $menu) {
 }
 
 # Expire diskcache
-if (file_exists($config_dir . '/cache.inc.php')) {
-    include $config_dir . '/cache.inc.php';
-    if ($enable_cache == 'diskcache') {
-        prune_dir_by_days($cache_dir, $cache_ttl / 86400);
-    }
+
+if ($enable_cache == 'diskcache') {
+    prune_dir_by_days($cache_dir, $cache_ttl / 86400);
 }
+
 
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");

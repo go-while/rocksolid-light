@@ -207,12 +207,7 @@ function message_read($id, $bodynum = 0, $group = "")
         return false;
     }
     // MEMCACHE if ($id, 0, $group)
-    if ($bodynum == 0 && $group != "") {
-        if (file_exists($config_dir . '/cache.inc.php')) {
-            include $config_dir . '/cache.inc.php';
-        }
-    }
-    if ($enable_cache) {
+    if ($bodynum == 0 && $group != "" && $enable_cache !== false) {
         $cache_key = $cache_key_prefix . '_' . 'message_read-' . $id . '-0-' . $group;
         $message_data = cache_get($cache_key, $memcacheD);
         if ($message_data) {

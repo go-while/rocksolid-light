@@ -32,10 +32,6 @@ if (! $pid) {
 $webserver_group = $CONFIG['webserver_user'];
 $logfile = $logdir . '/expire.log';
 
-if (file_exists($config_dir . '/cache.inc.php')) {
-    include $config_dir . '/cache.inc.php';
-}
-
 $grouplist = file($config_dir . '/' . $config_name . '/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 foreach ($grouplist as $groupline) {
     $groupname = explode(' ', $groupline);

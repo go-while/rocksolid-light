@@ -17,10 +17,6 @@ if (disable_page_by_user_agent($client_device, "bot", "Grouplist")) {
     exit();
 }
 
-if (file_exists($config_dir . '/cache.inc.php')) {
-    include $config_dir . '/cache.inc.php';
-}
-
 if (isset($_REQUEST['groupsearch'])) {
     $terms =  trim($_REQUEST['groupsearch']);
 } else {
@@ -144,10 +140,6 @@ function display_search_tools($home = true)
 function build_group_list()
 {
     global $config_dir, $spooldir, $cache_log, $grouplist_cache_filename, $debug_log, $config_name;
-
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    }
 
     $ns = nntp_open();
     if ($ns == false) {

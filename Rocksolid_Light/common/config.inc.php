@@ -55,6 +55,7 @@ if (!defined('PRE_LOAD_DONE')) {
     $keyfile = $spooldir . '/keys.dat';
     $lib_files = [
         "security.inc.php",
+        "cache.inc.php",
         "functions.inc.php",
         "types.inc.php",
         "thread.inc.php",

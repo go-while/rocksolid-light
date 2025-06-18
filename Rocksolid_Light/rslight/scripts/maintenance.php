@@ -171,15 +171,9 @@ if ($argv[1][0] == '-') {
 
 function clear_disk_cache()
 {
-    global $config_dir;
-    if (file_exists($config_dir . '/cache.inc.php')) {
-        include $config_dir . '/cache.inc.php';
-    } else {
-        echo "Disk Cache not configured in " . $config_dir . '/cache.inc.php' . "\n";
-        exit;
-    }
+    global $config_dir, $cache_dir;
     if ($enable_cache != 'diskcache' || !isset($cache_dir)) {
-        echo "Disk Cache not configured in " . $config_dir . '/cache.inc.php' . "\n";
+        echo "Disk Cache not configured!\n";
         exit;
     }
     echo "Clearing Disk Cache in " . $cache_dir . "\n";
@@ -198,7 +192,7 @@ function create_section($section = false)
     global $spooldir, $config_dir, $spoolnews_path, $CONFIG;
     $menufile = $config_dir . '/menu.conf';
 
-    if (!isset($section)) {
+    if (!isset($section)||$section===false) {
         return "Please include a section name\n";
     }
     $uinfo = posix_getpwnam($CONFIG['webserver_user']);

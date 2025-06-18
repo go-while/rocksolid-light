@@ -333,9 +333,10 @@ if (! function_exists('quoted_printable_encode')) {
  *
  * returns: a complete message-id
  */
-function generate_msgid($identity)
+// called in /post.inc.php:469: $msgid = generate_msgid($subject . "," . $from . "," . $newsgroups . "," . $ref . "," . $body);
+function generate_msgid_OLD($identity)
 {
-    global $CONFIG, $msgid_generate, $msgid_fqdn;
+    global $CONFIG, $msgid_generate;
     switch ($msgid_generate) {
         case "no":
             // no, we don't want to generate a message-id.
@@ -353,6 +354,17 @@ function generate_msgid($identity)
             return false;
             break;
     }
+}
+
+function generate_msgid()
+{
+    global $CONFIG;
+    if ($CONFIG['server_path'][0] !== '@') {
+        $mymsgid = '@' . $CONFIG['server_path'];
+    } else {
+        $mymsgid = $CONFIG['server_path'];
+    }
+    return '<rocksolidbbs' . bin2hex(random_bytes(8)). time() . $mymsgid . '>';
 }
 
 function check_rate_limit($name, $set = 0, $gettime = 0)
@@ -422,7 +434,7 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
 {
     global $server, $port, $send_poster_host, $text_error, $CONFIG, $OVERRIDES;
     global $www_charset, $config_dir, $spooldir, $logdir, $enable_post_log, $name;
-    global $msgid_generate, $msgid_fqdn, $rslight_version;
+    global $msgid_generate, $rslight_version;
 
     flush();
 
@@ -449,7 +461,8 @@ function message_post($subject, $from, $newsgroups, $ref, $body, $encryptthis, $
         }
     }
 
-    $msgid = generate_msgid($subject . "," . $from . "," . $newsgroups . "," . $ref . "," . $body);
+    //$msgid = generate_msgid($subject . "," . $from . "," . $newsgroups . "," . $ref . "," . $body);
+    $msgid = generate_msgid();
     /*
      * SPAM CHECK
      */
