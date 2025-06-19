@@ -1,57 +1,31 @@
 <?php
-session_start();
-$_SESSION['isframed'] = 1;
 
+define('PRE_LOAD_CONF', true); // Define a constant to indicate pre-load context
 include "common/config.inc.php";
-$CONFIG = include($config_dir.'/rslight.inc.php');
 
-if (isset($_REQUEST['content'])) { 
-    $CONFIG['default_content']=$_REQUEST['content'];
+/*
+TODO REVIEW, maybe legacy code for handling content and menu parameters
+// Handle content and menu parameters
+if (isset($_REQUEST['content'])) {
+    $CONFIG['default_content'] = $_REQUEST['content'];
 }
 
 if (isset($_REQUEST['menu'])) {
-    $default_menu=$_REQUEST['menu'];
-} 
-
-if(isset($frames_on) && $frames_on === true) {
-?>
-
-<html>
-	<head>
-		<title><?php echo $CONFIG['rslight_title'] ?></title>
-		<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php
-if (file_exists('common/mods/'.$style_css)) {
-    echo '<link rel="stylesheet" type="text/css" href="common/mods/'.$style_css.'">';
-} else {
-    echo '<link rel="stylesheet" type="text/css" href="common/'.$style_css.'">';
+    $default_menu = $_REQUEST['menu'];
 }
-?>
-	</head>
-	<body>
-		<div class='page'>
-		<div class='section header'>
-<?php
+*/
 
-  if (file_exists('common/mods/header.php')) {
-    echo '<iframe name="header" src="common/mods/header.php" class="np_frame_header" width=100% height=100%></iframe>';
-  } else {
-    echo '<iframe name="header" src="common/header.php" class="np_frame_header" width=100% height=100%></iframe>';
-  }
-?>
-		</div>
-		<div class='section menu'> 
-		<iframe name="menu" src="<?php echo $default_menu;?>" class='np_frame_menu' width=100% height=100%></iframe>
-		</div>
-		<div class='section content'>
-		<iframe name="content" src="<?php echo $CONFIG['default_content'];?>" class='np_frame_content' width=100% height=100%></iframe>
-		</div>
-		</div>
-	</body>
-<?php
-} else {
-  header('Location: '.$CONFIG['default_content']);
+if (!isset($CONFIG['default_content'])) {
+    ?>
+    <h1>Error: 'default_content' not set in configuration</h1>
+    <p>Please check your configuration file to ensure that the <code>default_content</code> parameter is set.</p>
+    <p>Example: <code>$CONFIG['default_content'] = '/rocksolid/index.php';</code></p>
+    <p>If you are seeing this message, it means the configuration is incomplete or the file is not properly included.</p>
+    <p>For more information, please refer to the documentation or contact your system administrator.</p>
+    <?php
+    die();
 }
+
+// Fallback: magically redirects to default content: /rocksolid/index.php or /common/grouplist.php
+header('Location: ' . $CONFIG['default_content']);
 ?>
-</html>

@@ -1,6 +1,7 @@
 <?php
-include "config.inc.php";
+include "../lib/config.inc.php";
 include("$file_newsportal");
+// Include security functions with production-ready path resolution
 include $config_dir . "/gpg.conf";
 
 $logfile = $logdir . '/mail.log';
@@ -218,8 +219,15 @@ function import_user_message($from, $rcpt, $date, $subject, $message)
     $dbh = null;
 
     // Send internet email notification here
-    $user_config = unserialize(file_get_contents($config_dir . '/userconfig/' . $to . '.config'));
-    if ($user_config['send_mail_to_email'] == 'true') {
+    try {
+        $user_config = secure_unserialize($config_dir . '/userconfig/' . $to . '.config');
+        if (!is_array($user_config)) {
+            $user_config = array();
+        }
+    } catch (Exception $e) {
+        $user_config = array();
+    }
+    if (isset($user_config['send_mail_to_email']) && $user_config['send_mail_to_email'] == 'true') {
         $email_subject = "New Mail in your Inbox from " . $from . " on " . ltrim($CONFIG['server_path'], "@");
         if (get_user_config($to, 'email_verified') == 'true') {
             if ($email_address = get_user_config($to, 'email')) {

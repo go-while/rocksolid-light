@@ -1,6 +1,16 @@
 <?php
-include "config.inc.php";
-include ("$file_newsportal");
+// Handle config include with flexible path resolution
+if (file_exists("../lib/config.inc.php")) {
+    include "../lib/config.inc.php";
+} elseif (file_exists("config.inc.php")) {
+    include "config.inc.php";
+} elseif (file_exists("../config.inc.php")) {
+    include "../config.inc.php";
+} elseif (file_exists("common/config.inc.php")) {
+    include "common/config.inc.php";
+}
+
+
 if (trim($CONFIG['tac'] == '')) {
     if (is_file($spooldir . '/sessions.dat')) {
         unlink($spooldir . '/sessions.dat');

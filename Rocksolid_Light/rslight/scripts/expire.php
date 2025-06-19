@@ -1,6 +1,10 @@
 <?php
-include "config.inc.php";
-include("$file_newsportal");
+include "../lib/config.inc.php";
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$web_root = dirname(dirname(dirname($rslight_target)));
+include $web_root . '/rocksolid/newsportal.php';
 
 // Check timer
 $tmr = $spooldir . '/' . $config_name . '-expire-timer';
@@ -27,10 +31,6 @@ if (! $pid) {
 
 $webserver_group = $CONFIG['webserver_user'];
 $logfile = $logdir . '/expire.log';
-
-if (file_exists($config_dir . '/cache.inc.php')) {
-    include $config_dir . '/cache.inc.php';
-}
 
 $grouplist = file($config_dir . '/' . $config_name . '/groups.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 foreach ($grouplist as $groupline) {

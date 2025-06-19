@@ -1,0 +1,29 @@
+=== FINAL SUMMARY: UNUSED VARIABLES IN ENGLISH.LANG ===
+
+Total variables in english.lang: 71
+Variables actually used in codebase: 61
+Unused variables: 10
+
+=== COMPLETE LIST OF UNUSED VARIABLES ===
+
+     1  $text_error["spool_error"]
+     2  $text_groups["description"]
+     3  $text_groups["newsgroup"]
+     4  $text_post["email"]
+     5  $text_post["message_posted"]
+     6  $text_post["remember"]
+     7  $text_register["must_register_group"]
+     8  $text_register["must_register_post"]
+     9  $text_register["no_access_post"]
+    10  $text_thread["button_top"]
+
+=== ANALYSIS OF UNUSED VARIABLES ===
+
+These variables exist in english.lang but are never referenced in the PHP codebase:
+- Some may be legacy/deprecated functionality
+- Some may be planned for future features
+- Some may be alternative versions (e.g., message_posted vs message_posted2)
+
+=== RECOMMENDATION ===
+These variables can be safely removed from language files to reduce file size,
+or kept for potential future use depending on development plans.

@@ -1,0 +1,70 @@
+<?php
+/*
+ * Production Mode Override Configuration
+ *
+ * This file demonstrates how to configure Rocksolid Light for production
+ * environments with reduced logging verbosity.
+ *
+ * To enable production mode:
+ * 1. Copy this file to 'overrides.inc.php'
+ * 2. Uncomment the desired settings below
+ * 3. Restart your web server and news spooling processes
+ */
+
+// ============================================================================
+// PRODUCTION LOGGING CONFIGURATION
+// ============================================================================
+
+// Disable verbose DEBUG logging (recommended for production)
+$OVERRIDES['disable_debug_logging'] = true;
+
+// Enable production mode (reduces all non-essential logging)
+$OVERRIDES['production_mode'] = true;
+
+// ============================================================================
+// ALTERNATIVE: FINE-GRAINED LOGGING CONTROL
+// ============================================================================
+
+// If you prefer more control, comment out the above and use these instead:
+
+// Disable specific types of debug logging
+// $OVERRIDES['disable_article_debug'] = true;        // Article download debugging
+// $OVERRIDES['disable_thread_debug'] = true;         // Thread processing debugging
+// $OVERRIDES['disable_cache_debug'] = true;          // Cache operation debugging
+// $OVERRIDES['disable_overview_debug'] = true;       // NNTP overview debugging
+
+// ============================================================================
+// PERFORMANCE OPTIMIZATIONS
+// ============================================================================
+
+// Reduce spool verbosity in production
+// $OVERRIDES['spoolnews_verbose'] = false;
+
+// Disable article download progress logging
+// $OVERRIDES['debug_articles'] = false;
+
+// ============================================================================
+// EXAMPLE FULL PRODUCTION CONFIGURATION
+// ============================================================================
+
+/*
+// Complete production setup - uncomment this block for full production mode
+$OVERRIDES = array_merge($OVERRIDES ?? array(), [
+    // Logging controls
+    'disable_debug_logging' => true,
+    'production_mode' => true,
+
+    // Performance
+    'spoolnews_verbose' => false,
+    'debug_articles' => false,
+
+    // Cache optimization
+    'cache_thread' => 3600,     // Cache threads for 1 hour
+    'maxarticles' => 1000,      // Limit articles per group
+
+    // Security
+    'secure_logging' => true,   // Enable secure log file permissions
+]);
+*/
+
+?>

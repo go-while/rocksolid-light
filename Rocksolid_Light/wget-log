@@ -1,0 +1,21 @@
+--2025-06-18 00:09:27--  http://dns2.usenet-server.com/rocksolid/index.php?page=attachment
+Auflösen des Hostnamens dns2.usenet-server.com (dns2.usenet-server.com)… 93.157.139.122, 2a12:bec4:19a3:19c::
+Verbindungsaufbau zu dns2.usenet-server.com (dns2.usenet-server.com)|93.157.139.122|:80 … verbunden.
+HTTP-Anforderung gesendet, auf Antwort wird gewartet … 
+  HTTP/1.1 404 Not Found
+  Date: Tue, 17 Jun 2025 23:09:27 GMT
+  Server: Apache/2.4.62 (Debian)
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;
+  Expires: Tue, 17 Jun 2025 23:14:27 GMT
+  Cache-Control: max-age=300
+  Pragma: cache
+  Set-Cookie: PHPSESSID=t436tal1c7atne37bpujp7ndic; path=/
+  Keep-Alive: timeout=5, max=100
+  Connection: Keep-Alive
+  Transfer-Encoding: chunked
+  Content-Type: text/html; charset=UTF-8
+2025-06-18 00:09:27 FEHLER 404: Not Found.
+

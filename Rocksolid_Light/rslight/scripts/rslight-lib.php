@@ -1,5 +1,4 @@
 <?php
-
 function interact($msgsock, $use_crypto = false)
 {
     global $CONFIG, $OVERRIDES, $logdir, $lockdir, $logfile, $installed_path, $config_path, $config_dir, $groupconfig, $workpath, $path, $spooldir, $nntp_group, $nntp_article, $auth_ok, $user, $pass;
@@ -348,7 +347,14 @@ function process_post($message, $group)
 
     $posted_db = $spooldir . '/posted_articles.dat';
     if (file_exists($posted_db)) {
-        $posted_articles = unserialize(file_get_contents($posted_db));
+        try {
+            $posted_articles = secure_unserialize($posted_db);
+            if (!is_array($posted_articles)) {
+                $posted_articles = array();
+            }
+        } catch (Exception $e) {
+            $posted_articles = array();
+        }
     } else {
         $posted_articles = array();
     }

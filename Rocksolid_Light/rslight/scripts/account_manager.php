@@ -1,7 +1,9 @@
 <?php
 include("paths.inc.php");
 chdir($spoolnews_path);
-include "config.inc.php";
+include "../lib/config.inc.php";
+
+// Include security functions with production-ready path resolution
 include "newsportal.php";
 
 $processUser = posix_getpwuid(posix_geteuid());
@@ -28,7 +30,14 @@ if ($processUser['name'] != $CONFIG['webserver_user']) {
 }
 
 $keyfile = $spooldir . '/keys.dat';
-$keys = unserialize(file_get_contents($keyfile));
+try {
+    $keys = secure_unserialize($keyfile);
+    if (!is_array($keys)) {
+        $keys = array();
+    }
+} catch (Exception $e) {
+    $keys = array();
+}
 $email_registry = $spooldir . '/email_registry.dat';
 
 if (! isset($argv[1])) {
@@ -134,7 +143,16 @@ function get_user_by_hash($postinghash)
     global $spooldir;
     $posthashfile = $spooldir . '/posthash.dat';
     if (file_exists($posthashfile)) {
-        $posthash = unserialize(file_get_contents($posthashfile));
+        try {
+            $posthash = secure_unserialize($posthashfile);
+            if (!is_array($posthash)) {
+                echo "Invalid hash file format\n";
+                return;
+            }
+        } catch (Exception $e) {
+            echo "Error reading hash file\n";
+            return;
+        }
     } else {
         echo "Hash file not found\n";
         return;
@@ -204,8 +222,8 @@ function change_user_password($username, $password)
 function create_new($username, $password, $user_email)
 {
     global $config_dir;
-    $workpath = $config_dir . "users/";
-    $keypath = $config_dir . "userconfig/";
+    $workpath = $config_dir . "/users/";
+    $keypath = $config_dir . "/userconfig/";
     $username = strtolower($username);
     $userFilename = $workpath . $username;
     $keyFilename = $keypath . $username;

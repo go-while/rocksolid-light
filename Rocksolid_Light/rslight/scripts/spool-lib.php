@@ -1,4 +1,10 @@
 <?php
+
+// Include security functions with production-ready path resolution
+
+// Include logging control functions
+include_once "../../logging_control.php";
+
 function get_articles($ns, $group, $refill_start = false)
 {
     global $enable_rslight, $rslight_gpg, $config_name, $spooldir, $nocem_dir, $save_nocem_messages, $CONFIG;
@@ -27,10 +33,12 @@ function get_articles($ns, $group, $refill_start = false)
     $bbsmail_check = "@@RSL";
 
     # Check if group exists. Open it if it does
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Starting article download for group: " . $group, $debug_log);
     fputs($ns, "group " . $group . "\r\n");
     $response = line_read($ns);
     $remote_disp = $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'];
     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " " . $group . ": " . $response, FILE_APPEND);
+    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Group response: " . $response, $debug_log);
 
     if (strcmp(substr($response, 0, 3), "211") != 0) {
         echo "\n" . $response;
@@ -38,7 +46,14 @@ function get_articles($ns, $group, $refill_start = false)
     }
     # Get config
     if (file_exists($remote_groups_array_file)) {
-        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+        try {
+            $remote_groups_array = secure_unserialize($remote_groups_array_file);
+            if (!is_array($remote_groups_array)) {
+                $remote_groups_array = array();
+            }
+        } catch (Exception $e) {
+            $remote_groups_array = array();
+        }
     } else {
         $remote_groups_array = array();
     }
@@ -56,7 +71,8 @@ function get_articles($ns, $group, $refill_start = false)
     # $article is the next number we want, not the last we retrieved
     $detail = explode(" ", $response);
     if ($detail[1] < 1) { // Remote server contains no articles for this group
-        file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " contains no articles for " . $group . " Skipping", FILE_APPEND);
+        important_log("\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " contains no articles for " . $group . " Skipping", $logfile);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: No articles found in group " . $group . " on remote server", $debug_log);
         return false;
     }
 
@@ -70,12 +86,19 @@ function get_articles($ns, $group, $refill_start = false)
 
     // Get only articles that exist on server
     if ($refill_start != false) {
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Starting refill for group " . $group, $debug_log);
         $article = get_first_article_number_from_remote($ns, $group, $maxfirstrequest);
+        if ($article === false) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: get_first_article_number_from_remote returned false, using fallback logic", $debug_log);
+            $article = $detail[2]; // Use first article from GROUP response
+        }
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Starting " . $group . " at article number " . $article, FILE_APPEND);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Refill starting at article " . $article, $debug_log);
     }
 
     if ($article > $detail[3]) {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $remote_disp . " for " . $group . " We are up to date", FILE_APPEND);
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Group " . $group . " is up to date (local article: " . $article . ", remote last: " . $detail[3] . ")", $debug_log);
         // Just in case we have an error and $article is too large:
         $article = $detail[3] + 1;
     } else {
@@ -85,6 +108,7 @@ function get_articles($ns, $group, $refill_start = false)
         } else {
             $getlast = $detail[3];
         }
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Requesting articles " . $article . " to " . $getlast . " for group " . $group, $debug_log);
         if ($article > $getlast || $article == $getlast) {
             // This is probably not necessary
             fputs($ns, "xover " . $getlast . "\r\n");
@@ -93,21 +117,27 @@ function get_articles($ns, $group, $refill_start = false)
         }
         $response = line_read($ns); // and once more
         if ((substr($response, 0, 3) != "224")) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group . " (requested: xover " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
+            important_log("\n" . format_log_date() . " " . $config_name . " Cannot get overview from " . $CONFIG['remote_server'] . " for " . $group . " (requested: xover " . $article . "-" . $getlast . " received " . $response . ")", $logfile);
             return false;
         } else {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $CONFIG['remote_server'] . " " . $group . " (requested: overview " . $article . "-" . $getlast . " received " . $response . ")", FILE_APPEND);
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Successfully got overview for " . $group . " articles " . $article . "-" . $getlast, $debug_log);
         }
+        $overview_count = 0;
         while (rtrim($response = line_read($ns)) !== '.') {
             $ov = preg_split("/\t/", $response);
             $overview_msgid[$ov[0]] = $ov[4];
+            $overview_count++;
         }
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Retrieved " . $overview_count . " overview entries for " . $group, $debug_log);
 
         // Get listgroup from remote
         $artarray = get_listgroup_array_from_remote($ns, $group);
         if($artarray == false) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Failed to get listgroup for " . $group, $debug_log);
             return false;
         }
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Got listgroup with " . count($artarray) . " articles for " . $group, $debug_log);
 
         # Pull articles and save them in our spool
         if (! is_dir($grouppath)) {
@@ -115,14 +145,27 @@ function get_articles($ns, $group, $refill_start = false)
         }
         $i = 0;
         $dates_used = array();
+        $articles_downloaded = 0;
+        $articles_skipped = 0;
+        $articles_processed = 0;
+        debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Starting individual article download loop for " . $group . " from article " . $article . " to " . $detail[3], $debug_log);
+
+        // Safety check: ensure we have a valid starting article number
+        if (!is_numeric($article) || $article < 1) {
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Invalid starting article number (" . $article . "), using fallback to first available article", $debug_log);
+            $article = $detail[2]; // Use first article number from GROUP response
+        }
+
         // GET INDIVIDUAL ARTICLE
         while ($article <= $detail[3]) {
+            $articles_processed++;
             if (! is_numeric($article)) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " DEBUG This should show server group:article number: " . $CONFIG['remote_server'] . " " . $group . ":" . $article, FILE_APPEND);
                 break;
             }
             if (in_array($article, $artarray) == false) {
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " No such article: " . $group . ":" . $article, FILE_APPEND);
+                $articles_skipped++;
                 $article++;
                 continue;
             }
@@ -137,14 +180,18 @@ function get_articles($ns, $group, $refill_start = false)
             if (check_duplicate_msgid($overview_msgid[$article], $group)) {
                 echo "\n(spoolnews)Duplicate Message-ID for: " . $group . ":" . $article . " " . $overview_msgid[$article];
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Duplicate Message-ID for: " . $group . ":" . $article . " " . $overview_msgid[$article], FILE_APPEND);
+                $articles_skipped++;
                 $article++;
                 continue;
             }
+            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Downloading article " . $article . " for " . $group . " (MsgID: " . $overview_msgid[$article] . ")", $debug_log);
             fputs($ns, "article " . $article . "\r\n");
             $response = line_read($ns);
             if (strcmp(substr($response, 0, 3), "220") != 0) {
                 echo "\n" . $response;
                 file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $group . " " . $response, FILE_APPEND);
+                debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Failed to retrieve article " . $article . " for " . $group . ": " . $response, $debug_log);
+                $articles_skipped++;
                 $article++;
                 continue;
             }
@@ -320,14 +367,16 @@ function get_articles($ns, $group, $refill_start = false)
             $dates_used[$article_date] = true;
 
             // Don't spool article if $banned or fails integrity test
-            $integrity = check_article_integrity(file($articleHandle), $artdate);
-            if (($banned !== false) || ($integrity !== false)) {
+            $integrity = check_article_integrity(file($articleHandle), $artdate);                if (($banned !== false) || ($integrity !== false)) {
                 unlink($articleHandle);
                 if ($integrity) {
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $integrity, FILE_APPEND);
+                    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Article " . $article . " failed integrity check: " . $integrity, $debug_log);
                 } elseif ($banned) {
                     file_put_contents($spamlog, "\n" . format_log_date() . " " . $banned . " :\tSPAM\t" . $mid[1] . "\t" . $groupnames[1] . "\t" . $from[1], FILE_APPEND);
+                    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Article " . $article . " banned: " . $banned, $debug_log);
                 }
+                $articles_skipped++;
                 $article++;
             } else {
                 if ((strpos($CONFIG['nocem_groups'], $group) !== false) && ($CONFIG['enable_nocem'] == true)) {
@@ -409,11 +458,13 @@ function get_articles($ns, $group, $refill_start = false)
                 if ($res === 1) {
                     unlink($articleHandle);
                     file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Skipping: " . $CONFIG['remote_server'] . " " . $group . ":" . $article . " Exceeds Spam Score", FILE_APPEND);
+                    debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Article " . $article . " marked as spam, skipping", $debug_log);
                     // $orig_newsgroups = $newsgroups;
                     // $newsgroups = $CONFIG['spamgroup'];
                     // $group = $newsgroups;
                     $i--;
                     $local--;
+                    $articles_skipped++;
                 } else {
                     $pass = false;
                     foreach ($allgroups as $agroup) {
@@ -431,12 +482,17 @@ function get_articles($ns, $group, $refill_start = false)
                         $tmp = insert_article_from_array($current_article, false);
                         if ($tmp[0] != "4") {
                             $pass = true;
+                            debug_log("\n" . format_log_date() . " " . $config_name . " DEBUG: Successfully spooled article " . $article . " to group " . $agroup, $debug_log);
                         } else {
                             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " " . $tmp, FILE_APPEND);
+                            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Failed to spool article " . $article . " to group " . $agroup . ": " . $tmp, FILE_APPEND);
                         }
                     }
                     if (! $pass) {
                         $i--;
+                        $articles_skipped++;
+                    } else {
+                        $articles_downloaded++;
                     }
                 }
 
@@ -444,6 +500,7 @@ function get_articles($ns, $group, $refill_start = false)
                 $article++;
                 $local++;
                 if ($i > $maxarticles_per_run) {
+                    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Reached max articles per run (" . $maxarticles_per_run . "), stopping", FILE_APPEND);
                     break;
                 }
             }
@@ -457,11 +514,13 @@ function get_articles($ns, $group, $refill_start = false)
                 }
             }
         }
+        // END GET INDIVIDUAL ARTICLE
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Article download summary for " . $group . " - Processed: " . $articles_processed . ", Downloaded: " . $articles_downloaded . ", Skipped: " . $articles_skipped, FILE_APPEND);
     }
-    // END GET INDIVIDUAL ARTICLE
 
     // Update group title
     if (! is_file($workpath . $group . "-title")) {
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Attempting to get group title for " . $group, FILE_APPEND);
         fputs($ns, "XGTITLE " . $group . "\r\n");
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "282") == 0) {
@@ -471,11 +530,21 @@ function get_articles($ns, $group, $refill_start = false)
                 file_put_contents($titlefile, $response);
                 $response = line_read($ns);
             }
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Successfully retrieved title for " . $group, FILE_APPEND);
+        } else {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: XGTITLE not supported by server (response: " . trim($response) . ") - this is normal and harmless", FILE_APPEND);
         }
     }
     # Save config
     if (file_exists($remote_groups_array_file)) {
-        $remote_groups_array = unserialize(file_get_contents($remote_groups_array_file));
+        try {
+            $remote_groups_array = secure_unserialize($remote_groups_array_file);
+            if (!is_array($remote_groups_array)) {
+                $remote_groups_array = array();
+            }
+        } catch (Exception $e) {
+            $remote_groups_array = array();
+        }
     } else {
         $remote_groups_array = array();
     }
@@ -486,19 +555,26 @@ function get_articles($ns, $group, $refill_start = false)
 
 function get_first_article_number_from_remote($ns, $group, $maxfirstrequest)
 {
-    global $logfile, $config_name;
+    global $logfile, $config_name, $CONFIG, $debug_log;
+
+    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: get_first_article_number_from_remote() called for " . $group . " with maxfirstrequest=" . $maxfirstrequest, FILE_APPEND);
+
     fputs($ns, "group " . $group . "\r\n");
     $response = line_read($ns);
     if (substr($response, 0, 3) != "211") {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot enter " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: GROUP command failed: " . $response, FILE_APPEND);
         return false;
     }
+
     fputs($ns, "listgroup\r\n");
     $response = line_read($ns);
     if (substr($response, 0, 3) != "211") {
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Cannot listgroup " . $group . " on " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: LISTGROUP command failed: " . $response, FILE_APPEND);
         return false;
     }
+
     $exists_array = array();
     while ($line = line_read($ns)) {
         if (trim($line) == '.') {
@@ -506,12 +582,29 @@ function get_first_article_number_from_remote($ns, $group, $maxfirstrequest)
         }
         $exists_array[] = trim($line);
     }
-    $exists_array = array_reverse($exists_array);
-    if ($maxfirstrequest > count($exists_array)) {
-        return $exists_array[array_key_last($exists_array)];
-    } else {
-        return $exists_array[$maxfirstrequest];
+
+    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: LISTGROUP returned " . count($exists_array) . " articles", FILE_APPEND);
+
+    if (count($exists_array) == 0) {
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: No articles in listgroup response", FILE_APPEND);
+        return false;
     }
+
+    // Sort articles numerically
+    sort($exists_array, SORT_NUMERIC);
+
+    // If we want fewer articles than exist, start from the end
+    if ($maxfirstrequest < count($exists_array)) {
+        $start_index = count($exists_array) - $maxfirstrequest;
+        $first_article = $exists_array[$start_index];
+    } else {
+        // Want all articles, start from the beginning
+        $first_article = $exists_array[0];
+    }
+
+    file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Calculated first article: " . $first_article . " (total articles: " . count($exists_array) . ")", FILE_APPEND);
+
+    return $first_article;
 }
 
 function get_listgroup_array_from_remote($ns, $group)

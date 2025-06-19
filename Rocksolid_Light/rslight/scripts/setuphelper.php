@@ -4,66 +4,67 @@
 # named as the section name followed by .inc.php
 # So for a section named 'rocksolid', it's rocksolid.inc.php
 
-return [ 
+return [
 # REMOTE server configuration
-'remote_server' => 'The remote news server you connect to for syncing', 
-'remote_port' => 'Remote server port', 
-'remote_ssl' => 'Remote SSL server port (this will take priority over non-SSL)', 
-'remote_auth_user' => 'Username to authenticate to remote server',
-'remote_auth_pass' => 'Password to authenticate to remote server', 
-'socks_host' => 'ip address of your socks4a server (use this for tor)',
-'socks_port' => 'port for your socks4a server',
+'remote_server' => 'The remote news server you connect to for syncing (e.g., news.example.com)',
+'remote_port' => 'Remote server port (usually 119 for NNTP)',
+'remote_ssl' => 'Remote SSL server port (usually 563, blank to disable SSL)',
+'remote_auth_user' => 'Username to authenticate to remote server (if required)',
+'remote_auth_pass' => 'Password to authenticate to remote server (if required)',
+'socks_host' => 'IP address of your SOCKS4A server (e.g., 127.0.0.1 for Tor)',
+'socks_port' => 'Port for your SOCKS4A server (e.g., 9050 for Tor)',
 
 # LOCAL server configuration
-'enable_nntp' => 'Enable local nntp server (1=true, blank=false)', 
-'local_server' => 'Local server ip address', 
-'local_port' => 'Local server port', 
-'local_ssl_port' => 'Local server ssl port or blank for no ssl', 
-'enable_all_networks' => 'Bind local server to all interfaces (1=true, blank=false)',
-'server_auth_user' => 'The username on the local server for the forum to use (auto-created)',
-'server_auth_pass' => 'The password for the local server user',
+'enable_nntp' => 'Enable local NNTP server (1=yes, blank=no)',
+'local_server' => 'Local server IP address (127.0.0.1 for localhost)',
+'local_port' => 'Local server port (usually 119)',
+'local_ssl_port' => 'Local server SSL port (usually 563, blank for no SSL)',
+'enable_all_networks' => 'Bind local server to all interfaces (1=yes, blank=localhost only)',
+'server_auth_user' => 'Username for local server authentication (auto-created)',
+'server_auth_pass' => 'Password for local server user (choose a strong password)',
 
 # Site configuration
-'rslight_title' => 'The tagline at the top of the web page',
-'title_full' => 'The site title in the client browser bar', 
-'hide_email' => 'Truncate email addresses in From header (1=true, blank=false)',
-'server_path' => 'What to add to as the domain for Message-ID header (include @)',
-'email_tail' => 'What to add to a username if not in the form of an email address (include @)',
-'anonusername' => 'The username to use for anonymous posting (auto-created)',
-'anonuserpass' => 'The password for the anonymous username',
-'timezone' => 'A timezone offset from GMT (+5, -3 etc.)',
-'default_content' => 'The default page to display when loading the site',
-'readonly' => 'Make the site read only (1=true, blank=false)',
-'anonuser' => 'Allow anonymous posting (1=true, blank=false)',
-'organization' => 'What to add to outgoing message headers for Organization',
-'postfooter' => 'What to add to the bottom of posted messages (blank for nothing)',
-'synchronet' => 'Enable if your remote server is a Synchronet server (1=true, blank=false)',
-'rate_limit' => 'Limit each user to xx posts per hour (number or blank to disable)',
-'auto_create' => 'Auto create accounts when first used to post (1=true, blank=false)',
-'verify_email' => 'Require new users to verify by email, requires phpmailer (1=true, blank=false)',
-'no_verify' => 'Domains that do not require email verification (space separated)',
-'auto_return' => 'Return to group automatically after posting (1=true, blank=false)',
-'overboard_noshow' => 'Do not show these groups in overboard (space sparated)',
+'site_shortname' => 'Short name for your site (used in paths and references)',
+'rslight_title' => 'The tagline displayed at the top of web pages',
+'title_full' => 'The full site title shown in browser tab',
+'hide_email' => 'Truncate email addresses in From header (1=yes, blank=no)',
+'server_path' => 'Domain for Message-ID header (include @, e.g., @example.com)',
+'email_tail' => 'Domain to add to usernames without @ (e.g., @invalid.invalid)',
+'anonusername' => 'Username for anonymous posting (auto-created)',
+'anonuserpass' => 'Password for anonymous user (choose a secure password)',
+'timezone' => 'Timezone offset from GMT (+5, -3, etc. or 0 for UTC)',
+'default_content' => 'Default page to display (/rocksolid/index.php recommended)',
+'readonly' => 'Make site read-only (1=yes, blank=allow posting)',
+'anonuser' => 'Allow anonymous posting (1=yes, blank=require authentication)',
+'organization' => 'Organization name for outgoing message headers',
+'postfooter' => 'Text to append to posted messages (blank for none)',
+'synchronet' => 'Enable Synchronet compatibility (1=yes, blank=no)',
+'rate_limit' => 'Maximum posts per user per hour (number or blank for no limit)',
+'auto_create' => 'Auto-create user accounts when posting (1=yes, blank=no)',
+'verify_email' => 'Require email verification for new users (1=yes, blank=no)',
+'no_verify' => 'Domains that skip email verification (space separated)',
+'auto_return' => 'Return to group after posting (1=yes, blank=stay on post page)',
+'overboard_noshow' => 'Groups to exclude from overboard (space separated)',
 
-# Spamassassin
-'spamassassin' => 'Enable checking messages using local spamassassin install (1=true, blank=false)',
-'spamc' => 'The path to spamc, or just spamc if it is already in your path',
-'spamgroup' => 'What newsgroup to move messages to that are considered spam (by spamassassin)',
+# Spamassassin configuration
+'spamassassin' => 'Enable SpamAssassin checking (1=yes, blank=no)',
+'spamc' => 'Path to spamc executable (/usr/bin/spamc or just spamc)',
+'spamgroup' => 'Newsgroup for spam messages (e.g., spam)',
 
-# Executables on your system 
-'php_exec' => 'The path to php, or just php if it is already in your path',
-'tac' => 'Path to php session files (leave empty to not display number of users online)',
-'webserver_user' => 'The user that your webserver runs as',
+# System executables
+'php_exec' => 'Path to PHP executable (/usr/bin/php or just php)',
+'tac' => 'Path to PHP session files (for user count, /tmp recommended)',
+'webserver_user' => 'Web server user (www-data, apache, nginx, etc.)',
 
-# NOCEM
-'enable_nocem' => 'Enable acting on nocem messages, requires gnupg (1=true, blank=false)',
-'nocem_groups' => 'The list of groups to monitor for nocem messages (space separated)',
+# NOCEM configuration
+'enable_nocem' => 'Enable NoCeM spam filtering (1=yes, blank=no)',
+'nocem_groups' => 'Groups to monitor for NoCeM messages (space separated)',
 
-# Misc
-'open_clients' => 'Space separated list of ip addresses of clients allowed to post without authenticating',
-'article_database' => 'Enable storing articles in database files (1=database, blank=tradspool)',
-'expire_days' => 'Posts should be expired after how many days (zero for never)',
-'pathhost' => 'The pathhost to use in your XRef header. (maybe a one word name for your site)',
-'thissitekey' => 'An approximately 16 character random key (numbers, letters, else) specific for your site'
+# Miscellaneous settings
+'expire_days' => 'Days to keep posts (0=never expire, 90=3 months recommended)',
+'pathhost' => 'Hostname for XRef headers (short site name)',
+'article_database' => 'Store articles in database (1=database, blank=traditional spool)',
+'open_clients' => 'IP addresses allowed to post without auth (space separated)',
+'thissitekey' => 'Random security key for your site (16+ characters, change this!)'
 ];
 ?>

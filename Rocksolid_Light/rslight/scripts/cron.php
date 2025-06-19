@@ -1,9 +1,43 @@
 <?php
-// This file runs maintenance scripts and should be executed by cron regularly
-include "config.inc.php";
-include "newsportal.php";
+define('CRON_CONTEXT', true); // Global constant to indicate down the line: this is a cron job context
+
+$rslight_path = readlink("../rslight.inc.php");
+$thisdir = getcwd();
+if (empty($rslight_path)) {
+  die("Error: Could not locate rslight.inc.php. Please ensure the symlink is correct. thisdir=$thisdir");
+}
+$web_root = dirname(dirname(dirname($rslight_path))); // Go up 3 levels
+if (!is_dir($web_root)) {
+  die("Error: Invalid web root path derived from rslight.inc.php symlink. thisdir=$thisdir web_root=$web_root");
+}
+require($web_root . "/common/config.inc.php");
+
+echo "[cron.php rslight_path: " . $rslight_path . " web_root=$web_root]<br>\n";
+/*
+if ($web_root && file_exists($web_root . "/rocksolid/newsportal.php")) {
+    echo "[cron.php included newsportal.php from web_root=$web_root]<br>\n";
+    include $web_root . "/rocksolid/newsportal.php";
+    echo "[cron.php included newsportal.php from web_root<br>]\n";
+} else {
+    die("Error: Could not locate newsportal.php web_root=$web_root");
+}
+*/
+
+echo "[CRON] Debug 0 cron config_name: " . $config_name . "\n";
+
 include $config_dir . "/scripts/rslight-lib.php";
 include $config_dir . "/gpg.conf";
+
+// Ensure critical variables are set with fallbacks
+if (!isset($logdir) || empty($logdir)) {
+    $logdir = $spooldir . '/log';
+    @mkdir($logdir, 0755, true);
+}
+if (!isset($config_name) || empty($config_name)) {
+    $config_name = 'rocksolid';
+}
+
+echo "[CRON] Debug 1 cron config_name: " . $config_name . "\n";
 
 $pid = getmypid();
 $logfile = $logdir . '/cron.log';
@@ -15,6 +49,13 @@ if (file_exists($config_dir . '/cron.disable') || file_exists($spooldir . '/cron
     file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " started...", FILE_APPEND);
     chown($logfile, $CONFIG['webserver_user']);
 }
+
+echo "[CRON] DEBUG 2 cron\n";
+
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Critical Error: Configuration not loaded. Please ensure config.inc.php is included correctly.");
+}
+// Check if spooldir exists, if not create it
 
 $menulist = get_section_menu_array();
 # Start or verify NNTP server
@@ -63,7 +104,7 @@ if (!file_exists($config_path_file)) {
 
 # Generate user count file (must be root)
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/count_users.php");
-echo "Updated user count\n";
+echo "[CRON] Updated user count\n";
 
 $uinfo = posix_getpwnam($CONFIG['webserver_user']);
 $cwd = getcwd();
@@ -153,46 +194,47 @@ foreach ($menulist as $menu) {
 
     if ($this_CONFIG['remote_server'] !== '') {
         # Send articles
-        echo "Sending articles\n";
+        echo "[CRON] Sending articles\n";
         echo exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/send.php");
         # Refresh spool
         if (isset($spoolnews) && ($spoolnews == true)) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Starting spoolnews for " . $menuitem[0], FILE_APPEND);
             exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/spoolnews.php");
-            echo "\nRefreshed spoolnews\n";
+            file_put_contents($debug_log, "\n" . format_log_date() . " DEBUG: Completed spoolnews for " . $menuitem[0], FILE_APPEND);
+            echo "\n[CRON] Refreshed spoolnews\n";
         }
     } else {
         file_put_contents($debug_log, "\n" . format_log_date() . " Remote disabled for " . $menuitem[0] . " (no remote server)", FILE_APPEND);
     }
     # Expire articles
     exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/expire.php");
-    echo "Expired articles\n";
+    echo "[CRON] Expired articles\n";
 }
 
 # Expire diskcache
-if (file_exists($config_dir . '/cache.inc.php')) {
-    include $config_dir . '/cache.inc.php';
-    if ($enable_cache == 'diskcache') {
-        prune_dir_by_days($cache_dir, $cache_ttl / 86400);
-    }
+
+if ($enable_cache == 'diskcache') {
+    prune_dir_by_days($cache_dir, $cache_ttl / 86400);
 }
+
 
 # Run RSS Feeds
 exec($CONFIG['php_exec'] . " " . $config_dir . "/scripts/rss-feeds.php");
-echo "RSS Feeds updated\n";
+echo "[CRON] RSS Feeds updated\n";
 # Reload grouplist
 if ((filemtime($grouplist_cache_filename) < (time() - 14400) || ! file_exists($grouplist_cache_filename))) {
     exec($CONFIG['php_exec'] . " ../common/grouplist.php .RELOAD");
-    echo "Refreshed grouplist\n";
+    echo "[CRON] Refreshed grouplist\n";
 }
 # Rotate log files
 log_rotate();
-echo "Log files rotated\n";
+echo "[CRON] Log files rotated\n";
 # Rotate keys
 rotate_keys();
-echo "Keys rotated\n";
+echo "[CRON] Keys rotated\n";
 # Expire files
 expire_files();
-echo "Removed old files\n";
+echo "[CRON] Removed old files\n";
 file_put_contents($logfile, "\n" . date('M d H:i:s') . " " . $config_name . " cron " . $pid . " completed...", FILE_APPEND);
 
 function check_disk_space()
@@ -235,7 +277,14 @@ function check_disk_space()
             $date_window = 86400;
             $send_email_timer_file = $spooldir . '/email_send_timer.dat';
             if (file_exists($send_email_timer_file)) {
-                $send_email_timer = unserialize(file_get_contents($send_email_timer_file));
+                try {
+                    $send_email_timer = secure_unserialize($send_email_timer_file);
+                    if (!is_array($send_email_timer)) {
+                        $send_email_timer = array();
+                    }
+                } catch (Exception $e) {
+                    $send_email_timer = array();
+                }
             } else {
                 $send_email_timer = array();
             }
@@ -319,7 +368,7 @@ function log_rotate()
             @rename($logfile . '.1', $logfile . '.2');
             file_put_contents($logfile, "\nLog file rotated", FILE_APPEND);
             @rename($logfile, $logfile . '.1');
-            echo 'Rotated: ' . $logfile . "\n";
+            echo '[CRON] Rotated: ' . $logfile . "\n";
         }
         unlink($logdir . '/rotate');
         touch($logdir . '/rotate');
@@ -336,8 +385,18 @@ function rotate_keys()
     } else {
         $new = true;
         if (is_file($keyfile)) {
-            $keys = unserialize(file_get_contents($keyfile));
-            $new = false;
+            try {
+                $keys = secure_unserialize($keyfile);
+                if (!is_array($keys)) {
+                    $keys = array();
+                    $new = true;
+                } else {
+                    $new = false;
+                }
+            } catch (Exception $e) {
+                $keys = array();
+                $new = true;
+            }
         }
         if ($new !== true) {
             $newkeys[0] = base64_encode(openssl_random_pseudo_bytes(44));

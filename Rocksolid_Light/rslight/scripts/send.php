@@ -22,10 +22,23 @@
  */
 set_time_limit(900);
 
-include "config.inc.php";
-include("$file_newsportal");
+define('CRON_CONTEXT', true); // Define context for cron job
+
+$rslight_target = readlink(dirname(__DIR__) . '/rslight.inc.php');
+$web_root = dirname(dirname(dirname($rslight_target)));
+echo "[send.php] Web root: $web_root\n";
+require($web_root . "/common/config.inc.php");
+
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Critical Error: scripts/send.php: rslight/lib/config.inc.php not loaded. Please check your configuration.");
+}
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+
+//include $web_root . '/rocksolid/newsportal.php';
 
 if ($CONFIG['remote_server'] == '') {
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Error remote_server is unset:", FILE_APPEND);
     exit();
 }
 $logfile = $logdir . '/send.log';
@@ -35,15 +48,17 @@ $logfile = $logdir . '/send.log';
 $lockfile = $lockdir . '/rslight-send.lock';
 $pid = file_get_contents($lockfile);
 if (posix_getsid($pid) === false || ! is_file($lockfile)) {
-    print "Starting Send...\n";
+    print "[send.php] Starting Send...\n";
     file_put_contents($lockfile, getmypid()); // create lockfile
 } else {
-    print "Send currently running\n";
+    print "[send.php] Send currently running\n";
     exit();
 }
+
+file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] Try connect to Host='" . $CONFIG['remote_server'] . "' Port='" . $CONFIG['remote_port'] . "'", FILE_APPEND);
 $ns = nntp2_open($CONFIG['remote_server'], $CONFIG['remote_port']);
 if ($ns == false) {
-    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Failed to connect to " . $CONFIG['remote_server'] . ":" . $CONFIG['remote_port'], FILE_APPEND);
+    file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] Failed to connect to Host='" . $CONFIG['remote_server'] . "' Port='" . $CONFIG['remote_port'] . "'", FILE_APPEND);
     exit();
 }
 echo "\nPosting articles\r\n";
@@ -70,7 +85,7 @@ function post_articles($ns, $spooldir)
     if (isset($OVERRIDES['disable_remote_push'])) {
         foreach ($OVERRIDES['disable_remote_push'] as $disable) {
             if ($config_name == $disable) {
-                file_put_contents($debug_log, "\n" . format_log_date() . " Remote push disabled for " . $config_name . " by override", FILE_APPEND);
+                file_put_contents($debug_log, "\n" . format_log_date() . " [send.php] Remote push disabled for " . $config_name . " by override", FILE_APPEND);
                 return "Remote push disabled for this section: " . $config_name;
             }
         }
@@ -82,7 +97,7 @@ function post_articles($ns, $spooldir)
             continue;
         }
         if (filemtime($outgoing_dir . $message) < (time() - 14400)) { // Stop trying to send article of over 4 hours old
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: Too many retries, giving up for: " . $message, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] POST Failed: Too many retries, giving up for: " . $message, FILE_APPEND);
             rename($outgoing_dir . $message, $fail_dir . $message);
             continue;
         }
@@ -90,13 +105,13 @@ function post_articles($ns, $spooldir)
         fputs($ns, "MODE READER\r\n");
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "200") != 0) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Unexpected response to MODE command: " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] Unexpected response to MODE command: " . $response, FILE_APPEND);
             return $response;
         }
         fputs($ns, "POST\r\n");
         $response = line_read($ns);
         if (strcmp(substr($response, 0, 3), "340") != 0) {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Unexpected response to POST command: " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] Unexpected response to POST command: " . $response, FILE_APPEND);
             return $response;
         }
         $message_fp = fopen($outgoing_dir . $message, "rb");
@@ -113,9 +128,9 @@ function post_articles($ns, $spooldir)
         }
         if (strcmp(substr($response, 0, 3), "240") == 0) {
             $removed = unlink($outgoing_dir . $message);
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POSTED: " . $message . ": " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] POSTED: " . $message . ": " . $response, FILE_APPEND);
         } else {
-            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " POST Failed: " . $message . ": " . $response, FILE_APPEND);
+            file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " [send.php] POST Failed: " . $message . ": " . $response, FILE_APPEND);
             continue;
         }
     }

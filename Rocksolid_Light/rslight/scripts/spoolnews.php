@@ -20,10 +20,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-include "config.inc.php";
-include("$file_newsportal");
-include "spool-lib.php";
+
+// Define cron context and set working directory
+define('CRON_CONTEXT', true);
+chdir(__DIR__ . '/../../'); // Set working directory to project root
+include "common/config.inc.php";
+include "common/menu_functions.inc.php";
+
+// Calculate web root from rslight.inc.php symlink and include newsportal.php
+$rslight_target = readlink($config_dir . '/rslight.inc.php');
+$web_root = dirname(dirname(dirname($rslight_target)));
+//include $web_root . '/rocksolid/newsportal.php';
+include __DIR__ . "/spool-lib.php";
 include $config_dir . '/gpg.conf';
+
+if(empty($config_name)) {
+    echo "Config name is empty, using default.\n";
+    $config_name = 'rocksolid'; // fallback for cases where getcwd() fails
+}
+
+if (!is_dir($spooldir . '/' . $config_name)) {
+    echo "Creating spool directory for config: $config_name\n";
+    @mkdir($spooldir . '/' . $config_name, 0755, true);
+}
 
 if (isset($OVERRIDES['save_nocem_messages']) && $OVERRIDES['save_nocem_messages'] == true) {
     $save_nocem_messages = true;
@@ -57,8 +76,12 @@ if (file_exists($spooldir . '/' . $config_name . '/local_groups.txt')) {
 }
 
 // Defaults
-$maxarticles_per_run = 100;
-$maxfirstrequest = 100;
+
+// Maximum number of articles to fetch per run
+$maxarticles_per_run = 100; // TODO remove hardcoded value
+
+// Maximum number of articles to fetch on first request
+$maxfirstrequest = 100; // TODO remove hardcoded value
 
 // Overrides
 if ($OVERRIDES['maxarticles_per_run'] > 0) {
@@ -148,12 +171,20 @@ if ($CONFIG['remote_server'] != '') {
         }
         $name = preg_split("/( |\t)/", $findgroup, 2);
         file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Retrieving articles for: " . $name[0] . "...", FILE_APPEND);
+        file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Starting article retrieval for group: " . $name[0], FILE_APPEND);
         echo "\nRetrieving articles for: " . $name[0] . "...";
         if ($ns == false) {
             file_put_contents($logfile, "\n" . format_log_date() . " " . $config_name . " Lost connection to: " . $CONFIG['local_server'] . ":" . $CONFIG['local_port'], FILE_APPEND);
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Lost connection to newsserver, breaking loop", FILE_APPEND);
             break;
         }
         $groupstat = get_articles($ns, $name[0]);
+
+        if ($groupstat === false) {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: get_articles returned false for group: " . $name[0], FILE_APPEND);
+        } else {
+            file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: get_articles completed successfully for group: " . $name[0], FILE_APPEND);
+        }
 
         if ($enable_rslight == 1 && $groupstat != false) {
             $timer_file = $spooldir . '/tmp/' . $name[0] . '-thread-timer';
@@ -190,4 +221,5 @@ if ($CONFIG['remote_server'] != '') {
     nntp_close($ns);
 }
 unlink($lockfile);
+file_put_contents($debug_log, "\n" . format_log_date() . " " . $config_name . " DEBUG: Spoolnews completed successfully", FILE_APPEND);
 echo "\nSpoolnews Done\n";
