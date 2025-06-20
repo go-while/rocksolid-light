@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 echo "<!-- article-flat.php start -->\n";
 
 $logfile = $logdir . '/newsportal.log';

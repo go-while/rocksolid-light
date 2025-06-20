@@ -1,4 +1,7 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
 if (isset($_POST['command']) && $_POST['command'] == 'Logout') {
     $past = time() - 3600;

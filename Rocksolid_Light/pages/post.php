@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 /*
  * rslight NNTP<->HTTP Gateway
  * Download: https://github.com/go-while/rocksolid-light

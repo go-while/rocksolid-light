@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 
 $logfile = $spooldir . '/log/register.log';
 $mail_log = $spooldir . '/log/mail.log';

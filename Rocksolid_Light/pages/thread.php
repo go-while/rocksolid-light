@@ -1,4 +1,7 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
 
 //$_SESSION['group'] = $_SERVER['REQUEST_URI'];

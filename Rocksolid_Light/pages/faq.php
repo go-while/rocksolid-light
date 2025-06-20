@@ -1,4 +1,7 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
 /*
  * CHANGE THE LINE BELOW TO 'installed = true once you have edited this filter
@@ -7,16 +10,8 @@
 // Set this to your administrative email address
 $admin = "admin@example.com"; // TODO add to config.inc.php
 
-require __DIR__ . "/../rocksolid/lib/config.inc.php";
-require __DIR__ . "/../rocksolid/newsportal.php";
-require __DIR__ . "/../rocksolid/logging_control.php";
-require __DIR__ . "/../rocksolid/lib/security.inc.php";
-
-// Add security headers
-add_security_headers();
-
 $title = "Privacy and FAQ";
-
+/*
 // Use new router-based header system instead of head.inc
 if (function_exists('rslight_render_complete_header')) {
     rslight_render_complete_header($title, 'faq');
@@ -27,6 +22,7 @@ if (function_exists('rslight_render_complete_header')) {
     echo '<title>Privacy and FAQ</title>';
     echo '</head><body>';
 }
+*/
 
 echo '<center>';
 

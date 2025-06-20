@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 /*
  * rocksolid overboard - overboard for rslight
  * Download: https://github.com/go-while/rocksolid-light

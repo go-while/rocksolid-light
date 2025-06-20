@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 // TODO decrypt.php NEEDS TESTING
 if(!file_exists($auth_inc) || !is_readable($auth_inc)) {
   die("Authentication include file not found or not readable: $auth_inc");

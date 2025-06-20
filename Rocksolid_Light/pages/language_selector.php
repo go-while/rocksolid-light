@@ -1,14 +1,10 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 // Language Selector for Rocksolid Light
-include "lib/config.inc.php";
-include "allowed_languages.inc.php";
-require_once(__DIR__ . '/lib/security.inc.php');
 
-// Add security headers
-add_security_headers();
-
-$title .= ' - Language Selection';
-include "lib/head.inc";
 
 // Handle language selection
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_language'])) {
@@ -176,5 +172,3 @@ $return_url = isset($_GET['return']) ? $_GET['return'] : '/';
     margin: 10px 0;
 }
 </style>
-
-<?php include "lib/tail.inc"; ?>

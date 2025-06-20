@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 session_cache_limiter('public');
 
 $logfile = $logdir . '/search.log';

@@ -1,5 +1,10 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
+
+die("disabled");
 $logfile = $logdir . '/files.log';
 
 // Use centralized authentication - requests.inc.php handles auth requirements

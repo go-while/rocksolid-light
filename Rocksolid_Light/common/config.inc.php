@@ -149,6 +149,7 @@ if (!$cron_context && !$is_pre_load && defined('RSLIGHT_CONFIG_LOADED')) {
         // Core article pages
         'article'      => 'article.php',
         'article-flat' => 'article-flat.php',
+        'article-minimal' => 'article-minimal.php',
         'thread'       => 'thread.php',
 
         // Board and search

@@ -1,4 +1,5 @@
 <?php
+die("disabled");
 
 $logfile = $logdir . '/files.log';
 
@@ -7,6 +8,9 @@ if (isset($_COOKIE['tzo'])) {
 } else {
     $offset = $CONFIG['timezone'];
 }
+
+
+
 if ((isset($_REQUEST['command']) && $_REQUEST['command'] == 'Show') && password_verify($CONFIG['thissitekey'], $_REQUEST['key'])) {
     $getfilename = $spooldir . '/upload/' . $_REQUEST['showfile'];
     ob_clean();
@@ -71,7 +75,7 @@ if (count($users) > 0) {
     echo '<select name="listbox">';
     foreach ($users as $user) {
         $num = count(scandir($spooldir . '/upload/' . $user . '/')) - 2;
-        if ($user == $_POST['listbox']) {
+        if (isset($_POST['listbox']) && $user == $_POST['listbox']) {
             echo '<option value="' . $user . '" selected="selected">' . $user . ' (' . $num . ' files)</option>';
             $found = 1;
         } else {

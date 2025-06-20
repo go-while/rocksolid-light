@@ -1,4 +1,8 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 // Minimal article-flat page for router system testing
 echo "<h1>Article Flat Page - Under Development</h1>";
 echo "<p>Parameters received:</p>";

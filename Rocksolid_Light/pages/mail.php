@@ -1,4 +1,7 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
 include $config_dir . "/gpg.conf";
 

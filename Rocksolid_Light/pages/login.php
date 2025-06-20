@@ -1,13 +1,12 @@
 <?php
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
+
 /*
  * Centralized Login Page for RockSolid Light
  * Handles all authentication and cookie setting
  */
-
-// Prevent direct access - should only be accessed through router
-if (!defined('PRE_LOAD_DONE')) {
-    die('Direct access not allowed');
-}
 
 $logfile = $logdir . '/auth.log';
 

@@ -1,5 +1,8 @@
 <?php
 // TODO attachement.php should be moved to requests.inc.php (which atm does not exist)
+if(!defined('RSLIGHT_CONFIG_LOADED')) {
+    die("Access denied.");
+}
 
 // Security headers for file downloads
 header("X-Content-Type-Options: nosniff");
