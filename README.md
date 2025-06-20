@@ -71,11 +71,10 @@ RockSolid Light was an ambitious alternative to commercial newsgroup systems, pr
 
 ## Security Documentation
 
-For detailed security analysis and vulnerability documentation, see:
-- [`CRITICAL_VULNERABILITY.md`](CRITICAL_VULNERABILITY.md) - Path traversal analysis
-- [`UPLOAD_SECURITY.md`](UPLOAD_SECURITY.md) - File upload vulnerabilities  
-- [`GOALS-backup-rocksolid.md`](GOALS-backup-rocksolid.md) - Complete security assessment
-- [`exploit/`](exploit/) - Proof-of-concept security tests
+For detailed security analysis and vulnerability documentation, see [branch](https://github.com/go-while/rocksolid-light/tree/claude-sonnet-4-test2)
+- [`CRITICAL_VULNERABILITY.md`](https://github.com/go-while/rocksolid-light/blob/claude-sonnet-4-test2/Rocksolid_Light/CRITICAL_VULNERABILITY.md) - Path traversal analysis
+- [`UPLOAD_SECURITY.md`](https://github.com/go-while/rocksolid-light/blob/claude-sonnet-4-test2/Rocksolid_Light/UPLOAD_SECURITY.md) - File upload vulnerabilities  
+- [`GOALS-backup-rocksolid.md`](https://github.com/go-while/rocksolid-light/blob/claude-sonnet-4-test2/Rocksolid_Light/GOALS-backup-rocksolid.md) - Complete security assessment
 
 ## Migration Recommendations
 
